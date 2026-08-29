@@ -1,0 +1,139 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:layout_weight="1">
+
+    <LinearLayout
+        android:id="@+id/ll_view"
+        android:layout_width="165dp"
+        android:layout_height="165dp"
+        android:orientation="vertical"
+        android:background="@drawable/widget_background_dark"
+        android:weightSum="2">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_marginHorizontal="16dp"
+                android:weightSum="5"
+                android:clipToPadding="true"
+                android:clipChildren="true">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/small_fear_greed_red_bg"/>
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#EF9152"/>
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#F2C84C"/>
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#7ED12B"/>
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/small_fear_greed_green_bg"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/img_meter"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_marginHorizontal="16dp"
+                android:weightSum="5"
+                android:padding="1dp"
+                android:orientation="vertical"
+                android:clipToPadding="true"
+                android:clipChildren="true"
+                android:background="@drawable/small_fear_greed_meter"/>
+
+            <ImageView
+                android:id="@+id/img_meter_arrow"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="6dp"
+                android:layout_marginBottom="12dp"/>
+
+            <ImageView
+                android:id="@+id/img_temp_arrow"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="6dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/price_change_rectangle_white" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/cell_fear_1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingTop="4dp"
+            android:paddingBottom="16dp"
+            android:layout_marginHorizontal="12dp"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/fear_greed_linear"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/btn_open"
+        android:layout_width="165dp"
+        android:layout_height="165dp">
+
+    </RelativeLayout>
+
+</RelativeLayout>

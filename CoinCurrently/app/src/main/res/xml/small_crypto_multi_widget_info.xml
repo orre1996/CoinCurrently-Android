@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/small_crypto_multi_widget"
+    android:minWidth="150dp"
+    android:previewLayout="@layout/small_crypto_multi_widget"
+    android:minHeight="130dp"
+    android:updatePeriodMillis="1850000"
+    android:widgetCategory="home_screen"/>

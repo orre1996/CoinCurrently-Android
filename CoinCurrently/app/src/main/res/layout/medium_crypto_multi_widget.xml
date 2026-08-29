@@ -1,0 +1,131 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/ll_view"
+        android:layout_width="350dp"
+        android:layout_height="165dp"
+        android:background="@drawable/widget_background_dark"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:id="@+id/cell_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="2dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="8dp"
+                android:paddingTop="4dp"
+                android:layout_weight="1">
+
+                <include
+                    layout="@layout/multi_widget_cell_refresh_button"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"/>
+
+            </LinearLayout>
+
+            <include
+                android:id="@+id/separator_vertical1"
+                layout="@layout/widget_separator_vertical_dark"
+                android:layout_height="match_parent"
+                android:layout_width="1dp"/>
+
+            <LinearLayout
+                android:id="@+id/cell_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="12dp"
+                android:layout_marginBottom="2dp"
+                android:paddingTop="4dp"
+                android:layout_weight="1">
+
+                <include
+                    layout="@layout/multi_widget_cell"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/separator_horizontal1"
+            layout="@layout/widget_separator_dark"
+            android:layout_height="1dp"
+            android:layout_width="match_parent"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:id="@+id/cell_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginBottom="2dp"
+                android:layout_weight="1">
+
+                <include
+                    layout="@layout/multi_widget_cell"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"/>
+
+            </LinearLayout>
+
+            <include
+                android:id="@+id/separator_vertical2"
+                layout="@layout/widget_separator_vertical_dark"
+                android:layout_height="match_parent"
+                android:layout_width="1dp"/>
+
+            <LinearLayout
+                android:id="@+id/cell_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginBottom="2dp"
+                android:layout_weight="1">
+
+                <include
+                    layout="@layout/multi_widget_cell"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <include
+        android:id="@+id/buy_pro"
+        layout="@layout/buy_pro_overlay"
+        android:layout_height="165dp"
+        android:layout_width="350dp"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <include
+        android:id="@+id/buy_pro_light"
+        layout="@layout/buy_pro_overlay_light"
+        android:layout_height="165dp"
+        android:layout_width="350dp"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+</RelativeLayout>

@@ -1,0 +1,485 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/ll_duo_widget"
+        android:layout_width="350dp"
+        android:layout_height="330dp"
+        android:orientation="vertical"
+        android:paddingVertical="5dp"
+        android:background="@drawable/widget_background_dark"
+        android:weightSum="2">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="165dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginVertical="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="10dp"
+                    android:weightSum="2">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/logo_dark" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:autoSizeMaxTextSize="16sp"
+                        android:autoSizeMinTextSize="8sp"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/poppins_regular"
+                        android:includeFontPadding="false"
+                        android:gravity="start|center"
+                        android:maxLines="1"
+                        android:text="CoinCurrently"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@id/txt_currency_price"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="3dp"
+                        android:autoSizeMaxTextSize="24sp"
+                        android:autoSizeMinTextSize="12sp"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/poppins_regular"
+                        android:includeFontPadding="false"
+                        android:gravity="end"
+                        android:maxLines="1"
+                        android:text="$0.00"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp" />
+
+                    <ImageButton
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@null"
+                        android:paddingTop="6dp"
+                        android:layout_marginEnd="1dp"
+                        android:paddingBottom="2dp"
+                        android:scaleType="centerInside"
+                        android:visibility="visible"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="10dp"
+                    android:weightSum="3"
+                    android:baselineAligned="false">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="start"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoSizeMaxTextSize="12sp"
+                            android:autoSizeMinTextSize="4sp"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_regular"
+                            android:includeFontPadding="false"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="24h:"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="3dp"
+                            android:autoSizeMaxTextSize="12sp"
+                            android:autoSizeMinTextSize="4sp"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_regular"
+                            android:includeFontPadding="false"
+                            android:gravity="center"
+                            android:text="0.00%"
+                            android:textColor="#C9C6C5"
+                            android:textSize="12sp" />
+
+                        <ImageView
+                            android:layout_width="10dp"
+                            android:layout_height="6dp"
+                            android:layout_gravity="center"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/trend_still"
+                            app:tint="#C9C6C5" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoSizeMaxTextSize="12sp"
+                            android:autoSizeMinTextSize="4sp"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_regular"
+                            android:includeFontPadding="false"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="7d:"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="3dp"
+                            android:autoSizeMaxTextSize="12sp"
+                            android:autoSizeMinTextSize="4sp"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_regular"
+                            android:includeFontPadding="false"
+                            android:gravity="center"
+                            android:text="0.00%"
+                            android:textColor="#C9C6C5"
+                            android:textSize="12sp" />
+
+                        <ImageView
+                            android:layout_width="10dp"
+                            android:layout_height="6dp"
+                            android:layout_gravity="center"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/trend_still"
+                            app:tint="#C9C6C5" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoSizeMaxTextSize="12sp"
+                            android:autoSizeMinTextSize="4sp"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_regular"
+                            android:includeFontPadding="false"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="30d:"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="3dp"
+                            android:autoSizeMaxTextSize="12sp"
+                            android:autoSizeMinTextSize="4sp"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_regular"
+                            android:includeFontPadding="false"
+                            android:gravity="center"
+                            android:text="0.00%"
+                            android:textColor="#C9C6C5"
+                            android:textSize="12sp" />
+
+                        <ImageView
+                            android:layout_width="10dp"
+                            android:layout_height="6dp"
+                            android:layout_gravity="center"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/trend_still"
+                            app:tint="#C9C6C5" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="165dp">
+
+                <ImageButton
+                    android:id="@+id/btn_reload"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="8.5dp"
+                    android:layout_marginEnd="7dp"
+                    android:paddingHorizontal="2dp"
+                    android:background="@drawable/widget_reload_button_bg_dark"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_baseline_sync_24_dark" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <include
+            layout="@layout/widget_separator_dark"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="165dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginVertical="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="10dp"
+                    android:weightSum="2">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/logo_dark" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:autoSizeMaxTextSize="16sp"
+                        android:autoSizeMinTextSize="8sp"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/poppins_regular"
+                        android:includeFontPadding="false"
+                        android:gravity="start|center"
+                        android:maxLines="1"
+                        android:text="CoinCurrently"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:autoSizeMaxTextSize="24sp"
+                        android:autoSizeMinTextSize="12sp"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/poppins_regular"
+                        android:includeFontPadding="false"
+                        android:gravity="end"
+                        android:maxLines="1"
+                        android:text="$0.00"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp" />
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:paddingVertical="3dp"
+                        android:paddingStart="10dp"
+                        android:scaleType="fitEnd"
+                        android:src="@drawable/refresh_icon"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="10dp"
+                    android:weightSum="3"
+                    android:baselineAligned="false">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="start"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoSizeMaxTextSize="12sp"
+                            android:autoSizeMinTextSize="4sp"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_regular"
+                            android:includeFontPadding="false"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="24h:"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="3dp"
+                            android:autoSizeMaxTextSize="12sp"
+                            android:autoSizeMinTextSize="4sp"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_regular"
+                            android:includeFontPadding="false"
+                            android:gravity="center"
+                            android:text="0.00%"
+                            android:textColor="#C9C6C5"
+                            android:textSize="12sp" />
+
+                        <ImageView
+                            android:layout_width="10dp"
+                            android:layout_height="6dp"
+                            android:layout_gravity="center"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/trend_still"
+                            app:tint="#C9C6C5" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoSizeMaxTextSize="12sp"
+                            android:autoSizeMinTextSize="4sp"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_regular"
+                            android:includeFontPadding="false"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="7d:"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="3dp"
+                            android:autoSizeMaxTextSize="12sp"
+                            android:autoSizeMinTextSize="4sp"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_regular"
+                            android:includeFontPadding="false"
+                            android:gravity="center"
+                            android:text="0.00%"
+                            android:textColor="#C9C6C5"
+                            android:textSize="12sp" />
+
+                        <ImageView
+                            android:layout_width="10dp"
+                            android:layout_height="6dp"
+                            android:layout_gravity="center"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/trend_still"
+                            app:tint="#C9C6C5" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoSizeMaxTextSize="12sp"
+                            android:autoSizeMinTextSize="4sp"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_regular"
+                            android:includeFontPadding="false"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="30d:"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="3dp"
+                            android:autoSizeMaxTextSize="12sp"
+                            android:autoSizeMinTextSize="4sp"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_regular"
+                            android:includeFontPadding="false"
+                            android:gravity="center"
+                            android:text="0.00%"
+                            android:textColor="#C9C6C5"
+                            android:textSize="12sp" />
+
+                        <ImageView
+                            android:layout_width="10dp"
+                            android:layout_height="6dp"
+                            android:layout_gravity="center"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/trend_still"
+                            app:tint="#C9C6C5" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

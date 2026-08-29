@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/ll_view"
+        android:layout_width="165dp"
+        android:layout_height="165dp"
+        android:background="@drawable/widget_background_dark"
+        android:orientation="vertical"
+        android:weightSum="3"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:includeFontPadding="false"
+                android:text="Slow"
+                android:textColor="#F95A56"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:includeFontPadding="false"
+                android:text="0.00 Gwei"
+                android:textColor="#FCF8F8"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Standard"
+                android:textColor="#FFDF2E"
+                android:textSize="14sp"
+                android:includeFontPadding="false"
+                android:fontFamily="@font/poppins_regular" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="0.00 Gwei"
+                android:textColor="#FCF8F8"
+                android:includeFontPadding="false"
+                android:textSize="18sp"
+                android:fontFamily="@font/poppins_semibold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="bottom">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fast"
+                    android:textColor="#42E099"
+                    android:textSize="14sp"
+                    android:includeFontPadding="false"
+                    android:fontFamily="@font/poppins_regular" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="0.00 Gwei"
+                    android:textColor="#FCF8F8"
+                    android:textSize="18sp"
+                    android:includeFontPadding="false"
+                    android:fontFamily="@font/poppins_semibold" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_baseline_sync_24_dark"
+                android:contentDescription="Refresh" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

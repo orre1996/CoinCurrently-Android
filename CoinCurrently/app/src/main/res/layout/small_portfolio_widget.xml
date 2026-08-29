@@ -1,0 +1,298 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center"
+    android:layout_weight="1"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/ll_view"
+        android:layout_width="165dp"
+        android:layout_height="165dp"
+        android:orientation="vertical"
+        android:background="@drawable/widget_background_dark"
+        android:gravity="center"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginVertical="15dp"
+            android:layout_marginHorizontal="15dp"
+            android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/txt_total_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_regular"
+                    android:includeFontPadding="false"
+                    android:gravity="center|start"
+                    android:ellipsize="end"
+                    android:text="Total Value"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/txt_total_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:autoSizeMaxTextSize="18sp"
+                android:autoSizeMinTextSize="10sp"
+                android:autoSizeTextType="uniform"
+                android:ellipsize="end"
+                android:includeFontPadding="false"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="start|center"
+                android:maxLines="1"
+                android:text="$0.00"
+                android:textColor="#FFFFFF" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+
+                <TextView
+                    android:id="@+id/txt_timeframe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="P/L:"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:includeFontPadding="false"
+                    app:layout_constraintLeft_toRightOf="@+id/iv_currency_icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/txt_change"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0.00%"
+                    android:textColor="#C9C6C5"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:includeFontPadding="false"
+                    android:visibility="visible"
+                    android:layout_marginStart="4dp"
+                    app:layout_constraintLeft_toRightOf="@+id/txt_timeframe"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+                </TextView>
+
+                <ImageView
+                    android:id="@+id/view_price_change"
+                    android:layout_width="10dp"
+                    android:layout_height="6dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/txt_change"
+                    android:src="@drawable/trend_still"
+                    app:tint="#C9C6C5"/>
+
+            </LinearLayout>
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/txt_performer_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoSizeMaxTextSize="16sp"
+                android:autoSizeMinTextSize="10sp"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/poppins_regular"
+                android:includeFontPadding="false"
+                android:gravity="center|start"
+                android:ellipsize="end"
+                android:text="Best Performer"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/txt_symbol"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:autoSizeMaxTextSize="12sp"
+                        android:autoSizeMinTextSize="8sp"
+                        android:autoSizeTextType="uniform"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/poppins_regular"
+                        android:includeFontPadding="false"
+                        android:gravity="start|center"
+                        android:maxLines="1"
+                        app:layout_constraintLeft_toRightOf="@+id/iv_currency_icon"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text="CoinCurrently">
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/txt_performer_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:autoSizeMaxTextSize="12sp"
+                        android:autoSizeMinTextSize="8sp"
+                        android:autoSizeTextType="uniform"
+                        android:ellipsize="end"
+                        android:gravity="start|center"
+                        android:maxLines="1"
+                        android:text="Value: $0.00"
+                        android:fontFamily="@font/poppins_regular"
+                        android:includeFontPadding="false"
+                        app:layout_constraintLeft_toRightOf="@+id/iv_currency_icon"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent">
+                    </TextView>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        tools:background="@color/appMainColor">
+
+                        <TextView
+                            android:id="@+id/txt_timeframe1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="P/L:"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:autoSizeMaxTextSize="12sp"
+                            android:autoSizeMinTextSize="10sp"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_regular"
+                            android:includeFontPadding="false"
+                            app:layout_constraintLeft_toRightOf="@+id/iv_currency_icon"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent">
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/txt_change1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0.00%"
+                            android:textColor="#C9C6C5"
+                            android:textSize="12sp"
+                            android:autoSizeMaxTextSize="12sp"
+                            android:autoSizeMinTextSize="10sp"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_regular"
+                            android:includeFontPadding="false"
+                            android:layout_marginStart="4dp"
+                            app:layout_constraintLeft_toRightOf="@+id/txt_timeframe"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent">
+                        </TextView>
+
+                        <ImageView
+                            android:id="@+id/view_price_change1"
+                            android:layout_width="10dp"
+                            android:layout_height="6dp"
+                            android:layout_marginStart="4dp"
+                            android:layout_gravity="center"
+                            android:scaleType="centerCrop"
+                            android:visibility="gone"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintLeft_toRightOf="@id/txt_change"
+                            android:src="@drawable/trend_still"
+                    app:tint="#C9C6C5"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
+
+                <ImageView
+                    android:id="@+id/img_performer"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:gravity="bottom|end"
+                    android:src="@drawable/logo_dark"
+                    android:paddingTop="0dp"
+                    android:layout_marginStart="5dp"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintDimensionRatio="H,1:1"
+                    android:adjustViewBounds="true"/>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/btn_open"
+        android:layout_width="165dp"
+        android:layout_height="165dp">
+
+        <ImageButton
+            android:id="@+id/btn_reload"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/widget_reload_button_bg_dark"
+            android:foregroundGravity="bottom"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_baseline_sync_24_dark"
+            android:visibility="visible" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

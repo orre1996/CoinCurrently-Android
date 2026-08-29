@@ -1,0 +1,273 @@
+plugins {
+    id 'kotlinx-serialization'
+    id 'org.jetbrains.kotlin.plugin.compose'
+}
+
+def googleServicesJson = file("google-services.json")
+if (!googleServicesJson.exists()) {
+    throw new GradleException(
+            "Missing google-services.json. Copy Config/google-services.json.example to " +
+                    "CoinCurrently/app/google-services.json and fill in your Firebase config."
+    )
+}
+
+def repoRoot = rootProject.projectDir.parentFile
+def secretsFile = new File(repoRoot, "Config/secrets.properties")
+def secretsExampleFile = new File(repoRoot, "Config/secrets.example.properties")
+def secrets = new Properties()
+if (secretsFile.exists()) {
+    secretsFile.withInputStream { secrets.load(it) }
+} else if (secretsExampleFile.exists()) {
+    logger.warn("Config/secrets.properties not found; using example placeholders. " +
+            "Copy Config/secrets.example.properties to Config/secrets.properties and fill in your values.")
+    secretsExampleFile.withInputStream { secrets.load(it) }
+} else {
+    throw new GradleException(
+            "Missing Config/secrets.properties. Copy Config/secrets.example.properties to " +
+                    "Config/secrets.properties and fill in your values."
+    )
+}
+
+def buildConfigString = { String key ->
+    def value = secrets.getProperty(key, "") ?: ""
+    return '"' + value.replace("\\", "\\\\").replace("\"", "\\\"") + '"'
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.firebase.firebase-perf'
+apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+android {
+    viewBinding.enabled = true
+
+    if (project.android.hasProperty("namespace")) {
+        namespace("com.cryptium.coincurrently")
+    }
+
+    signingConfigs {
+        release {
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+        freeCompilerArgs += [
+                "-Xjvm-default=all",
+        ]
+    }
+
+    defaultConfig {
+        applicationId "com.cryptium.coincurrently"
+        minSdkVersion 31
+        targetSdkVersion 36
+        versionCode 223
+        versionName "3.3.1"
+        compileSdk 36
+        buildToolsVersion = "36.0.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.debug
+
+        buildConfigField 'String', 'API_BASE_URL', buildConfigString('API_BASE_URL')
+        buildConfigField 'String', 'BACKEND_API_KEY', buildConfigString('BACKEND_API_KEY')
+        buildConfigField 'String', 'APTABASE_APP_KEY', buildConfigString('APTABASE_APP_KEY')
+        buildConfigField 'String', 'SCHEDULER_PRICE_ALERT_SECRET', buildConfigString('SCHEDULER_PRICE_ALERT_SECRET')
+    }
+
+    buildFeatures {
+        buildConfig = true
+        compose = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField 'boolean', 'IN_DEBUG', 'false'
+            buildConfigField 'String', 'REVENUECAT_API_KEY', buildConfigString('REVENUECAT_PRODUCTION_API_KEY')
+        }
+        debug {
+            buildConfigField 'boolean', 'IN_DEBUG', 'true'
+            buildConfigField 'String', 'REVENUECAT_API_KEY', buildConfigString('REVENUECAT_TEST_API_KEY')
+        }
+    }
+    lint {
+        checkReleaseBuilds false
+    }
+    namespace 'com.cryptium.coincurrently'
+}
+
+repositories {
+    // Patched play-services-basement (see gms-local-repo / gms-patches).
+    maven { url = uri("${projectDir}/gms-local-repo") }
+    maven { url 'https://jitpack.io' }
+}
+
+configurations.configureEach {
+    resolutionStrategy.force(
+            "com.android.billingclient:billing:8.3.0",
+            // Align GMS artifacts pulled in by Billing, Firebase, RevenueCat, and ML Kit.
+            // Stock basement 18.4+ calls StrictMode.VmPolicy.Builder.permitUnsafeIntentLaunch()
+            // (API 31) from a helper (zzd). With minSdk 31, R8 folds isAtLeastS() → true, and
+            // incomplete ROMs that report API 31 but lack the method crash with NoSuchMethodError.
+            // 18.11.0-safe is stock 18.11.0 with zzd using reflection (see gms-patches/).
+            "com.google.android.gms:play-services-basement:18.11.0-safe",
+            // base 18.6+ calls Context.getAttributionSource() (API 31). With minSdk 31, R8
+            // strips the SDK_INT guard → NoSuchMethodError on API 30 sideloads / incomplete ROMs.
+            // 18.5.0 is the last release without that call.
+            "com.google.android.gms:play-services-base:18.5.0",
+    )
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0'
+
+    implementation 'androidx.navigation:navigation-compose:2.8.3'
+    implementation 'androidx.fragment:fragment-compose:1.8.5'
+    implementation 'androidx.glance:glance:1.1.1'
+
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.2.0") {
+            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.2.0") {
+            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+        }
+    }
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+   // implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+
+    implementation "androidx.navigation:navigation-fragment-ktx:2.5.3"
+    implementation "androidx.navigation:navigation-ui-ktx:2.4.1"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.8.1"
+    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0'
+
+    //LifeCycle
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+
+    //UI
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.0'
+
+    //Corutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
+
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-rc02'
+
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    implementation platform('com.google.firebase:firebase-bom:34.18.0')
+    implementation 'com.github.aptabase:aptabase-kotlin:0.0.8'
+
+    implementation('com.google.firebase:firebase-auth') {
+        exclude module: "play-services-safetynet"
+    }
+
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.android.gms:play-services-gcm:17.0.0'
+    implementation 'com.google.firebase:firebase-messaging-directboot'
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-perf'
+    implementation 'com.google.firebase:firebase-config'
+    implementation 'com.google.firebase:firebase-appcheck-playintegrity'
+    implementation 'com.google.firebase:firebase-installations'
+    // implementation 'com.google.firebase:firebase-appcheck-safetynet:16.1.2'
+
+    implementation 'com.ernestoyaquello.dragdropswiperecyclerview:drag-drop-swipe-recyclerview:1.0.2'
+
+    implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
+
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0-rc03'
+
+    implementation 'org.jsoup:jsoup:1.13.1'
+
+    implementation 'androidx.test:runner:1.2.0@aar'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+
+    implementation 'com.github.smart-fun:XmlToJson:1.5.1'
+
+    implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
+
+    implementation("io.grpc:grpc-okhttp:1.32.2")
+
+    implementation 'androidx.work:work-runtime-ktx:2.9.0'
+
+    implementation 'com.github.Dimezis:BlurView:version-2.0.2'
+
+    implementation 'androidx.biometric:biometric:1.1.0'
+
+    // Compose — BOM keeps ui/foundation/material3 aligned (vendored ComposeReorderable uses Modifier.animateItem)
+    implementation platform('androidx.compose:compose-bom:2026.04.01')
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.activity:activity-compose:1.10.1'
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation 'androidx.compose.material:material'
+    implementation 'androidx.compose.material:material-icons-extended'
+    implementation 'androidx.compose.foundation:foundation'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+    implementation "io.coil-kt:coil-compose:2.2.2"
+    implementation 'com.google.accompanist:accompanist-swiperefresh:0.24.13-rc'
+    implementation 'com.valentinilk.shimmer:compose-shimmer:1.0.3'
+    implementation 'com.google.zxing:core:3.5.3'
+    implementation 'com.google.mlkit:barcode-scanning:17.3.0'
+
+    implementation "com.google.accompanist:accompanist-pager:0.21.2-beta"
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.21.2-beta"
+
+    // ComposeReorderable: vendored from https://github.com/aclassen/ComposeReorderable (main) — uses Modifier.animateItem()
+    // instead of the removed animateItemPlacement() API; Maven 0.9.6 AAR is incompatible with Compose Foundation 1.7+.
+
+    // IPA — must match RevenueCat 10.x (Billing Library 8.3+)
+    implementation("com.android.billingclient:billing:8.3.0")
+    implementation("com.revenuecat.purchases:purchases:10.5.0")
+
+    implementation 'androidx.compose.runtime:runtime-livedata'
+    implementation 'androidx.hilt:hilt-navigation-fragment:1.2.0'
+
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.36.0"
+
+    // WHEEL PICKER
+    implementation "network.chaintech:kmp-date-time-picker:1.1.1"
+
+    // Glance (single version — also declared above with glance:1.1.1)
+    implementation "androidx.glance:glance-appwidget:1.1.1"
+    implementation "androidx.glance:glance-material3:1.1.1"
+
+    implementation("com.google.android.play:review:2.0.1")
+    implementation("com.google.android.play:review-ktx:2.0.1")
+
+    implementation("com.microsoft.signalr:signalr:8.0.7")
+}

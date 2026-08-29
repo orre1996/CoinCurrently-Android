@@ -1,0 +1,245 @@
+import com.cryptium.coincurrently.ui.main.CryptoDetail.Compose.Portfolio.Models.NewSwapTransaction
+import com.cryptium.coincurrently.ui.main.PortfolioTab.DataClasses.NewTransaction
+import com.cryptium.coincurrently.ui.main.PortfolioTab.Enums.NewTransactionType
+import networking.ResponseModels.CryptoDetailInfoModel
+import networking.ResponseModels.Derivative
+import networking.ResponseModels.ExchangeList
+import networking.ResponseModels.NFTToplist
+import kotlinx.serialization.Serializable
+import networking.ResponseModels.CryptoCategory
+import networking.ResponseModels.ExchangeResponse
+import networking.ResponseModels.PriceVolumeModel
+import networking.ResponseModels.Toplist
+
+@Serializable
+enum class SearchCase(val rawValue: String) {
+    @kotlinx.serialization.SerialName("")
+    OnlyCoins(""),
+    
+    @kotlinx.serialization.SerialName("Coins")
+    Coins("Coins"),
+    
+    @kotlinx.serialization.SerialName("NFTs")
+    NFTs("NFTs"),
+    
+    @kotlinx.serialization.SerialName("Sectors")
+    Categories("Sectors"),
+    
+    @kotlinx.serialization.SerialName("Exchanges")
+    Exchanges("Exchanges"),
+}
+
+val SearchCase.accessibilityItemType: String
+    get() = when (this) {
+        SearchCase.OnlyCoins, SearchCase.Coins -> "Coin"
+        SearchCase.NFTs -> "NFT"
+        SearchCase.Categories -> "Sector"
+        SearchCase.Exchanges -> "Exchange"
+    }
+
+@Serializable
+sealed class SearchScreenCase {
+    @Serializable
+    data class Search(val list: SearchCase) : SearchScreenCase()
+    @Serializable
+    data class Transaction(val transactionType: NewTransactionType) : SearchScreenCase()
+    @Serializable
+    data class FixedList(val list: List<Toplist>) : SearchScreenCase()
+}
+
+val SearchScreenCase.title: String
+    get() = when (this) {
+        is SearchScreenCase.Search -> when (list) {
+            SearchCase.OnlyCoins, SearchCase.Coins -> "Select Coin"
+            SearchCase.NFTs -> "Select NFT"
+            SearchCase.Categories -> "Select Sector"
+            SearchCase.Exchanges -> "Select Exchange"
+        }
+        is SearchScreenCase.Transaction -> "Select Coin"
+        is SearchScreenCase.FixedList -> "Select Coin"
+    }
+
+val SearchScreenCase.textfieldPlaceholder: String
+    get() = when (this) {
+        is SearchScreenCase.Search -> when (list) {
+            SearchCase.OnlyCoins, SearchCase.Coins -> "e.g. BTC or Ethereum"
+            SearchCase.NFTs -> "e.g. CryptoPunks"
+            SearchCase.Categories -> "e.g. Layer 1"
+            SearchCase.Exchanges -> "e.g. Coinbase"
+        }
+        is SearchScreenCase.Transaction -> "e.g. BTC or Ethereum"
+        is SearchScreenCase.FixedList -> "e.g. BTC or Ethereum"
+    }
+
+val SearchScreenCase.coins: List<Toplist>
+    get() = when (this) {
+        is SearchScreenCase.FixedList -> list
+        else -> emptyList()
+    }
+
+@Serializable
+sealed class NavigationScreens() {
+    @Serializable
+    object Loading: NavigationScreens()
+
+    @Serializable
+    object Home: NavigationScreens()
+
+    @Serializable
+    object Portfolio: NavigationScreens()
+
+    @Serializable
+    object Market: NavigationScreens()
+
+    @Serializable
+    object News: NavigationScreens()
+
+    @Serializable
+    object Settings: NavigationScreens()
+
+    @Serializable
+    data class CryptoDetail(
+        val cryptoDetailInfoModel: CryptoDetailInfoModel
+    ): NavigationScreens()
+
+    @Serializable
+    data class CompareCoins(
+        val cryptoDetailInfoModel: CryptoDetailInfoModel?,
+        val priceVolumeModel: PriceVolumeModel?,
+        val compareId: String
+    ): NavigationScreens()
+
+    @Serializable
+    data class NewPortfolioTransaction(
+        val transactionType: NewTransactionType,
+        val currencyDataModel: CryptoDetailInfoModel?,
+        val transaction: NewTransaction?,
+        val popToRoot: Boolean
+    ): NavigationScreens()
+
+    @Serializable
+    data class NewPortfolioSwapTransaction(
+        val transactionType: NewTransactionType,
+        val currencyDataModel: CryptoDetailInfoModel?,
+        val transaction: NewSwapTransaction?,
+        val popToRoot: Boolean
+    ): NavigationScreens()
+
+
+    @Serializable
+    data class NewImportTransaction(
+        val popToRoot: Boolean
+    ): NavigationScreens()
+
+    @Serializable
+    data class Search(
+        val screenCase: SearchScreenCase
+    ): NavigationScreens()
+
+    @Serializable
+    object Feedback: NavigationScreens()
+
+    // Home
+
+    @Serializable
+    object FearGreed: NavigationScreens()
+
+    @Serializable
+    object FearGreedHelp: NavigationScreens()
+
+    @Serializable
+    object GlobalMarket: NavigationScreens()
+
+    @Serializable
+    object GasFees: NavigationScreens()
+
+    // Portfolio
+
+    @Serializable
+    data class WalletDetails(
+        val wallet: AddressImport,
+        val coin: Toplist
+    ): NavigationScreens()
+
+    // Market
+
+    @Serializable
+    data class NFTDetail(
+        val nftToplist: NFTToplist
+    ): NavigationScreens()
+
+    @Serializable
+    data class CategoryDetail(
+        val category: CryptoCategory
+    ): NavigationScreens()
+
+    @Serializable
+    data class ExchangeDetail(
+        val exchange: ExchangeResponse
+    ): NavigationScreens()
+
+    @Serializable
+    data class DerivativeDetail(
+        val derivative: Derivative
+    ): NavigationScreens()
+
+    @Serializable
+    data class TreasuryDetail(
+        val holder: networking.ResponseModels.PublicTreasuryHolder,
+        val coinId: String,
+    ): NavigationScreens()
+
+    // More
+
+    @Serializable
+    object CurrencySelector: NavigationScreens()
+
+    @Serializable
+    object Widgets: NavigationScreens()
+
+    @Serializable
+    object Calculator: NavigationScreens()
+
+    @Serializable
+    object PriceAlerts: NavigationScreens()
+
+    @Serializable
+    object Achievements: NavigationScreens()
+
+    @Serializable
+    data class Referral(val referralCode: String = ""): NavigationScreens()
+}
+
+fun NavigationScreens.getRouteString(): String {
+    return when (this) {
+        is NavigationScreens.Loading -> "Loading"
+        is NavigationScreens.Home -> "Home"
+        is NavigationScreens.Portfolio -> "Portfolio"
+        is NavigationScreens.Market -> "Market"
+        is NavigationScreens.News -> "News"
+        is NavigationScreens.Settings -> "Settings"
+        is NavigationScreens.CryptoDetail -> "CryptoDetail"
+        is NavigationScreens.CompareCoins -> "CompareCoins"
+        is NavigationScreens.WalletDetails -> "WalletDetails"
+        is NavigationScreens.NewPortfolioTransaction -> "NewPortfolioTransaction"
+        is NavigationScreens.NewPortfolioSwapTransaction -> "NewPortfolioSwapTransaction"
+        is NavigationScreens.NewImportTransaction -> "NewImportTransaction"
+        is NavigationScreens.Feedback -> "Feedback"
+        is NavigationScreens.FearGreed -> "FearGreed"
+        is NavigationScreens.FearGreedHelp -> "FearGreedHelp"
+        is NavigationScreens.GlobalMarket -> "GlobalMarket"
+        is NavigationScreens.GasFees -> "GasFees"
+        is NavigationScreens.NFTDetail -> "NFTDetail"
+        is NavigationScreens.CategoryDetail -> "CategoryDetail"
+        is NavigationScreens.ExchangeDetail -> "ExchangeDetail"
+        is NavigationScreens.DerivativeDetail -> "DerivativeDetail"
+        is NavigationScreens.TreasuryDetail -> "TreasuryDetail"
+        is NavigationScreens.CurrencySelector -> "CurrencySelector"
+        is NavigationScreens.Widgets -> "Widgets"
+        is NavigationScreens.Calculator -> "Calculator"
+        is NavigationScreens.PriceAlerts -> "PriceAlerts"
+        is NavigationScreens.Achievements -> "Achievements"
+        is NavigationScreens.Referral -> "Referral"
+        is NavigationScreens.Search -> "SelectCoin"
+    }
+}

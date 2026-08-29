@@ -1,0 +1,247 @@
+package com.cryptium.coincurrently.ui.main.HomeTab.Home.Components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.setProgress
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.unit.dp
+import com.cryptium.coincurrently.ui.main.Compose.AccessibilityLayout
+import com.cryptium.coincurrently.ui.main.Compose.onSurfaceContainer
+import com.cryptium.coincurrently.ui.main.Compose.surfaceContainerHigh
+import com.cryptium.coincurrently.ui.main.Extensions.dpToPx
+import com.cryptium.coincurrently.ui.main.Extensions.satoshiMedium
+import com.cryptium.coincurrently.ui.main.HomeTab.Home.Enums.CarouselFilter
+import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
+
+@Composable
+fun ToplistFilterCarouselView(
+    filters: List<CarouselFilter>,
+    selectedFilter: CarouselFilter,
+    scrollState: LazyListState,
+    paddingValues: PaddingValues = PaddingValues(top = 24.dp, bottom = 16.dp),
+    hasPro: Boolean = true,
+    onFilterSelected: (CarouselFilter) -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val talkBackEnabled = AccessibilityLayout.isTalkBackEnabled
+    val offset = -64.dp.dpToPx().toInt()
+    var voiceOverFilterIndex by remember {
+        mutableIntStateOf(
+            filters.indexOfFirst { it.matchesForSelection(selectedFilter) }.coerceAtLeast(0)
+        )
+    }
+
+    fun selectAdjacentFilter(offsetDelta: Int) {
+        val newIndex = voiceOverFilterIndex + offsetDelta
+        if (newIndex !in filters.indices) return
+        voiceOverFilterIndex = newIndex
+    }
+
+    LaunchedEffect(selectedFilter) {
+        voiceOverFilterIndex =
+            filters.indexOfFirst { it.matchesForSelection(selectedFilter) }.coerceAtLeast(0)
+    }
+
+    LaunchedEffect(voiceOverFilterIndex) {
+        scrollState.animateScrollToItem(voiceOverFilterIndex, offset)
+    }
+
+    LaunchedEffect(voiceOverFilterIndex, talkBackEnabled) {
+        if (!talkBackEnabled) return@LaunchedEffect
+
+        val filter = filters.getOrNull(voiceOverFilterIndex) ?: return@LaunchedEffect
+        if (filter.matchesForSelection(selectedFilter)) return@LaunchedEffect
+        if (requiresVoiceOverActivation(filter, hasPro)) return@LaunchedEffect
+
+        onFilterSelected(filter)
+    }
+
+    val selectedAccessibilityValue = selectedAccessibilityValue(
+        filters = filters,
+        voiceOverFilterIndex = voiceOverFilterIndex,
+        selectedFilter = selectedFilter,
+        hasPro = hasPro,
+    )
+
+    Box(
+        modifier = Modifier
+            .background(MaterialTheme.colors.surface)
+            .padding(paddingValues)
+            .then(
+                if (talkBackEnabled) {
+                    Modifier.clearAndSetSemantics {
+                        contentDescription =
+                            "Category filter. Swipe up or down to change category."
+                        stateDescription = selectedAccessibilityValue
+                        progressBarRangeInfo = ProgressBarRangeInfo(
+                            current = voiceOverFilterIndex.toFloat(),
+                            range = 0f..filters.lastIndex.toFloat().coerceAtLeast(0f),
+                            steps = filters.lastIndex.coerceAtLeast(0),
+                        )
+                        setProgress(
+                            action = { target ->
+                                val newIndex = target.roundToInt().coerceIn(0, filters.lastIndex)
+                                if (newIndex != voiceOverFilterIndex) {
+                                    voiceOverFilterIndex = newIndex
+                                }
+                                true
+                            }
+                        )
+                        customActions = listOf(
+                            CustomAccessibilityAction("Next category") {
+                                selectAdjacentFilter(1)
+                                true
+                            },
+                            CustomAccessibilityAction("Previous category") {
+                                selectAdjacentFilter(-1)
+                                true
+                            },
+                        )
+                        if (!hasPro) {
+                            onClick(label = "Select this Pro feature", action = {
+                                activateVoiceOverFilter(
+                                    filters = filters,
+                                    voiceOverFilterIndex = voiceOverFilterIndex,
+                                    hasPro = hasPro,
+                                    onFilterSelected = onFilterSelected,
+                                )
+                                true
+                            })
+                        }
+                    }
+                } else {
+                    Modifier
+                }
+            )
+    ) {
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            state = scrollState,
+            userScrollEnabled = !talkBackEnabled,
+        ) {
+            itemsIndexed(filters) { index, filter ->
+                val isSelected = selectedFilter.matchesForSelection(filter)
+                val title = if (isSelected) selectedFilter.rawValue else filter.rawValue
+                val backgroundColor = if (isSelected) {
+                    MaterialTheme.colors.primary
+                } else {
+                    MaterialTheme.colors.surfaceContainerHigh
+                }
+                val textColor = if (isSelected) {
+                    MaterialTheme.colors.onPrimary
+                } else {
+                    MaterialTheme.colors.onSurfaceContainer
+                }
+
+                Text(
+                    text = title,
+                    style = satoshiMedium(16),
+                    color = textColor,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .then(
+                            if (talkBackEnabled) {
+                                Modifier
+                            } else {
+                                Modifier.clickable {
+                                    onFilterSelected(filter)
+
+                                    coroutineScope.launch {
+                                        scrollState.animateScrollToItem(index, offset)
+                                    }
+                                }
+                            }
+                        )
+                        .background(color = backgroundColor)
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .then(
+                            if (talkBackEnabled) {
+                                Modifier
+                            } else {
+                                Modifier.clearAndSetSemantics {
+                                    contentDescription =
+                                        "Category ${index + 1} of ${filters.size}, ${accessibilityTitle(title)}."
+                                    if (isSelected) {
+                                        selected = true
+                                    }
+                                }
+                            }
+                        )
+                )
+            }
+        }
+    }
+}
+
+private fun requiresVoiceOverActivation(filter: CarouselFilter, hasPro: Boolean): Boolean =
+    filter.requiresPro && !hasPro
+
+private fun selectedAccessibilityValue(
+    filters: List<CarouselFilter>,
+    voiceOverFilterIndex: Int,
+    selectedFilter: CarouselFilter,
+    hasPro: Boolean,
+): String {
+    val filter = filters.getOrNull(voiceOverFilterIndex) ?: selectedFilter
+    val title = if (filter.matchesForSelection(selectedFilter)) {
+        selectedFilter.rawValue
+    } else {
+        filter.rawValue
+    }
+    val category =
+        "Category ${voiceOverFilterIndex + 1} of ${filters.size}, ${accessibilityTitle(title)}."
+
+    return if (requiresVoiceOverActivation(filter, hasPro)) {
+        "$category Double tap to select this Pro feature."
+    } else {
+        category
+    }
+}
+
+private fun activateVoiceOverFilter(
+    filters: List<CarouselFilter>,
+    voiceOverFilterIndex: Int,
+    hasPro: Boolean,
+    onFilterSelected: (CarouselFilter) -> Unit,
+) {
+    val filter = filters.getOrNull(voiceOverFilterIndex) ?: return
+    if (!requiresVoiceOverActivation(filter, hasPro)) return
+    onFilterSelected(filter)
+}
+
+private fun accessibilityTitle(title: String): String {
+    return if (title.contains("(Pro)")) {
+        title.replace(" (Pro)", ", Pro feature")
+    } else {
+        title
+    }
+}

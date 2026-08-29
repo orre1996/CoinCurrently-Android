@@ -1,0 +1,64 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/ll_view"
+        android:layout_width="350dp"
+        android:layout_height="165dp"
+        android:background="@drawable/widget_background_dark"
+        android:orientation="vertical"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:id="@+id/cell_1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <include
+                layout="@layout/medium_news_widget_card"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"/>
+
+        </LinearLayout>
+
+        <include
+            layout="@layout/widget_separator_dark"
+            android:layout_height="1dp"
+            android:layout_width="match_parent"/>
+
+        <LinearLayout
+            android:id="@+id/cell_2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <include
+                layout="@layout/medium_news_widget_card"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <include
+        android:id="@+id/buy_pro"
+        layout="@layout/buy_pro_overlay"
+        android:layout_height="165dp"
+        android:layout_width="350dp"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <include
+        android:id="@+id/buy_pro_light"
+        layout="@layout/buy_pro_overlay_light"
+        android:layout_height="165dp"
+        android:layout_width="350dp"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+</RelativeLayout>

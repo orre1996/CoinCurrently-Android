@@ -1,0 +1,44 @@
+package com.cryptium.coincurrently.ui.main.SettingsTab.Achievements.Models
+
+enum class AchievementMetric {
+    dailyStreak,
+    favoritesCount,
+    portfolioTransactions,
+    portfolioExports,
+    maxPortfolioGainPercent,
+    priceAlertsCount,
+    widgetCoinsCount,
+    uniqueSearches,
+    cryptoDetailsViewed,
+    compareSessions,
+    newsArticlesOpened,
+    nftDetailsViewed,
+    exchangeDetailsViewed,
+    sectorDetailsViewed,
+    fearGreedVisits,
+    gasFeesVisits,
+    treasuryVisits,
+    candleChartToggles,
+    converterUses,
+    authenticationEnabled,
+    referralsCompleted,
+}
+
+enum class AchievementCounterKey {
+    cryptoDetailsViewed,
+    compareSessions,
+    converterUses,
+    newsArticlesOpened,
+    nftDetailsViewed,
+    exchangeDetailsViewed,
+    sectorDetailsViewed,
+    fearGreedVisits,
+    gasFeesVisits,
+    treasuryVisits,
+    candleChartToggles,
+    referralsCompleted,
+    portfolioExports;
+
+    val metric: AchievementMetric
+        get() = AchievementMetric.valueOf(name)
+}

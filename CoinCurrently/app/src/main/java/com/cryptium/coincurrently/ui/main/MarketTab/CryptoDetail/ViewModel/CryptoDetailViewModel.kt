@@ -1,0 +1,1078 @@
+@file:Suppress("BooleanMethodIsAlwaysInverted", "BooleanMethodIsAlwaysInverted",
+    "BooleanMethodIsAlwaysInverted", "BooleanMethodIsAlwaysInverted",
+    "BooleanMethodIsAlwaysInverted", "BooleanMethodIsAlwaysInverted",
+    "BooleanMethodIsAlwaysInverted", "BooleanMethodIsAlwaysInverted",
+    "BooleanMethodIsAlwaysInverted", "BooleanMethodIsAlwaysInverted",
+    "BooleanMethodIsAlwaysInverted"
+)
+
+package com.cryptium.coincurrently.ui.main.MarketTab.CryptoDetail.ViewModel
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
+import androidx.compose.ui.unit.min
+import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.ViewModel
+import android.os.Handler
+import android.os.Looper
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.cryptium.coincurrently.AppLocale
+import com.cryptium.coincurrently.ui.main.Activities.MainActivity
+import com.cryptium.coincurrently.ui.main.CustomViews.CustomImageView
+import com.cryptium.coincurrently.ui.main.Compose.onSurfaceDim
+import com.cryptium.coincurrently.ui.main.CustomViews.getChangeColorCompose
+import com.cryptium.coincurrently.ui.main.Extensions.DateFormat
+import com.cryptium.coincurrently.ui.main.Extensions.convertStringToDate
+import com.cryptium.coincurrently.ui.main.Extensions.formatCurrency
+import com.cryptium.coincurrently.ui.main.Extensions.getActivity
+import com.cryptium.coincurrently.ui.main.Extensions.getDifferenceInPercent
+import com.cryptium.coincurrently.ui.main.Extensions.groupedTransactions
+import com.cryptium.coincurrently.ui.main.CryptoDetail.Compose.Portfolio.Models.NewSwapTransaction
+import com.cryptium.coincurrently.ui.main.General.Enums.SortOption
+import com.cryptium.coincurrently.ui.main.General.GlobalFunctions
+import com.cryptium.coincurrently.ui.main.Repositories.*
+import com.cryptium.coincurrently.ui.main.Extensions.is24HourClock
+import com.cryptium.coincurrently.ui.main.Extensions.pieContaining
+import com.cryptium.coincurrently.ui.main.General.Enums.FormattingThreshold
+import com.cryptium.coincurrently.ui.main.CustomViews.getChangeWithSymbol
+import com.cryptium.coincurrently.ui.main.CustomViews.roundTo
+import com.cryptium.coincurrently.ui.main.General.Utilities.HoverHelper
+import com.cryptium.coincurrently.ui.main.General.Utilities.candleBinCenterX
+import com.cryptium.coincurrently.ui.main.General.Utilities.candleChartIndexFromPlotX
+import com.cryptium.coincurrently.ui.main.General.Utilities.getPoint
+import com.cryptium.coincurrently.ui.main.General.Utilities.Point
+import com.cryptium.coincurrently.ui.main.General.Utilities.lineChartIndexFromPlotX
+import com.cryptium.coincurrently.ui.main.General.Utilities.getPriceXPosition
+import kotlin.math.roundToInt
+import com.cryptium.coincurrently.ui.main.General.renderComposableToBitmap
+import com.cryptium.coincurrently.ui.main.General.saveBitmapToCache
+import com.cryptium.coincurrently.ui.main.General.shareBitmap
+import com.cryptium.coincurrently.ui.main.HomeTab.GlobalMarket.DataClasses.GlobalMarketData
+import com.cryptium.coincurrently.ui.main.HomeTab.GlobalMarket.DataClasses.GlobalMarketModel
+import com.cryptium.coincurrently.ui.main.HomeTab.GlobalMarket.Repositories.GlobalMarketRepository
+import com.cryptium.coincurrently.ui.main.Managers.FirebaseManager
+import com.cryptium.coincurrently.ui.main.Managers.RemoteConfigKeys
+import com.cryptium.coincurrently.ui.main.Managers.SecretMessageHelper
+import com.cryptium.coincurrently.ui.main.analytics.ChartCandleModeChanged
+import com.cryptium.coincurrently.ui.main.analytics.FavoriteAdded
+import com.cryptium.coincurrently.ui.main.analytics.FavoriteRemoved
+import com.cryptium.coincurrently.ui.main.analytics.AnalyticsManager
+import com.cryptium.coincurrently.ui.main.analytics.ScreenLabel
+import com.cryptium.coincurrently.ui.main.Managers.StorageKeys
+import com.cryptium.coincurrently.ui.main.Managers.StorageManager
+import com.cryptium.coincurrently.ui.main.Models.CachedData
+import com.cryptium.coincurrently.ui.main.MarketTab.CryptoDetail.Components.About.CryptoDetailShareView
+import com.cryptium.coincurrently.ui.main.MarketTab.CryptoDetail.Enums.ChartTypes
+import com.cryptium.coincurrently.ui.main.PortfolioTab.DataClasses.PortfolioEvent
+import com.cryptium.coincurrently.ui.main.PortfolioTab.DataClasses.PortfolioModel
+import com.cryptium.coincurrently.ui.main.PortfolioTab.Enums.DateOption
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
+import networking.NewsCategory
+import networking.ResponseModels.*
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.min
+
+class CryptoDetailViewModelFactory(
+    val cryptoDetail: CryptoDetailInfoModel?,
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(CryptoDetailViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return CryptoDetailViewModel(cryptoDetail) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
+@SuppressLint("MutableCollectionMutableState")
+class CryptoDetailViewModel(
+    cryptoDetail: CryptoDetailInfoModel?,
+): ViewModel() {
+    private val toplistRepository by lazy { ToplistRepository }
+    private val currencyRepository by lazy { CurrencyRepository }
+    private val newsRepository by lazy { NewsRepository }
+    private val portfolioRepository by lazy { PortfolioRepository }
+    private val priceAlertsRepository by lazy { PriceAlertsRepository }
+    private val globalMarketRepository by lazy { GlobalMarketRepository }
+
+    var globalMarketData: GlobalMarketData? = null
+
+    // MainCoin
+    private var currencyId: String
+    var currentPage by mutableStateOf(0)
+
+    // Main coin
+    var cryptoInfo: CryptoDetailInfoModel? by mutableStateOf(null)
+
+    var cryptoDetailSmallImageBitmap: Bitmap? by mutableStateOf(null)
+
+    var priceVolumeModel: PriceVolumeModel? by mutableStateOf(null)
+    var prices: List<Double> by mutableStateOf(listOf())
+    var onlyPrices: List<Double> by mutableStateOf(listOf())
+    var volumes: List<Double> by mutableStateOf(listOf())
+    var timeStamps: List<Double> by mutableStateOf(listOf())
+    var mainReloading: Boolean by mutableStateOf(true)
+    var inFavoritesList: Boolean by mutableStateOf(false)
+
+   var dragPosition = mutableStateOf(0.dp)
+   var chartSize = mutableStateOf(DpSize.Zero)
+   val hoverPriceTextWidth = mutableStateOf(0.dp)
+   val hoverCandlePriceTextWidth = mutableStateOf(0.dp)
+   val hoverHelper = HoverHelper()
+
+    // Candle sticks
+    var candleSticks: List<Candle> by mutableStateOf(listOf())
+
+    // Price alerts
+    var alerts: List<AlertCoin>? by mutableStateOf(null)
+
+    // News
+    var newsData: List<NewNewsItem>? by mutableStateOf(null)
+    var showNewsError: Boolean by mutableStateOf(false)
+
+    // Portfolio
+    var pie: Pie? by mutableStateOf(null)
+    var portfolio: List<Pie>? by mutableStateOf(null)
+    var portfolioAllCurrencies: MutableMap<String, Map<String, Double>>? by mutableStateOf(null)
+
+    var hidePortfolioData: Boolean by mutableStateOf(false)
+    var groupedTransactions: Map<Date, List<PortfolioEvent>>? by mutableStateOf(null)
+
+    // General
+    var isRefreshing: Boolean by mutableStateOf(false)
+    var currentChartType = mutableStateOf(StorageManager.get<ChartTypes>(StorageKeys.SELECTED_CHART_TYPE) ?: ChartTypes.PRICE)
+    var candleChartEnabled by mutableStateOf(StorageManager.get<Boolean>(StorageKeys.IS_CANDLE_CHART_ENABLED) ?: false)
+    var currentDays by mutableStateOf(
+        TimeCharts.getStartTimeFrameBetween(TimeCharts.anHour, TimeCharts.max).days,
+    )
+    var selectedTimeFrame by mutableStateOf(
+        TimeCharts.getStartTimeFrameBetween(TimeCharts.anHour, TimeCharts.max),
+    )
+    var widgetCurrencies: List<Toplist> by mutableStateOf(listOf())
+    var isDragging by mutableStateOf(false)
+
+    var selectedSortOption by mutableStateOf(SortOption.VolumeDesc)
+    var remoteConfigReady by mutableStateOf(FirebaseManager.isRemoteConfigReady)
+
+    private var hasProSubscription = StoreKitManager.currentSubscription.value != null
+
+    val isWebSocketEnabled: Boolean
+        get() = GlobalFunctions.isWebSocketEnabled(hasPro = hasProSubscription)
+
+    init {
+        this.currencyId = cryptoDetail?.id ?: ""
+
+        currencyRepository.loadCachedDataForCoin(currencyId, selectedTimeFrame)
+
+        currencyRepository.widgetCurrencies.let {
+            widgetCurrencies = it
+        }
+
+        currencyRepository.cryptoDetail?.get(currencyId)?.let {
+            cryptoInfo = it
+        } ?: run {
+            this.cryptoInfo = cryptoDetail
+        }
+
+        inFavoritesList = GlobalFunctions.getFavorites().orEmpty().any { it == (cryptoInfo?.id ?: currencyId) }
+
+        currencyRepository.cryptoPrices?.get("$currencyId-$currentDays")?.let { cached ->
+            priceVolumeModel = cached
+            mainReloading = isCandleChartEnabled
+        }
+
+        currencyRepository.cryptoCandles?.get("$currencyId-$currentDays")?.let {
+            candleSticks = it
+        }
+
+        globalMarketRepository.globalMarket?.let {
+            globalMarketData = it
+        }
+
+        if (isCandleChartEnabled && candleSticks.isNotEmpty()) {
+            setCandleSticks()
+            mainReloading = false
+        }
+
+        priceVolumeModel?.let {
+            setPrices()
+            setOnlyPrices()
+            setVolumes()
+            setTimestamps()
+        }
+
+        newsRepository.cachedNews?.get(NewsCategory.Coin(cryptoInfo?.id ?: "").type)?.let {
+            newsData = it.data.data
+        }
+
+        selectedSortOption = StorageManager.get<SortOption>(StorageKeys.CRYPTO_DETAIL_MARKETS_SORT_OPTION) ?: SortOption.VolumeDesc
+    }
+
+    suspend fun getGlobalMarketData() {
+        globalMarketRepository.getGlobalMarket()?.let {
+            globalMarketData = it
+        }
+    }
+
+    val dragIndex: Int @Composable get() {
+        val cappedDragPosition = currentHoverXPosition()
+        val n = prices.size
+        if (n <= 1) return 0
+        if (chartSize.value.width.value <= 0f) return 0
+        return lineChartIndexFromPlotX(cappedDragPosition, chartSize.value.width, n)
+    }
+
+    val dragPositions: List<Point>
+        @Composable get() {
+            return hoverHelper.offset.map { touchX ->
+                val index = lineChartIndexFromPlotX(touchX, chartSize.value.width, prices.size)
+                getPoint(
+                    index = index,
+                    rect = chartSize.value,
+                    prices = prices,
+                )
+            }
+        }
+
+    val dragPoint: Point
+    @Composable get() {
+        return getPoint(
+            index = dragIndex,
+            rect = chartSize.value,
+            prices = prices
+        )
+    }
+
+    val allPriceAlertsCount: Int get() {
+        return priceAlertsRepository.priceAlerts?.count() ?: 0
+    }
+
+    val portfolioModels: List<PortfolioModel>? get() {
+        return portfolioRepository.portfolioModels
+    }
+
+    val isCandleChartEnabled: Boolean get() {
+        return candleChartEnabled
+    }
+
+    val changePercent: Double? get() {
+        if (isCandleChartEnabled) {
+            val first = candleSticks.firstOrNull()?.open ?: return null
+            val last = candleSticks.lastOrNull()?.close ?: return null
+
+            return getDifferenceInPercent(last, first)
+        } else {
+            val first = prices.firstOrNull() ?: return null
+            val last = prices.lastOrNull() ?: return null
+
+            return getDifferenceInPercent(last, first)
+        }
+    }
+
+    val mainGraphStats: List<String?> get() {
+        return (0 until 6).map { if(isCandleChartEnabled) getChartCandlePrice(it) else getPriceInChart(prices, it) }
+    }
+
+    val mainChartColor: Color @Composable get() {
+        return changePercent?.getChangeColorCompose() ?: MaterialTheme.colors.onSurfaceDim
+    }
+
+    val hoverPrice: String @Composable get() {
+        return hoverHelper.hoverPrices.firstOrNull()
+            ?.formatCurrency(threshold = FormattingThreshold.MILLION) ?: "N/A"
+    }
+
+    val differenceValue: String @Composable get() {
+        val first = hoverHelper.hoverPrices.getOrNull(0) ?: 0.0
+        val second = hoverHelper.hoverPrices.getOrNull(1) ?: 0.0
+        val percent = getDifferenceInPercent(second, first)?.roundTo(2) ?: 0.0
+        val sign = if (percent < 0) "" else "+"
+        val difference = (second - first).formatCurrency(threshold = FormattingThreshold.MILLION)
+        return "$sign$difference"
+    }
+
+    val differencePercent: String @Composable get() {
+        val first = hoverHelper.hoverPrices.getOrNull(0) ?: 0.0
+        val second = hoverHelper.hoverPrices.getOrNull(1) ?: 0.0
+        val difference = getDifferenceInPercent(second, first) ?: 0.0
+        return difference.getChangeWithSymbol(withSymbol = true, force = true)
+    }
+
+    val multiHoverGraphColor: Color @Composable get() {
+        if (hoverHelper.hoverPrices.size != 2 || !isDragging) {
+            return changePercent?.getChangeColorCompose() ?: MaterialTheme.colors.onSurfaceDim
+        }
+
+        val first = hoverHelper.hoverPrices.getOrNull(0) ?: 0.0
+        val second = hoverHelper.hoverPrices.getOrNull(1) ?: 0.0
+        val change = (second - first).roundTo(7)
+
+        if (change == 0.0) {
+            val percent = getDifferenceInPercent(second, first)?.roundTo(7)
+            return percent?.getChangeColorCompose() ?: MaterialTheme.colors.onSurfaceDim
+        }
+
+        return change.getChangeColorCompose()
+    }
+
+    val hoverTimePosition: Dp @Composable get() {
+        return getXPosition(hoverPriceTextWidth.value) - hoverPriceTextWidth.value / 2
+    }
+
+    val hoverCandleTimePosition: Dp @Composable get() {
+        return getCandleXPosition(hoverCandlePriceTextWidth.value) - hoverCandlePriceTextWidth.value / 2
+    }
+
+    val candleDragIndex: Int @Composable get() {
+        val cappedDragPosition = max(0.dp, min(dragPosition.value, chartSize.value.width))
+        val n = candleSticks.size
+        if (n <= 1) return 0
+        return candleChartIndexFromPlotX(cappedDragPosition, chartSize.value.width, n)
+    }
+
+    val candleXPosition: Dp @Composable get() {
+        return max(0.dp, min(chartSize.value.width, dragPosition.value))
+    }
+
+    val candlePrices: List<Double> get() {
+        if (candleSticks.isEmpty()) return emptyList()
+        val first = candleSticks.firstOrNull()?.open ?: return emptyList()
+        val last = candleSticks.lastOrNull()?.close ?: return emptyList()
+        val highs = candleSticks.mapNotNull({ it.high })
+        val lows = candleSticks.mapNotNull({ it.low })
+        val max = highs.maxOrNull() ?: 0.0
+        val min = lows.minOrNull() ?: 0.0
+        return listOf(first, max, min, last)
+    }
+
+    val highestCandleValue: Double? get() {
+        return candleSticks.mapNotNull({ it.high }).maxOrNull()
+    }
+
+    val lowestCandleValue: Double? get() {
+        return candleSticks.mapNotNull({ it.low }).minOrNull()
+    }
+
+    val candleTimestamps: List<Double> get() {
+        return candleSticks.mapNotNull({ it.timestamp })
+    }
+
+    val candleMiddlePrices: List<Double> get() {
+        val prices: ArrayList<Double> = arrayListOf()
+
+        candleSticks.forEach({
+            val high = it.high ?: 0.0
+            val low = it.low ?: 0.0
+            prices.add((low + high) / 2)
+        })
+
+        return prices
+    }
+
+    val pointCandle: Dp @Composable get() {
+        var prices = candleMiddlePrices
+
+        val highest = highestCandleValue ?: return 0.5.dp
+        val lowest = lowestCandleValue ?: return 0.5.dp
+
+        prices = prices + highest
+        prices = prices + lowest
+
+        return getPoint(
+            index = candleDragIndex,
+            rect = chartSize.value,
+            prices = prices,
+            dropLastTwo = true
+        ).y
+    }
+
+    val getCandleHoverStats: List<String>? @Composable get() {
+        val context = LocalContext.current
+        var index = candleDragIndex
+
+        if (index < 0) {
+            index = 0
+        } else if (index >= candleSticks.size) {
+            index = candleSticks.size.minus(1)
+        }
+
+        val currentCandle = candleSticks.getOrNull(index) ?: return null
+        var formatter = if(context.is24HourClock) "dd MMM 'at' HH:mm" else "dd MMM 'at' hh:mm a"
+
+        when (selectedTimeFrame) {
+            TimeCharts.aMonth,
+            TimeCharts.threeMonths,
+            TimeCharts.aYear -> { formatter = "dd MMM YYYY" }
+            TimeCharts.max -> { formatter = "MMM YYYY" }
+            else -> {}
+        }
+
+        val dateFormat = SimpleDateFormat(formatter, AppLocale.enUsPosix)
+        val dateString = dateFormat.format(Date(candleTimestamps.get(index).toLong()))
+
+        return listOf(
+            dateString,
+            currentCandle.open?.formatCurrency(threshold = FormattingThreshold.NONE) ?: "",
+            currentCandle.high?.formatCurrency(threshold = FormattingThreshold.NONE) ?: "",
+            currentCandle.low?.formatCurrency(threshold = FormattingThreshold.NONE) ?: "",
+            currentCandle.close?.formatCurrency(threshold = FormattingThreshold.NONE) ?: ""
+        )
+    }
+
+    suspend fun getCryptoNews(forceSymbol: String? = null) {
+        if (FirebaseManager.getConfigBool(RemoteConfigKeys.ShowDetailNews) != true) {
+            return
+        }
+
+        val id: String = forceSymbol?.uppercase() ?: cryptoInfo?.symbol?.uppercase() ?: return
+
+        showNewsError = false
+
+        val news = newsRepository.getNewNews(25, NewsCategory.Coin(id))
+        if (news?.data.isNullOrEmpty()) {
+            showNewsError = true
+        }
+
+        news?.let {
+            newsData = SecretMessageHelper.withSecretNews(
+                it.data.orEmpty(),
+                SecretMessageHelper.PLACEMENT_CRYPTO_DETAIL_NEWS,
+                13,
+            )
+        } ?: run {
+            showNewsError = true
+        }
+    }
+
+    suspend fun refresh(
+        context: Context,
+        showReload: Boolean = true,
+        showRefreshIndicator: Boolean = true,
+        newDays: String? = null,
+        newTimeChart: TimeCharts? = null,
+        forceId: String? = null,
+        getNews: Boolean = true,
+        forceSymbol: String? = null
+    ) {
+        val appContext = context.applicationContext
+        coroutineScope {
+            isRefreshing = showRefreshIndicator
+            mainReloading = showReload
+
+            FirebaseManager.ensureRemoteConfigFetched()
+            remoteConfigReady = true
+
+            hasProSubscription = StoreKitManager.currentSubscription.value != null
+
+            val days = newDays ?: currentDays
+            val chart = newTimeChart ?: selectedTimeFrame
+            val mainId = forceId ?: currencyId
+
+            val cryptoInfo = async { getCryptoInfo(appContext, mainId) }
+            val news = async { if (getNews) getCryptoNews(forceSymbol) }
+            val candleChart = async {
+                if (isCandleChartEnabled) {
+                    getCandleChart(mainId, days)
+                }
+            }
+            val priceVolumeModel = async {
+                if (!isCandleChartEnabled || !showReload) {
+                    getMainCurrencyPrices(mainId, chart)
+                }
+            }
+
+            cryptoInfo.await()
+            news.await()
+            candleChart.await()
+            priceVolumeModel.await()
+
+            currentDays = days
+            selectedTimeFrame = chart
+
+            setPrices()
+            setOnlyPrices()
+            setVolumes()
+            setTimestamps()
+
+            if (isCandleChartEnabled) {
+                setCandleSticks()
+            }
+
+            mainReloading = false
+            isRefreshing = false
+
+            if (!mainId.isNullOrEmpty()) {
+                startWebSocket(mainId)
+            }
+        }
+    }
+
+    suspend fun stopLivePriceUpdates() {
+        stopWebSocket()
+    }
+
+    private suspend fun startWebSocket(coinId: String) {
+        if (!isWebSocketEnabled || coinId.isEmpty()) {
+            stopWebSocket()
+            return
+        }
+
+        val connected = currencyRepository.connectSignalR { update ->
+            viewModelScope.launch(Dispatchers.Main.immediate) {
+                applyWebSocketUpdate(update)
+            }
+        }
+
+        if (connected) {
+            currencyRepository.getCurrency(coinId)
+        }
+    }
+
+    private suspend fun stopWebSocket() {
+        currencyRepository.disconnectSignalR()
+    }
+
+    private fun applyWebSocketUpdate(update: CGSimplePriceUpdate) {
+        val coinId = cryptoInfo?.id ?: return
+        if (update.coinId?.lowercase() != coinId.lowercase()) {
+            return
+        }
+
+        val existing = cryptoInfo ?: CryptoDetailInfoModel(id = coinId)
+        cryptoInfo = update.apply(existing)
+
+        if (candleChartEnabled || currentChartType.value != ChartTypes.PRICE) {
+            return
+        }
+
+        val livePrice = update.price ?: return
+        if (prices.isEmpty()) {
+            return
+        }
+
+        val selectedCurrency = GlobalFunctions.getSelectedCurrency(null).code.lowercase()
+        if (update.vsCurrency?.lowercase() != selectedCurrency) {
+            return
+        }
+
+        prices = prices.toMutableList().also { it[it.lastIndex] = livePrice }
+        if (onlyPrices.isNotEmpty()) {
+            onlyPrices = onlyPrices.toMutableList().also { it[it.lastIndex] = livePrice }
+        }
+    }
+
+    fun addCurrencyToWidgets(context: Context) {
+        val toplistItem = cryptoInfo?.toToplist() ?: return
+        val previousCount = widgetCurrencies.size.toDouble()
+
+        widgetCurrencies = widgetCurrencies + toplistItem
+        currencyRepository.changeWidgetsOrder(widgetCurrencies, context)
+
+        com.cryptium.coincurrently.ui.main.SettingsTab.Achievements.Managers.AchievementManager.checkMetricUnlock(
+            metric = com.cryptium.coincurrently.ui.main.SettingsTab.Achievements.Models.AchievementMetric.widgetCoinsCount,
+            previousValue = previousCount,
+            newValue = widgetCurrencies.size.toDouble(),
+        )
+    }
+
+    fun replaceWidgetCurrency(coin: Toplist, with: Toplist? = null, context: Context) {
+        val newItem = with ?: cryptoInfo?.toToplist() ?: return
+        val index = widgetCurrencies.indexOfFirst { it.id == coin.id }
+
+        if (index !in widgetCurrencies.indices) return
+
+        val updatedList = widgetCurrencies.toMutableList().apply {
+            this[index] = newItem
+        }
+
+        widgetCurrencies = updatedList
+
+        currencyRepository.changeWidgetsOrder(updatedList, context)
+    }
+
+    suspend fun toggleChart() {
+        mainReloading = true
+        candleChartEnabled = !candleChartEnabled
+        com.cryptium.coincurrently.ui.main.SettingsTab.Achievements.Managers.AchievementManager.increment(
+            com.cryptium.coincurrently.ui.main.SettingsTab.Achievements.Models.AchievementCounterKey.candleChartToggles
+        )
+        AnalyticsManager.log(
+            ChartCandleModeChanged(
+                fromScreen = ScreenLabel.CryptoDetail,
+                isCandleChart = candleChartEnabled,
+            ),
+        )
+        StorageManager.set(StorageKeys.IS_CANDLE_CHART_ENABLED, candleChartEnabled)
+
+        if (candleChartEnabled) {
+            getCandleChart(cryptoInfo?.id ?: "", currentDays)
+        } else {
+            getMainCurrencyPrices(cryptoInfo?.id ?: "", selectedTimeFrame)
+        }
+
+        setPrices()
+        setOnlyPrices()
+        setVolumes()
+        setTimestamps()
+
+        if (isCandleChartEnabled) {
+            setCandleSticks()
+        }
+
+        mainReloading = false
+    }
+
+    private suspend fun getCryptoInfo(context: Context, id: String?) {
+        currencyRepository.getCryptoDetail(id)?.let { info ->
+            cryptoInfo = info
+            currencyId = info.id ?: ""
+            inFavoritesList = GlobalFunctions.getFavorites().orEmpty().any { coin -> coin == info.id }
+            cryptoDetailSmallImageBitmap = fetchCryptoSmallIcon(context, info.image?.small)
+        }
+    }
+
+    /** Bitmap is copied inside [CustomImageView.setImageWithCompletion] before Glide recycles pooled data. */
+    private suspend fun fetchCryptoSmallIcon(context: Context, url: String?): Bitmap? {
+        if (url.isNullOrBlank()) return null
+        val appContext = context.applicationContext
+        return suspendCancellableCoroutine { continuation ->
+            val imageView = CustomImageView(appContext)
+            val mainHandler = Handler(Looper.getMainLooper())
+            imageView.setImageWithCompletion(url, context) { _, detachedCopy ->
+                mainHandler.post {
+                    if (continuation.isActive) {
+                        continuation.resume(detachedCopy)
+                    } else {
+                        detachedCopy?.takeUnless { it.isRecycled }?.recycle()
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun getMainCurrencyPrices(id: String?, chart: TimeCharts) {
+        val priceVolumeModel = currencyRepository.getPriceVolume(id, chart)
+        this.priceVolumeModel = currencyRepository.filterPriceVolume(priceVolumeModel, (priceVolumeModel?.prices?.size ?: 0) / 200)
+    }
+
+    suspend fun newMainCoin(context: Context, id: String) {
+        coroutineScope {
+            stopWebSocket()
+            mainReloading = true
+            cryptoInfo = null
+            cryptoDetailSmallImageBitmap = null
+            priceVolumeModel = null
+
+            setPrices()
+            setOnlyPrices()
+            setVolumes()
+            setTimestamps()
+
+            val cryptoInfo = async { getCryptoInfo(context, id) }
+            val candleChart = async { if (isCandleChartEnabled) { getCandleChart(id, currentDays) } }
+            val priceVolumeModel = async { getMainCurrencyPrices(id, selectedTimeFrame) }
+
+            cryptoInfo.await()
+            candleChart.await()
+            priceVolumeModel.await()
+
+            setPrices()
+            setOnlyPrices()
+            setVolumes()
+            setTimestamps()
+
+            mainReloading = false
+            startWebSocket(id)
+        }
+    }
+
+    fun favoriteButtonPressed(
+        context: Context,
+        callback: () -> Unit
+    ) {
+        val toplistItem = cryptoInfo?.toToplist() ?: return
+
+        if (StoreKitManager.currentSubscription.value == null && !inFavoritesList && GlobalFunctions.getFavorites().orEmpty().size >= 2) {
+            callback.invoke()
+            return
+        }
+
+        val wasFavorite = inFavoritesList
+        if (wasFavorite) {
+            AnalyticsManager.log(
+                FavoriteRemoved(
+                    coinName = toplistItem.name ?: "",
+                    fromScreen = ScreenLabel.CryptoDetail,
+                ),
+            )
+        } else {
+            AnalyticsManager.log(
+                FavoriteAdded(
+                    coinName = toplistItem.name ?: "",
+                    fromScreen = ScreenLabel.CryptoDetail,
+                ),
+            )
+        }
+
+        inFavoritesList = !inFavoritesList
+
+        toplistRepository.favouriteButtonPressed(toplistItem)
+        MainActivity.showAppReview(context)
+    }
+
+    fun setChartType(type: ChartTypes) {
+        currentChartType.value = type
+        StorageManager.set(StorageKeys.SELECTED_CHART_TYPE, currentChartType.value)
+
+        setPrices()
+    }
+
+    private fun getPriceInChart(prices: List<Double>, at: Int): String? {
+        val min = prices.minOfOrNull { it } ?: return null
+        val max = prices.maxOfOrNull { it } ?: return null
+        val priceSteps = (max - min) / 5
+        val value = min + (priceSteps * at.toDouble())
+
+        return value.formatCurrency(currency = CurrencySelectionModel.empty())
+    }
+
+    @Composable
+    fun getCandleXPosition(textWidth: Dp): Dp {
+        val n = candleSticks.size
+        val xPosition = if (n <= 0) {
+            0.dp
+        } else {
+            candleBinCenterX(candleDragIndex, chartSize.value.width, n)
+        }
+
+        return getPriceXPosition(xPosition, textWidth, chartSize.value.width)
+    }
+
+    @Composable
+    fun getXPosition(textWidth: Dp): Dp {
+        val xPosition = getPoint(
+            index = dragIndex,
+            rect = chartSize.value,
+            prices = prices
+        ).x
+
+        return getPriceXPosition(xPosition, textWidth, chartSize.value.width)
+    }
+
+    // Candle chart
+
+    private suspend fun getCandleChart(id: String?, days: String) {
+        currencyRepository.getCandleStick(id, days)?.let {
+            candleSticks = it
+        }
+    }
+
+    private fun getChartCandlePrice(at: Int): String? {
+        val min = lowestCandleValue ?: return null
+        val max = highestCandleValue ?: return null
+        val priceSteps = (max - min) / 5
+        val value = min + (priceSteps * at.toDouble())
+        
+        return value.formatCurrency(currency = CurrencySelectionModel.empty())
+    }
+
+    // Price alerts
+
+    fun checkIfUserEnabledPush(context: Context): Boolean {
+        return NotificationManagerCompat.from(context).areNotificationsEnabled()
+    }
+
+    suspend fun addPriceAlert(alertCoin: PostAlertCoin): PriceAlertCreateResult {
+        return when (val result = priceAlertsRepository.createAlert(alertCoin)) {
+            PriceAlertCreateResult.Success -> {
+                alerts = priceAlertsRepository.priceAlerts
+                    ?.filter { it.coinId == cryptoInfo?.id?.lowercase() }
+                    ?.sortedByDescending { it.createdDate.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ) }
+                PriceAlertCreateResult.Success
+            }
+            else -> result
+        }
+    }
+
+    suspend fun getPriceAlerts() {
+        priceAlertsRepository.getAlerts()?.let {
+            alerts = it
+                .filter { it.coinId == cryptoInfo?.id?.lowercase() }
+                .sortedByDescending { it.createdDate.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ) }
+        } ?: run {
+            alerts = listOf()
+        }
+    }
+
+    suspend fun deleteAlert(alert: AlertCoin) {
+        alerts = alerts?.filter { it.id != alert.id }
+
+        priceAlertsRepository.deleteAlert(alert.id)?.let {
+            alerts = it
+                .filter { it.coinId == cryptoInfo?.id?.lowercase() }
+                .sortedByDescending { it.createdDate.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ) }
+        }
+    }
+
+    // Portfolio
+
+    suspend fun getPortfolio() {
+        viewModelScope.launch {
+            val portfolioDeferred = async {
+                portfolioRepository.getPortfolio()
+            }
+            val currenciesDeferred = async {
+                portfolioRepository.getPortfolioAllCurrencies()
+            }
+
+            awaitAll(portfolioDeferred, currenciesDeferred)
+
+            portfolio = portfolioDeferred.await()?.data?.data
+            portfolioAllCurrencies = currenciesDeferred.await()
+            pie = portfolio?.firstOrNull { it.data?.id == cryptoInfo?.id }
+            setGroupTransactions()
+        }
+    }
+
+    suspend fun findTransaction(transactionId: String): Pair<PortfolioEvent?, Toplist?> {
+        return portfolioRepository.findPortfolioEventByTransactionId(transactionId)
+    }
+
+    fun setGroupTransactions() {
+        if (portfolio == null) {
+            groupedTransactions = mapOf()
+            return
+        }
+        
+        val coinSlices: List<Toplist> = portfolio
+            ?.filter { it.data?.id == cryptoInfo?.id }
+            ?.mapNotNull { it.data } ?: listOf()
+        val result: MutableMap<Date, MutableList<PortfolioEvent>> =
+            if (coinSlices.isEmpty()) mutableMapOf() else portfolio
+                ?.groupedTransactions(
+                    types = listOf(),
+                    dateOption = DateOption.All,
+                    coinNames = coinSlices
+                )
+                ?.mapValues { (_, v) -> v.toMutableList() }
+                ?.toMutableMap() ?: mutableMapOf()
+        val targetId: String? = cryptoInfo?.id
+        if (targetId != null) {
+            val calendar: Calendar = Calendar.getInstance()
+            val seenIds: MutableSet<UUID> = result.values
+                .flatMap { ev -> ev.map { it.id } }
+                .toMutableSet()
+            val fromSwaps: List<NewSwapTransaction> = portfolio
+                ?.onEach { it.sanitizeGsonNullLists() }
+                ?.flatMap { it.swaps }
+                ?.filter { it.fromCurrencyId == targetId } ?: listOf()
+            for (swap in fromSwaps) {
+                if (seenIds.contains(swap.id)) {
+                    continue
+                }
+                seenIds.add(swap.id)
+                calendar.time = swap.date
+                calendar.set(Calendar.HOUR_OF_DAY, 0)
+                calendar.set(Calendar.MINUTE, 0)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
+                val day: Date = calendar.time
+                result.getOrPut(day) { mutableListOf() }.add(swap)
+            }
+            result.values.forEach { it.sortByDescending { it.date } }
+        }
+        groupedTransactions = result
+    }
+
+    fun deleteTransaction(transaction: PortfolioEvent) {
+        viewModelScope.launch {
+            val id = portfolio?.pieContaining(transaction)?.data?.id ?: ""
+
+            portfolio = portfolioRepository.deleteTransaction(
+                id = id,
+                uuid = transaction.id
+            )?.data?.data
+
+            pie = portfolio?.firstOrNull { it.data?.id == cryptoInfo?.id }
+
+            setGroupTransactions()
+        }
+    }
+
+    fun toggleHideData() {
+        hidePortfolioData = !hidePortfolioData
+        GlobalFunctions.setHidePortfolioData(hidePortfolioData)
+    }
+
+    // MARK: - Private main functions
+
+    private fun setOnlyPrices() {
+        val prefix = getPricesRangePrefix(priceVolumeModel)
+
+        onlyPrices = priceVolumeModel?.prices?.takeLast(prefix)?.map { it.lastOrNull() ?: 0.0 }?.filter({ it != 0.0 }) ?: listOf()
+    }
+
+    private fun setPrices() {
+        val prices: List<Double>
+        val prefix = getPricesRangePrefix(priceVolumeModel)
+
+        if (currentChartType.value == ChartTypes.PRICE || candleChartEnabled) {
+            prices = priceVolumeModel?.prices?.takeLast(prefix)?.map({ it.lastOrNull() ?: 0.0 }) ?: arrayListOf()
+        } else if (currentChartType.value == ChartTypes.VOLUME) {
+            prices = priceVolumeModel?.total_volumes?.takeLast(prefix)?.map({ it.lastOrNull() ?: 0.0 }) ?: arrayListOf()
+        } else {
+            prices = priceVolumeModel?.market_caps?.takeLast(prefix)?.map({ it.lastOrNull() ?: 0.0 }) ?: arrayListOf()
+        }
+
+        this.prices = prices.map { it }.filter({ it != 0.0 })
+    }
+
+    private fun setTimestamps() {
+        val timeStamps: List<Double>
+        val prefix = getPricesRangePrefix(priceVolumeModel)
+
+        if (currentChartType.value == ChartTypes.PRICE || candleChartEnabled) {
+            timeStamps = priceVolumeModel?.prices?.takeLast(prefix)?.map({ it.firstOrNull() ?: 0.0 }) ?: arrayListOf()
+        } else if (currentChartType.value == ChartTypes.VOLUME) {
+            timeStamps = priceVolumeModel?.total_volumes?.takeLast(prefix)?.map({ it.firstOrNull() ?: 0.0 }) ?: arrayListOf()
+        } else {
+            timeStamps = priceVolumeModel?.market_caps?.takeLast(prefix)?.map({ it.firstOrNull() ?: 0.0 }) ?: arrayListOf()
+        }
+
+        this.timeStamps = timeStamps.map { it }.filter({ it != 0.0 })
+    }
+
+    private fun setVolumes() {
+        val prefix = getPricesRangePrefix(priceVolumeModel)
+
+        volumes = priceVolumeModel?.total_volumes?.takeLast(prefix)?.map({ (it.lastOrNull() ?: 0.0) })?.filter({ it != 0.0 }) ?: listOf()
+    }
+
+    // Private candle functions
+
+    private fun setCandleSticks() {
+        val prefix = when (selectedTimeFrame) {
+            TimeCharts.anHour -> { (candleSticks.size / 24) }
+            else -> candleSticks.size
+        }
+
+        this.candleSticks = candleSticks.takeLast(prefix)
+    }
+
+    private fun getPricesRangePrefix(priceVolume: PriceVolumeModel?): Int {
+        return when (selectedTimeFrame) {
+            TimeCharts.anHour -> { ((priceVolume?.prices?.size ?: 0) / 24) }
+            else -> (priceVolume?.prices?.size ?: 0)
+        }
+    }
+
+    val hoverTime: String @Composable get() {
+        return hoverHelper.hoverTimes.firstOrNull().orEmpty()
+    }
+
+    fun updateHoverStats(touchXs: List<Dp>, is24HourClock: Boolean) {
+        if (mainReloading) return
+
+        if ((timeStamps.isEmpty() && candleTimestamps.isEmpty()) || touchXs.isEmpty()) {
+            isDragging = false
+            return
+        }
+
+        isDragging = true
+
+        val chartWidth = chartSize.value.width
+        val adjustedTouchXs = if (isCandleChartEnabled) {
+            listOf(touchXs.firstOrNull() ?: 0.dp)
+        } else {
+            touchXs
+        }.map { touchX ->
+            max(0.dp, min(touchX, chartWidth - 0.001.dp))
+        }
+
+        dragPosition.value = adjustedTouchXs.firstOrNull() ?: 0.dp
+
+        if (isCandleChartEnabled) {
+            hoverHelper.getHoverPriceCandles(
+                chartWidth = chartWidth,
+                touchX = adjustedTouchXs.firstOrNull() ?: 0.dp,
+                candles = candleSticks,
+                timeChart = selectedTimeFrame,
+                is24HourClock = is24HourClock,
+                isDragging = isDragging,
+            )
+        } else {
+            hoverHelper.getHoverPrice(
+                chartWidth = chartWidth,
+                touchXs = adjustedTouchXs,
+                prices = prices,
+                dates = timeStamps,
+                timeChart = selectedTimeFrame,
+                is24HourClock = is24HourClock,
+                isDragging = isDragging,
+            )
+        }
+    }
+
+    @Composable
+    private fun currentHoverXPosition(): Dp {
+        if (chartSize.value.width.value <= 0f) return 0.dp
+
+        val hoverPoints = hoverHelper.offset
+        if (hoverPoints.isEmpty()) {
+            return max(0.dp, min(dragPosition.value, chartSize.value.width))
+        }
+
+        return if (hoverHelper.hoverPrices.size == 2) {
+            val average = hoverPoints.sumOf { it.value.toDouble() } / hoverPoints.size
+            max(0.dp, min(average.toFloat().dp, chartSize.value.width))
+        } else {
+            max(0.dp, min(hoverPoints.first(), chartSize.value.width))
+        }
+    }
+
+    // Private portfolio functions
+
+    fun testShare(context: Context) {
+        val activity = context.getActivity() ?: return
+
+        renderComposableToBitmap(
+            activity = activity,
+            composable = {
+                CryptoDetailShareView(this)
+            },
+            onBitmapReady = { bitmap ->
+                saveBitmapToCache(context, bitmap, cryptoInfo?.name ?: "coin")
+                val sym = cryptoInfo?.symbol?.trim()?.uppercase()
+                val label = if (!sym.isNullOrEmpty()) "\$$sym" else "\$COIN"
+                shareBitmap(context, bitmap, cryptoInfo?.name ?: "coin", trackedShareLabel = label)
+            }
+        )
+    }
+
+    fun setNewSortOption(newSortOption: SortOption) {
+        selectedSortOption = newSortOption
+        StorageManager.set(StorageKeys.CRYPTO_DETAIL_MARKETS_SORT_OPTION, newSortOption)
+    }
+}

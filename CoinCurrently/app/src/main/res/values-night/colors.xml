@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="mainGray">#9BA2A5</color>
+    <color name="primaryTextColor">#EAF3FF</color>
+    <color name="volumeUp">#009600</color>
+    <color name="volumeDown">#960000</color>
+    <color name="skeletonBackground">#40E6E9FF</color>
+    <color name="appStartupColor">#FF111111</color>
+    <color name="cardBackground">#323774</color>
+    <color name="fearGreedText">#FFFFFF</color>
+    <color name="cardBorder">#699CEA</color>
+    <color name="cardBorderInvincible">#00699CEA</color>
+    <color name="headerColor">#202020</color>
+    <!-- Matches MaterialTheme.colors.surfaceContainerLow in CustomColors.kt -->
+    <color name="surface_container_low">#1C1B1B</color>
+    <!-- Matches Colors.surface in CustomColors.kt -->
+    <color name="surface">#F6FEFF</color>
+    <!-- Matches Colors.onSurface in CustomColors.kt -->
+    <color name="on_surface">#FCF8F8</color>
+</resources>
