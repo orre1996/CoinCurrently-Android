@@ -11,19 +11,11 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.WindowInsetsCompat
 import com.cryptium.coincurrently.ui.main.Activities.MainActivity
-import com.cryptium.coincurrently.ui.main.General.GlobalFunctions
 import com.cryptium.coincurrently.ui.main.Widgets.LargeMultiCryptoWidgetReceiver
-import com.cryptium.coincurrently.ui.main.Widgets.large_crypto_widget
-import com.cryptium.coincurrently.ui.main.Widgets.LargeDuoCryptoWidgetReceiver
-import com.cryptium.coincurrently.ui.main.Widgets.LargeNewsWidgetReceiver
-import com.cryptium.coincurrently.ui.main.Widgets.large_portfolio_widget
 import com.cryptium.coincurrently.ui.main.Widgets.LargeQuadCryptoWidgetReceiver
-import com.cryptium.coincurrently.ui.main.Widgets.MediumMultiCryptoWidgetReceiver
-import com.cryptium.coincurrently.ui.main.Widgets.MediumCryptoWidgetReceiver
 import com.cryptium.coincurrently.ui.main.Widgets.MediumDuoCryptoWidgetReceiver
 import com.cryptium.coincurrently.ui.main.Widgets.MediumNewsWidgetReceiver
 import com.cryptium.coincurrently.ui.main.Widgets.medium_portfolio_widget
-import com.cryptium.coincurrently.ui.main.Widgets.SmallMultiCryptoWidgetReceiver
 import com.cryptium.coincurrently.ui.main.Widgets.SmallCryptoWidgetReceiver
 import com.cryptium.coincurrently.ui.main.Widgets.small_fear_greed_widget
 import com.cryptium.coincurrently.ui.main.Widgets.SmallNewsWidgetReceiver
@@ -43,26 +35,11 @@ fun MainActivity.updateCurrecyWidgets() {
     val ids = man.getAppWidgetIds(ComponentName(baseContext, SmallCryptoWidgetReceiver::class.java))
     updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
 
-    val ids1 = man.getAppWidgetIds(ComponentName(baseContext, MediumCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids1)
-
-    val ids2 = man.getAppWidgetIds(ComponentName(baseContext, large_crypto_widget::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids2)
-
     val ids3 = man.getAppWidgetIds(ComponentName(baseContext, MediumDuoCryptoWidgetReceiver::class.java))
     updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids3)
 
-    val ids4 = man.getAppWidgetIds(ComponentName(baseContext, LargeDuoCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids4)
-
     val ids5 = man.getAppWidgetIds(ComponentName(baseContext, LargeQuadCryptoWidgetReceiver::class.java))
     updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids5)
-
-    val ids6 = man.getAppWidgetIds(ComponentName(baseContext, SmallMultiCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids6)
-
-    val ids7 = man.getAppWidgetIds(ComponentName(baseContext, MediumMultiCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids7)
 
     val ids8 = man.getAppWidgetIds(ComponentName(baseContext, LargeMultiCryptoWidgetReceiver::class.java))
     updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids8)
@@ -79,9 +56,6 @@ fun MainActivity.updatePortfolioWidgets() {
 
     val ids1 = man.getAppWidgetIds(ComponentName(baseContext, medium_portfolio_widget::class.java))
     updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids1)
-
-    val ids2 = man.getAppWidgetIds(ComponentName(baseContext, large_portfolio_widget::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids2)
 }
 
 fun MainActivity.updateAllWidgets() {
@@ -91,17 +65,8 @@ fun MainActivity.updateAllWidgets() {
     val ids = man.getAppWidgetIds(ComponentName(baseContext, SmallCryptoWidgetReceiver::class.java))
     updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
 
-    val ids1 = man.getAppWidgetIds(ComponentName(baseContext, MediumCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids1)
-
-    val ids2 = man.getAppWidgetIds(ComponentName(baseContext, large_crypto_widget::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids2)
-
     val ids3 = man.getAppWidgetIds(ComponentName(baseContext, MediumDuoCryptoWidgetReceiver::class.java))
     updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids3)
-
-    val ids4 = man.getAppWidgetIds(ComponentName(baseContext, LargeDuoCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids4)
 
     val ids5 = man.getAppWidgetIds(ComponentName(baseContext, LargeQuadCryptoWidgetReceiver::class.java))
     updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids5)
@@ -112,15 +77,6 @@ fun MainActivity.updateAllWidgets() {
     val ids7 = man.getAppWidgetIds(ComponentName(baseContext, medium_portfolio_widget::class.java))
     updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids7)
 
-    val ids8 = man.getAppWidgetIds(ComponentName(baseContext, large_portfolio_widget::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids8)
-
-    val ids10 = man.getAppWidgetIds(ComponentName(baseContext, SmallMultiCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids10)
-
-    val ids11 = man.getAppWidgetIds(ComponentName(baseContext, MediumMultiCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids11)
-
     val ids12 = man.getAppWidgetIds(ComponentName(baseContext, LargeMultiCryptoWidgetReceiver::class.java))
     updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids12)
 
@@ -129,9 +85,6 @@ fun MainActivity.updateAllWidgets() {
 
     val ids14 = man.getAppWidgetIds(ComponentName(baseContext, MediumNewsWidgetReceiver::class.java))
     updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids14)
-
-    val ids15 = man.getAppWidgetIds(ComponentName(baseContext, LargeNewsWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids15)
 
     val ids16 = man.getAppWidgetIds(ComponentName(baseContext, small_fear_greed_widget::class.java))
     updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids16)

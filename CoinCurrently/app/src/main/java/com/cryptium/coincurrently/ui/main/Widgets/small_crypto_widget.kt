@@ -23,11 +23,11 @@ import networking.ResponseModels.Pie
 
 /**
  * Small crypto app widget UI is now implemented with Jetpack Glance in SmallCryptoGlanceWidget.kt.
- * This file keeps createSmallWidget(context,...) for use by large_crypto_widget, plus shared
+ * This file keeps createSmallWidget(context,...) for RemoteViews updates, plus shared
  * helpers (colors, drawPieChart, lifecycle) used by other widgets.
  */
 
-/** Used by large_crypto_widget to build the small widget content for embedding. */
+/** Builds the small widget content for RemoteViews updates. */
 internal fun createSmallWidget(
     context: Context,
     appWidgetManager: AppWidgetManager,
@@ -211,7 +211,7 @@ fun widgetOutline(context: Context): Int {
     }
 }
 
-/** Draws 7d sparkline graph. Used by large_crypto_widget. */
+/** Draws 7d sparkline graph. */
 fun drawGraphPaths1(
     prices: List<Double>,
     context: Context,

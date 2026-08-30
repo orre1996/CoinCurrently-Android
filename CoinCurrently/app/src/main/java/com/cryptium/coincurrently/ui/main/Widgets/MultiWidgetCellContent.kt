@@ -49,7 +49,7 @@ internal fun MultiWidgetCellContent(
     bitmap: Bitmap?,
     graphBitmap: Bitmap?,
     showRefresh: Boolean = false,
-    refreshWidgetType: String = "SmallMultiCryptoGlanceWidget",
+    refreshWidgetType: String = "LargeMultiCryptoGlanceWidget",
     modifier: GlanceModifier = GlanceModifier,
 ) {
     val currency = GlobalFunctions.getSelectedCurrency()

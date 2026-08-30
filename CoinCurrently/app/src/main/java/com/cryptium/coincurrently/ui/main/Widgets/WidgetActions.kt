@@ -50,14 +50,9 @@ class RefreshWidgetAction : ActionCallback {
         val widgetType = parameters.get(WidgetTypeKey) ?: return
         val widget: GlanceAppWidget = when (widgetType) {
             "SmallCryptoGlanceWidget" -> SmallCryptoGlanceWidget()
-            "SmallMultiCryptoGlanceWidget" -> SmallMultiCryptoGlanceWidget()
-            "MediumMultiCryptoGlanceWidget" -> MediumMultiCryptoGlanceWidget()
-            "MediumCryptoGlanceWidget" -> MediumCryptoGlanceWidget()
             "MediumDuoCryptoGlanceWidget" -> MediumDuoCryptoGlanceWidget()
-            "LargeDuoCryptoGlanceWidget" -> LargeDuoCryptoGlanceWidget()
             "LargeQuadCryptoGlanceWidget" -> LargeQuadCryptoGlanceWidget()
             "LargeMultiCryptoGlanceWidget" -> LargeMultiCryptoGlanceWidget()
-            "GasFeeGlanceWidget" -> GasFeeGlanceWidget()
             "SmallNewsGlanceWidget" -> SmallNewsGlanceWidget()
             "MediumNewsGlanceWidget" -> MediumNewsGlanceWidget()
             else -> return

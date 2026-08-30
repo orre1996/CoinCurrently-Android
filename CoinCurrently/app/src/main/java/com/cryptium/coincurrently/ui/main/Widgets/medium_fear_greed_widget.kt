@@ -1,55 +1,11 @@
 package com.cryptium.coincurrently.ui.main.Widgets
 
-import android.appwidget.AppWidgetManager
-import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.*
 import android.widget.RemoteViews
 import networking.ResponseModels.FearGreedItem
-
-import android.graphics.Bitmap
-
-import android.os.Bundle
 import com.cryptium.coincurrently.R
-import com.cryptium.coincurrently.ui.main.General.GlobalFunctions
-
-
-/**
- * Implementation of App Widget functionality.
- */
-class medium_fear_greed_widget : AppWidgetProvider() {
-    override fun onUpdate(
-        context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray
-    ) {
-        // There may be multiple widgets active, so update all of them
-        for (appWidgetId in appWidgetIds) {
-            appWidgetManager.getAppWidgetInfo(appWidgetId)?.let { it ->
-                it.provider?.let {
-                    if (it.className.contains("medium_fear_greed_widget")) {
-                        updateAppWidget(context, appWidgetManager, appWidgetId)
-                    }
-                }
-            }
-        }
-    }
-
-    override fun onAppWidgetOptionsChanged(
-        context: Context?,
-        appWidgetManager: AppWidgetManager?,
-        appWidgetId: Int,
-        newOptions: Bundle?
-    ) {
-        if (appWidgetManager != null) {
-            if (context != null) {
-                onUpdate(context, appWidgetManager, intArrayOf(appWidgetId))
-            }
-        }
-        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
-    }
-}
 
 fun createFearGreedCell(view: RemoteViews, id: Int, fearGreedItem: FearGreedItem?, context: Context, timeframe: String, callback: () -> Unit) {
 

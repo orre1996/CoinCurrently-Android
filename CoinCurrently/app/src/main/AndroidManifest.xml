@@ -50,17 +50,6 @@
         </receiver>
 
         <receiver
-            android:name=".ui.main.Widgets.LargeNewsWidgetReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/large_news_widget_info" />
-        </receiver>
-        <receiver
             android:name=".ui.main.Widgets.MediumNewsWidgetReceiver"
             android:exported="true">
             <intent-filter>
@@ -70,28 +59,6 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/medium_news_widget_info" />
-        </receiver>
-        <receiver
-            android:name=".ui.main.Widgets.MediumMultiCryptoWidgetReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/medium_crypto_multi_widget_info" />
-        </receiver>
-        <receiver
-            android:name=".ui.main.Widgets.SmallMultiCryptoWidgetReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/small_crypto_multi_widget_info" />
         </receiver>
         <receiver
             android:name=".ui.main.Widgets.SmallNewsWidgetReceiver"
@@ -123,17 +90,6 @@
 
         <!--
         <receiver
-            android:name=".ui.main.Widgets.large_portfolio_widget"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/large_portfolio_widget_info" />
-        </receiver>
-        <receiver
             android:name=".ui.main.Widgets.medium_portfolio_widget"
             android:exported="true">
             <intent-filter>
@@ -156,17 +112,6 @@
                 android:resource="@xml/small_portfolio_widget_info" />
         </receiver>
         -->
-        <receiver
-            android:name=".ui.main.Widgets.LargeDuoCryptoWidgetReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/large_duo_crypto_widget_info" />
-        </receiver>
         <receiver
             android:name=".ui.main.Widgets.LargeQuadCryptoWidgetReceiver"
             android:exported="true">
@@ -201,28 +146,6 @@
                 android:resource="@xml/small_crypto_widget_info" />
         </receiver>
         <receiver
-            android:name=".ui.main.Widgets.MediumCryptoWidgetReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/medium_crypto_widget_info" />
-        </receiver>
-        <receiver
-            android:name=".ui.main.Widgets.large_crypto_widget"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/large_crypto_widget_info" />
-        </receiver>
-        <receiver
             android:name=".ui.main.Widgets.LargeMultiCryptoWidgetReceiver"
             android:exported="true">
             <intent-filter>
@@ -232,17 +155,6 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/large_crypto_multi_widget_info" />
-        </receiver>
-        <receiver
-            android:name=".ui.main.Widgets.GasFeeWidgetReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/gas_fee_widget_info" />
         </receiver>
         <activity
             android:name=".ui.main.Activities.MainActivity"
