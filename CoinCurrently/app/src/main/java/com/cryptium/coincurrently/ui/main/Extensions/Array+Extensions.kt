@@ -8,7 +8,6 @@ import com.cryptium.coincurrently.ui.main.PortfolioTab.DataClasses.PortfolioEven
 import com.cryptium.coincurrently.ui.main.PortfolioTab.DataClasses.PortfolioModel
 import com.cryptium.coincurrently.ui.main.PortfolioTab.Enums.DateOption
 import com.cryptium.coincurrently.ui.main.PortfolioTab.Enums.NewTransactionType
-import com.cryptium.coincurrently.ui.main.Widgets.roundToHundreds
 import networking.ResponseModels.Pie
 import networking.ResponseModels.Toplist
 import networking.ResponseModels.sanitizeGsonNullLists
@@ -45,38 +44,6 @@ fun List<Double>.normalizeCustom(min: Double, max: Double): List<Float> {
     return this.map { price ->
         // Preserve compare-chart padding sentinels (same as iOS NewChartView).
         if (price == -1.0) -1f else (price.toFloat() - min.toFloat()) / range
-    }
-}
-
-
-fun List<Double>.getTrimmedVolume(): List<Float> {
-    var firstNumber = 1
-    if (this.size > 100) {
-
-        val count = roundToHundreds(this.size)
-        val temp = "$count"
-        firstNumber = temp.take(1).toInt()
-
-        if (this.size > 1000) {
-            firstNumber *= 10
-            firstNumber += temp.substring(1, 2).toInt()
-        }
-    }
-
-    val trimmedArray = mutableListOf<Double>()
-
-    this.forEachIndexed { index, volume ->
-        if (index % firstNumber == 0) {
-            trimmedArray.add(volume)
-        }
-    }
-
-    return trimmedArray.map {
-        normalise(
-            it.toFloat(),
-            trimmedArray.min().toFloat(),
-            trimmedArray.max().toFloat()
-        )
     }
 }
 
