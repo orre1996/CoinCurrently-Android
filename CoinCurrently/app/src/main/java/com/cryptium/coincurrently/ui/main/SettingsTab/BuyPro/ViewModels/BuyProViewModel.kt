@@ -119,6 +119,8 @@ class BuyProViewModelImp: ViewModel(), BuyProViewModel {
         context: Context,
         dismissScreen: () -> Unit
     ) {
+        if (isLoading) return
+
         val activity = context.getActivity() ?: return
         val button = selectedButton ?: return
         val product = button.product
@@ -133,7 +135,10 @@ class BuyProViewModelImp: ViewModel(), BuyProViewModel {
         val productId = button.productId
         val hadExistingSubscription = GlobalFunctions.getHasBoughtPro() != null
 
+        var hasLoggedPurchaseOutcome = false
         fun logPurchase(outcome: SubscriptionPurchaseOutcome) {
+            if (hasLoggedPurchaseOutcome) return
+            hasLoggedPurchaseOutcome = true
             AnalyticsManager.log(
                 SubscriptionPurchaseCompleted(
                     fromScreen = ScreenLabel.BuyPro,

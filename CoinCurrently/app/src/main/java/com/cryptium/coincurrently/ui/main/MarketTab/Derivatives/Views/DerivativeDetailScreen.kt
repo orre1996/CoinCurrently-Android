@@ -47,7 +47,7 @@ import com.cryptium.coincurrently.ui.main.analytics.ScrollToTopPressed
 import com.cryptium.coincurrently.ui.main.analytics.SheetLabel
 import com.cryptium.coincurrently.ui.main.analytics.SheetOpened
 import com.cryptium.coincurrently.ui.main.analytics.SortOptionSelected
-import com.cryptium.coincurrently.ui.main.analytics.TabSwitched
+import com.cryptium.coincurrently.ui.main.analytics.TabChanged
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.coroutineScope
@@ -189,7 +189,7 @@ fun DerivativeDetailScreen(
                             onTabSelected = {
                                 if (it != currentPage) {
                                     AnalyticsManager.log(
-                                        TabSwitched.detailSegment(
+                                        TabChanged(
                                             fromScreen = ScreenLabel.DerivativeDetail,
                                             selectedTabName = tabs[it]
                                         )

@@ -95,9 +95,12 @@ fun HomeScreen(
 
     var selectedUrl: String? by remember { mutableStateOf(null) }
 
-    val filterListState = rememberLazyListState(initialFirstVisibleItemIndex = 0)
+    val initialHomeFilterIndex = remember {
+        CarouselFilter.homeFilters.indexOf(viewModel.selectedFilter).coerceAtLeast(0)
+    }
+    val filterListState = rememberLazyListState(initialFirstVisibleItemIndex = initialHomeFilterIndex)
     val filterOffset = -64.dp.dpToPx().toInt()
-    val listState = rememberLazyListState(initialFirstVisibleItemIndex = 0)
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = initialHomeFilterIndex)
     val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
     val useStickyHeaders = AccessibilityLayout.useStickyHeaders
     val talkBackEnabled = AccessibilityLayout.isTalkBackEnabled
@@ -138,6 +141,17 @@ fun HomeScreen(
         }
     }
 
+    var hasScrolledToDefaultHomeFilter by remember { mutableStateOf(false) }
+    LaunchedEffect(viewModel.hasResolvedDefaultHomeFilter) {
+        if (!viewModel.hasResolvedDefaultHomeFilter) return@LaunchedEffect
+        val index = CarouselFilter.homeFilters.indexOf(viewModel.selectedFilter).coerceAtLeast(0)
+        if (index > 0) {
+            listState.scrollToItem(index)
+            filterListState.scrollToItem(index, filterOffset)
+        }
+        hasScrolledToDefaultHomeFilter = true
+    }
+
     ObserveCurrencyChanges(navigationViewModel) {
         viewModel.refreshAllHomeData()
     }
@@ -167,6 +181,7 @@ fun HomeScreen(
 
     LaunchedEffect(selectedPageIndex) {
         if (talkBackEnabled) return@LaunchedEffect
+        if (!hasScrolledToDefaultHomeFilter) return@LaunchedEffect
 
         val filter = CarouselFilter.homeFilters.get(selectedPageIndex)
         if (filter == viewModel.selectedFilter) return@LaunchedEffect

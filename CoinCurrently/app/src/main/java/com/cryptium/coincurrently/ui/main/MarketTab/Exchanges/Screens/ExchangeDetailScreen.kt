@@ -59,7 +59,7 @@ import com.cryptium.coincurrently.ui.main.analytics.AnalyticsManager
 import com.cryptium.coincurrently.ui.main.analytics.ScreenLabel
 import com.cryptium.coincurrently.ui.main.analytics.ScrollToTopPressed
 import com.cryptium.coincurrently.ui.main.analytics.SortOptionSelected
-import com.cryptium.coincurrently.ui.main.analytics.TabSwitched
+import com.cryptium.coincurrently.ui.main.analytics.TabChanged
 import kotlinx.coroutines.launch
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -318,7 +318,7 @@ fun ExchangeDetailScreen(
                             onTabSelected = {
                                 if (it != currentPage) {
                                     AnalyticsManager.log(
-                                        TabSwitched.detailSegment(
+                                        TabChanged(
                                             fromScreen = ScreenLabel.ExchangeDetail,
                                             selectedTabName = tabs[it]
                                         )

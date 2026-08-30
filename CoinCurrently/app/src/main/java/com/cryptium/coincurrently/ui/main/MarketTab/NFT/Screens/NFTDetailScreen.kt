@@ -57,7 +57,7 @@ import com.cryptium.coincurrently.ui.main.analytics.AnalyticsManager
 import com.cryptium.coincurrently.ui.main.analytics.ScreenLabel
 import com.cryptium.coincurrently.ui.main.analytics.ScrollToTopPressed
 import com.cryptium.coincurrently.ui.main.analytics.SortOptionSelected
-import com.cryptium.coincurrently.ui.main.analytics.TabSwitched
+import com.cryptium.coincurrently.ui.main.analytics.TabChanged
 import com.cryptium.coincurrently.ui.main.General.NavigationViewModel
 import com.cryptium.coincurrently.ui.main.General.OnLifecycleEvent
 import com.cryptium.coincurrently.ui.main.General.Utilities.Point
@@ -373,7 +373,7 @@ fun NftDetailScreen(
                             onTabSelected = {
                                 if (it != currentPage) {
                                     AnalyticsManager.log(
-                                        TabSwitched.detailSegment(
+                                        TabChanged(
                                             fromScreen = ScreenLabel.NftDetail,
                                             selectedTabName = tabs[it],
                                         ),

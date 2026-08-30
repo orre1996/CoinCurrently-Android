@@ -32,32 +32,15 @@ internal fun bundleParams(vararg pairs: Pair<String, Any?>): Bundle {
     return b
 }
 
-class TabSwitched private constructor(private val payload: Payload) : AnalyticsEvent {
-    private sealed class Payload {
-        data class MainTabs(val fromTab: ScreenLabel, val toTab: ScreenLabel) : Payload()
-        data class DetailSegment(val fromScreen: ScreenLabel, val selectedTabName: String) : Payload()
-    }
-
-    companion object {
-        fun mainTabs(fromTab: ScreenLabel, toTab: ScreenLabel): TabSwitched =
-            TabSwitched(Payload.MainTabs(fromTab, toTab))
-
-        fun detailSegment(fromScreen: ScreenLabel, selectedTabName: String): TabSwitched =
-            TabSwitched(Payload.DetailSegment(fromScreen, selectedTabName))
-    }
-
+data class TabSwitched(
+    val fromTab: ScreenLabel,
+    val toTab: ScreenLabel,
+) : AnalyticsEvent {
     override val eventName: String get() = "tab_switched"
-
-    override fun toBundle(): Bundle = when (val p = payload) {
-        is Payload.MainTabs -> bundleParams(
-            "from_tab" to p.fromTab.wire,
-            "to_tab" to p.toTab.wire,
-        )
-        is Payload.DetailSegment -> bundleParams(
-            "from_screen" to p.fromScreen.wire,
-            "selected_tab" to p.selectedTabName,
-        )
-    }
+    override fun toBundle(): Bundle = bundleParams(
+        "from_tab" to fromTab.wire,
+        "to_tab" to toTab.wire,
+    )
 }
 
 data class TabChanged(
@@ -132,10 +115,10 @@ data class SearchPerformed(
     val fromScreen: ScreenLabel,
     val query: String,
 ) : AnalyticsEvent {
-    override val eventName: String get() = "search_performed"
+    override val eventName: String get() = "search"
     override fun toBundle(): Bundle = bundleParams(
         "from_screen" to fromScreen.wire,
-        "query" to query,
+        "search_term" to query,
     )
 }
 

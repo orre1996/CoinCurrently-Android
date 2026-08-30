@@ -119,7 +119,7 @@ import com.cryptium.coincurrently.ui.main.analytics.ScrollToTopPressed
 import com.cryptium.coincurrently.ui.main.analytics.SheetLabel
 import com.cryptium.coincurrently.ui.main.analytics.SheetOpened
 import com.cryptium.coincurrently.ui.main.analytics.SortOptionSelected
-import com.cryptium.coincurrently.ui.main.analytics.TabSwitched
+import com.cryptium.coincurrently.ui.main.analytics.TabChanged
 import com.cryptium.coincurrently.ui.main.analytics.WidgetAdded
 import com.cryptium.coincurrently.ui.main.analytics.WidgetReplaceUndone
 import com.cryptium.coincurrently.ui.main.analytics.WidgetReplaced
@@ -278,16 +278,6 @@ fun CryptoDetailScreen(
             }
             else -> { }
         }
-    }
-
-    LaunchedEffect(viewModel.currentPage) {
-        val tabIndex = viewModel.currentPage.coerceIn(0, tabs.lastIndex)
-        AnalyticsManager.log(
-            TabSwitched.detailSegment(
-                fromScreen = ScreenLabel.CryptoDetail,
-                selectedTabName = tabs[tabIndex],
-            ),
-        )
     }
 
     val pendingPortfolioTransactionId = navigationViewModel.pendingPortfolioTransactionId
@@ -726,15 +716,17 @@ fun CryptoDetailScreen(
                             tabs = tabs,
                             selectedTabIndex = viewModel.currentPage,
                             onTabSelected = {
+                                if (it != viewModel.currentPage) {
+                                    val tabIndex = it.coerceIn(0, tabs.lastIndex)
+                                    AnalyticsManager.log(
+                                        TabChanged(
+                                            fromScreen = ScreenLabel.CryptoDetail,
+                                            selectedTabName = tabs[tabIndex],
+                                        )
+                                    )
+                                }
                                 viewModel.currentPage = it
 
-                                val tabIndex = viewModel.currentPage.coerceIn(0, tabs.lastIndex)
-                                AnalyticsManager.log(
-                                    TabSwitched.detailSegment(
-                                        fromScreen = ScreenLabel.CryptoDetail,
-                                        selectedTabName = tabs[tabIndex],
-                                    )
-                                )
                                 coroutineScope.launch {
                                     scrollState.animateScrollToItem(
                                         if (talkBackEnabled) 8 else 7

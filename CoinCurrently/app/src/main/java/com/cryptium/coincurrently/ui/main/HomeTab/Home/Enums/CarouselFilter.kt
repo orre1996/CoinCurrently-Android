@@ -94,6 +94,9 @@ sealed class CarouselFilter {
             )
         }
 
+        fun defaultHomeFilter(hasFavorites: Boolean): CarouselFilter =
+            if (hasFavorites) Favorites else TopCoins
+
         val newsFilters: List<CarouselFilter> by lazy {
             listOf(
                 General,

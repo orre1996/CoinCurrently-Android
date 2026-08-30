@@ -103,6 +103,8 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
     private val winnersLosersRepository by lazy { WinnersLosersRepository }
 
     override var selectedFilter: CarouselFilter by mutableStateOf(CarouselFilter.TopCoins)
+    var hasResolvedDefaultHomeFilter by mutableStateOf(false)
+        private set
 
     override var fearGreedModel: FearGreed? by mutableStateOf(null)
     override var globalMarket: GlobalMarketData? by mutableStateOf(null)
@@ -210,6 +212,7 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
         toplistRepository.favorites?.let {
             favorites = it
         }
+        applyDefaultHomeFilterIfNeeded()
 
         winnersLosersRepository.winners?.let { winners ->
             periodWinners = SecretMessageHelper.withSecretToplist(
@@ -345,6 +348,12 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
             periodLosers = it.take(homeCarouselLimit)
         }
         setStartData()
+    }
+
+    private fun applyDefaultHomeFilterIfNeeded() {
+        if (hasResolvedDefaultHomeFilter) return
+        hasResolvedDefaultHomeFilter = true
+        selectedFilter = CarouselFilter.defaultHomeFilter(hasFavorites = !favorites.isNullOrEmpty())
     }
 
     private suspend fun getFavorites() {

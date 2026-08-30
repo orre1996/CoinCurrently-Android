@@ -64,10 +64,8 @@ import com.cryptium.coincurrently.ui.main.Extensions.satoshiMedium
 import com.cryptium.coincurrently.ui.main.General.NavigationViewModel
 import NavigationScreens
 import com.cryptium.coincurrently.ui.main.analytics.AnalyticsManager
-import com.cryptium.coincurrently.ui.main.analytics.Navigate
 import com.cryptium.coincurrently.ui.main.analytics.ScreenLabel
 import com.cryptium.coincurrently.ui.main.analytics.TabSwitched
-import com.cryptium.coincurrently.ui.main.analytics.screenLabelFromRoute
 import getRouteString
 
 private fun screenLabelForBottomTabIndex(index: Int): ScreenLabel =
@@ -166,28 +164,13 @@ fun BottomNavigationBar(
 
                                         animationDuration.value = 0
                                         AnalyticsManager.log(
-                                            TabSwitched.mainTabs(
+                                            TabSwitched(
                                                 fromTab = screenLabelForBottomTabIndex(selectedItem.value),
                                                 toTab = screenLabelForBottomTabIndex(index),
                                             ),
                                         )
                                         selectedItem.value = index
 
-                                        AnalyticsManager.log(
-                                            Navigate(
-                                                fromScreen = screenLabelFromRoute(
-                                                    navigationViewModel.analyticsRouteSuffixForNavigate(),
-                                                ),
-                                                toScreen = when (item.route) {
-                                                    NavigationScreens.Home -> ScreenLabel.Home
-                                                    NavigationScreens.Portfolio -> ScreenLabel.Portfolio
-                                                    NavigationScreens.Market -> ScreenLabel.Market
-                                                    NavigationScreens.News -> ScreenLabel.News
-                                                    NavigationScreens.Settings -> ScreenLabel.Settings
-                                                    else -> ScreenLabel.MainFlow
-                                                },
-                                            ),
-                                        )
                                         navigationViewModel.navigate(item.route) {
                                             popUpTo(NavigationScreens.Loading) {
                                                 saveState = true
