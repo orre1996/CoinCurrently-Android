@@ -366,6 +366,7 @@ class ResultCall<T>(private val delegate: Call<T>, val context: Context, private
     override fun enqueue(callback: Callback<Result<T>>) {
         val url = delegate.request().url.toString()
         val isGetRequest = delegate.request().method == "GET"
+        val isRedeemCode = url.contains("/redeem-code")
 
         if (isGetRequest) {
             @Suppress("UNCHECKED_CAST")
@@ -425,11 +426,13 @@ class ResultCall<T>(private val delegate: Call<T>, val context: Context, private
                             }
                         }
                         val err: NetworkManagerError = NetworkManagerError.fromHttpCode(response.code())
-                        MainActivity.showSnackbar(
-                            context,
-                            SnackBarType.FAILURE,
-                            err.errorMessage(null, context)
-                        )
+                        if (!isRedeemCode) {
+                            MainActivity.showSnackbar(
+                                context,
+                                SnackBarType.FAILURE,
+                                err.errorMessage(null, context)
+                            )
+                        }
                         callback.onResponse(
                             this@ResultCall,
                             Response.success(

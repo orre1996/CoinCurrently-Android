@@ -344,6 +344,19 @@ object AchievementCatalog {
         valueFormat = AchievementDefinition.AchievementValueFormat.INTEGER,
     )
 
+    private val imATeapot = AchievementDefinition(
+        id = "418_im_a_teapot",
+        title = "418 I'm a teapot",
+        description = "Try to redeem your own referral code",
+        category = AchievementCategory.Security,
+        icon = "teapot",
+        metric = AchievementMetric.selfRedeems,
+        levels = listOf(
+            AchievementLevel(AchievementLevelTier.GOLD, 1.0, "Tried to redeem yourself"),
+        ),
+        valueFormat = AchievementDefinition.AchievementValueFormat.BOOLEAN,
+    )
+
     val all: List<AchievementDefinition> = listOf(
         dailyDevotee,
         watchlistWatcher,
@@ -366,6 +379,7 @@ object AchievementCatalog {
         converterPro,
         securitySentinel,
         referralChampion,
+        imATeapot,
     )
 
     fun achievements(category: AchievementCategory): List<AchievementDefinition> =

@@ -310,6 +310,7 @@ object AchievementManager {
             AchievementMetric.portfolioExports to counters.portfolioExports.toDouble(),
             AchievementMetric.authenticationEnabled to if (authEnabled) 1.0 else 0.0,
             AchievementMetric.referralsCompleted to counters.referralsCompleted.toDouble(),
+            AchievementMetric.selfRedeems to counters.selfRedeems.toDouble(),
         )
     }
 }

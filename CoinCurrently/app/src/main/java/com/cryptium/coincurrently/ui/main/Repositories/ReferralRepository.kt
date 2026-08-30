@@ -10,6 +10,7 @@ import networking.ApiHelper
 import networking.CacheUrls
 import networking.MainRepository
 import networking.ResponseModels.CachedReferralCode
+import networking.ResponseModels.RedeemCodeResult
 import networking.ResponseModels.ReferralCodeResult
 import networking.ResponseModels.UserResponse
 import networking.RetrofitBuilder
@@ -58,13 +59,13 @@ class ReferralRepository {
             return result
         }
 
-        suspend fun redeemCode(refCode: String): Boolean {
+        suspend fun redeemCode(refCode: String): RedeemCodeResult {
             Log.w("Network call ", "Redeem referral code")
-            val success = mainRepository.redeemCode(refCode).isSuccess
-            if (success) {
+            val result = RedeemCodeResult.fromResult(mainRepository.redeemCode(refCode))
+            if (result == RedeemCodeResult.Success) {
                 FirebaseManager.syncPurchases()
             }
-            return success
+            return result
         }
 
         suspend fun getUser(): UserResponse? {

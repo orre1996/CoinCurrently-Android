@@ -8,7 +8,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cryptium.coincurrently.ui.main.Repositories.ReferralRepository
+import com.cryptium.coincurrently.ui.main.SettingsTab.Achievements.Managers.AchievementManager
+import com.cryptium.coincurrently.ui.main.SettingsTab.Achievements.Models.AchievementCounterKey
 import kotlinx.coroutines.launch
+import networking.ResponseModels.RedeemCodeResult
 import networking.ResponseModels.ReferralCodeResult
 import networking.ResponseModels.UserResponse
 
@@ -22,7 +25,9 @@ class ReferralViewModel(
     var isLoadingReferralCode by mutableStateOf(false)
     var isRedeemingCode by mutableStateOf(false)
     var redeemSucceeded by mutableStateOf(false)
-    var showError by mutableStateOf(false)
+    var redeemErrorMessage by mutableStateOf<String?>(null)
+    val showError: Boolean
+        get() = redeemErrorMessage != null
     var user by mutableStateOf<UserResponse?>(null)
     var currentReferrals by mutableIntStateOf(0)
 
@@ -75,9 +80,14 @@ class ReferralViewModel(
 
         viewModelScope.launch {
             isRedeemingCode = true
-            redeemSucceeded = ReferralRepository.redeemCode(trimmedCode)
-            showError = !redeemSucceeded
+            val result = ReferralRepository.redeemCode(trimmedCode)
+            redeemSucceeded = result == RedeemCodeResult.Success
+            redeemErrorMessage = result.errorMessage
             isRedeemingCode = false
+
+            if (result == RedeemCodeResult.SelfRedeem) {
+                AchievementManager.increment(AchievementCounterKey.selfRedeems)
+            }
 
             if (redeemSucceeded) {
                 redeemCodeInput = ""

@@ -327,9 +327,9 @@ private fun RedeemCodeSection(
                     )
                 }
 
-                viewModel.showError -> {
+                viewModel.redeemErrorMessage != null -> {
                     Text(
-                        text = "Referral code is invalid or already used.",
+                        text = viewModel.redeemErrorMessage.orEmpty(),
                         style = satoshiMedium(14),
                         color = MaterialTheme.colors.trendDown,
                     )

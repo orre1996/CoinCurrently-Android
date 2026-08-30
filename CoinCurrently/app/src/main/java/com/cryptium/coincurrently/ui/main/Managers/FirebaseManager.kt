@@ -26,10 +26,12 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.cryptium.coincurrently.ui.main.analytics.AnalyticsManager
 import com.cryptium.coincurrently.ui.main.Repositories.StoreKitManager
 import com.google.gson.Gson
+import com.revenuecat.purchases.CacheFetchPolicy
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesError
 import com.revenuecat.purchases.interfaces.LogInCallback
+import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -227,18 +229,39 @@ class FirebaseManager {
         }
 
         fun syncPurchases() {
-            val appUserId = uid ?: FirebaseAuth.getInstance().currentUser?.uid ?: return
+            val appUserId = uid ?: FirebaseAuth.getInstance().currentUser?.uid
+
+            fun fetchAndApplyCurrentCustomerInfo() {
+                Purchases.sharedInstance.getCustomerInfo(
+                    CacheFetchPolicy.FETCH_CURRENT,
+                    object : ReceiveCustomerInfoCallback {
+                        override fun onReceived(customerInfo: CustomerInfo) {
+                            Handler(Looper.getMainLooper()).post {
+                                StoreKitManager.applyCustomerInfo(customerInfo)
+                            }
+                        }
+
+                        override fun onError(error: PurchasesError) {
+                            // Cached pro state remains until next sync.
+                        }
+                    },
+                )
+            }
+
+            if (appUserId.isNullOrEmpty()) {
+                fetchAndApplyCurrentCustomerInfo()
+                return
+            }
+
             Purchases.sharedInstance.logIn(
                 appUserId,
                 object : LogInCallback {
                     override fun onReceived(customerInfo: CustomerInfo, created: Boolean) {
-                        Handler(Looper.getMainLooper()).post {
-                            StoreKitManager.applyCustomerInfo(customerInfo)
-                        }
+                        fetchAndApplyCurrentCustomerInfo()
                     }
 
                     override fun onError(error: PurchasesError) {
-                        // Cached pro state remains until next sync.
+                        fetchAndApplyCurrentCustomerInfo()
                     }
                 },
             )

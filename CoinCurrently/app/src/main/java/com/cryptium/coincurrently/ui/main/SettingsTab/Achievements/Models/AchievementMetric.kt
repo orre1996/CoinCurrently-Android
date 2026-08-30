@@ -22,6 +22,7 @@ enum class AchievementMetric {
     converterUses,
     authenticationEnabled,
     referralsCompleted,
+    selfRedeems,
 }
 
 enum class AchievementCounterKey {
@@ -37,6 +38,7 @@ enum class AchievementCounterKey {
     treasuryVisits,
     candleChartToggles,
     referralsCompleted,
+    selfRedeems,
     portfolioExports;
 
     val metric: AchievementMetric

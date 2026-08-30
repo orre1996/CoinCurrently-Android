@@ -13,6 +13,7 @@ data class AchievementCounters(
     var treasuryVisits: Int = 0,
     var candleChartToggles: Int = 0,
     var referralsCompleted: Int = 0,
+    var selfRedeems: Int = 0,
     var portfolioExports: Int = 0,
 ) {
     fun increment(key: AchievementCounterKey) {
@@ -29,6 +30,7 @@ data class AchievementCounters(
             AchievementCounterKey.treasuryVisits -> treasuryVisits += 1
             AchievementCounterKey.candleChartToggles -> candleChartToggles += 1
             AchievementCounterKey.referralsCompleted -> referralsCompleted += 1
+            AchievementCounterKey.selfRedeems -> selfRedeems += 1
             AchievementCounterKey.portfolioExports -> portfolioExports += 1
         }
     }
@@ -46,6 +48,7 @@ data class AchievementCounters(
         AchievementCounterKey.treasuryVisits -> treasuryVisits
         AchievementCounterKey.candleChartToggles -> candleChartToggles
         AchievementCounterKey.referralsCompleted -> referralsCompleted
+        AchievementCounterKey.selfRedeems -> selfRedeems
         AchievementCounterKey.portfolioExports -> portfolioExports
     }
 }

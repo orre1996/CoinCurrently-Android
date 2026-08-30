@@ -608,13 +608,15 @@ class StoreKitManager {
         /** @return true when the user has an active Pro entitlement. */
         fun applyCustomerInfo(customerInfo: CustomerInfo): Boolean {
             val entitlement = customerInfo.entitlements[revenueCatProEntitlementId]
+                ?: customerInfo.entitlements.active.values.firstOrNull()
+
             if (entitlement?.isActive == true) {
-                val productId = entitlement.productIdentifier
-                if (productId in subscribedProductIds) {
-                    currentSubscription.value = productId
-                    GlobalFunctions.setHasBoughtPro(productId)
-                    return true
-                }
+                val productId = entitlement.productIdentifier.takeIf { it.isNotEmpty() }
+                    ?: customerInfo.activeSubscriptions.firstOrNull()
+                    ?: promotionalName
+                currentSubscription.value = productId
+                GlobalFunctions.setHasBoughtPro(productId)
+                return true
             }
 
             currentSubscription.value = null

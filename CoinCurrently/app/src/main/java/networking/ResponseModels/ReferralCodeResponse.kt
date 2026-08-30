@@ -9,6 +9,46 @@ data class RedeemCodeRequest(
     val refCode: String,
 )
 
+enum class RedeemCodeResult {
+    Success,
+    InvalidCode,
+    AlreadyReferred,
+    SelfRedeem,
+    Failure;
+
+    val errorMessage: String?
+        get() = when (this) {
+            Success -> null
+            InvalidCode -> "Invalid code"
+            AlreadyReferred -> "You've already been referred by someone else."
+            SelfRedeem -> "You can't redeem yourself, silly."
+            Failure -> "Something went wrong. Please try again."
+        }
+
+    companion object {
+        fun fromStatusCode(statusCode: Int): RedeemCodeResult = when (statusCode) {
+            200 -> Success
+            404 -> InvalidCode
+            400 -> AlreadyReferred
+            418 -> SelfRedeem
+            else -> Failure
+        }
+
+        fun fromResult(result: Result<*>): RedeemCodeResult {
+            if (result.isSuccess) return Success
+
+            var current: Throwable? = result.exceptionOrNull()
+            while (current != null) {
+                if (current is retrofit2.HttpException) {
+                    return fromStatusCode(current.code())
+                }
+                current = current.cause
+            }
+            return Failure
+        }
+    }
+}
+
 data class CachedReferralCode(
     val code: String,
     val qrPngBytes: ByteArray,

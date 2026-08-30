@@ -122,6 +122,7 @@ private fun achievementIcon(icon: String): Int = when (icon) {
     "treasury" -> R.drawable.portfolio
     "face_id" -> R.drawable.baseline_lock_24
     "referral" -> R.drawable.share
+    "teapot" -> R.drawable.teapot
     "square.and.arrow.up" -> R.drawable.share
     else -> R.drawable.check_circle
 }
