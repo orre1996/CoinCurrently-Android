@@ -27,8 +27,6 @@ import com.cryptium.coincurrently.ui.main.analytics.AnalyticsManager
 import com.cryptium.coincurrently.ui.main.analytics.ScreenLabel
 import com.cryptium.coincurrently.ui.main.analytics.navRouteSuffixForAnalytics
 import com.google.android.play.core.review.ReviewManagerFactory
-import java.util.Timer
-import kotlin.concurrent.schedule
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -146,30 +144,30 @@ class NavigationViewModel(context: Context): ViewModel() {
         buttonTitle: String = "",
         callback: () -> Unit = { }
     ) {
-        Timer().schedule(500L) {
-            if (canShowSnackbar) {
-                canShowSnackbar = false
+        val mainHandler = Handler(Looper.getMainLooper())
+        mainHandler.postDelayed({
+            if (!canShowSnackbar) return@postDelayed
+            canShowSnackbar = false
 
-                Handler(Looper.getMainLooper()).postDelayed({
-                    canShowSnackbar = true
-                }, 1000L)
+            mainHandler.postDelayed({
+                canShowSnackbar = true
+            }, 1000L)
 
-                snackbarType = type
-                snackbarText = message
-                snackbarButtonText = buttonTitle
-                snackbarCallback = callback
+            snackbarType = type
+            snackbarText = message
+            snackbarButtonText = buttonTitle
+            snackbarCallback = callback
 
-                val generation = snackbarTrigger + 1
-                snackbarTrigger = generation
-                showSnackbar.value = true
+            val generation = snackbarTrigger + 1
+            snackbarTrigger = generation
+            showSnackbar.value = true
 
-                Handler(Looper.getMainLooper()).postDelayed({
-                    if (generation != snackbarTrigger) return@postDelayed
-                    showAppReview(context, delaySeconds = 0)
-                    showSnackbar.value = false
-                }, 5000L)
-            }
-        }
+            mainHandler.postDelayed({
+                if (generation != snackbarTrigger) return@postDelayed
+                showAppReview(context, delaySeconds = 0)
+                showSnackbar.value = false
+            }, 5000L)
+        }, 500L)
     }
 
     fun showAchievementSnackbar(

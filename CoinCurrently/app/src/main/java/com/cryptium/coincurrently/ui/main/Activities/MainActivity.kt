@@ -94,6 +94,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import networking.ResponseModels.CryptoDetailInfoModel
 import networking.RetrofitBuilder
+import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -118,6 +119,7 @@ class MainActivity: FragmentActivity() {
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        instance = WeakReference(this)
         GlobalFunctions.initSharedPreferences(application)
         setStartData()
         RetrofitBuilder.createApiService(baseContext, "App")
@@ -432,6 +434,9 @@ class MainActivity: FragmentActivity() {
     }
 
     companion object {
+        @Volatile
+        private var instance: WeakReference<MainActivity>? = null
+
         private fun dateByAddingDays(days: Int, from: Date = Date()): Date {
             val cal: Calendar = Calendar.getInstance()
             cal.time = from
@@ -444,11 +449,20 @@ class MainActivity: FragmentActivity() {
             status: SnackBarType,
             message: String,
         ) {
-            context.getActivity()?.navigationViewModel?.showSnackbar(
-                context = context,
-                type = status,
-                message = message
-            )
+            val deliver = Runnable {
+                val activity = context.getActivity() ?: instance?.get() ?: return@Runnable
+                if (!activity::navigationViewModel.isInitialized) return@Runnable
+                activity.navigationViewModel.showSnackbar(
+                    context = context,
+                    type = status,
+                    message = message
+                )
+            }
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                deliver.run()
+            } else {
+                Handler(Looper.getMainLooper()).post(deliver)
+            }
         }
 
         fun showAppReview(
@@ -470,6 +484,13 @@ class MainActivity: FragmentActivity() {
                 context.getActivity()?.navigationViewModel?.showAppReview(context)
             }
         }
+    }
+
+    override fun onDestroy() {
+        if (instance?.get() === this) {
+            instance = null
+        }
+        super.onDestroy()
     }
 
     override fun onNewIntent(intent: Intent) {

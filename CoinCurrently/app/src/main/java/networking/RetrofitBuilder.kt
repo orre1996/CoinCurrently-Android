@@ -466,6 +466,11 @@ class ResultCall<T>(private val delegate: Call<T>, val context: Context, private
                         }
                         val networkErr: NetworkManagerError = NetworkManagerError.fromThrowable(t)
                         val errorMessage: String = networkErr.errorMessage(null, context)
+                        MainActivity.showSnackbar(
+                            context,
+                            SnackBarType.FAILURE,
+                            errorMessage
+                        )
                         callback.onResponse(
                             this@ResultCall,
                             Response.success(Result.failure(RuntimeException(errorMessage, t)))
