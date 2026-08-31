@@ -69,8 +69,6 @@ import com.cryptium.coincurrently.ui.main.General.shareBitmap
 import com.cryptium.coincurrently.ui.main.HomeTab.GlobalMarket.DataClasses.GlobalMarketData
 import com.cryptium.coincurrently.ui.main.HomeTab.GlobalMarket.DataClasses.GlobalMarketModel
 import com.cryptium.coincurrently.ui.main.HomeTab.GlobalMarket.Repositories.GlobalMarketRepository
-import com.cryptium.coincurrently.ui.main.Managers.FirebaseManager
-import com.cryptium.coincurrently.ui.main.Managers.RemoteConfigKeys
 import com.cryptium.coincurrently.ui.main.analytics.ChartCandleModeChanged
 import com.cryptium.coincurrently.ui.main.analytics.FavoriteAdded
 import com.cryptium.coincurrently.ui.main.analytics.FavoriteRemoved
@@ -173,7 +171,6 @@ class CryptoDetailViewModel(
     var isDragging by mutableStateOf(false)
 
     var selectedSortOption by mutableStateOf(SortOption.VolumeDesc)
-    var remoteConfigReady by mutableStateOf(FirebaseManager.isRemoteConfigReady)
 
     private var hasProSubscription = StoreKitManager.currentSubscription.value != null
 
@@ -441,10 +438,6 @@ class CryptoDetailViewModel(
     }
 
     suspend fun getCryptoNews(forceSymbol: String? = null) {
-        if (FirebaseManager.getConfigBool(RemoteConfigKeys.ShowDetailNews) != true) {
-            return
-        }
-
         val id: String = forceSymbol?.uppercase() ?: cryptoInfo?.symbol?.uppercase() ?: return
 
         showNewsError = false
@@ -475,9 +468,6 @@ class CryptoDetailViewModel(
         coroutineScope {
             isRefreshing = showRefreshIndicator
             mainReloading = showReload
-
-            FirebaseManager.ensureRemoteConfigFetched()
-            remoteConfigReady = true
 
             hasProSubscription = StoreKitManager.currentSubscription.value != null
 

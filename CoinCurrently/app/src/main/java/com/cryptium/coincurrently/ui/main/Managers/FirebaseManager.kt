@@ -47,7 +47,6 @@ class FirebaseManager {
 
         private lateinit var auth: FirebaseAuth
         private var uid: String? = null
-        var showDetailsNews = true
         var user: FirebaseUser? = null
         var idToken: String = ""
         var showPromotionalOffer = false
@@ -61,7 +60,6 @@ class FirebaseManager {
         private val remoteConfigMutex = Mutex()
 
         private fun applyRemoteConfigValues(firebaseRemoteConfig: com.google.firebase.remoteconfig.FirebaseRemoteConfig) {
-            showDetailsNews = firebaseRemoteConfig.getBoolean(RemoteConfigKeys.ShowDetailNews.key)
             showPromotionalOffer = firebaseRemoteConfig.getBoolean(RemoteConfigKeys.ShowPromotionalOffer.key)
             isRemoteConfigReady = true
         }

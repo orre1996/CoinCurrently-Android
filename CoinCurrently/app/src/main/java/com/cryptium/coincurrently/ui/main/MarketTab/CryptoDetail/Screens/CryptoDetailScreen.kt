@@ -834,7 +834,6 @@ fun CryptoDetailScreen(
                             )
                         }
                         3 -> {
-                            val remoteConfigReady = viewModel.remoteConfigReady
                             val (config, items) = viewModel.toDetailMarketsData()
                             CryptoDetailMarketsView(
                                 config = config,

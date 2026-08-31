@@ -231,20 +231,6 @@ interface ApiService{
         @Query(value = "items")count: Int,
     ): Result<NewNewsModel>
 
-    @GET("{url}/news/api/v1?page=1")
-    suspend fun getCryptoDetailNewsNews(
-        @Path(value = "url", encoded = true) url: String,
-        @Query(value = "tickers")id: String,
-        @Query(value = "items")count: Int,
-    ): Result<NewNewsModel>
-
-    @GET("{url}/news/api/v1/category?section=general&page=1")
-    suspend fun getExchangeDetailNewsNews(
-        @Path(value = "url", encoded = true) url: String,
-        @Query(value = "search")id: String,
-        @Query(value = "items")count: Int,
-    ): Result<NewNewsModel>
-
     @GET("{url}/news/api/v1/category?section=alltickers&type=video")
     suspend fun getNewVideoNews(
         @Path(value = "url", encoded = true) url: String,
