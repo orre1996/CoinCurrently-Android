@@ -53,14 +53,11 @@ import com.cryptium.coincurrently.ui.main.General.DragHandle
 import com.cryptium.coincurrently.ui.main.General.Enums.PriceChange
 import com.cryptium.coincurrently.ui.main.General.Enums.SortOption
 import com.cryptium.coincurrently.ui.main.General.InputFields.TextInputField
-import com.cryptium.coincurrently.ui.main.General.WebView
-import com.cryptium.coincurrently.ui.main.Managers.SecretMessageHelper
 import com.cryptium.coincurrently.ui.main.HomeTab.Trending.TrendingViewModel
 import com.cryptium.coincurrently.ui.main.MarketTab.CryptoDetail.Components.General.SelectCoinView
 import com.cryptium.coincurrently.ui.main.MarketTab.Toplist.ViewModels.ToplistViewModel
 import com.cryptium.coincurrently.ui.main.MarketTab.Toplist.ViewModels.ToplistViewModelFactory
 import com.cryptium.coincurrently.ui.main.MarketTab.ViewModels.SearchViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import networking.ResponseModels.SearchItem
 import networking.ResponseModels.SearchResult
@@ -87,15 +84,12 @@ fun SelectCoinSheet(
     hideId: String?,
     isSearch: Boolean = false,
     selectedCoin: (Toplist?) -> Unit = { },
-    onOpenUrl: ((String) -> Unit)? = null,
     close: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
-    val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
     val maxBodyHeight = rememberModalSheetMaxBodyHeight(dragHandleTitle = if (isSearch) "Search" else searchScreenCase.title)
-    var internalSelectedUrl by remember { mutableStateOf<String?>(null) }
 
     ModalBottomSheet(
         onDismissRequest = {
@@ -134,17 +128,6 @@ fun SelectCoinSheet(
                 hideId = hideId,
                 close = { coin ->
                     coroutineScope.launch {
-                        SecretMessageHelper.secretToplistUrl(coin)?.let { url ->
-                            keyboardController?.hide()
-                            delay(100)
-                            if (onOpenUrl != null) {
-                                onOpenUrl(url)
-                            } else {
-                                internalSelectedUrl = url
-                            }
-                            return@launch
-                        }
-
                         selectedCoin(coin)
                         when (val sc = searchScreenCase) {
                             is SearchScreenCase.Search -> {
@@ -169,14 +152,6 @@ fun SelectCoinSheet(
             )
         }
     }
-    }
-
-    if (onOpenUrl == null) {
-        internalSelectedUrl?.let {
-            WebView(it) {
-                internalSelectedUrl = null
-            }
-        }
     }
 }
 

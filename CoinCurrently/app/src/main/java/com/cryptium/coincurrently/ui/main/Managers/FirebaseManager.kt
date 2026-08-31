@@ -25,7 +25,6 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.cryptium.coincurrently.ui.main.analytics.AnalyticsManager
 import com.cryptium.coincurrently.ui.main.Repositories.StoreKitManager
-import com.google.gson.Gson
 import com.revenuecat.purchases.CacheFetchPolicy
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Purchases
@@ -98,23 +97,6 @@ class FirebaseManager {
             ensureRemoteConfigFetched()
             return FirebaseRemoteConfig.getInstance().getString(key.key).takeIf { it.isNotBlank() }
         }
-
-        suspend fun <T> getConfigJsonValue(key: RemoteConfigKeys, clazz: Class<T>): T? {
-            ensureRemoteConfigFetched()
-            return try {
-                val json = FirebaseRemoteConfig.getInstance().getString(key.key)
-                if (json.isBlank()) {
-                    null
-                } else {
-                    Gson().fromJson(json, clazz)
-                }
-            } catch (_: Exception) {
-                null
-            }
-        }
-
-        suspend fun getHiddenSecret(): HiddenSecret? =
-            getConfigJsonValue(RemoteConfigKeys.ShowSecretMessage, HiddenSecret::class.java)
 
         /**
          * FirebaseNetworkException often happens even when the device "has connection" because of:
@@ -304,20 +286,6 @@ class FirebaseManager {
                 }
             } catch (_: Exception) {
                 ""
-            }
-        }
-
-        fun getHiddenSecretSync(): HiddenSecret? {
-            if (!isRemoteConfigReady) return null
-            return try {
-                val json = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKeys.ShowSecretMessage.key)
-                if (json.isBlank()) {
-                    null
-                } else {
-                    Gson().fromJson(json, HiddenSecret::class.java)
-                }
-            } catch (_: Exception) {
-                null
             }
         }
 

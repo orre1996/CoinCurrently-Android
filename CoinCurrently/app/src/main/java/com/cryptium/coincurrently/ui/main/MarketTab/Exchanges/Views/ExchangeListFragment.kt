@@ -36,8 +36,6 @@ import com.cryptium.coincurrently.ui.main.Compose.surfaceContainerHigh
 import com.cryptium.coincurrently.ui.main.Extensions.isTablet
 import com.cryptium.coincurrently.ui.main.General.Enums.SortOption
 import com.cryptium.coincurrently.ui.main.General.NavigationViewModel
-import com.cryptium.coincurrently.ui.main.General.WebView
-import com.cryptium.coincurrently.ui.main.Managers.SecretMessageHelper
 import com.cryptium.coincurrently.ui.main.General.ObserveCurrencyChanges
 import com.cryptium.coincurrently.ui.main.General.OnLifecycleEvent
 import com.cryptium.coincurrently.ui.main.MarketTab.CryptoDetail.Popups.SelectCoinSheet
@@ -75,7 +73,6 @@ fun ExchangeListFragment(
 
     val isSearchShowing = remember { mutableStateOf(false) }
     val isSortShowing = remember { mutableStateOf(false) }
-    var selectedUrl by remember { mutableStateOf<String?>(null) }
 
     val firstVisibleIndex by remember {
         derivedStateOf { scrollState.firstVisibleItemIndex }
@@ -175,18 +172,16 @@ fun ExchangeListFragment(
                         viewModel.exchanges,
                         viewModel.bitcoin,
                         exchangePressed = { exchange ->
-                            if (!SecretMessageHelper.handleSecretExchangeClick(exchange) { selectedUrl = it }) {
-                                val dest = NavigationScreens.ExchangeDetail(
-                                    exchange.toExchange
-                                )
-                                AnalyticsManager.log(
-                                    Navigate(
-                                        fromScreen = ScreenLabel.Exchanges,
-                                        toScreen = ScreenLabel.ExchangeDetail,
-                                    ),
-                                )
-                                navigationViewModel.navigate(dest)
-                            }
+                            val dest = NavigationScreens.ExchangeDetail(
+                                exchange.toExchange
+                            )
+                            AnalyticsManager.log(
+                                Navigate(
+                                    fromScreen = ScreenLabel.Exchanges,
+                                    toScreen = ScreenLabel.ExchangeDetail,
+                                ),
+                            )
+                            navigationViewModel.navigate(dest)
                         }
                     )
                 }
@@ -240,12 +235,6 @@ fun ExchangeListFragment(
                 }
             }
         )
-
-        selectedUrl?.let {
-            WebView(it) {
-                selectedUrl = null
-            }
-        }
     }
 }
 

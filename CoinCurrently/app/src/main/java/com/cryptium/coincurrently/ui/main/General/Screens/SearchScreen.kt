@@ -7,24 +7,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.cryptium.coincurrently.ui.main.General.Components.CustomTopAppBar
 import com.cryptium.coincurrently.ui.main.General.NavigationViewModel
-import com.cryptium.coincurrently.ui.main.General.WebView
-import com.cryptium.coincurrently.ui.main.Managers.SecretMessageHelper
 import com.cryptium.coincurrently.ui.main.MarketTab.CryptoDetail.Popups.SelectCoinBaseView
 import com.cryptium.coincurrently.ui.main.PortfolioTab.Enums.NewTransactionType
 import com.cryptium.coincurrently.ui.main.analytics.AnalyticsManager
 import com.cryptium.coincurrently.ui.main.analytics.Navigate
 import com.cryptium.coincurrently.ui.main.analytics.ScreenLabel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import networking.ResponseModels.toCryptoDetail
 
 @Composable
@@ -33,16 +23,8 @@ fun SearchScreen(
     modifier: Modifier,
     screenCase: SearchScreenCase
 ) {
-    var selectedUrl by remember { mutableStateOf<String?>(null) }
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val coroutineScope = rememberCoroutineScope()
-
     BackHandler(onBack = {
-        if (selectedUrl != null) {
-            selectedUrl = null
-        } else {
-            navigationViewModel.navigateBack()
-        }
+        navigationViewModel.navigateBack()
     })
 
     Box(
@@ -54,11 +36,7 @@ fun SearchScreen(
             CustomTopAppBar(
                 title = "Select Coin",
                 navigateBack = {
-                    if (selectedUrl != null) {
-                        selectedUrl = null
-                    } else {
-                        navigationViewModel.navigateBack()
-                    }
+                    navigationViewModel.navigateBack()
                 }
             )
 
@@ -68,16 +46,7 @@ fun SearchScreen(
                 highlightId = null,
                 hideId = null,
                 modifier = Modifier.weight(1f),
-                close = close@{ coin ->
-                    SecretMessageHelper.secretToplistUrl(coin)?.let { url ->
-                        keyboardController?.hide()
-                        coroutineScope.launch {
-                            delay(100)
-                            selectedUrl = url
-                        }
-                        return@close
-                    }
-
+                close = { coin ->
                     when (val screenCase = screenCase) {
                         is SearchScreenCase.FixedList -> { }
                         is SearchScreenCase.Search -> {
@@ -129,12 +98,6 @@ fun SearchScreen(
                     }
                 }
             )
-        }
-
-        selectedUrl?.let {
-            WebView(it) {
-                selectedUrl = null
-            }
         }
     }
 }

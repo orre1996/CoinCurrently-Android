@@ -33,7 +33,6 @@ import com.cryptium.coincurrently.ui.main.HomeTab.Home.Repositories.TrendingRepo
 import com.cryptium.coincurrently.ui.main.HomeTab.Home.Repositories.WinnersLosersRepository
 import com.cryptium.coincurrently.ui.main.Managers.FirebaseManager
 import com.cryptium.coincurrently.ui.main.Managers.RemoteConfigKeys
-import com.cryptium.coincurrently.ui.main.Managers.SecretMessageHelper
 import com.cryptium.coincurrently.ui.main.SettingsTab.Compose.allCurrencies
 import com.cryptium.coincurrently.ui.main.Repositories.*
 import com.cryptium.coincurrently.ui.main.analytics.FavoriteAdded
@@ -144,11 +143,6 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
         }
 
         setShowFreeTrial()
-
-        viewModelScope.launch {
-            FirebaseManager.ensureRemoteConfigFetched()
-            setStartData()
-        }
     }
 
     private var storeKitObserversInitialized: Boolean = false
@@ -214,12 +208,8 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
         }
         applyDefaultHomeFilterIfNeeded()
 
-        winnersLosersRepository.winners?.let { winners ->
-            periodWinners = SecretMessageHelper.withSecretToplist(
-                winners,
-                SecretMessageHelper.PLACEMENT_HOME_WINNERS,
-                4,
-            ).take(homeCarouselLimit)
+        winnersLosersRepository.winners?.take(homeCarouselLimit)?.let {
+            periodWinners = it
         }
 
         winnersLosersRepository.losers?.take(homeCarouselLimit)?.let {

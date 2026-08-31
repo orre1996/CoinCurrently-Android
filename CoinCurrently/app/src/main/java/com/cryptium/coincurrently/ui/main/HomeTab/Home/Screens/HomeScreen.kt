@@ -72,7 +72,6 @@ import kotlinx.coroutines.launch
 import networking.ResponseModels.PriceVolumeModel
 import networking.ResponseModels.Toplist
 import networking.ResponseModels.toCryptoDetail
-import com.cryptium.coincurrently.ui.main.Managers.SecretMessageHelper
 import kotlin.math.absoluteValue
 import kotlin.time.Duration.Companion.seconds
 
@@ -92,8 +91,6 @@ fun HomeScreen(
     var isRefreshing by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val homeLazyListState = rememberLazyListState(initialFirstVisibleItemIndex = 0)
-
-    var selectedUrl: String? by remember { mutableStateOf(null) }
 
     val initialHomeFilterIndex = remember {
         CarouselFilter.homeFilters.indexOf(viewModel.selectedFilter).coerceAtLeast(0)
@@ -443,7 +440,6 @@ fun HomeScreen(
                                 viewModel = viewModel,
                                 context = context,
                                 navigationViewModel = navigationViewModel,
-                                openUrl = { selectedUrl = it },
                             )
                         } else {
                             LazyRow(
@@ -456,7 +452,6 @@ fun HomeScreen(
                                         viewModel = viewModel,
                                         context = context,
                                         navigationViewModel = navigationViewModel,
-                                        openUrl = { selectedUrl = it },
                                         modifier = Modifier.fillParentMaxWidth(),
                                     )
                                 }
@@ -465,12 +460,6 @@ fun HomeScreen(
                     }
                 }
                 }
-            }
-        }
-
-        selectedUrl?.let {
-            WebView(it) {
-                selectedUrl = null
             }
         }
     }
@@ -482,7 +471,6 @@ private fun HomeToplistCategory(
     viewModel: HomeViewModelImp,
     context: Context,
     navigationViewModel: NavigationViewModel,
-    openUrl: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ToplistCategoryView(
@@ -503,10 +491,6 @@ private fun HomeToplistCategory(
             }
         },
         navigateToCryptoDetail = { coin ->
-            if (SecretMessageHelper.handleSecretToplistClick(coin, openUrl)) {
-                return@ToplistCategoryView
-            }
-
             val dest = NavigationScreens.CryptoDetail(
                 cryptoDetailInfoModel = coin.toCryptoDetail(),
             )

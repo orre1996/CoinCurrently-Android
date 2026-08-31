@@ -6,8 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
 import com.cryptium.coincurrently.ui.main.Activities.MainActivity
-import com.cryptium.coincurrently.ui.main.Managers.FirebaseManager
-import com.cryptium.coincurrently.ui.main.Managers.SecretMessageHelper
 import com.cryptium.coincurrently.ui.main.Repositories.ToplistRepository
 import com.cryptium.coincurrently.ui.main.General.Enums.SortOption
 import com.cryptium.coincurrently.ui.main.General.Enums.PriceChange
@@ -20,7 +18,6 @@ import com.cryptium.coincurrently.ui.main.analytics.FavoriteAdded
 import com.cryptium.coincurrently.ui.main.analytics.FavoriteRemoved
 import com.cryptium.coincurrently.ui.main.analytics.AnalyticsManager
 import com.cryptium.coincurrently.ui.main.analytics.ScreenLabel
-import kotlinx.coroutines.launch
 import networking.ResponseModels.*
 
 class ToplistViewModelFactory(
@@ -63,24 +60,6 @@ class ToplistViewModel(
                 favoritesList = it
             }
         }
-
-        viewModelScope.launch {
-            FirebaseManager.ensureRemoteConfigFetched()
-            val cacheKey = "${selectedSortOption.getOptionKey(selectedPriceChangeOption)}-${category?.id}"
-            toplistRepository.toplist?.get(cacheKey)?.let {
-                if (it.data.isNotEmpty()) {
-                    toplist = if (category != null) {
-                        SecretMessageHelper.withSecretToplist(
-                            it.data,
-                            SecretMessageHelper.PLACEMENT_CATEGORY_TOPLIST,
-                            12,
-                        )
-                    } else {
-                        it.data
-                    }
-                }
-            }
-        }
     }
 
     fun setNewSortOption(newSortOption: SortOption) {
@@ -109,22 +88,12 @@ class ToplistViewModel(
             setNewPriceChangeOption(newPriceChangeOption)
         }
 
-        FirebaseManager.ensureRemoteConfigFetched()
-
         toplistRepository.getToplist(
             sortOption = newSortOption,
             priceChange = newPriceChangeOption,
             platformId = category?.id
         )?.let {
-            toplist = if (category != null) {
-                SecretMessageHelper.withSecretToplist(
-                    it,
-                    SecretMessageHelper.PLACEMENT_CATEGORY_TOPLIST,
-                    12,
-                )
-            } else {
-                it
-            }
+            toplist = it
         }
     }
 

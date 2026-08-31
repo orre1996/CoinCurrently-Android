@@ -6,8 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.cryptium.coincurrently.ui.main.HomeTab.Home.Repositories.TrendingRepository
-import com.cryptium.coincurrently.ui.main.Managers.FirebaseManager
-import com.cryptium.coincurrently.ui.main.Managers.SecretMessageHelper
 import networking.ResponseModels.Toplist
 import networking.ResponseModels.TrendingItems
 import networking.ResponseModels.toToplist
@@ -24,14 +22,13 @@ class TrendingViewModel: ViewModel() {
     }
 
     suspend fun getTrendingCoins() {
-        FirebaseManager.ensureRemoteConfigFetched()
         trendingRepository.getTrendingList()?.let {
             trendingList = it
         }
     }
 
     fun getTrendingItems(searchCase: SearchCase): List<Toplist>? {
-        val items = when (searchCase) {
+        return when (searchCase) {
             SearchCase.OnlyCoins, SearchCase.Coins -> {
                 trendingList?.coins?.mapNotNull { it.item?.toToplist() }
             }
@@ -44,16 +41,6 @@ class TrendingViewModel: ViewModel() {
             SearchCase.Exchanges -> {
                 emptyList()
             }
-        } ?: return null
-
-        if (searchCase == SearchCase.OnlyCoins || searchCase == SearchCase.Coins) {
-            return SecretMessageHelper.withSecretToplist(
-                items,
-                SecretMessageHelper.PLACEMENT_TRENDING,
-                4,
-            )
         }
-
-        return items
     }
 }

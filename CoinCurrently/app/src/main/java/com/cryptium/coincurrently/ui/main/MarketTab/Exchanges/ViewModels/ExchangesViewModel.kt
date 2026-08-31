@@ -4,13 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
-import kotlinx.coroutines.launch
 import com.cryptium.coincurrently.ui.main.Managers.StorageKeys
 import com.cryptium.coincurrently.ui.main.Managers.StorageManager
 import com.cryptium.coincurrently.ui.main.Repositories.CurrencyRepository
 import com.cryptium.coincurrently.ui.main.General.Enums.SortOption
-import com.cryptium.coincurrently.ui.main.Managers.FirebaseManager
-import com.cryptium.coincurrently.ui.main.Managers.SecretMessageHelper
 import com.cryptium.coincurrently.ui.main.Repositories.ExchangesRepository
 import networking.ResponseModels.CryptoDetailInfoModel
 import networking.ResponseModels.ExchangeList
@@ -35,28 +32,13 @@ class ExchangesViewModel : ViewModel() {
         }
 
         bitcoin = currencyRepository.bitcoinData
-
-        viewModelScope.launch {
-            FirebaseManager.ensureRemoteConfigFetched()
-            exchangesRepository.exchanges?.let {
-                sortToplist(
-                    exchanges = it,
-                    newSortOption = selectedSortOption
-                ).let { sorted ->
-                    exchanges = finalizeExchanges(sorted)
-                }
-            }
-        }
     }
 
     suspend fun getExchanges() {
-        FirebaseManager.ensureRemoteConfigFetched()
         exchangesRepository.getExchanges()?.let {
-            exchanges = finalizeExchanges(
-                sortToplist(
-                    exchanges = it,
-                    newSortOption = selectedSortOption
-                )
+            exchanges = sortToplist(
+                exchanges = it,
+                newSortOption = selectedSortOption
             )
         }
     }
@@ -71,21 +53,11 @@ class ExchangesViewModel : ViewModel() {
         selectedSortOption = newSortOption
         StorageManager.set(StorageKeys.EXCHANGES_SORT_OPTION, newSortOption)
 
-        val withoutSecret = exchanges.filterNot { SecretMessageHelper.isSecretExchange(it) }
-        exchanges = finalizeExchanges(
-            sortToplist(
-                exchanges = withoutSecret,
-                newSortOption = selectedSortOption
-            )
+        exchanges = sortToplist(
+            exchanges = exchanges,
+            newSortOption = selectedSortOption
         )
     }
-
-    private fun finalizeExchanges(sorted: List<ExchangeList>): List<ExchangeList> =
-        SecretMessageHelper.withSecretExchange(
-            sorted,
-            SecretMessageHelper.PLACEMENT_EXCHANGES,
-            23,
-        )
 
     private fun sortToplist(
         exchanges: List<ExchangeList>,

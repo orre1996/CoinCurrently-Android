@@ -8,10 +8,7 @@ import com.cryptium.coincurrently.ui.main.Managers.StorageKeys
 import com.cryptium.coincurrently.ui.main.Managers.StorageManager
 import com.cryptium.coincurrently.ui.main.Models.CachedData
 import com.cryptium.coincurrently.ui.main.HomeTab.GlobalMarket.Repositories.GlobalMarketRepository
-import com.cryptium.coincurrently.ui.main.Managers.FirebaseManager
-import com.cryptium.coincurrently.ui.main.Managers.SecretMessageHelper
 import com.cryptium.coincurrently.ui.main.Repositories.NewsRepository
-import kotlinx.coroutines.launch
 import networking.NewsCategory
 import networking.ResponseModels.CoinsList
 import networking.ResponseModels.NewNewsItem
@@ -45,15 +42,8 @@ class NewsViewModel: ViewModel() {
             podcastNews = it.data.data
         }
 
-        viewModelScope.launch {
-            FirebaseManager.ensureRemoteConfigFetched()
-            newsRepository.cachedNews?.get(NewsCategory.Videos().type)?.let {
-                videoNews = SecretMessageHelper.withSecretNews(
-                    it.data.data.orEmpty(),
-                    SecretMessageHelper.PLACEMENT_NEWS_VIDEOS,
-                    8,
-                )
-            }
+        newsRepository.cachedNews?.get(NewsCategory.Videos().type)?.let {
+            videoNews = it.data.data
         }
     }
 
@@ -86,13 +76,8 @@ class NewsViewModel: ViewModel() {
     }
 
     suspend fun getVideoNews() {
-        FirebaseManager.ensureRemoteConfigFetched()
         newsRepository.getNewNews(25, NewsCategory.Videos())?.let {
-            videoNews = SecretMessageHelper.withSecretNews(
-                it.data.orEmpty(),
-                SecretMessageHelper.PLACEMENT_NEWS_VIDEOS,
-                8,
-            )
+            videoNews = it.data
         }
     }
 

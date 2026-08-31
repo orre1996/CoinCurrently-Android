@@ -71,7 +71,6 @@ import com.cryptium.coincurrently.ui.main.HomeTab.GlobalMarket.DataClasses.Globa
 import com.cryptium.coincurrently.ui.main.HomeTab.GlobalMarket.Repositories.GlobalMarketRepository
 import com.cryptium.coincurrently.ui.main.Managers.FirebaseManager
 import com.cryptium.coincurrently.ui.main.Managers.RemoteConfigKeys
-import com.cryptium.coincurrently.ui.main.Managers.SecretMessageHelper
 import com.cryptium.coincurrently.ui.main.analytics.ChartCandleModeChanged
 import com.cryptium.coincurrently.ui.main.analytics.FavoriteAdded
 import com.cryptium.coincurrently.ui.main.analytics.FavoriteRemoved
@@ -456,11 +455,7 @@ class CryptoDetailViewModel(
         }
 
         news?.let {
-            newsData = SecretMessageHelper.withSecretNews(
-                it.data.orEmpty(),
-                SecretMessageHelper.PLACEMENT_CRYPTO_DETAIL_NEWS,
-                13,
-            )
+            newsData = it.data.orEmpty()
         } ?: run {
             showNewsError = true
         }

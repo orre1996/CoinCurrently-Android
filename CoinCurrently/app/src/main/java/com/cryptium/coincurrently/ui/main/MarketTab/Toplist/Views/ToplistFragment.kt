@@ -61,8 +61,6 @@ import com.cryptium.coincurrently.ui.main.General.Enums.PriceChange
 import com.cryptium.coincurrently.ui.main.General.Enums.SortOption
 import com.cryptium.coincurrently.ui.main.General.Loading.ChangeSize
 import com.cryptium.coincurrently.ui.main.General.NavigationViewModel
-import com.cryptium.coincurrently.ui.main.General.WebView
-import com.cryptium.coincurrently.ui.main.Managers.SecretMessageHelper
 import com.cryptium.coincurrently.ui.main.General.ObserveCurrencyChanges
 import com.cryptium.coincurrently.ui.main.General.OnLifecycleEvent
 import com.cryptium.coincurrently.ui.main.HomeTab.GlobalMarket.Components.GlobalmarketSummaryView
@@ -119,7 +117,6 @@ fun ToplistFragment(
     val isSearchShowing = remember { mutableStateOf(false) }
     val isSortShowing = remember { mutableStateOf(false) }
     val isPriceChangeShowing = remember { mutableStateOf(false) }
-    var selectedUrl by remember { mutableStateOf<String?>(null) }
 
     val firstVisibleIndex by remember {
         derivedStateOf { scrollState.firstVisibleItemIndex }
@@ -242,24 +239,22 @@ fun ToplistFragment(
                             }
                         },
                         currencyPressed = { coin ->
-                            if (!SecretMessageHelper.handleSecretToplistClick(coin) { selectedUrl = it }) {
-                                val fromScreen = if (category?.id.isNullOrBlank()) {
-                                    ScreenLabel.Toplist
-                                } else {
-                                    ScreenLabel.CategoryDetail
-                                }
-                                val dest = NavigationScreens.CryptoDetail(
-                                    coin.toCryptoDetail(),
-                                )
-                                AnalyticsManager.log(
-                                    Navigate(
-                                        fromScreen = fromScreen,
-                                        toScreen = ScreenLabel.CryptoDetail,
-                                        coinName = coin.name ?: "",
-                                    ),
-                                )
-                                navigationViewModel.navigate(dest)
+                            val fromScreen = if (category?.id.isNullOrBlank()) {
+                                ScreenLabel.Toplist
+                            } else {
+                                ScreenLabel.CategoryDetail
                             }
+                            val dest = NavigationScreens.CryptoDetail(
+                                coin.toCryptoDetail(),
+                            )
+                            AnalyticsManager.log(
+                                Navigate(
+                                    fromScreen = fromScreen,
+                                    toScreen = ScreenLabel.CryptoDetail,
+                                    coinName = coin.name ?: "",
+                                ),
+                            )
+                            navigationViewModel.navigate(dest)
                         }
                     )
                 }
@@ -275,7 +270,6 @@ fun ToplistFragment(
                 highlightId = null,
                 hideId = null,
                 isSearch = true,
-                onOpenUrl = { selectedUrl = it },
                 selectedCoin = { coin ->
                     val coin = coin ?: return@SelectCoinSheet
 
@@ -346,12 +340,6 @@ fun ToplistFragment(
                 }
             }
         )
-
-        selectedUrl?.let {
-            WebView(it) {
-                selectedUrl = null
-            }
-        }
     }
 }
 

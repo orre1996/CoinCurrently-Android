@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
-import kotlinx.coroutines.launch
 import com.cryptium.coincurrently.ui.main.Extensions.getSelectedCurrency
 import com.cryptium.coincurrently.ui.main.General.Enums.SortOption
 import com.cryptium.coincurrently.ui.main.Managers.StorageKeys
@@ -13,8 +12,6 @@ import com.cryptium.coincurrently.ui.main.Models.CachedData
 import com.cryptium.coincurrently.ui.main.General.Enums.PriceChange
 import com.cryptium.coincurrently.ui.main.General.GlobalFunctions
 import com.cryptium.coincurrently.ui.main.Repositories.CurrencyRepository
-import com.cryptium.coincurrently.ui.main.Managers.FirebaseManager
-import com.cryptium.coincurrently.ui.main.Managers.SecretMessageHelper
 import com.cryptium.coincurrently.ui.main.Repositories.DerivativeDetailRepository
 import com.cryptium.coincurrently.ui.main.Repositories.ToplistRepository
 import networking.ResponseModels.CryptoDetailInfoModel
@@ -76,16 +73,6 @@ class DerivativeDetailsViewModel(
                 toplist = cachedToplist
             }
         }
-
-        viewModelScope.launch {
-            FirebaseManager.ensureRemoteConfigFetched()
-            derivative?.id?.let { id ->
-                StorageManager.get<MutableMap<String, CachedData<Derivative>>>(StorageKeys.DERIVATIVE_DETAIL)?.get(id)?.data?.let { data ->
-                    this@DerivativeDetailsViewModel.derivative = data
-                    setLists()
-                }
-            }
-        }
     }
 
     suspend fun getBitcoin() {
@@ -99,7 +86,6 @@ class DerivativeDetailsViewModel(
     }
 
     suspend fun getDerivatives() {
-        FirebaseManager.ensureRemoteConfigFetched()
         derivativeDetailRepository.getDerivativeDetail(derivative?.id)?.let {
             derivative = it
             setLists()
@@ -125,11 +111,7 @@ class DerivativeDetailsViewModel(
             ?.sortedByDescending { it.open_interest_usd ?: 0.0 }
             ?: emptyList()
 
-        futuresList = SecretMessageHelper.withSecretDerivative(
-            sortToplist(derivatives = futures, newSortOption = selectedSortOption),
-            SecretMessageHelper.PLACEMENT_DERIVATIVE_FUTURES,
-            31,
-        )
+        futuresList = sortToplist(derivatives = futures, newSortOption = selectedSortOption)
     }
 
     private fun sortToplist(

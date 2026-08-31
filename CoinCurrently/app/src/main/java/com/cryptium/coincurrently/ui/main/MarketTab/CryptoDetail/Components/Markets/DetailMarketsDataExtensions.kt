@@ -6,7 +6,6 @@ import com.cryptium.coincurrently.ui.main.Extensions.getSelectedCurrency
 import com.cryptium.coincurrently.ui.main.General.Enums.FormattingThreshold
 import com.cryptium.coincurrently.ui.main.General.Enums.SortOption
 import com.cryptium.coincurrently.ui.main.General.GlobalFunctions
-import com.cryptium.coincurrently.ui.main.Managers.SecretMessageHelper
 import com.cryptium.coincurrently.ui.main.MarketTab.CryptoDetail.ViewModel.CryptoDetailViewModel
 import com.cryptium.coincurrently.ui.main.MarketTab.Exchanges.ViewModels.ExchangeDetailViewModel
 import com.cryptium.coincurrently.ui.main.MarketTab.NFT.ViewModels.NFTDetailViewModel
@@ -66,11 +65,7 @@ fun CryptoDetailViewModel.toDetailMarketsData(): Pair<DetailMarketsConfig, List<
         else -> tickers?.sortedByDescending { it.volumeSortKey() }
     }
     val items = sorted?.map { it.toDetailMarketsItem() } ?: return DetailMarketsConfig.Crypto to null
-    return DetailMarketsConfig.Crypto to SecretMessageHelper.withSecretMarketsItem(
-        items,
-        SecretMessageHelper.PLACEMENT_CRYPTO_DETAIL_MARKETS,
-        11,
-    )
+    return DetailMarketsConfig.Crypto to items
 }
 
 fun Ticker.toDetailMarketsItem(): DetailMarketsItem {

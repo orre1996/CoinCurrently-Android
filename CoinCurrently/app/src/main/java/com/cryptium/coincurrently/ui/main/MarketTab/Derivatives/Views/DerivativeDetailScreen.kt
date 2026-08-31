@@ -35,8 +35,6 @@ import com.cryptium.coincurrently.ui.main.General.Enums.FormattingThreshold
 import com.cryptium.coincurrently.ui.main.General.Enums.SortOption
 import com.cryptium.coincurrently.ui.main.General.NavigationViewModel
 import com.cryptium.coincurrently.ui.main.General.OnLifecycleEvent
-import com.cryptium.coincurrently.ui.main.General.WebView
-import com.cryptium.coincurrently.ui.main.Managers.SecretMessageHelper
 import com.cryptium.coincurrently.ui.main.MarketTab.CryptoDetail.Components.General.ScrollableTabSelector
 import com.cryptium.coincurrently.ui.main.MarketTab.Derivatives.ViewModels.DerivativeDetailsViewModel
 import com.cryptium.coincurrently.ui.main.MarketTab.Derivatives.ViewModels.DerivativeDetailsViewModelFactory
@@ -67,7 +65,6 @@ fun DerivativeDetailScreen(
     )
 
     var selectedTicker: DerivativeDetailModel? by remember { mutableStateOf(null) }
-    var selectedUrl: String? by remember { mutableStateOf(null) }
     var currentPage by remember { mutableStateOf(0) }
     var isRefreshing by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -81,15 +78,13 @@ fun DerivativeDetailScreen(
     val tabs = listOf("Perpetuals", "Futures")
 
     val selectTicker: (DerivativeDetailModel) -> Unit = { ticker ->
-        if (!SecretMessageHelper.handleSecretDerivativeClick(ticker) { selectedUrl = it }) {
-            AnalyticsManager.log(
-                SheetOpened(
-                    fromScreen = ScreenLabel.DerivativeDetail,
-                    sheet = SheetLabel.DerivativeTickerDetail
-                )
+        AnalyticsManager.log(
+            SheetOpened(
+                fromScreen = ScreenLabel.DerivativeDetail,
+                sheet = SheetLabel.DerivativeTickerDetail
             )
-            selectedTicker = ticker
-        }
+        )
+        selectedTicker = ticker
     }
 
     val firstVisibleIndex by remember {
@@ -308,12 +303,6 @@ fun DerivativeDetailScreen(
                 }
             )
         }
-
-        selectedUrl?.let {
-            WebView(it) {
-                selectedUrl = null
-            }
-        }
     }
 }
 
@@ -527,11 +516,7 @@ private fun LazyListScope.PerpetualsList(
                 isFutures = false,
                 listIndex = index,
                 listCount = perpetuals.size,
-                imageUrl = if (SecretMessageHelper.isSecretDerivative(derivative)) {
-                    SecretMessageHelper.secretImageUrl()
-                } else {
-                    toplist?.firstOrNull { it.symbol?.lowercase() == derivative.base?.lowercase() }?.image
-                },
+                imageUrl = toplist?.firstOrNull { it.symbol?.lowercase() == derivative.base?.lowercase() }?.image,
                 hasToplist = toplist != null,
                 derivativeSelected = {
                     derivativeSelected.invoke(derivative)
@@ -555,11 +540,7 @@ private fun LazyListScope.FuturesList(
                 isFutures = true,
                 listIndex = index,
                 listCount = perpetuals.size,
-                imageUrl = if (SecretMessageHelper.isSecretDerivative(derivative)) {
-                    SecretMessageHelper.secretImageUrl()
-                } else {
-                    toplist?.firstOrNull { it.symbol?.lowercase() == derivative.base?.lowercase() }?.image
-                },
+                imageUrl = toplist?.firstOrNull { it.symbol?.lowercase() == derivative.base?.lowercase() }?.image,
                 hasToplist = toplist != null,
                 derivativeSelected = {
                     derivativeSelected.invoke(derivative)
