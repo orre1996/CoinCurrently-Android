@@ -477,7 +477,7 @@ fun SettingsScreen(
 
                     if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
                         coroutineScope.launch {
-                            PriceAlertsRepository.updateUser(force = true)
+                            PriceAlertsRepository.updateUser()
                         }
                     }
                 },

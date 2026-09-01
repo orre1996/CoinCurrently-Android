@@ -67,8 +67,12 @@ class ReferralRepository {
             return result
         }
 
-        suspend fun getUser(): UserResponse? {
+        suspend fun getUser(ignoreCache: Boolean = false): UserResponse? {
             val previousCount = user?.referralCount?.toDouble() ?: 0.0
+
+            if (ignoreCache) {
+                RetrofitBuilder.removeCached(CacheUrls.getUser())
+            }
 
             @Suppress("UNCHECKED_CAST")
             RetrofitBuilder.getCached(CacheUrls.getUser(), userResponseType)?.let { cached ->

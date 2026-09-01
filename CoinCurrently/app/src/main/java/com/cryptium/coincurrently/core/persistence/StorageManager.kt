@@ -80,7 +80,6 @@ enum class StorageKeys(private val rawOverride: String? = null) {
 
     HAS_ASKED_FOR_PUSH_NOTIFICATIONS,
     LAST_PUSH_NOTIFICATION_TOKEN,
-    LAST_WEEKLY_USER_UPDATE_DATE,
     SUBSCIBRES_TO_BIG_MOVERS,
     OTHER_COINS,
     

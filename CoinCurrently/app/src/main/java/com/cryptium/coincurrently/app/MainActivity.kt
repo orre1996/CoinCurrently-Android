@@ -262,7 +262,7 @@ class MainActivity: FragmentActivity() {
                             askNotificationPermission()
 
                             GlobalScope.launch {
-                                PriceAlertsRepository.updateUserWeeklyIfNeeded(context)
+                                PriceAlertsRepository.updateUser()
                             }
                         }
                     }
@@ -299,7 +299,7 @@ class MainActivity: FragmentActivity() {
 
                             if (currentRoute != "Loading") {
                                 GlobalScope.launch {
-                                    PriceAlertsRepository.updateUserWeeklyIfNeeded(context)
+                                    PriceAlertsRepository.updateUser()
                                 }
                             }
 

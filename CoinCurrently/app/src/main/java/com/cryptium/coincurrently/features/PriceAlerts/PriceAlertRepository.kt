@@ -1,7 +1,5 @@
 package com.cryptium.coincurrently.features.PriceAlerts
-import android.content.Context
 import android.util.Log
-import androidx.core.app.NotificationManagerCompat
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.features.Settings.CurrencySelector.allCurrencies
@@ -18,6 +16,7 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.AlertCoin
 import com.cryptium.coincurrently.core.networking.ResponseModels.PostAlertCoin
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 import com.cryptium.coincurrently.core.networking.RetrofitBuilder
+import com.cryptium.coincurrently.features.Referral.ReferralRepository
 import com.cryptium.coincurrently.sharedui.models.CachedData
 import java.util.Date
 
@@ -64,7 +63,7 @@ class PriceAlertsRepository {
             return mainRepository.getMultipleCurrencies(idsStr, currencyCode).unwrapOrNull()
         }
 
-        suspend fun updateUser(force: Boolean = false): Boolean {
+        suspend fun updateUser(): Boolean {
             if (!FirebaseManager.fetchFcmTokenIfNeeded()) {
                 return false
             }
@@ -74,39 +73,25 @@ class PriceAlertsRepository {
                 return false
             }
 
-            val lastSavedToken = StorageManager.get<String>(StorageKeys.LAST_PUSH_NOTIFICATION_TOKEN) ?: ""
+            val currency = GlobalFunctions.getSelectedCurrency()
+            val claims = ReferralRepository.getUser()?.user?.customClaims
+            val fcmMatches = claims?.fcmToken == fcmToken
+            val currencyMatches = claims?.preferredCurrency?.equals(currency.code, ignoreCase = true) == true
 
-            if (lastSavedToken != fcmToken || force) {
-                val result = mainRepository.updateUser(fcmToken)
-                result.onSuccess {
-                    StorageManager.set(StorageKeys.LAST_PUSH_NOTIFICATION_TOKEN, fcmToken)
+            if (fcmMatches && currencyMatches) {
+                return true
+            }
 
-                    if (StorageManager.get<Boolean>(StorageKeys.SUBSCIBRES_TO_BIG_MOVERS) == null) {
-                        subBigMovers()
-                    }
+            val result = mainRepository.updateUser(fcmToken)
+            result.onSuccess {
+                StorageManager.set(StorageKeys.LAST_PUSH_NOTIFICATION_TOKEN, fcmToken)
+                ReferralRepository.getUser(ignoreCache = true)
+
+                if (StorageManager.get<Boolean>(StorageKeys.SUBSCIBRES_TO_BIG_MOVERS) == null) {
+                    subBigMovers()
                 }
-                return result.isSuccess
             }
-
-            return true
-        }
-
-        suspend fun updateUserWeeklyIfNeeded(context: Context) {
-            if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) {
-                return
-            }
-
-            val lastUpdate: Date? = StorageManager.get(StorageKeys.LAST_WEEKLY_USER_UPDATE_DATE)
-            val now = Date()
-            val weekInMillis = 7L * 24 * 60 * 60 * 1000
-
-            if (lastUpdate != null && now.time - lastUpdate.time < weekInMillis) {
-                return
-            }
-
-            if (updateUser(force = true)) {
-                StorageManager.set(StorageKeys.LAST_WEEKLY_USER_UPDATE_DATE, now)
-            }
+            return result.isSuccess
         }
 
         suspend fun subBigMovers(): Boolean {
@@ -189,7 +174,7 @@ class PriceAlertsRepository {
                 return PriceAlertCreateResult.FcmTokenUnavailable
             }
 
-            updateUser(force = true)
+            updateUser()
 
             val alert = mainRepository.createPriceAlert(alertCoin).unwrapOrNull()
                 ?: return PriceAlertCreateResult.Failed
