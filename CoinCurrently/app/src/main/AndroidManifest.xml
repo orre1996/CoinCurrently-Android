@@ -38,7 +38,7 @@
         </provider>
 
         <receiver
-            android:name=".ui.main.Widgets.small_fear_greed_widget"
+            android:name=".widgets.receivers.small_fear_greed_widget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -50,7 +50,7 @@
         </receiver>
 
         <receiver
-            android:name=".ui.main.Widgets.MediumNewsWidgetReceiver"
+            android:name=".widgets.glance.MediumNewsWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -61,7 +61,7 @@
                 android:resource="@xml/medium_news_widget_info" />
         </receiver>
         <receiver
-            android:name=".ui.main.Widgets.SmallNewsWidgetReceiver"
+            android:name=".widgets.glance.SmallNewsWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -77,7 +77,7 @@
             android:resource="@mipmap/ic_launcher" />
 
         <service
-            android:name=".ui.main.General.PushNotificationManager"
+            android:name=".core.notifications.PushNotificationManager"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -90,7 +90,7 @@
 
         <!--
         <receiver
-            android:name=".ui.main.Widgets.medium_portfolio_widget"
+            android:name=".widgets.receivers.medium_portfolio_widget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -101,7 +101,7 @@
                 android:resource="@xml/medium_portfolio_widget_info" />
         </receiver>
         <receiver
-            android:name=".ui.main.Widgets.small_portfolio_widget"
+            android:name=".widgets.receivers.small_portfolio_widget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -113,7 +113,7 @@
         </receiver>
         -->
         <receiver
-            android:name=".ui.main.Widgets.LargeQuadCryptoWidgetReceiver"
+            android:name=".widgets.glance.LargeQuadCryptoWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -124,7 +124,7 @@
                 android:resource="@xml/large_quad_crypto_widget_info" />
         </receiver>
         <receiver
-            android:name=".ui.main.Widgets.MediumDuoCryptoWidgetReceiver"
+            android:name=".widgets.glance.MediumDuoCryptoWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -135,7 +135,7 @@
                 android:resource="@xml/medium_duo_crypto_widget_info" />
         </receiver>
         <receiver
-            android:name=".ui.main.Widgets.SmallCryptoWidgetReceiver"
+            android:name=".widgets.glance.SmallCryptoWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -146,7 +146,7 @@
                 android:resource="@xml/small_crypto_widget_info" />
         </receiver>
         <receiver
-            android:name=".ui.main.Widgets.LargeMultiCryptoWidgetReceiver"
+            android:name=".widgets.glance.LargeMultiCryptoWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -157,7 +157,7 @@
                 android:resource="@xml/large_crypto_multi_widget_info" />
         </receiver>
         <activity
-            android:name=".ui.main.Activities.MainActivity"
+            android:name=".app.MainActivity"
             android:configChanges="uiMode|orientation|screenSize|screenLayout|smallestScreenSize"
             android:exported="true"
             android:theme="@style/SplashTheme"

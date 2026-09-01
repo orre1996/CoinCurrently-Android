@@ -1,9 +1,8 @@
 package com.cryptium.coincurrently
-
 import android.app.Application
 import coil.Coil
-import com.cryptium.coincurrently.ui.main.General.ComposePlatformCompat
-import com.cryptium.coincurrently.ui.main.analytics.AnalyticsManager
+import com.cryptium.coincurrently.sharedui.components.ComposePlatformCompat
+import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.google.firebase.FirebaseApp
 import com.revenuecat.purchases.LogLevel
 import com.revenuecat.purchases.Purchases
@@ -14,6 +13,7 @@ import okhttp3.OkHttpClient
 import java.io.File
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+import com.cryptium.coincurrently.core.config.AppLocale
 
 /**
  * Configures Coil so images stay available offline after they have been fetched once.

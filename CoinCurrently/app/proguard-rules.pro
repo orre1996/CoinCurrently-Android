@@ -38,42 +38,42 @@
 # Keep every API / disk-cache / navigation model type in the app.
 
 # Retrofit API DTOs
--keep class networking.ResponseModels.** { *; }
--keep class networking.Resource { *; }
--keep class networking.Status { *; }
+-keep class com.cryptium.coincurrently.core.networking.ResponseModels.** { *; }
+-keep class com.cryptium.coincurrently.core.networking.Resource { *; }
+-keep class com.cryptium.coincurrently.core.networking.Status { *; }
 
 # Shared cache wrappers + app models
--keep class com.cryptium.coincurrently.ui.main.Models.** { *; }
+-keep class com.cryptium.coincurrently.sharedui.models.** { *; }
 
-# All feature DataClasses / Models / Enums packages (any nesting under ui.main)
--keep class com.cryptium.coincurrently.ui.main.**.DataClasses.** { *; }
--keep class com.cryptium.coincurrently.ui.main.**.Models.** { *; }
--keep class com.cryptium.coincurrently.ui.main.**.Enums.** { *; }
+# All feature DataClasses / Models / Enums packages
+-keep class com.cryptium.coincurrently.features.**.DataClasses.** { *; }
+-keep class com.cryptium.coincurrently.features.**.Models.** { *; }
+-keep class com.cryptium.coincurrently.features.**.Enums.** { *; }
 
 # Data classes declared inside repository files (not under DataClasses/)
--keep class com.cryptium.coincurrently.ui.main.Repositories.PortfolioPiesData { *; }
--keep class com.cryptium.coincurrently.ui.main.HomeTab.GlobalMarket.Repositories.CachedGlobalMarket { *; }
--keep class com.cryptium.coincurrently.ui.main.HomeTab.GlobalMarket.Repositories.CachedCoinsList { *; }
+-keep class com.cryptium.coincurrently.features.Portfolio.PortfolioPiesData { *; }
+-keep class com.cryptium.coincurrently.features.GlobalMarket.CachedGlobalMarket { *; }
+-keep class com.cryptium.coincurrently.features.GlobalMarket.CachedCoinsList { *; }
 
 # Sealed news category persisted via Gson
--keep class networking.NewsCategory { *; }
--keep class networking.NewsCategory$* { *; }
+-keep class com.cryptium.coincurrently.core.networking.NewsCategory { *; }
+-keep class com.cryptium.coincurrently.core.networking.NewsCategory$* { *; }
 
 # Catch-all: every @Serializable type used with Gson / navigation / cache
 -if @kotlinx.serialization.Serializable class **
 -keep class <1> { *; }
 
 # Nested enums stored via Gson (declared inside GlobalFunctions)
--keep class com.cryptium.coincurrently.ui.main.General.GlobalFunctions$* { *; }
+-keep class com.cryptium.coincurrently.sharedui.components.GlobalFunctions$* { *; }
 
 # Portfolio companion touches Gson-backed fields; keep names stable
--keep class com.cryptium.coincurrently.ui.main.Repositories.PortfolioRepository { *; }
--keep class com.cryptium.coincurrently.ui.main.Repositories.PortfolioRepository$Companion { *; }
+-keep class com.cryptium.coincurrently.features.Portfolio.PortfolioRepository { *; }
+-keep class com.cryptium.coincurrently.features.Portfolio.PortfolioRepository$Companion { *; }
 
 # kotlinx.serialization generated serializers for app + API models
--keep,includedescriptorclasses class networking.ResponseModels.**$$serializer { *; }
--keep,includedescriptorclasses class com.cryptium.coincurrently.ui.main.**$$serializer { *; }
--keep,includedescriptorclasses class networking.**$$serializer { *; }
+-keep,includedescriptorclasses class com.cryptium.coincurrently.core.networking.ResponseModels.**$$serializer { *; }
+-keep,includedescriptorclasses class com.cryptium.coincurrently.**$$serializer { *; }
+-keep,includedescriptorclasses class com.cryptium.coincurrently.core.networking.**$$serializer { *; }
 
 # Keep generic signature of Call, Response (R8 full mode strips signatures from non-kept items).
 -keep,allowobfuscation,allowshrinking interface retrofit2.Call
@@ -90,10 +90,10 @@
 # "Expected BEGIN_OBJECT but was BEGIN_ARRAY".
 -keep,allowobfuscation,allowshrinking class kotlin.Result
 -keep,allowobfuscation,allowshrinking class kotlin.Result$Failure
--keep class networking.ResultCallAdapterFactory { *; }
--keep class networking.ResultCall { *; }
--keep,allowobfuscation interface networking.ResponseModels.ApiService
--keepclassmembers,allowobfuscation interface networking.ResponseModels.ApiService {
+-keep class com.cryptium.coincurrently.core.networking.ResultCallAdapterFactory { *; }
+-keep class com.cryptium.coincurrently.core.networking.ResultCall { *; }
+-keep,allowobfuscation interface com.cryptium.coincurrently.core.networking.ResponseModels.ApiService
+-keepclassmembers,allowobfuscation interface com.cryptium.coincurrently.core.networking.ResponseModels.ApiService {
     <methods>;
 }
 
@@ -105,7 +105,7 @@
 -keepclasseswithmembers class kotlinx.serialization.json.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
--keep,includedescriptorclasses class networking.ResponseModels.**$$serializer { *; }
+-keep,includedescriptorclasses class com.cryptium.coincurrently.core.networking.ResponseModels.**$$serializer { *; }
 -if @kotlinx.serialization.Serializable class **
 -keepclassmembers class <1> {
     static <1>$Companion Companion;
@@ -126,7 +126,7 @@
 
 # App widgets / Glance receivers referenced from the manifest
 -keep public class * extends android.appwidget.AppWidgetProvider
--keep class com.cryptium.coincurrently.ui.main.Widgets.** { *; }
+-keep class com.cryptium.coincurrently.widgets.** { *; }
 
 # Enums used via reflection / name()
 -keepclassmembers enum * {
@@ -163,4 +163,4 @@
 -keepclassmembers class androidx.compose.ui.text.font.FontWeightAdjustmentHelper {
     public int getFontWeightAdjustment(android.content.Context);
 }
--keep class com.cryptium.coincurrently.ui.main.General.ComposePlatformCompat { *; }
+-keep class com.cryptium.coincurrently.sharedui.components.ComposePlatformCompat { *; }
