@@ -5,14 +5,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.res.Configuration
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.*
 import android.os.Handler
 import android.os.Looper
 import android.widget.RemoteViews
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.core.extensions.normalise
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
@@ -149,20 +145,6 @@ fun drawPieChart(currencies: List<Pie>, context: Context, mediumWidget: Boolean)
 
 
     return bitmap*/
-}
-
-
-enum class ForeverStartLifecycleOwner : LifecycleOwner {
-    INSTANCE {
-        override val lifecycle: Lifecycle
-            get() = mLifecycleRegistry
-    };
-
-    val mLifecycleRegistry: LifecycleRegistry = LifecycleRegistry(this)
-
-    init {
-        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
-    }
 }
 
 fun widgetOnSurface(context: Context): Int {
@@ -323,75 +305,4 @@ private fun getLinearColorsMediumWidget(priceChange: Double, context: Context): 
             Color.parseColor("#0093A4EB")
         )
     }
-}
-
-/** Draws 7d sparkline graph. */
-fun drawGraphPaths1(
-    prices: List<Double>,
-    context: Context,
-    height: Int,
-    width: Int,
-    priceChange: Double
-): Bitmap? {
-    val widthPx = if (width > 0) width else Resources.getSystem().displayMetrics.widthPixels
-    val heightPx = if (height > 0) height else Resources.getSystem().displayMetrics.heightPixels
-    val bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888)
-
-    if (prices.isEmpty()) return null
-
-    val canvas = Canvas(bitmap)
-    val minP = prices.minOrNull()?.toFloat() ?: 0f
-    val maxP = prices.maxOrNull()?.toFloat() ?: 0f
-    val normalizedPrices = prices.map { price ->
-        if (maxP == minP) 0.5f
-        else normalise(price.toFloat(), minP, maxP)
-    }
-
-    /*val colors = getLinearColorsMediumWidget(priceChange, context)
-    val paintFill = Paint().apply {
-        isAntiAlias = true
-        shader = LinearGradient(
-            0f, 0f, 0f, canvas.height.toFloat(),
-            colors,
-            null,
-            Shader.TileMode.CLAMP
-        )
-        style = Paint.Style.FILL
-    }
-
-    val pricePath = Path().apply {
-        fillType = Path.FillType.EVEN_ODD
-        moveTo(-20f, normalizedPrices.first() * canvas.height)
-        normalizedPrices.forEachIndexed { index, it ->
-            lineTo(
-                (canvas.width * index).toFloat() / (normalizedPrices.size - 1).coerceAtLeast(1f),
-                (1 - it) * canvas.height
-            )
-        }
-        lineTo(1.1f * canvas.width.toFloat(), canvas.height * 1.5f)
-        lineTo(-1.1f * canvas.width.toFloat(), canvas.height * 1.5f)
-        close()
-    }
-
-    try {
-        canvas.drawPath(pricePath, paintFill)
-    } catch (e: Exception) {
-        return null
-    }
-
-    val paintStroke = Paint().apply {
-        isAntiAlias = true
-        color = priceChange.getWidgetChangeColor(context)
-        strokeWidth = 8f
-        style = Paint.Style.STROKE
-        strokeCap = Paint.Cap.ROUND
-    }
-
-    try {
-        canvas.drawPath(pricePath, paintStroke)
-    } catch (e: Exception) {
-        return null
-    }*/
-
-    return bitmap
 }

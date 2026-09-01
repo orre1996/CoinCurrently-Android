@@ -103,17 +103,6 @@ fun Date.isMoreThanOneMonthOld(): Boolean {
 }
 
 
-fun Date.isMoreThanTwoDays(): Boolean {
-    val currentDate = LocalDate.now()
-    val dateInstant = this.toInstant()
-    val dateLocal = dateInstant.atZone(ZoneId.systemDefault()).toLocalDate()
-
-    val daysBetween = ChronoUnit.DAYS.between(dateLocal, currentDate)
-
-    return daysBetween >= 2
-}
-
-
 fun Date?.isMoreThanDefaultCache(): Boolean {
     if (this == null) {
         return false

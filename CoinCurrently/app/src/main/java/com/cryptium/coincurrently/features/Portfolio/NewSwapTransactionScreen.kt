@@ -675,23 +675,6 @@ private fun NoteField(
 }
 
 @Composable
-private fun AmountErrorView(
-    isEditing: Boolean
-) {
-    val action = if(isEditing) "edit" else "add"
-
-    Text(
-        text = "Can't $action a transaction that would result in a negative balance.",
-        style = satoshiMedium(12),
-        color = MaterialTheme.colors.trendDown,
-        textAlign = TextAlign.Center,
-        modifier = Modifier
-            .padding(horizontal = 32.dp)
-            .fillMaxWidth()
-    )
-}
-
-@Composable
 private fun ActionButtonsView(
     isInputValid: Boolean,
     isLoading: Boolean,

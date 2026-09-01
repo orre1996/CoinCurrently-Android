@@ -91,15 +91,6 @@ fun String.getDate(): Date? {
     }
 }
 
-fun String.getDateShort(): Date? {
-    return try {
-        val format = SimpleDateFormat("MMMM d, yyyy HH:mm:ss", AppLocale.enUsPosix)
-        format.parse(this)
-    } catch (e: Exception) {
-        Date()
-    }
-}
-
 fun String.convertStringToDate(dateFormat: DateFormat, gmtTimeZone: Boolean = true): Date? {
     val dateFormatter = SimpleDateFormat(dateFormat.pattern, AppLocale.enUsPosix)
     if (gmtTimeZone) {
@@ -119,55 +110,6 @@ fun String.getEmptyStringLength(length: Int): String {
     }
 
     return array
-}
-
-fun String.getTrimmedInput(dontAllowZero: Boolean = false): String {
-    try {
-        if (this.isNullOrEmpty() || !this.isNumeric() || this == "null" || this == "." || this == ",") {
-            return ""
-        }
-
-        if (dontAllowZero && this.toDouble() == 0.0) {
-            return ""
-        }
-
-        val toDouble = this.toDouble()
-
-        val format = android.icu.text.NumberFormat.getInstance(AppLocale.enUsPosix)
-        format.minimumFractionDigits = 2
-        format.maximumFractionDigits = 7
-        format.isGroupingUsed = false
-
-        return format.format(toDouble).replace(",", ".")
-    } catch(e: Exception) {
-        return ""
-    }
-}
-
-
-val String.toInputDouble: Double?
-    get() {
-        return try {
-            this.replace(" ", "").replace(",", ".").toDouble()
-        } catch(e: Exception) {
-            null
-        }
-    }
-
-
-fun String.MMMMdyyyy(): String? {
-    val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", AppLocale.enUsPosix)
-    val convertedDate: Date?
-    val formattedDate: String?
-
-    try {
-        convertedDate = sdf.parse(this)
-        formattedDate = SimpleDateFormat("MMMM d, yyyy", AppLocale.enUsPosix).format(convertedDate)
-    } catch (e: Exception) {
-        return "Unknown"
-    }
-
-    return formattedDate
 }
 
 fun String.MMMMddyyyy(): String? {

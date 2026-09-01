@@ -92,24 +92,5 @@ data class SearchResult(
         )
 }
 
-@Serializable
-data class CategorySearchResult(
-    var id: Int? = null,
-    var name: String? = null
-)
-
 // Typealias for backward compatibility
 typealias SearchItem = SearchResult
-
-// Backward compatibility - SearchCategoryEnum is no longer used but kept for compatibility
-enum class SearchCategoryEnum {
-    COIN,
-    EXCHANGE,
-    NFT
-}
-
-// Deprecated extension function for backward compatibility
-@Deprecated("Category is no longer stored in SearchResult. Use the list type instead.")
-fun SearchResult.withCategory(category: SearchCategoryEnum): SearchResult {
-    return this
-}

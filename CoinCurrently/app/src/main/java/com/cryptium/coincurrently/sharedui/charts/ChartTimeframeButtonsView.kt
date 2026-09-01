@@ -208,17 +208,6 @@ fun ChartTimeframeButtonsView(
     }
 }
 
-/** Timeframe capsule row; persists selection and forwards to [buttonPressed]. */
-@Composable
-fun ChartButtonsViewNew(
-    buttons: List<ChartButton>,
-    selectedTimeCharts: TimeCharts,
-    fromScreen: ScreenLabel,
-    buttonPressed: (ChartButton) -> Unit,
-) {
-    ChartTimeframeButtonsView(buttons, selectedTimeCharts, fromScreen, buttonPressed)
-}
-
 @Composable
 fun TimeChartButton(
     chartButton: ChartButton,

@@ -421,10 +421,6 @@ fun ProductDetails.toPromoTierButton(title: String, compareTo: Double): TierButt
 
 fun ProductDetails.toWelcomeTierButton(title: String, compareTo: Double) = toPromoTierButton(title, compareTo)
 
-fun ProductDetails.weeklyToYearly(): Double {
-    return this.getNormalPricePhase()?.pricingPhaseToDouble()?.times(52) ?: 0.0
-}
-
 fun ProductDetails.monthlyToYearly(): Double {
     return this.getNormalPricePhase()?.pricingPhaseToDouble()?.times(12) ?: 0.0
 }

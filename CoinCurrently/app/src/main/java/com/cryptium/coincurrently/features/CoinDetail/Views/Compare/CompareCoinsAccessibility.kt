@@ -46,12 +46,6 @@ fun accessibleCompareSupplyLabel(name: String?, value: Double?): String {
     return "${name ?: ""}: $supplyText"
 }
 
-fun accessibleRangeEndpointLabel(prefix: String, price: Double?, date: String?): String {
-    val priceText = price?.formatCurrency(accessible = true) ?: ""
-    val dateText = date ?: "unknown date"
-    return "$prefix $priceText on $dateText"
-}
-
 fun accessibleDaysAgoLabel(name: String?, daysAgo: String?): String {
     return "${name ?: ""}: ${daysAgo ?: "unknown"}"
 }

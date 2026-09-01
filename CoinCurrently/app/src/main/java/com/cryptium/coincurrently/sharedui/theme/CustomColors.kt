@@ -36,10 +36,6 @@ val Colors.onSurfaceContainer: Color
     get() = if (isLight) Color(0xFF1C1B1B) else Color(0xFFF6FEFF)
 
 @get:Composable
-val Colors.inverseOnContainer: Color
-    get() = if (isLight) Color(0xFFF4F0EF) else Color(0xFF1C1B1B)
-
-@get:Composable
 val Colors.surfaceContainer: Color
     get() = if (isLight) Color(0xFFEBE8E7) else Color(0xFF262625)
 
@@ -180,10 +176,6 @@ val Colors.trendDown: Color
     )
 
 @get:Composable
-val Colors.inverseSurface: Color
-    get() = if (isLight) Color(0xFF1C1B1B) else Color(0xFFE5E2E1)
-
-@get:Composable
 val Colors.primaryTextColor: Color
     get() = if (isLight) Color(0xFF222A4F) else Color(0xFFEAF3FF)
 
@@ -246,20 +238,12 @@ val Colors.buttonBackgroundColor: Color
     get() = if (isLight) Color(0xFF437DC8) else Color(0xFFA2BFF6)
 
 @get:Composable
-val Colors.pageSelectorSelectedBG: Color
-    get() = if (isLight) Color(0xFFE1EEFF) else Color(0xFF171717)
-
-@get:Composable
 val Colors.transparent: Color
     get() = Color(0x00000000)
 
 @get:Composable
 val Colors.skeletonBackground: Color
     get() = if (isLight) Color(0x403A3A43) else Color(0x40E6E9FF)
-
-@get:Composable
-val Colors.popUpColor: Color
-    get() = if (isLight) Color(0xFF323774) else Color(0xFFCDCEE1)
 
 /**
  * Same color values as the Compose extensions above, as ARGB Int for use outside Compose

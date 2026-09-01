@@ -10,12 +10,8 @@ import com.cryptium.coincurrently.sharedui.theme.fear
 import com.cryptium.coincurrently.sharedui.theme.greed
 import com.cryptium.coincurrently.sharedui.theme.neutral
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
-import com.cryptium.coincurrently.features.Portfolio.Models.TransactionType
 import com.cryptium.coincurrently.features.Portfolio.Models.TransferType
 import com.cryptium.coincurrently.app.NavigationScreens
-
-val Int.boolValue
-    get() = this != 0
 
 val Int.trustColor: Color @Composable
     get() = when (this) {
@@ -44,16 +40,6 @@ val Int.getTransferType: TransferType
             0 -> { TransferType.OUTTYPE }
             else ->{ TransferType.INTYPE }
 
-        }
-    }
-
-val Int.getTransactionType: TransactionType
-    get() {
-        return when (this) {
-            0 -> { TransactionType.IMPORT_ADDRESS }
-            1 -> { TransactionType.BUY }
-            2 -> { TransactionType.SELL }
-            else -> { TransactionType.TRANSFER }
         }
     }
 

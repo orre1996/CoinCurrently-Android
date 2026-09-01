@@ -1,6 +1,5 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
 import com.cryptium.coincurrently.app.NavigationScreens
-import com.cryptium.coincurrently.core.extensions.getDifferenceInPercent
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
@@ -33,13 +32,6 @@ data class Sparkline(
 /** Bundle-safe key for LazyColumn / reorderable; never use [Toplist] as the key object. */
 fun Toplist.stableListKey(): String = id ?: symbol ?: name ?: ""
 
-fun Toplist.weeklyChange(): Double? {
-    val first = sparkline_in_7d?.price?.firstOrNull() ?: return null
-    val last = sparkline_in_7d?.price?.lastOrNull() ?: return null
-
-    return getDifferenceInPercent(between = last, and = first)
-}
-
 fun Toplist.getPreferredChange(): Double {
     return when(GlobalFunctions.getPreferredTimeframe()) {
         PreferredTimeframe.DAILY -> price_change_percentage_24h_in_currency ?: 0.0
@@ -63,17 +55,6 @@ fun List<Toplist>.getSortedToplist(sortOption: SortOption, priceChange: PriceCha
         SortOption.PriceChangeAsc -> sortedBy { it.getPriceChange(priceChange) }
         else -> this
     }
-}
-
-fun Toplist.toSearchItem(): SearchItem {
-    return SearchItem(
-        id = this.id,
-        name = this.name,
-        market_cap_rank = this.market_cap_rank,
-        symbol = this.symbol,
-        thumb = this.image,
-        large = this.image
-    )
 }
 
 fun Toplist.toCryptoDetail(): CryptoDetailInfoModel {

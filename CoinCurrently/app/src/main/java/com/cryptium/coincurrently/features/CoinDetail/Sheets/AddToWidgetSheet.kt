@@ -151,31 +151,6 @@ fun AddToWidgetSheet(
 }
 
 }
-@Composable
-private fun HeaderView(
-    closeAction: () -> Unit
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier
-                    .padding(bottom = 16.dp)
-    ) {
-        Text(
-            text = "Add to Widget",
-            style = satoshiBold(20),
-            color = MaterialTheme.colors.onSurface
-        )
-
-        Spacer(Modifier.weight(1f))
-
-        CloseButton(
-            onClick = {
-                closeAction.invoke()
-            }
-        )
-    }
-}
 
 @Composable
 private fun BodyView() {

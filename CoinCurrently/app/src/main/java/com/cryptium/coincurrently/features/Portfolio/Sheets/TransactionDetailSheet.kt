@@ -568,14 +568,3 @@ private fun ActionButtons(
         )
     }
 }
-
-private fun canRemoveTransaction(
-    transaction: NewTransaction,
-    currentAmount: Double
-): Boolean {
-    return if (transaction.isAddOrInTransferTransaction) {
-        currentAmount - transaction.amount >= 0
-    } else {
-        true
-    }
-}

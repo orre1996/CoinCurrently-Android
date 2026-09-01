@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.core.view.WindowInsetsCompat
 import com.cryptium.coincurrently.app.MainActivity
 import com.cryptium.coincurrently.widgets.glance.LargeMultiCryptoWidgetReceiver
@@ -19,12 +18,6 @@ import com.cryptium.coincurrently.widgets.glance.SmallNewsWidgetReceiver
 import com.cryptium.coincurrently.widgets.receivers.medium_portfolio_widget
 import com.cryptium.coincurrently.widgets.receivers.small_fear_greed_widget
 import com.cryptium.coincurrently.widgets.receivers.small_portfolio_widget
-
-fun Activity.dismissKeyboard() {
-    val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    if (inputMethodManager.isAcceptingText)
-        inputMethodManager.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0)
-}
 
 @SuppressLint("SimpleDateFormat")
 fun MainActivity.updateCurrecyWidgets() {

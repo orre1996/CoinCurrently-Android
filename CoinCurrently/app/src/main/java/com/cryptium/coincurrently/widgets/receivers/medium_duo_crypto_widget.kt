@@ -31,12 +31,7 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
  * The medium duo widget is now implemented as MediumDuoCryptoGlanceWidget (Glance/Compose).
  */
 
-data class DuoWidgetData(
-    var data: CryptoDetailInfoModel? = null,
-    var image: Bitmap? = null,
-)
-
- fun downloadCryptoDetail( id: String, context: Context, downloadImage: Boolean = true, callback: (CryptoDetailInfoModel?, Bitmap?) -> Unit) {
+fun downloadCryptoDetail( id: String, context: Context, downloadImage: Boolean = true, callback: (CryptoDetailInfoModel?, Bitmap?) -> Unit) {
      if (id.isEmpty()) {
          callback.invoke(null, null)
          return
@@ -218,60 +213,6 @@ fun createSmallWidget(data: CryptoDetailInfoModel?, context: Context, appWidgetM
     val pendingIntent: PendingIntent = PendingIntent.getActivity(context, random, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 
     views.setOnClickPendingIntent(R.id.btn_open, pendingIntent)
-
-    return views
-}
-
-fun createSmallWidgetWithToplist(data: Toplist?, context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int): RemoteViews {
-    val isDark = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) != 0
-    val views = RemoteViews(context.packageName, R.layout.small_crypto_widget_duo)
-
-    views.setTextColor(R.id.txt_currency_rank_shortening, widgetOnSurface(context))
-    views.setTextColor(R.id.txt_currency_price, widgetOnSurface(context))
-    views.setTextColor(R.id.txt_24h_title, widgetOnSurface(context))
-    views.setTextColor(R.id.txt_7d_title, widgetOnSurface(context))
-    views.setTextColor(R.id.txt_30d_title, widgetOnSurface(context))
-    views.setTextColor(R.id.txt_24h_percentage, widgetOnSurfaceDim(context))
-    views.setTextColor(R.id.txt_7d_percentage, widgetOnSurfaceDim(context))
-    views.setTextColor(R.id.txt_30d_percentage, widgetOnSurfaceDim(context))
-    views.setImageViewResource(R.id.img_24h_change_symbol, if(isDark) R.drawable.trend_still else R.drawable.trend_still)
-    views.setImageViewResource(R.id.img_7d_change_symbol, if(isDark) R.drawable.trend_still else R.drawable.trend_still)
-    views.setImageViewResource(R.id.img_30d_change_symbol, if(isDark) R.drawable.trend_still else R.drawable.trend_still)
-    views.setInt(R.id.img_24h_change_symbol, "setColorFilter", widgetOnSurfaceDim(context))
-    views.setInt(R.id.img_7d_change_symbol, "setColorFilter", widgetOnSurfaceDim(context))
-    views.setInt(R.id.img_30d_change_symbol, "setColorFilter", widgetOnSurfaceDim(context))
-    views.setImageViewResource(R.id.btn_reload, if(isDark) R.drawable.ic_baseline_sync_24_dark else R.drawable.ic_baseline_sync_24_light)
-    views.setInt(R.id.btn_reload, "setBackgroundResource", if(isDark) R.drawable.widget_reload_button_bg_bottom_dark else R.drawable.widget_reload_button_bg_bottom_light)
-
-    if (data != null) {
-
-        views.setTextViewText(R.id.txt_currency_rank_shortening, "${data.symbol?.uppercase()}\n${data.name}")
-        views.setTextViewText(R.id.txt_currency_price, data.current_price?.getFormattedCurrencyString(true, context))
-
-        views.setTextViewText(R.id.txt_24h_percentage, (data.price_change_percentage_24h_in_currency ?: 0.0).getChangeWithSymbol())
-        views.setTextColor(R.id.txt_24h_percentage, data.price_change_percentage_24h_in_currency?.getWidgetChangeColor(context) ?: widgetOnSurfaceDim(context))
-        views.setImageViewResource(R.id.img_24h_change_symbol, data.price_change_percentage_24h_in_currency?.getChangeSymbolResource() ?: R.drawable.trend_still)
-        views.setInt(R.id.img_24h_change_symbol, "setColorFilter", data.price_change_percentage_24h_in_currency?.getWidgetChangeColor(context) ?: widgetOnSurfaceDim(context))
-
-        views.setTextViewText(R.id.txt_7d_percentage, (data.price_change_percentage_7d_in_currency ?: 0.0).getChangeWithSymbol())
-        views.setTextColor(R.id.txt_7d_percentage, data.price_change_percentage_7d_in_currency?.getWidgetChangeColor(context) ?: widgetOnSurfaceDim(context))
-        views.setImageViewResource(R.id.img_7d_change_symbol, data.price_change_percentage_7d_in_currency?.getChangeSymbolResource() ?: R.drawable.trend_still)
-        views.setInt(R.id.img_7d_change_symbol, "setColorFilter", data.price_change_percentage_7d_in_currency?.getWidgetChangeColor(context) ?: widgetOnSurfaceDim(context))
-
-        views.setTextViewText(R.id.txt_30d_percentage, (data.price_change_percentage_30d_in_currency ?: 0.0).getChangeWithSymbol())
-        views.setTextColor(R.id.txt_30d_percentage, data.price_change_percentage_30d_in_currency?.getWidgetChangeColor(context) ?: widgetOnSurfaceDim(context))
-        views.setImageViewResource(R.id.img_30d_change_symbol, data.price_change_percentage_30d_in_currency?.getChangeSymbolResource() ?: R.drawable.trend_still)
-        views.setInt(R.id.img_30d_change_symbol, "setColorFilter", data.price_change_percentage_30d_in_currency?.getWidgetChangeColor(context) ?: widgetOnSurfaceDim(context))
-    }
-
-    val random = (0..10000).shuffled().first()
-
-    val intent = Intent(context, MainActivity::class.java)
-    intent.putExtra("cryptoID", data?.id)
-
-    val pendingIntent1: PendingIntent = PendingIntent.getActivity(context, random, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-
-    views.setOnClickPendingIntent(R.id.btn_open, pendingIntent1)
 
     return views
 }

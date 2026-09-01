@@ -3,11 +3,7 @@ import android.content.Context
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.cryptium.coincurrently.core.config.AppLocale
 import com.cryptium.coincurrently.R
-import com.cryptium.coincurrently.sharedui.theme.mainGray
-import com.cryptium.coincurrently.sharedui.theme.mainGreen
-import com.cryptium.coincurrently.sharedui.theme.mainRed
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.trendDown
 import com.cryptium.coincurrently.sharedui.theme.trendUp
@@ -58,40 +54,6 @@ fun Number.getFormattedCurrencyString(withSymbol: Boolean = true, context: Conte
     } else {
         format.format(this)
     }
-}
-
-fun Double.getFormattedStringOneDecimal(): String {
-    val format = NumberFormat.getNumberInstance(AppLocale.enUsPosix) as DecimalFormat
-    format.minimumFractionDigits = 1
-    format.maximumFractionDigits = 7
-
-    return format.format(this)
-}
-
-fun Double.getFormattedStringCalculator(): String {
-    val symbols = DecimalFormatSymbols(AppLocale.enUsPosix)
-    symbols.groupingSeparator = ' '
-    symbols.decimalSeparator = '.'
-
-    val format = DecimalFormat("#,###.##", symbols)
-    format.minimumFractionDigits = 0
-    format.maximumFractionDigits = 7
-
-    return format.format(this)
-}
-
-fun Double.getFormattedStringTwoDecimal(): String {
-    val format = NumberFormat.getNumberInstance(AppLocale.enUsPosix) as DecimalFormat
-    format.minimumFractionDigits = 2
-    format.maximumFractionDigits = 7
-    return format.format(this)
-}
-
-fun Double.getFormattedCalculator(): String {
-    val format = NumberFormat.getNumberInstance(AppLocale.enUsPosix) as DecimalFormat
-    format.minimumFractionDigits = 4
-    format.maximumFractionDigits = if(this < 0.1) 7 else 4
-    return format.format(this)
 }
 
 fun Double.getChangeSymbolResource(): Int {
@@ -157,18 +119,6 @@ fun Double.getChangeWithoutSymbol(): String {
 }
 
 @Composable
-fun Double.getPercentChangeColorPortfolio(): Color {
-    if (kotlin.math.abs(this) < 0.0000001) {
-        return MaterialTheme.colors.mainGray
-    }
-
-    return when {
-        this > 0 -> MaterialTheme.colors.mainGreen
-        this < 0 -> MaterialTheme.colors.mainRed
-        else -> MaterialTheme.colors.mainGray
-    }
-}
-
 fun Double.getPercentChangeDrawablePortfolio(): Int {
     if (kotlin.math.abs(this) < 0.0000001) {
         return R.drawable.trend_still
