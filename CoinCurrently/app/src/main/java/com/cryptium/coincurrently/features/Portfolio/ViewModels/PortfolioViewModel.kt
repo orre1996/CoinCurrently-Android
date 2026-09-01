@@ -23,6 +23,8 @@ import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.extensions.getAllTransactions
 import com.cryptium.coincurrently.core.extensions.getAmount
+import com.cryptium.coincurrently.core.extensions.getProfitLossPercent
+import com.cryptium.coincurrently.core.extensions.getProfitLossValue
 import com.cryptium.coincurrently.core.extensions.getDifferenceInDecimal
 import com.cryptium.coincurrently.core.extensions.getDifferenceInPercent
 import com.cryptium.coincurrently.core.extensions.groupedTransactions
@@ -796,15 +798,14 @@ class PortfolioViewModel : ViewModel() {
     }
 
     private fun setProfitLossPercent() {
-        profitLossPercent = GlobalFunctions.getPortfolioProfitLossPercent(
-            portfolio = portfolio,
-            coinPrices = portfolioAllCurrencies
+        profitLossPercent = portfolio?.getProfitLossPercent(
+            coinPrices = portfolioAllCurrencies,
+            showCurrency = GlobalFunctions.getSelectedCurrency().code
         )
     }
 
     private fun setProfitLossValue() {
-        profitLossValue = GlobalFunctions.getPortfolioProfitLossValue(
-            portfolio = portfolio,
+        profitLossValue = portfolio?.getProfitLossValue(
             coinPrices = portfolioAllCurrencies,
             showCurrency = GlobalFunctions.getSelectedCurrency().code
         )

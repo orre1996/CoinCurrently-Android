@@ -294,6 +294,52 @@ fun List<Pie>.getAllTransactions(id: String?): List<NewTransaction> {
     return transactions + buySwapTransactions + swapSellTransactions + importTransactions + tokenTransactions
 }
 
+fun List<Pie>.getProfitLossValue(
+    coinPrices: Map<String, Map<String, Double>>?,
+    showCurrency: String = GlobalFunctions.getSelectedCurrency().code
+): Double? {
+    if (isEmpty() || coinPrices.isNullOrEmpty()) return 0.0
+
+    var profitLoss = 0.0
+    var hasEntryPrices = false
+
+    for (pie in this) {
+        val transactions = getAllTransactions(pie.data?.id)
+        val prices = coinPrices[pie.data?.id]
+
+        val profit = transactions.getProfitValue(prices, showCurrency)
+        if (profit != null) {
+            profitLoss += profit
+            hasEntryPrices = true
+        }
+    }
+
+    return if (hasEntryPrices) profitLoss else 0.0
+}
+
+fun List<Pie>.getProfitLossPercent(
+    coinPrices: Map<String, Map<String, Double>>?,
+    showCurrency: String = GlobalFunctions.getSelectedCurrency().code
+): Double {
+    if (isEmpty() || coinPrices.isNullOrEmpty()) return 0.0
+
+    var totalProfit = 0.0
+    var totalSpent = 0.0
+
+    for (pie in this) {
+        val transactions = getAllTransactions(pie.data?.id)
+        val prices = coinPrices[pie.data?.id]
+
+        if (transactions.getProfitPercent(prices, showCurrency) != null) {
+            totalProfit += transactions.getProfitValue(prices, showCurrency, withTransfers = false) ?: 0.0
+            totalSpent += transactions.totalBuyAmount * (transactions.getAverageCost(prices, showCurrency) ?: 0.0)
+        }
+    }
+
+    val percent = totalProfit / totalSpent
+    return if (percent.isNaN() || percent.isInfinite()) 0.0 else percent * 100
+}
+
 val List<Pie>.allTransactionsCount: Int
     get() = sumOf { pie ->
         pie.sanitizeGsonNullLists()

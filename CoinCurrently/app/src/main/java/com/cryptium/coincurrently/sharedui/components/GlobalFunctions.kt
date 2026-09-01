@@ -3,12 +3,6 @@ import com.cryptium.coincurrently.app.NavigationScreens
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import com.cryptium.coincurrently.core.extensions.getAllTransactions
-import com.cryptium.coincurrently.core.extensions.getAverageCost
-import com.cryptium.coincurrently.core.extensions.getProfitPercent
-import com.cryptium.coincurrently.core.extensions.getProfitValue
-import com.cryptium.coincurrently.core.extensions.totalBuyAmount
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
 import com.cryptium.coincurrently.core.purchases.StoreKitManager
 import com.cryptium.coincurrently.core.config.AppLocale
 import com.google.gson.Gson
@@ -473,65 +467,6 @@ class GlobalFunctions {
             val prefsEditor: SharedPreferences.Editor? = preferences?.edit()
             prefsEditor?.putBoolean("isWidgetDarkModeEnabled", enabled)
             prefsEditor?.apply()
-        }
-
-        fun getPortfolioProfitLossValue(
-            portfolio: List<Pie>?,
-            coinPrices: MutableMap<String, Map<String, Double>>?,
-            showCurrency: String = getSelectedCurrency().code
-        ): Double? {
-            val portfolioList = portfolio ?: return null
-            if (portfolioList.isEmpty() || coinPrices.isNullOrEmpty()) return 0.0
-
-            var profitLoss = 0.0
-            var hasEntryPrices = false
-
-            for (currency in portfolioList) {
-                val coin = portfolio.getAllTransactions(currency.data?.id)
-                val prices = coinPrices.get(currency.data?.id)
-
-                val profit = getProfitLossOfCoin(coin, prices, showCurrency)
-                if (profit != null) {
-                    profitLoss += profit
-                    hasEntryPrices = true
-                }
-            }
-
-            return if (hasEntryPrices) profitLoss else 0.0
-        }
-
-        fun getProfitLossOfCoin(
-            transactions: List<NewTransaction>?,
-            coinPrices: Map<String, Double>?,
-            showCurrency: String = getSelectedCurrency().code
-        ): Double? {
-            return transactions?.getProfitValue(coinPrices, showCurrency)
-        }
-
-        fun getPortfolioProfitLossPercent(
-            portfolio: List<Pie>?,
-            coinPrices: MutableMap<String, Map<String, Double>>?
-        ): Double {
-            if (portfolio.isNullOrEmpty() || coinPrices.isNullOrEmpty()) {
-                return 0.0
-            }
-
-            var totalProfit = 0.0
-            var totalSpent = 0.0
-
-            for (pie in portfolio) {
-                val coin = portfolio.getAllTransactions(pie.data?.id)
-                val prices = coinPrices.get(pie.data?.id)
-
-                val profitPercent = coin.getProfitPercent(prices)
-                if (profitPercent != null) {
-                    totalProfit += coin.getProfitValue(prices, withTransfers = false) ?: 0.0
-                    totalSpent += (coin.totalBuyAmount) * (coin.getAverageCost(prices) ?: 0.0)
-                }
-            }
-
-            val percent = totalProfit / totalSpent
-            return if (percent.isNaN() || percent.isInfinite()) 0.0 else percent * 100
         }
 
         fun getPreferredTimeframeTitle(): String {
