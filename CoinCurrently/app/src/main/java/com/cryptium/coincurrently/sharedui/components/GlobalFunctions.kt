@@ -115,6 +115,21 @@ class GlobalFunctions {
             prefsEditor?.apply()
         }
 
+        fun getProExpirationDate(): Date? {
+            val millis = preferences?.getLong("proExpirationDate", -1L) ?: -1L
+            return if (millis > 0L) Date(millis) else null
+        }
+
+        fun setProExpirationDate(date: Date?) {
+            val prefsEditor: SharedPreferences.Editor? = preferences?.edit()
+            if (date != null) {
+                prefsEditor?.putLong("proExpirationDate", date.time)
+            } else {
+                prefsEditor?.remove("proExpirationDate")
+            }
+            prefsEditor?.apply()
+        }
+
         fun getIsBiometricAuthenticationEnabled(): Boolean {
             return preferences?.getBoolean("biometricAuthenticationEnabled", false) ?: false
         }

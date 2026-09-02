@@ -52,7 +52,10 @@ import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -70,6 +73,8 @@ import com.cryptium.coincurrently.sharedui.sheets.ModalSheetNavigationBarExtensi
 import com.cryptium.coincurrently.sharedui.sheets.isEdgeToEdgeEnabled
 import com.cryptium.coincurrently.sharedui.sheets.modalSheetNavigationBarExtensionHeight
 import com.cryptium.coincurrently.sharedui.sheets.modalSheetNavigationBarsPadding
+import com.cryptium.coincurrently.core.extensions.DateFormat
+import com.cryptium.coincurrently.core.extensions.formatDate
 import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.pxToDp
 import com.cryptium.coincurrently.core.extensions.poppinsRegular
@@ -117,6 +122,7 @@ import com.cryptium.coincurrently.features.Home.WinnersLosers.WinnersLosersRepos
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
 import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import java.util.Date
 import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
 import com.cryptium.coincurrently.features.Settings.CurrencySelector.CurrencyOptionsSheet
 import com.cryptium.coincurrently.features.Settings.Sheets.SettingsOptionsSheet
@@ -143,6 +149,7 @@ fun SettingsScreen(
     val scrollState = rememberScrollState()
 
     val currentSubscription by StoreKitManager.currentSubscription.observeAsState()
+    val subscriptionExpirationDate by StoreKitManager.subscriptionExpirationDate.observeAsState()
 
     val showResetApp = remember { mutableStateOf(false) }
 
@@ -213,7 +220,10 @@ fun SettingsScreen(
                     modifier = Modifier
                         .primaryBackgroundNoRipple()
                 ) {
-                    PremiumView(currentSubscription = currentSubscription) {
+                    PremiumView(
+                        currentSubscription = currentSubscription,
+                        expirationDate = subscriptionExpirationDate,
+                    ) {
                         navigationViewModel.openBuyPro(ScreenLabel.Settings, BuyProAction.Settings)
                     }
 
@@ -931,13 +941,30 @@ fun SectionHeader(text: String) {
 @Composable
 private fun PremiumView(
     currentSubscription: String?,
+    expirationDate: Date? = null,
     action: () -> Unit
 ) {
-    val subscriptionStatus = if (currentSubscription != null) {
-        val tier = StoreKitManager.subscriptionTierDisplayName(currentSubscription)
-        if (tier != null) "Active · $tier" else "Active"
-    } else {
-        "Inactive"
+    val formattedExpiration = expirationDate?.formatDate(DateFormat.MMMdyyyy)
+    val subscriptionStatus = when {
+        currentSubscription == null -> "Inactive"
+        formattedExpiration != null -> "Active · Expires $formattedExpiration"
+        else -> "Active"
+    }
+    val subscriptionStatusText = buildAnnotatedString {
+        if (currentSubscription == null) {
+            withStyle(SpanStyle(color = MaterialTheme.colors.onSurfaceDimmer)) {
+                append("Inactive")
+            }
+        } else {
+            withStyle(SpanStyle(color = MaterialTheme.colors.primary)) {
+                append("Active")
+            }
+            if (formattedExpiration != null) {
+                withStyle(SpanStyle(color = MaterialTheme.colors.onSurfaceDimmer)) {
+                    append(" · Expires $formattedExpiration")
+                }
+            }
+        }
     }
 
     Row(
@@ -984,10 +1011,9 @@ private fun PremiumView(
             )
 
             Text(
-                text = subscriptionStatus,
+                text = subscriptionStatusText,
                 textAlign = TextAlign.Start,
                 style = satoshiBold(12),
-                color = if (currentSubscription != null) MaterialTheme.colors.primary else MaterialTheme.colors.onSurfaceDimmer,
             )
         }
 

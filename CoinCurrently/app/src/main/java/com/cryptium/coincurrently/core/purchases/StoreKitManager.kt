@@ -46,6 +46,7 @@ import kotlinx.coroutines.withContext
 import com.cryptium.coincurrently.core.networking.ApiHelper
 import com.cryptium.coincurrently.core.networking.MainRepository
 import com.cryptium.coincurrently.core.networking.RetrofitBuilder
+import java.util.Date
 
 val monthlyName = "com.monthly.subscription"
 val yearlyName = "com.yearly.subscription"
@@ -63,15 +64,7 @@ private val subscriptionProductIds = subscribedProductIds.toList()
 class StoreKitManager {
     companion object {
         val currentSubscription: MutableLiveData<String?> = MutableLiveData(GlobalFunctions.getHasBoughtPro())
-
-        /** Human-readable plan name for settings UI (matches [currentSubscription] product ids). */
-        fun subscriptionTierDisplayName(productId: String?): String? {
-            if (productId == null) return null
-            return when (productId) {
-                monthlyName -> "Monthly"
-                else -> "Annual"
-            }
-        }
+        val subscriptionExpirationDate: MutableLiveData<Date?> = MutableLiveData(GlobalFunctions.getProExpirationDate())
 
         val storeProducts: MutableLiveData<List<ProductDetails>> = MutableLiveData()
         val isEligableForTrial: MutableLiveData<Boolean> = MutableLiveData(GlobalFunctions.getIsEligableForTrial())
@@ -642,13 +635,18 @@ class StoreKitManager {
                 val productId = entitlement.productIdentifier.takeIf { it.isNotEmpty() }
                     ?: customerInfo.activeSubscriptions.firstOrNull()
                     ?: promotionalName
+                val expirationDate = entitlement.expirationDate
                 currentSubscription.value = productId
+                subscriptionExpirationDate.value = expirationDate
                 GlobalFunctions.setHasBoughtPro(productId)
+                GlobalFunctions.setProExpirationDate(expirationDate)
                 return true
             }
 
             currentSubscription.value = null
+            subscriptionExpirationDate.value = null
             GlobalFunctions.setHasBoughtPro(null)
+            GlobalFunctions.setProExpirationDate(null)
             return false
         }
     }
