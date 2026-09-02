@@ -15,6 +15,7 @@ import com.cryptium.coincurrently.core.extensions.getIntroductoryOffer
 import com.cryptium.coincurrently.core.extensions.updateAllWidgets
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.analytics.SubscriptionRestoreOutcome
+import com.revenuecat.purchases.CacheFetchPolicy
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Offerings
 import com.revenuecat.purchases.ProductType
@@ -253,38 +254,66 @@ class StoreKitManager {
             failure: () -> Unit = {},
             restoreAnalytics: ((SubscriptionRestoreOutcome) -> Unit)? = null,
         ) {
-            Purchases.sharedInstance.restorePurchases(
+            fun handleRestoreResult(customerInfo: CustomerInfo) {
+                GlobalScope.launch {
+                    withContext(Dispatchers.Main) {
+                        val hadPro = currentSubscription.value != null
+                        val hasPro = applyCustomerInfo(customerInfo)
+
+                        if (hasPro) {
+                            if (!hadPro) {
+                                context.getActivity()?.updateAllWidgets()
+                            }
+                            restoreAnalytics?.invoke(SubscriptionRestoreOutcome.Restored)
+                            success.invoke()
+                        } else {
+                            if (hadPro) {
+                                context.getActivity()?.updateAllWidgets()
+                            }
+                            restoreAnalytics?.invoke(SubscriptionRestoreOutcome.NothingToRestore)
+                            failure.invoke()
+                        }
+                    }
+                }
+            }
+
+            fun restoreFromPlayStore() {
+                Purchases.sharedInstance.restorePurchases(
+                    object : ReceiveCustomerInfoCallback {
+                        override fun onReceived(customerInfo: CustomerInfo) {
+                            handleRestoreResult(customerInfo)
+                        }
+
+                        override fun onError(error: PurchasesError) {
+                            GlobalScope.launch {
+                                withContext(Dispatchers.Main) {
+                                    restoreAnalytics?.invoke(SubscriptionRestoreOutcome.Failed)
+                                    failure.invoke()
+                                }
+                            }
+                        }
+                    },
+                )
+            }
+
+            Purchases.sharedInstance.getCustomerInfo(
+                CacheFetchPolicy.FETCH_CURRENT,
                 object : ReceiveCustomerInfoCallback {
                     override fun onReceived(customerInfo: CustomerInfo) {
                         GlobalScope.launch {
                             withContext(Dispatchers.Main) {
-                                val hadPro = currentSubscription.value != null
-                                val hasPro = applyCustomerInfo(customerInfo)
-
-                                if (hasPro) {
-                                    if (!hadPro) {
-                                        context.getActivity()?.updateAllWidgets()
-                                    }
+                                if (applyCustomerInfo(customerInfo)) {
                                     restoreAnalytics?.invoke(SubscriptionRestoreOutcome.Restored)
                                     success.invoke()
                                 } else {
-                                    if (hadPro) {
-                                        context.getActivity()?.updateAllWidgets()
-                                    }
-                                    restoreAnalytics?.invoke(SubscriptionRestoreOutcome.NothingToRestore)
-                                    failure.invoke()
+                                    restoreFromPlayStore()
                                 }
                             }
                         }
                     }
 
                     override fun onError(error: PurchasesError) {
-                        GlobalScope.launch {
-                            withContext(Dispatchers.Main) {
-                                restoreAnalytics?.invoke(SubscriptionRestoreOutcome.Failed)
-                                failure.invoke()
-                            }
-                        }
+                        restoreFromPlayStore()
                     }
                 },
             )
