@@ -2,11 +2,36 @@
 
 Android and widget app for following crypto markets, news, and a personal portfolio.
 
+- [Website](https://coincurrently.app)
+- [Google Play](https://play.google.com/store/apps/details?id=com.cryptium.coincurrently)
+- [Privacy Policy](https://coincurrently.app/privacy)
+- [iOS](https://github.com/orre1996/CryptoCurrently)
+
 The Android app lives in `CoinCurrently/app`. Widgets reuse the same domain types and repositories where they need shared data.
+
+## What it does
+
+- Markets — coins, NFTs, exchanges, derivatives, and categories
+- Personal portfolio
+- Price alerts
+- News (articles, videos, and podcasts)
+- Home screen widgets
 
 ## Why this is open source
 
-CoinCurrently is focused on privacy. The source is public so anyone can see what the app does with their data.
+CoinCurrently is focused on privacy. The source is public so anyone can see what the app does with their data. The license is source-available, not OSI open source — see [License](#license).
+
+## Privacy
+
+CoinCurrently does not ask for an email or password. Portfolio holdings, transactions, and settings stay on the device.
+
+The app uses a few third-party SDKs. None of them require a name, email, or phone number, so there is still no personal account.
+
+- **[Aptabase](https://aptabase.com)** is a privacy-focused analytics service. The app sends named product events (for example which screen opened). It is not an advertising SDK and does not build a marketing profile.
+- **[RevenueCat](https://www.revenuecat.com)** manages Google Play subscriptions. Pro status comes from the store receipt through RevenueCat, not from Firebase.
+- **[Firebase](https://firebase.google.com)** signs in anonymously — a random ID on the device, not an email. Price alerts need that so Firebase Cloud Messaging can issue an FCM token. The backend uses the token to send a push when a price hits; without it, the phone cannot receive alert notifications.
+
+See the [Privacy Policy](https://coincurrently.app/privacy).
 
 ## Architecture
 
@@ -120,20 +145,43 @@ News (articles, videos, and podcasts) is based on [cryptonews-api.com](https://c
 
 The fear and greed index is based on [alternative.me](https://alternative.me/crypto/fear-and-greed-index/).
 
+### CoinCurrently backend
+
+`API_BASE_URL` is the app's own API. It proxies CoinGecko and news so third-party keys stay off the client, and it hosts first-party routes for price alerts, big-mover notifications, wallet import, gas fees, referrals, redeem codes, user, and feedback. Those routes send a bearer token. The backend itself is not in this repo.
+
+## Pro
+
+Subscriptions go through RevenueCat and Google Play Billing. Free users get markets, news, a small portfolio, and widgets. Pro unlocks live prices (WebSocket), extra price alerts, more portfolio transactions, wallet import, portfolio export, and some news filters (coin, exchange, NFT, technical analysis).
+
 ## Targets
 
 | Target | Role |
 | --- | --- |
 | `:app` | Android app (`CoinCurrently/app`), including widgets |
-| `app/src/test` | JVM unit tests, mostly repositories |
+| `app/src/test` | JVM unit tests |
 
 Packages match folders under `com.cryptium.coincurrently`. Widgets compile in `:app`; they are not a separate Gradle module.
+
+## Requirements
+
+- Android 12 (API 31)
+- Android Studio with Android Gradle Plugin 8.11 or later
 
 ## Local setup
 
 1. Open the `CoinCurrently/` Gradle project in Android Studio and sync.
-2. Copy `Config/secrets.example.properties` to `Config/secrets.properties` and fill in local values. That file is gitignored.
+2. Copy `Config/secrets.example.properties` to `Config/secrets.properties` and fill in local values. That file is gitignored. Keys are `API_BASE_URL`, `BACKEND_API_KEY`, `REVENUECAT_PRODUCTION_API_KEY`, `REVENUECAT_TEST_API_KEY`, and `APTABASE_APP_KEY`.
 3. Copy `Config/google-services.json.example` to `CoinCurrently/app/google-services.json` with your Firebase app config. That file is gitignored.
 4. Do not commit real keys, signing material, or a live `google-services.json`.
 
-See [LICENSE](LICENSE) for terms.
+## Tests
+
+JVM unit tests live in `CoinCurrently/app/src/test`. Run `:app:testDebugUnitTest` from the `CoinCurrently/` Gradle project, or the unit-test target in Android Studio.
+
+## Contributing
+
+Pull requests are welcome. Match the existing MVVM + repository layout. Do not commit secrets, signing material, or a live `google-services.json`.
+
+## License
+
+This repository is source-available under the [CoinCurrently Source-Available License](LICENSE). You may view, study, and use it for personal and educational purposes, and contributions are welcome. You may not republish it, ship a public fork, or publish a derived app to an app store.
