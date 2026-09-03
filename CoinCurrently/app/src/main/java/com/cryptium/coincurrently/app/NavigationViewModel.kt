@@ -1,6 +1,5 @@
 package com.cryptium.coincurrently.app
 import com.cryptium.coincurrently.app.NavigationScreens
-import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -18,6 +17,7 @@ import androidx.navigation.compose.DialogNavigator
 import com.cryptium.coincurrently.sharedui.components.AppColorScheme
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.StorageKeys
+import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.selectedTabbarItem
 import com.cryptium.coincurrently.sharedui.components.SnackBarType
 import com.cryptium.coincurrently.core.analytics.BuyProAction
@@ -182,14 +182,16 @@ class NavigationViewModel(context: Context): ViewModel() {
     @JvmOverloads
     fun showAppReview(context: Context, delaySeconds: Int = 5) {
         Handler(Looper.getMainLooper()).postDelayed({
-            val manager = ReviewManagerFactory.create(context)
+            val activity = context.getActivity() ?: MainActivity.current() ?: return@postDelayed
+            if (activity.isFinishing || activity.isDestroyed) return@postDelayed
+
+            val manager = ReviewManagerFactory.create(activity)
             val request = manager.requestReviewFlow()
 
             request.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val reviewInfo = task.result
-                    manager.launchReviewFlow(context as Activity, reviewInfo)
-                }
+                if (!task.isSuccessful) return@addOnCompleteListener
+                if (activity.isFinishing || activity.isDestroyed) return@addOnCompleteListener
+                manager.launchReviewFlow(activity, task.result)
             }
         }, delaySeconds * 1000L)
     }

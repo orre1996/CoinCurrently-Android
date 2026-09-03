@@ -438,6 +438,8 @@ class MainActivity: FragmentActivity() {
         @Volatile
         private var instance: WeakReference<MainActivity>? = null
 
+        fun current(): MainActivity? = instance?.get()
+
         private fun dateByAddingDays(days: Int, from: Date = Date()): Date {
             val cal: Calendar = Calendar.getInstance()
             cal.time = from
@@ -454,7 +456,7 @@ class MainActivity: FragmentActivity() {
                 val activity = context.getActivity() ?: instance?.get() ?: return@Runnable
                 if (!activity::navigationViewModel.isInitialized) return@Runnable
                 activity.navigationViewModel.showSnackbar(
-                    context = context,
+                    context = activity,
                     type = status,
                     message = message
                 )
@@ -470,11 +472,12 @@ class MainActivity: FragmentActivity() {
             context: Context,
             force: Boolean = false
         ) {
+            val activity = context.getActivity() ?: instance?.get() ?: return
             if (force) {
-                context.getActivity()?.navigationViewModel?.showAppReview(context, delaySeconds = 2)
+                activity.navigationViewModel.showAppReview(activity, delaySeconds = 2)
                 return
             }
-            
+
             val now = Date()
             val actionDate: Date? = StorageManager.get(StorageKeys.APP_ACTION_RATING_DATE)
 
@@ -482,7 +485,7 @@ class MainActivity: FragmentActivity() {
                 StorageManager.set(StorageKeys.APP_RATING_POPUP_DATE, dateByAddingDays(days = 30))
                 StorageManager.set(StorageKeys.APP_ACTION_RATING_DATE, dateByAddingDays(days = 21))
 
-                context.getActivity()?.navigationViewModel?.showAppReview(context)
+                activity.navigationViewModel.showAppReview(activity)
             }
         }
     }
