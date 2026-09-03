@@ -1299,7 +1299,7 @@ fun CryptoDetailScreen(
 }
 
 @Composable
-private fun FavoriteButton(
+private fun FavoriteButtonOld(
     isFavorited: Boolean,
     coinName: String,
     toggleFavorite: () -> Unit
@@ -1325,7 +1325,7 @@ private fun FavoriteButton(
 }
 
 @Composable
-private fun MoreButton(
+private fun MoreButtonOld(
     isDropDownExpanded: MutableState<Boolean>,
     coinName: String,
     isAlreadyAddedToWidgets: Boolean,
