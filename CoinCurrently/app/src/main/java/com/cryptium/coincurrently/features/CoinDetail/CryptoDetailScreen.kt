@@ -97,7 +97,7 @@ import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertCreateResult
 import com.cryptium.coincurrently.core.purchases.StoreKitManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
 import com.cryptium.coincurrently.features.CoinDetail.Views.General.ChartButtonsView
-import com.cryptium.coincurrently.features.CoinDetail.ChartTypes
+import com.cryptium.coincurrently.core.models.ChartTypes
 import com.cryptium.coincurrently.features.CoinDetail.Views.About.CryptoDetailAboutView
 import com.cryptium.coincurrently.features.CoinDetail.Views.About.toDetailAboutData
 import com.cryptium.coincurrently.features.CoinDetail.Views.General.CandleChartHoverStatsView

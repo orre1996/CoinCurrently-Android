@@ -20,7 +20,7 @@ class MainRepository(private val apiHelper: ApiHelper) {
     suspend fun getAllCategories(sortOption: SortOption) = apiHelper.getAllCategories(sortOption = sortOption)
     suspend fun getAllDerivatives(sortOption: SortOption) = apiHelper.getAllDerivatives(sortOption)
     suspend fun getPublicTreasury(
-        entity: com.cryptium.coincurrently.features.Treasuries.TreasuryEntity,
+        entity: TreasuryEntity,
         coinId: String,
         page: Int = 1,
         perPage: Int = 250,
@@ -35,7 +35,7 @@ class MainRepository(private val apiHelper: ApiHelper) {
         perPage: Int = 100,
     ) = apiHelper.getTreasuryTransactionHistory(entityId, coinIds, page, perPage)
     suspend fun getTreasuryEntitiesList(
-        entity: com.cryptium.coincurrently.features.Treasuries.TreasuryEntity,
+        entity: TreasuryEntity,
         page: Int = 1,
         perPage: Int = 250,
     ) = apiHelper.getTreasuryEntitiesList(entity, page, perPage)

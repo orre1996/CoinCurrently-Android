@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.core.extensions.poppinsRegular
 import com.cryptium.coincurrently.core.extensions.poppinsSemibold
-import com.cryptium.coincurrently.features.Settings.CurrencySelector.allCurrencies
+import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.features.Settings.isEdgeToEdgeEnabled
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.sharedui.buttons.PrimaryButton

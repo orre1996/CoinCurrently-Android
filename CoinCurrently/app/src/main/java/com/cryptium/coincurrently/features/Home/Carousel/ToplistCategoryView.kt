@@ -36,7 +36,7 @@ import com.cryptium.coincurrently.core.extensions.isTablet
 import com.cryptium.coincurrently.core.extensions.satoshiRegular
 import com.cryptium.coincurrently.sharedui.sheets.EmptyContent
 import com.cryptium.coincurrently.sharedui.models.PriceChange
-import com.cryptium.coincurrently.features.Home.Carousel.CarouselFilter
+import com.cryptium.coincurrently.core.models.CarouselFilter
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 
 @Composable

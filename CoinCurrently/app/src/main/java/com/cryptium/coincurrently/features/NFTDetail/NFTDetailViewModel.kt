@@ -42,7 +42,7 @@ import com.cryptium.coincurrently.features.News.NewsRepository
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketRepository
-import com.cryptium.coincurrently.features.CoinDetail.ChartTypes
+import com.cryptium.coincurrently.core.models.ChartTypes
 import com.cryptium.coincurrently.features.NFTDetail.NFTDetailRepository
 import com.cryptium.coincurrently.features.Market.Repositories.NFTRepository
 import com.cryptium.coincurrently.core.analytics.ChartFiatNativeModeChanged

@@ -40,10 +40,13 @@ import com.cryptium.coincurrently.sharedui.theme.trendUp
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import kotlinx.coroutines.delay
 import kotlin.math.max
-import com.cryptium.coincurrently.features.Achievements.Views.SnackbarConstants
-
 enum class SnackBarType {
     SUCCESS, FAILURE
+}
+
+object SnackbarConstants {
+    const val DISPLAY_DURATION_MS = 7_500L
+    const val ANIMATION_DURATION_MS = 750
 }
 
 private val SnackbarSlideSpec = tween<Float>(

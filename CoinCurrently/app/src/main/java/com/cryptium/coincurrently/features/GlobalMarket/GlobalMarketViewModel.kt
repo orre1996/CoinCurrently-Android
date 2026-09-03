@@ -30,12 +30,12 @@ import com.cryptium.coincurrently.sharedui.components.getPoint
 import com.cryptium.coincurrently.sharedui.components.getPriceXPosition
 import com.cryptium.coincurrently.sharedui.charts.hoverDragIndex
 import com.cryptium.coincurrently.sharedui.charts.multiHoverGraphColor
-import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketChartData
-import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketData
+import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketChartData
+import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketData
 import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketRepository
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
-import com.cryptium.coincurrently.features.CoinDetail.ChartTypes
+import com.cryptium.coincurrently.core.models.ChartTypes
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
 import java.text.SimpleDateFormat

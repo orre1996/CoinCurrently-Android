@@ -50,7 +50,7 @@ import com.cryptium.coincurrently.app.title
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.features.Home.Views.PremiumView
 import com.cryptium.coincurrently.features.Home.Carousel.ToplistCategoryView
-import com.cryptium.coincurrently.features.Home.Carousel.CarouselFilter
+import com.cryptium.coincurrently.core.models.CarouselFilter
 import com.cryptium.coincurrently.features.Home.Views.MarketStatsView
 import com.cryptium.coincurrently.features.Home.Carousel.ToplistFilterCarouselView
 import com.cryptium.coincurrently.features.Home.Carousel.ToplistHeaderView

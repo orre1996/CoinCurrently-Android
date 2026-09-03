@@ -38,7 +38,7 @@ object CacheUrls {
         "$baseUrl/api/v3/derivatives/exchanges?per_page=250&order=${sortOption.derivativesApiValue}"
 
     fun publicTreasury(
-        entity: com.cryptium.coincurrently.features.Treasuries.TreasuryEntity,
+        entity: TreasuryEntity,
         coinId: String,
         page: Int = 1,
         perPage: Int = 250,
@@ -61,7 +61,7 @@ object CacheUrls {
     }
 
     fun treasuryEntitiesList(
-        entity: com.cryptium.coincurrently.features.Treasuries.TreasuryEntity,
+        entity: TreasuryEntity,
         page: Int = 1,
         perPage: Int = 250,
     ) = "$baseUrl/api/v3/entities/list?entity_type=${entity.apiEntityType}&page=$page&per_page=$perPage"

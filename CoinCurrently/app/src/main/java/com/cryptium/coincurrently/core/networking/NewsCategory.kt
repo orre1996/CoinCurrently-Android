@@ -1,5 +1,5 @@
 package com.cryptium.coincurrently.core.networking
-import com.cryptium.coincurrently.features.Home.Carousel.CarouselFilter
+import com.cryptium.coincurrently.core.models.CarouselFilter
 import kotlinx.serialization.Serializable
 
 @Serializable

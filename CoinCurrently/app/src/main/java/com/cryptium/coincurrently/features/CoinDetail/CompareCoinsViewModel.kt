@@ -28,7 +28,7 @@ import com.cryptium.coincurrently.sharedui.components.lineChartIndexFromPlotX
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
-import com.cryptium.coincurrently.features.CoinDetail.ChartTypes
+import com.cryptium.coincurrently.core.models.ChartTypes
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import com.cryptium.coincurrently.core.purchases.StoreKitManager
 import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository

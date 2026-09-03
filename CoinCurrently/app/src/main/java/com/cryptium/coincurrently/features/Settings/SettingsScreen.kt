@@ -87,7 +87,7 @@ import com.cryptium.coincurrently.sharedui.components.AppColorScheme
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
-import com.cryptium.coincurrently.sharedui.components.refreshCachedSectionsAfterCurrencyChange
+import com.cryptium.coincurrently.app.refreshCachedSectionsAfterCurrencyChange
 import com.cryptium.coincurrently.sharedui.components.appShareMessage
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.StorageKeys

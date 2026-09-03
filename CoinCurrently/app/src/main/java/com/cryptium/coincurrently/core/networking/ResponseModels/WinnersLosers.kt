@@ -1,4 +1,4 @@
-package com.cryptium.coincurrently.features.Home.WinnersLosers
+package com.cryptium.coincurrently.core.networking.ResponseModels
 import java.io.Serializable
 
 data class WinnersLosers (

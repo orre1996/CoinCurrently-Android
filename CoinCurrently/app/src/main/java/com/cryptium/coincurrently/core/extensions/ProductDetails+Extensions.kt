@@ -2,7 +2,7 @@ package com.cryptium.coincurrently.core.extensions
 import com.android.billingclient.api.ProductDetails
 import com.cryptium.coincurrently.core.extensions.currencyAccessible
 import com.cryptium.coincurrently.core.extensions.formatCurrency
-import com.cryptium.coincurrently.features.Settings.CurrencySelector.allCurrencies
+import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 
 fun ProductDetails.getFormattedPrice(): String {

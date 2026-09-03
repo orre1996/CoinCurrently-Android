@@ -4,7 +4,7 @@ import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.sharedui.components.PreferredTimeframe
-import com.cryptium.coincurrently.features.GlobalMarket.Currency
+import com.cryptium.coincurrently.core.networking.ResponseModels.Currency
 import kotlinx.serialization.Serializable
 
 @Serializable

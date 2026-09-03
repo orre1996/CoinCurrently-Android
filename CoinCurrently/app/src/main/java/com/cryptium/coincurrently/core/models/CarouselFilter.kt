@@ -1,4 +1,4 @@
-package com.cryptium.coincurrently.features.Home.Carousel
+package com.cryptium.coincurrently.core.models
 import com.cryptium.coincurrently.core.extensions.TimeframeLabels
 import com.cryptium.coincurrently.core.networking.NewsCategory
 

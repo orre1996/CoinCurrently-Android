@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.core.extensions.poppinsRegular
 import com.cryptium.coincurrently.core.extensions.satoshiBold
-import com.cryptium.coincurrently.features.Settings.CurrencySelector.allCurrencies
+import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.sharedui.theme.buttonBackgroundColor
 import com.cryptium.coincurrently.sharedui.theme.buttonTextColor

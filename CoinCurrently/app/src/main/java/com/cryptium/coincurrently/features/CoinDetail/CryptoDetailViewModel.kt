@@ -70,8 +70,8 @@ import kotlin.math.roundToInt
 import com.cryptium.coincurrently.sharedui.components.renderComposableToBitmap
 import com.cryptium.coincurrently.sharedui.components.saveBitmapToCache
 import com.cryptium.coincurrently.sharedui.components.shareBitmap
-import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketData
-import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketModel
+import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketData
+import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketModel
 import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketRepository
 import com.cryptium.coincurrently.core.analytics.ChartCandleModeChanged
 import com.cryptium.coincurrently.core.analytics.FavoriteAdded
@@ -82,7 +82,7 @@ import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.sharedui.models.CachedData
 import com.cryptium.coincurrently.features.CoinDetail.Views.About.CryptoDetailShareView
-import com.cryptium.coincurrently.features.CoinDetail.ChartTypes
+import com.cryptium.coincurrently.core.models.ChartTypes
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioModel
 import com.cryptium.coincurrently.features.Portfolio.Enums.DateOption

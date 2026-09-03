@@ -10,7 +10,7 @@ import com.cryptium.coincurrently.sharedui.theme.trendUp
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.sharedui.components.PreferredTimeframe
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
-import com.cryptium.coincurrently.features.GlobalMarket.Currency
+import com.cryptium.coincurrently.core.networking.ResponseModels.Currency
 import kotlinx.serialization.Serializable
 
 @Serializable

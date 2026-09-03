@@ -69,7 +69,7 @@ import com.cryptium.coincurrently.core.analytics.PortfolioDataShow
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.core.analytics.SheetLabel
 import com.cryptium.coincurrently.core.analytics.SheetOpened
-import com.cryptium.coincurrently.features.GlobalMarket.allCurrencies
+import com.cryptium.coincurrently.core.networking.ResponseModels.allCurrencies
 import com.cryptium.coincurrently.features.CoinDetail.CryptoDetailViewModel
 import com.cryptium.coincurrently.features.Portfolio.Views.PortfolioImportTransaction
 import com.cryptium.coincurrently.features.Portfolio.Views.PortfolioSwapView

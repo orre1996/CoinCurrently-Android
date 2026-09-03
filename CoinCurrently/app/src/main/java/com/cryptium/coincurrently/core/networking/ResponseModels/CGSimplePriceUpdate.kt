@@ -1,5 +1,5 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
-import com.cryptium.coincurrently.features.GlobalMarket.Currency
+import com.cryptium.coincurrently.core.networking.ResponseModels.Currency
 import com.google.gson.annotations.SerializedName
 
 /**

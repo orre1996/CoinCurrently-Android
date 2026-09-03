@@ -1,5 +1,5 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
-import com.cryptium.coincurrently.features.Treasuries.TreasuryEntity
+import com.cryptium.coincurrently.core.networking.TreasuryEntity
 import kotlinx.serialization.Serializable
 
 @Serializable

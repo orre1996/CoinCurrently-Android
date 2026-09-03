@@ -14,7 +14,7 @@ import com.cryptium.coincurrently.core.extensions.allTransactionsCount
 import com.cryptium.coincurrently.core.extensions.tenYearsAgo
 import com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
-import com.cryptium.coincurrently.features.GlobalMarket.allCurrencies
+import com.cryptium.coincurrently.core.networking.ResponseModels.allCurrencies
 import com.cryptium.coincurrently.core.networking.ApiHelper
 import com.cryptium.coincurrently.core.networking.MainRepository
 import com.cryptium.coincurrently.core.networking.ResponseModels.*

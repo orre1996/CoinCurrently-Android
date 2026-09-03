@@ -1,9 +1,9 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
 import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
 import com.cryptium.coincurrently.core.networking.ResponseModels.WalletImportRequest
-import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketChartModel
-import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketModel
-import com.cryptium.coincurrently.features.Home.WinnersLosers.WinnersLosers
+import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketChartModel
+import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketModel
+import com.cryptium.coincurrently.core.networking.ResponseModels.WinnersLosers
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST

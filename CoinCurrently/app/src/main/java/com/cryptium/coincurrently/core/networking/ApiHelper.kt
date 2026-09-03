@@ -7,7 +7,7 @@ import android.os.Build
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
-import com.cryptium.coincurrently.features.Settings.CurrencySelector.allCurrencies
+import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
 import com.cryptium.coincurrently.core.purchases.StoreKitManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.ApiService
@@ -55,7 +55,7 @@ class ApiHelper(private val apiService: ApiService) {
     suspend fun getAllCategories(sortOption: SortOption) = apiService.getAllCategories(baseUrl, sortOption.categoriesApiValue)
     suspend fun getAllDerivatives(sortOption: SortOption) = apiService.getAllDerivatives(baseUrl, sortOption.derivativesApiValue)
     suspend fun getPublicTreasury(
-        entity: com.cryptium.coincurrently.features.Treasuries.TreasuryEntity,
+        entity: TreasuryEntity,
         coinId: String,
         page: Int = 1,
         perPage: Int = 250,
@@ -71,7 +71,7 @@ class ApiHelper(private val apiService: ApiService) {
         perPage: Int = 100,
     ) = apiService.getTreasuryTransactionHistory(baseUrl, entityId, coinIds, page, perPage)
     suspend fun getTreasuryEntitiesList(
-        entity: com.cryptium.coincurrently.features.Treasuries.TreasuryEntity,
+        entity: TreasuryEntity,
         page: Int = 1,
         perPage: Int = 250,
     ) = apiService.getTreasuryEntitiesList(baseUrl, entity.apiEntityType, page, perPage)

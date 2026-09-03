@@ -1,4 +1,5 @@
-package com.cryptium.coincurrently.features.CoinDetail
+package com.cryptium.coincurrently.core.models
+
 enum class ChartTypes {
     PRICE,
     VOLUME,

@@ -53,7 +53,7 @@ import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.core.networking.ResponseModels.FearGreed
 import com.cryptium.coincurrently.core.networking.ResponseModels.GasFeesModel
-import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketData
+import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketData
 
 @Composable
 fun MarketStatsView(

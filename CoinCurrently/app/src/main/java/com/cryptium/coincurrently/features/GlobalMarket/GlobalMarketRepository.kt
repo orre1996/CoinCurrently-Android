@@ -11,11 +11,11 @@ import com.cryptium.coincurrently.core.extensions.isMoreThanDefaultCache
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
 import com.google.gson.reflect.TypeToken
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
-import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketChartData
-import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketChartModel
-import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketData
-import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketModel
-import com.cryptium.coincurrently.features.GlobalMarket.Percentages
+import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketChartData
+import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketChartModel
+import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketData
+import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketModel
+import com.cryptium.coincurrently.core.networking.ResponseModels.Percentages
 import com.cryptium.coincurrently.core.networking.ApiHelper
 import com.cryptium.coincurrently.core.networking.CacheUrls
 import com.cryptium.coincurrently.core.networking.MainRepository

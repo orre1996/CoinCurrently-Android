@@ -36,7 +36,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceContainer
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerHigh
 import com.cryptium.coincurrently.core.extensions.dpToPx
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
-import com.cryptium.coincurrently.features.Home.Carousel.CarouselFilter
+import com.cryptium.coincurrently.core.models.CarouselFilter
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

@@ -91,7 +91,7 @@ import com.cryptium.coincurrently.features.CoinDetail.Views.Compare.CompareStati
 import com.cryptium.coincurrently.features.CoinDetail.Views.Compare.CompareTouchChartStats
 import com.cryptium.coincurrently.features.CoinDetail.Views.General.ChartButtonsView
 import com.cryptium.coincurrently.features.CoinDetail.Views.General.CryptoDetailSummaryView
-import com.cryptium.coincurrently.features.CoinDetail.ChartTypes
+import com.cryptium.coincurrently.core.models.ChartTypes
 import com.cryptium.coincurrently.features.CoinDetail.Sheets.SelectCoinSheet
 import com.cryptium.coincurrently.features.CoinDetail.CompareCoinsViewModel
 import com.cryptium.coincurrently.features.CoinDetail.CompareCoinsViewModelFactory

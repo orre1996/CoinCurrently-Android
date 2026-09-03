@@ -33,7 +33,7 @@ import com.cryptium.coincurrently.core.extensions.numberAccessible
 import com.cryptium.coincurrently.core.extensions.roundTo
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.symbolAccessible
-import com.cryptium.coincurrently.features.GlobalMarket.Percentages
+import com.cryptium.coincurrently.core.networking.ResponseModels.Percentages
 
 @Composable
 fun MarketShareView(

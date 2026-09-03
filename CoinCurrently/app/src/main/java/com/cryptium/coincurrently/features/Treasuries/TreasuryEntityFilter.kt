@@ -1,20 +1,4 @@
 package com.cryptium.coincurrently.features.Treasuries
-enum class TreasuryEntity(val rawValue: String) {
-    Companies("companies"),
-    Governments("governments");
-
-    val apiEntityType: String
-        get() = when (this) {
-            Companies -> "company"
-            Governments -> "government"
-        }
-
-    val displayName: String
-        get() = when (this) {
-            Companies -> "Company"
-            Governments -> "Government"
-        }
-}
 
 enum class TreasuryEntityFilter {
     All,

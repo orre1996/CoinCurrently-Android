@@ -4,8 +4,8 @@ import com.cryptium.coincurrently.sharedui.components.AppColorScheme
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.sharedui.components.SelectedStartTab
-import com.cryptium.coincurrently.features.Home.Carousel.CarouselFilter
-import com.cryptium.coincurrently.features.CoinDetail.ChartTypes
+import com.cryptium.coincurrently.core.models.CarouselFilter
+import com.cryptium.coincurrently.core.models.ChartTypes
 
 /**
  * Port of iOS analytics events; each type maps to an Aptabase custom event plus parameters.

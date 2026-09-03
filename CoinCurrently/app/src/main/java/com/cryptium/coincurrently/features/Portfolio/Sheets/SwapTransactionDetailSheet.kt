@@ -56,7 +56,7 @@ import com.cryptium.coincurrently.sharedui.sheets.rememberModalSheetMaxBodyHeigh
 import com.cryptium.coincurrently.sharedui.sheets.ModalSheetBody
 import com.cryptium.coincurrently.sharedui.sheets.ModalSheetColumnLayout
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
-import com.cryptium.coincurrently.features.Settings.CurrencySelector.allCurrencies
+import com.cryptium.coincurrently.core.persistence.allCurrencies
 import java.util.Date
 import kotlin.text.lowercase
 

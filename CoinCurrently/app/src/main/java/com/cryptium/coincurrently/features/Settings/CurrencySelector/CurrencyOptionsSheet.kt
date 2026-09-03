@@ -32,7 +32,7 @@ import com.cryptium.coincurrently.sharedui.components.ImageCase
 import com.cryptium.coincurrently.sharedui.components.SingleSelectView
 import com.cryptium.coincurrently.sharedui.components.DragHandle
 import com.cryptium.coincurrently.sharedui.inputs.TextInputField
-import com.cryptium.coincurrently.features.Settings.CurrencySelector.allCurrencies
+import com.cryptium.coincurrently.core.persistence.allCurrencies
 import kotlinx.coroutines.launch
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 

@@ -26,7 +26,7 @@ import com.cryptium.coincurrently.core.work.NotificationWorker
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.features.Paywall.TierButton
-import com.cryptium.coincurrently.features.Settings.CurrencySelector.allCurrencies
+import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.sharedui.components.SnackBarType
 import com.cryptium.coincurrently.core.purchases.StoreKitManager
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager

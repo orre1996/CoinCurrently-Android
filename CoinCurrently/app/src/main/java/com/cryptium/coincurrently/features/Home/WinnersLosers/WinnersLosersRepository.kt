@@ -5,7 +5,7 @@ import com.google.gson.reflect.TypeToken
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
-import com.cryptium.coincurrently.features.Home.WinnersLosers.WinnersLosers
+import com.cryptium.coincurrently.core.networking.ResponseModels.WinnersLosers
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.sharedui.models.CachedData

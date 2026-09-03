@@ -218,7 +218,7 @@ object RetrofitBuilder {
      */
     internal fun shouldCacheSuccessBody(data: Any): Boolean {
         if (data is Map<*, *>) return false
-        if (data is com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketModel && data.data == null) {
+        if (data is com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketModel && data.data == null) {
             return false
         }
         if (data is com.cryptium.coincurrently.core.networking.ResponseModels.FearGreed && data.data == null) {

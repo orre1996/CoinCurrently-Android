@@ -28,7 +28,7 @@ import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.sharedui.sheets.WebView
 import com.cryptium.coincurrently.features.News.NewsViewModel
 import com.cryptium.coincurrently.features.Home.Carousel.ToplistFilterCarouselView
-import com.cryptium.coincurrently.features.Home.Carousel.CarouselFilter
+import com.cryptium.coincurrently.core.models.CarouselFilter
 import com.cryptium.coincurrently.features.CoinDetail.Views.General.CryptoDetailPageSelector
 import com.cryptium.coincurrently.features.CoinDetail.Sheets.SelectCoinSheet
 import com.cryptium.coincurrently.core.purchases.StoreKitManager

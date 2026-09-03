@@ -1,4 +1,4 @@
-package com.cryptium.coincurrently.features.GlobalMarket
+package com.cryptium.coincurrently.core.networking.ResponseModels
 import kotlinx.serialization.Serializable
 
 @Serializable

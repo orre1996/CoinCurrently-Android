@@ -22,9 +22,9 @@ import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.sharedui.components.PreferredTimeframe
-import com.cryptium.coincurrently.features.Home.Carousel.CarouselFilter
+import com.cryptium.coincurrently.core.models.CarouselFilter
 import com.cryptium.coincurrently.features.FearGreed.FearGreedRepository
-import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketData
+import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketData
 import com.cryptium.coincurrently.features.GasFees.GasFeesRepository
 import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketRepository
 import com.cryptium.coincurrently.features.Home.NewCoins.NewCoinsRepository
@@ -32,7 +32,7 @@ import com.cryptium.coincurrently.features.Home.Trending.TrendingRepository
 import com.cryptium.coincurrently.features.Home.WinnersLosers.WinnersLosersRepository
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.config.RemoteConfigKeys
-import com.cryptium.coincurrently.features.Settings.CurrencySelector.allCurrencies
+import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
 import com.cryptium.coincurrently.core.purchases.StoreKitManager
 import com.cryptium.coincurrently.core.analytics.FavoriteAdded

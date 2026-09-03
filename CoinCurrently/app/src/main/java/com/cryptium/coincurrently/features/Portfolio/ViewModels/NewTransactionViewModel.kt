@@ -11,14 +11,14 @@ import com.cryptium.coincurrently.app.MainActivity
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.ofType
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
-import com.cryptium.coincurrently.features.Settings.CurrencySelector.allCurrencies
+import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
 import com.cryptium.coincurrently.features.Portfolio.WalletImportRepository
 import kotlinx.coroutines.launch
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
-import com.cryptium.coincurrently.features.GlobalMarket.allCurrencies
+import com.cryptium.coincurrently.core.networking.ResponseModels.allCurrencies
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioModel
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.getAllTransactions

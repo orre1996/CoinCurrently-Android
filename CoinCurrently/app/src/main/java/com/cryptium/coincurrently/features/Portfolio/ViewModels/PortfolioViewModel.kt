@@ -43,7 +43,7 @@ import com.cryptium.coincurrently.sharedui.components.getPriceXPosition
 import com.cryptium.coincurrently.sharedui.charts.hoverDragIndex
 import com.cryptium.coincurrently.sharedui.charts.multiHoverGraphColor
 import com.cryptium.coincurrently.sharedui.components.lineChartIndexFromPlotX
-import com.cryptium.coincurrently.features.Settings.CurrencySelector.allCurrencies
+import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
 import com.cryptium.coincurrently.core.config.AppLocale
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioPieChartLayout

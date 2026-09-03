@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
-import com.cryptium.coincurrently.features.Treasuries.TreasuryEntity
+import com.cryptium.coincurrently.core.networking.TreasuryEntity
 import com.cryptium.coincurrently.features.Treasuries.TreasuryEntityFilter
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.StorageKeys
@@ -222,7 +222,7 @@ class TreasuriesViewModel : ViewModel() {
 
     suspend fun resolveHolderWithEntityId(
         holder: PublicTreasuryHolder,
-        entity: com.cryptium.coincurrently.features.Treasuries.TreasuryEntity,
+        entity: com.cryptium.coincurrently.core.networking.TreasuryEntity,
     ): PublicTreasuryHolder {
         return publicTreasuryRepository.holderWithEntityId(holder, entity)
     }

@@ -48,12 +48,8 @@ import com.cryptium.coincurrently.sharedui.theme.surfaceContainerHigh
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.sharedui.components.CustomProgressBarView
+import com.cryptium.coincurrently.sharedui.components.SnackbarConstants
 import kotlinx.coroutines.delay
-
-object SnackbarConstants {
-    const val DISPLAY_DURATION_MS = 7_500L
-    const val ANIMATION_DURATION_MS = 750
-}
 
 private val AchievementSnackbarSlideSpec = tween<Float>(
     durationMillis = SnackbarConstants.ANIMATION_DURATION_MS,

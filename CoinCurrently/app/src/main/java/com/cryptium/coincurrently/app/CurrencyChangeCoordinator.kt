@@ -1,4 +1,4 @@
-package com.cryptium.coincurrently.sharedui.components
+package com.cryptium.coincurrently.app
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketRepository

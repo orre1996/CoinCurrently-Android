@@ -62,7 +62,7 @@ import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketViewModelFac
 import com.cryptium.coincurrently.features.CoinDetail.Views.General.ChartButtonsView
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.cryptium.coincurrently.features.GlobalMarket.Percentages
+import com.cryptium.coincurrently.core.networking.ResponseModels.Percentages
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

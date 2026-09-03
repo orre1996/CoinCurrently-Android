@@ -17,7 +17,7 @@ import com.cryptium.coincurrently.sharedui.theme.trendUp
 import com.cryptium.coincurrently.sharedui.charts.getFormattedCurrencyString
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
-import com.cryptium.coincurrently.features.GlobalMarket.Currency
+import com.cryptium.coincurrently.core.networking.ResponseModels.Currency
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import java.lang.Integer.min
 import java.math.BigDecimal

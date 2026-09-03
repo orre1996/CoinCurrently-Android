@@ -1,7 +1,7 @@
 package com.cryptium.coincurrently.features.Treasuries
 import android.util.Log
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
-import com.cryptium.coincurrently.features.Treasuries.TreasuryEntity
+import com.cryptium.coincurrently.core.networking.TreasuryEntity
 import com.cryptium.coincurrently.sharedui.models.CachedData
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.async

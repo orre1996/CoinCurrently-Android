@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Home.Carousel
+import com.cryptium.coincurrently.core.models.CarouselFilter
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

@@ -2,7 +2,7 @@ package com.cryptium.coincurrently.features.Calculator
 import android.util.Log
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
 import com.google.gson.reflect.TypeToken
-import com.cryptium.coincurrently.features.Settings.CurrencySelector.allCurrencies
+import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.networking.ApiHelper
 import com.cryptium.coincurrently.core.networking.CacheUrls
 import com.cryptium.coincurrently.core.networking.MainRepository
