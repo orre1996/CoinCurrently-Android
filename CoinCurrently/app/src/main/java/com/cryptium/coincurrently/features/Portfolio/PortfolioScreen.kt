@@ -1484,7 +1484,7 @@ private fun ActionButtonsOld(
 }
 
 @Composable
-private fun TotalValueView(
+private fun TotalValueViewOld(
     totalValue: Double?,
     hideData: Boolean,
     isPieChartShowing: Boolean,
@@ -1566,7 +1566,7 @@ private fun TotalValueView(
 }
 
 @Composable
-private fun ValueChangeView(
+private fun ValueChangeViewOld(
     changePercent: Double?,
     changeValue: Double?,
     isEmpty: Boolean,
@@ -1642,7 +1642,7 @@ private fun ValueChangeView(
 }
 
 @Composable
-private fun ProfitLossView(
+private fun ProfitLossViewOld(
     changePercent: Double?,
     changeValue: Double?,
     hideData: Boolean,
