@@ -522,7 +522,7 @@ private fun logCompareCoinsCoinSearchOpened(
 }
 
 @Composable
-private fun ChangeCoinButton(
+private fun ChangeCoinButtonOld(
     callback: () -> Unit
 ) {
     IconButton(
@@ -545,7 +545,7 @@ private fun ChangeCoinButton(
 }
 
 @Composable
-private fun CoinSymbolsView(
+private fun CoinSymbolsViewOld(
     mainSymbol: String?,
     compareSymbol: String?
 ) {
@@ -600,7 +600,7 @@ private fun CoinSymbolsView(
 }
 
 @Composable
-private fun MainChart(
+private fun MainChartOld(
     prices: List<Double>,
     chartColor: Color?,
     dragIndex: Int?,
@@ -641,7 +641,7 @@ private fun MainChart(
 }
 
 @Composable
-private fun CompareChart(
+private fun CompareChartOld(
     prices: List<Double>,
     chartColor: Color?,
     dragIndex: Int?,
