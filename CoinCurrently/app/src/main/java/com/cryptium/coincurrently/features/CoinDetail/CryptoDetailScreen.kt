@@ -1488,7 +1488,7 @@ private fun MoreButtonOld(
 }
 
 @Composable
-private fun MainChart(
+private fun MainChartOld(
     prices: List<Double>,
     chartColor: Color?,
     dragIndex: Int?,
@@ -1565,7 +1565,7 @@ private fun MainChart(
 }
 
 @Composable
-private fun CandleChart(
+private fun CandleChartOld(
     candleSticks: List<Candle>,
     isDragging: Boolean,
     hoverXPosition: Float,
