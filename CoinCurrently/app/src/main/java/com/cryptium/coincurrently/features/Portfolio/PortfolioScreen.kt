@@ -1264,7 +1264,7 @@ fun PortfolioScreen(
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-private fun ActionButtons(
+private fun ActionButtonsOld(
     isActionMenuExpanded: MutableState<Boolean>,
     hasTransactions: Boolean,
     benchmarkCoin: Toplist?,
