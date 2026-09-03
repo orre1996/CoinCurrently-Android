@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.Views
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +35,6 @@ import com.cryptium.coincurrently.core.extensions.stars
 import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
 import com.cryptium.coincurrently.sharedui.components.NewPriceChangeValueView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
@@ -51,7 +51,7 @@ fun PortfolioCoinView(
     navigateToCoin: () -> Unit
 ) {
     val isHorizontal = AccessibilityLayout.isHorizontal
-    val currency = GlobalFunctions.getSelectedCurrency()
+    val currency = UserPreferences.getSelectedCurrency()
     val currentAmount = transactions?.getAmount()
     val currentPrice = prices?.get(currency.code.lowercase())
         ?: pie?.data?.sparkline_in_7d?.price?.lastOrNull()

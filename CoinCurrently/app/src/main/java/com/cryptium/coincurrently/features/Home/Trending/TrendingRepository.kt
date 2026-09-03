@@ -1,9 +1,9 @@
 package com.cryptium.coincurrently.features.Home.Trending
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.util.Log
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
 import com.cryptium.coincurrently.features.Home.NewCoins.NewCoinsRepository
 import com.google.gson.reflect.TypeToken
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.sharedui.models.CachedData
@@ -33,7 +33,7 @@ class TrendingRepository {
                 val trending = RetrofitBuilder.getCached(CacheUrls.trending(), trendingItemsType)
                 val ids = (trending?.data as? TrendingItems)?.coins?.mapNotNull { it.item?.id }?.joinToString { it }?.replace(" ", "")?.removeSuffix(",")
                 if (!ids.isNullOrEmpty()) {
-                    val currency = GlobalFunctions.getSelectedCurrency(null)?.code?.lowercase() ?: "usd"
+                    val currency = UserPreferences.getSelectedCurrency(null)?.code?.lowercase() ?: "usd"
                     lastTrendingCoinsUrl = CacheUrls.getMultipleCoins(ids, currency)
                     cachedTrendingCoins = RetrofitBuilder.getCachedList<Toplist>(lastTrendingCoinsUrl!!, includeExpired = true)?.data
                 }
@@ -59,7 +59,7 @@ class TrendingRepository {
             if (ids.isEmpty()) return null
 
             val coinIds = ids.joinToString { it }.replace(" ", "").removeSuffix(",")
-            val currencyCode = GlobalFunctions.getSelectedCurrency(null).code.lowercase()
+            val currencyCode = UserPreferences.getSelectedCurrency(null).code.lowercase()
             val url = CacheUrls.getMultipleCoins(coinIds, currencyCode)
             lastTrendingCoinsUrl = url  // persists via setter
 

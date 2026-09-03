@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.CoinDetail
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.sharedui.modifiers.imageSize
 
 import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
@@ -84,7 +85,6 @@ import com.cryptium.coincurrently.sharedui.loading.ActivityIndicator
 import com.cryptium.coincurrently.features.CoinDetail.Share.CryptoDetailShareView
 import com.cryptium.coincurrently.sharedui.models.ChangeDirection
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.sharedui.charts.MultiTouchView
@@ -184,7 +184,7 @@ fun CryptoDetailScreen(
     var selectedUrl: String? by remember { mutableStateOf(null) }
 
     val showCurrencySelector = remember { mutableStateOf(false) }
-    var selectedCurrency by remember { mutableStateOf(GlobalFunctions.getSelectedCurrency()) }
+    var selectedCurrency by remember { mutableStateOf(UserPreferences.getSelectedCurrency()) }
 
     val biggestValue = remember { mutableStateOf(DpSize.Zero) }
 
@@ -202,7 +202,7 @@ fun CryptoDetailScreen(
     val isRecurringAlertOn = remember { mutableStateOf(false) }
     val priceInput = remember { mutableDoubleStateOf(0.0) }
     val percentInput = remember { mutableDoubleStateOf(10.0) }
-    var selectedAlertCurrency by remember { mutableStateOf(GlobalFunctions.getSelectedCurrency()) }
+    var selectedAlertCurrency by remember { mutableStateOf(UserPreferences.getSelectedCurrency()) }
     val selectedDirection = remember { mutableStateOf(ChangeDirection.Up) }
     var isSelectingAlertCurrency by remember { mutableStateOf(false) }
     var showAlertError by remember { mutableStateOf(false) }

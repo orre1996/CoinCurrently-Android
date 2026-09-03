@@ -1,9 +1,9 @@
 package com.cryptium.coincurrently.sharedui.theme
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.material.Colors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.glance.unit.ColorProvider
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 
 @Composable
 private fun Colors.semanticColor(
@@ -256,7 +256,7 @@ object WidgetColorValues {
         accessibleDay: Long,
         accessibleNight: Long,
     ): ColorProvider {
-        val accessible = GlobalFunctions.getColorBlind()
+        val accessible = UserPreferences.getColorBlind()
         return if (accessible) {
             androidx.glance.color.ColorProvider(
                 day = Color(accessibleDay),

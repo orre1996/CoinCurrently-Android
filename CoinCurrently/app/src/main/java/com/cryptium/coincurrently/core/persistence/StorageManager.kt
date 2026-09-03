@@ -132,6 +132,7 @@ class StorageManager {
         private const val CACHE_MAX_SIZE_BYTES = 1024 * 1024 * 100L // 100MB
 
         fun setCache(context: Context) {
+            UserPreferences.init(context)
             cacheDirectory = File(context.cacheDir, "cache_directory")
             cache = openCache()
         }

@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.GlobalMarket
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.google.gson.annotations.SerializedName
 
 import android.content.Context
@@ -10,7 +11,6 @@ import com.cryptium.coincurrently.sharedui.components.CustomImageView
 import com.cryptium.coincurrently.core.extensions.isMoreThanDefaultCache
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
 import com.google.gson.reflect.TypeToken
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketChartData
 import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketChartModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketData
@@ -324,7 +324,7 @@ class GlobalMarketRepository {
 
                 Log.w("Network call ", "Multiple coins")
 
-                val currencyCode = GlobalFunctions.getSelectedCurrency(context).code.lowercase()
+                val currencyCode = UserPreferences.getSelectedCurrency(context).code.lowercase()
 
                 val currencies = mainRepository.getMultipleCurrencies(ids.map { it }.joinToString { it }.replace(" ", "").removeSuffix(","), currencyCode).unwrapOrNull()
                 downloadingColors = false

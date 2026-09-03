@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.app
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.app.NavigationScreens
 import android.Manifest
 import android.annotation.SuppressLint
@@ -60,15 +61,14 @@ import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.isTablet
 import com.cryptium.coincurrently.core.extensions.pxToDp
 import com.cryptium.coincurrently.features.Paywall.BuyProScreen
-import com.cryptium.coincurrently.sharedui.components.AppColorScheme
+import com.cryptium.coincurrently.core.models.AppColorScheme
 import com.cryptium.coincurrently.sharedui.components.ComposePlatformCompat
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.features.Settings.Sheets.WhatsNewSheet
 import com.cryptium.coincurrently.sharedui.sheets.WebView
-import com.cryptium.coincurrently.sharedui.components.SelectedStartTab
+import com.cryptium.coincurrently.core.models.SelectedStartTab
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.features.Achievements.Managers.AchievementNavigationManager
@@ -121,7 +121,7 @@ class MainActivity: FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         instance = WeakReference(this)
-        GlobalFunctions.initSharedPreferences(application)
+        UserPreferences.init(application)
         setStartData()
         RetrofitBuilder.createApiService(baseContext, "App")
         navigationViewModel = NavigationViewModel(baseContext)
@@ -227,12 +227,12 @@ class MainActivity: FragmentActivity() {
                     }
 
                     val whatsNewContentVersion = StorageKeys.CURRENT_WHATS_NEW_VERSION.rawValue
-                    if (GlobalFunctions.getStoredWhatsNewVersion() != whatsNewContentVersion) {
-                        GlobalFunctions.setStoredWhatsNewVersion(whatsNewContentVersion)
+                    if (UserPreferences.getStoredWhatsNewVersion() != whatsNewContentVersion) {
+                        UserPreferences.setStoredWhatsNewVersion(whatsNewContentVersion)
                         showWhatsNew = true
                     }
 
-                    if (GlobalFunctions.getIsBiometricAuthenticationEnabled()) {
+                    if (UserPreferences.getIsBiometricAuthenticationEnabled()) {
                         isLocked = true
                         authenticate(biometricViewModel) {
                             navigateToMainFlow(selectedUrl)
@@ -252,7 +252,7 @@ class MainActivity: FragmentActivity() {
                 }
 
                 LaunchedEffect(currentRoute) {
-                    if (GlobalFunctions.getStartTab().getName() == currentRoute) {
+                    if (UserPreferences.getStartTab().getName() == currentRoute) {
                         shouldShowMoreTip(showMoreTip)
                     }
 
@@ -270,11 +270,11 @@ class MainActivity: FragmentActivity() {
                     NavigationViewModel.currentScreen = currentRoute
 
                     when (currentRoute) {
-                        NavigationScreens.Home.getRouteString() -> GlobalFunctions.setLatestTab(0)
-                        NavigationScreens.Portfolio.getRouteString() -> GlobalFunctions.setLatestTab(1)
-                        NavigationScreens.Market.getRouteString() -> GlobalFunctions.setLatestTab(2)
-                        NavigationScreens.News.getRouteString() -> GlobalFunctions.setLatestTab(3)
-                        NavigationScreens.Settings.getRouteString() -> GlobalFunctions.setLatestTab(4)
+                        NavigationScreens.Home.getRouteString() -> UserPreferences.setLatestTabIndex(0)
+                        NavigationScreens.Portfolio.getRouteString() -> UserPreferences.setLatestTabIndex(1)
+                        NavigationScreens.Market.getRouteString() -> UserPreferences.setLatestTabIndex(2)
+                        NavigationScreens.News.getRouteString() -> UserPreferences.setLatestTabIndex(3)
+                        NavigationScreens.Settings.getRouteString() -> UserPreferences.setLatestTabIndex(4)
                     }
                 }
 
@@ -303,7 +303,7 @@ class MainActivity: FragmentActivity() {
                                 }
                             }
 
-                            if (GlobalFunctions.getIsBiometricAuthenticationEnabled() && biometricViewModel.isAppLocked) {
+                            if (UserPreferences.getIsBiometricAuthenticationEnabled() && biometricViewModel.isAppLocked) {
                                 authenticate(biometricViewModel) {
                                     deepLink(selectedUrl)
                                 }
@@ -315,7 +315,7 @@ class MainActivity: FragmentActivity() {
                         }
 
                         Lifecycle.Event.ON_PAUSE -> {
-                            if (GlobalFunctions.getIsBiometricAuthenticationEnabled()) {
+                            if (UserPreferences.getIsBiometricAuthenticationEnabled()) {
                                 biometricViewModel.isAppLocked = true
                             }
 
@@ -527,8 +527,8 @@ class MainActivity: FragmentActivity() {
     }
 
     private fun navigateToMainFlow(selectedUrl: MutableState<String?>) {
-        val screen = when (GlobalFunctions.getStartTab()) {
-            SelectedStartTab.LastUsed -> GlobalFunctions.getLatestTab()
+        val screen = when (UserPreferences.getStartTab()) {
+            SelectedStartTab.LastUsed -> navigationScreenForLatestTab(UserPreferences.getLatestTabIndex())
             SelectedStartTab.Home -> NavigationScreens.Home
             SelectedStartTab.Portfolio -> NavigationScreens.Portfolio
             SelectedStartTab.Market -> NavigationScreens.Market
@@ -721,15 +721,15 @@ class MainActivity: FragmentActivity() {
 
     private fun shouldShowMoreTip(showMoreTip: MutableState<Boolean>) {
         if (!isTablet()) {
-            if (GlobalFunctions.getMoreHintDate() == null) {
-                GlobalFunctions.setMoreHintDate(1)
+            if (UserPreferences.getMoreHintDate() == null) {
+                UserPreferences.setMoreHintDate(1)
             } else {
                 Handler(Looper.getMainLooper()).postDelayed({
                     val calendar = Calendar.getInstance(AppLocale.enUsPosix).time
-                    val savedDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", AppLocale.enUsPosix).parse(GlobalFunctions.getMoreHintDate())
+                    val savedDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", AppLocale.enUsPosix).parse(UserPreferences.getMoreHintDate())
 
                     if (calendar.after(savedDate)) {
-                        GlobalFunctions.setMoreHintDate(9999)
+                        UserPreferences.setMoreHintDate(9999)
                         showMoreTip.value = true
                     }
                 }, 1000L)

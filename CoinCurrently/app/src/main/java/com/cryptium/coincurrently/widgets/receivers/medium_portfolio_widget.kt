@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.widgets.receivers
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
@@ -51,7 +52,7 @@ internal fun createMediumPortfolioWidget(
     appWidgetId: Int
 ) {
     /*val views = RemoteViews(context.packageName, R.layout.medium_portfolio_widget)
-    views.setInt(R.id.ll_view, "setBackgroundResource", if(GlobalFunctions.getIsWidgetDarkModeEnabled()) R.drawable.widget_background_dark else  R.drawable.widget_background_light)
+    views.setInt(R.id.ll_view, "setBackgroundResource", if(UserPreferences.getIsWidgetDarkModeEnabled()) R.drawable.widget_background_dark else  R.drawable.widget_background_light)
 
     views.setTextColor(R.id.txt_total_value, widgetOnSurface(context))
     views.setTextColor(R.id.txt_timeframe, widgetOnSurface(context))
@@ -65,11 +66,11 @@ internal fun createMediumPortfolioWidget(
     views.setInt(R.id.second_separator, "setBackgroundColor", widgetOutline(context))
     views.setInt(R.id.third_separator, "setBackgroundColor", widgetOutline(context))
 
-    views.setImageViewResource(R.id.btn_reload, if(GlobalFunctions.getIsWidgetDarkModeEnabled()) R.drawable.ic_baseline_sync_24_dark else  R.drawable.ic_baseline_sync_24_light)
-    views.setInt(R.id.btn_reload, "setBackgroundResource", if(GlobalFunctions.getIsWidgetDarkModeEnabled()) R.drawable.widget_reload_button_bg_dark else  R.drawable.widget_reload_button_bg_light)
+    views.setImageViewResource(R.id.btn_reload, if(UserPreferences.getIsWidgetDarkModeEnabled()) R.drawable.ic_baseline_sync_24_dark else  R.drawable.ic_baseline_sync_24_light)
+    views.setInt(R.id.btn_reload, "setBackgroundResource", if(UserPreferences.getIsWidgetDarkModeEnabled()) R.drawable.widget_reload_button_bg_dark else  R.drawable.widget_reload_button_bg_light)
 
-    if (!GlobalFunctions.getHasBoughtPro()) {
-        if (GlobalFunctions.getIsWidgetDarkModeEnabled()) {
+    if (!UserPreferences.getHasBoughtPro()) {
+        if (UserPreferences.getIsWidgetDarkModeEnabled()) {
             views.setViewVisibility(R.id.buy_pro, View.VISIBLE)
         } else {
             views.setViewVisibility(R.id.buy_pro_light, View.VISIBLE)
@@ -93,7 +94,7 @@ internal fun createMediumPortfolioWidget(
         return
     }
 
-    if (GlobalFunctions.getIsHidePortfolioEnabled()) {
+    if (UserPreferences.getIsHidePortfolioEnabled()) {
         val isDark = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) != 0
         val views = RemoteViews(context.packageName, R.layout.medium_portfolio_disabled_widget)
         views.setInt(R.id.ll_view, "setBackgroundResource", if(isDark) R.drawable.widget_background_dark else  R.drawable.widget_background_light)
@@ -117,7 +118,7 @@ internal fun createMediumPortfolioWidget(
 
     val handler = Handler()
 
-    val coins: List<PortfolioResponse> = GlobalFunctions.getPortfolioCurrencies(context)
+    val coins: List<PortfolioResponse> = UserPreferences.getPortfolioCurrencies(context)
 
     var array: ArrayList<Pie> = arrayListOf()
     var totalValue = 0.0
@@ -127,13 +128,13 @@ internal fun createMediumPortfolioWidget(
         createMediumPortfolioWidget(context, appWidgetManager, appWidgetId)
     }
 
-    PortfolioRepository.portfolioModels = GlobalFunctions.getPortfolioCurrencies(context)
+    PortfolioRepository.portfolioModels = UserPreferences.getPortfolioCurrencies(context)
 
     GlobalScope.launch {
         PortfolioRepository.getPortfolioAllCurrencies()?.let { coinPrices ->
 
             downloadMultipleCurrencies(
-                GlobalFunctions.getPortfolioCurrencies(context).map { it.id ?: "" },
+                UserPreferences.getPortfolioCurrencies(context).map { it.id ?: "" },
                 context
             ) { currencies, bitmaps ->
 
@@ -144,7 +145,7 @@ internal fun createMediumPortfolioWidget(
                     }
                 }
 
-                GlobalFunctions.getPortfolioCurrencies(context).forEachIndexed { index, portfolioItem ->
+                UserPreferences.getPortfolioCurrencies(context).forEachIndexed { index, portfolioItem ->
 
                         val currentCurrency = currencies?.first { it.id == portfolioItem.id }
 
@@ -161,7 +162,7 @@ internal fun createMediumPortfolioWidget(
                                 color,
                                 0,
                                 entryPrice = portfolioItem.entryCost,
-                                currency = GlobalFunctions.getSelectedCurrency(context)?.code ?: "USD",
+                                currency = UserPreferences.getSelectedCurrency(context)?.code ?: "USD",
                                 buyTransactions = portfolioItem.buyTransactions ?: arrayListOf(),
                                 sellTransactions = portfolioItem.sellTransactions ?: arrayListOf(),
                                 inTransactions = portfolioItem.inTransferTransactions ?: arrayListOf(),
@@ -184,8 +185,8 @@ internal fun createMediumPortfolioWidget(
                                 it.percent = price.div((totalValue)).times(100)
                             }
 
-                            val totalProfitLoss = GlobalFunctions.getPortfolioProfitLossPercent(array, coinPrices, GlobalFunctions.getSelectedCurrency(context)?.code ?: "usd")
-                            val totalProfitLossValue = GlobalFunctions.getPortfolioProfitLossValue(array, coinPrices, GlobalFunctions.getSelectedCurrency(context)?.code ?: "usd")
+                            val totalProfitLoss = UserPreferences.getPortfolioProfitLossPercent(array, coinPrices, UserPreferences.getSelectedCurrency(context)?.code ?: "usd")
+                            val totalProfitLossValue = UserPreferences.getPortfolioProfitLossValue(array, coinPrices, UserPreferences.getSelectedCurrency(context)?.code ?: "usd")
 
                             array = getPortfolio(array, coinPrices, context)
 
@@ -272,10 +273,10 @@ internal fun createMediumPortfolioWidget(
                                 totalValue.formatCurrencyFromHundred(true, context)
                             )
 
-                            val realChange = if (GlobalFunctions.getShowChangesInPercent()) totalProfitLoss.getChangeWithSymbolPortfolio() else totalProfitLossValue.formatCurrencyFromHundred(
+                            val realChange = if (UserPreferences.getShowChangesInPercent()) totalProfitLoss.getChangeWithSymbolPortfolio() else totalProfitLossValue.formatCurrencyFromHundred(
                                 fromPortfolio = true,
                                 fromPriceChange = true,
-                                currencySelectionModel = GlobalFunctions.getSelectedCurrency(context)
+                                currencySelectionModel = UserPreferences.getSelectedCurrency(context)
                             ).replace("-", "").replace("+", "")
 
                                 views.setTextViewText(
@@ -285,11 +286,11 @@ internal fun createMediumPortfolioWidget(
 
                             val changePercentColor = totalProfitLoss.getWidgetPercentChangeColorPortfolio()
                             val changeValueColor = totalProfitLossValue.getWidgetPercentChangeColorPortfolio()
-                            val realChangeColor = if (GlobalFunctions.getShowChangesInPercent()) changePercentColor else changeValueColor
+                            val realChangeColor = if (UserPreferences.getShowChangesInPercent()) changePercentColor else changeValueColor
 
                             val changePercentIcon = totalProfitLoss.getPercentChangeDrawablePortfolio()
                             val changeValueIcon = totalProfitLossValue.getPercentChangeDrawablePortfolio()
-                            val realChangeIcon = if (GlobalFunctions.getShowChangesInPercent()) changePercentIcon else changeValueIcon
+                            val realChangeIcon = if (UserPreferences.getShowChangesInPercent()) changePercentIcon else changeValueIcon
 
                             views.setTextColor(
                                 R.id.txt_change,
@@ -440,7 +441,7 @@ fun getPortfolio(currencies: ArrayList<Pie>, coinPrices: MutableMap<String, Map<
 
         val tempList = arrayListOf<Pie>()
         tempList.addAll(otherPies)
-        val profitLossPercent = GlobalFunctions.getPortfolioProfitLossPercent(tempList, coinPrices, GlobalFunctions.getSelectedCurrency(context)?.code ?: "usd")
+        val profitLossPercent = UserPreferences.getPortfolioProfitLossPercent(tempList, coinPrices, UserPreferences.getSelectedCurrency(context)?.code ?: "usd")
 
         newData = newData.slice(0..2).toMutableList()
         newData.add(Pie(Toplist(null, "Other"), null, totalPercent, Color.rgb(97/255f, 105/255f, 218/255f), 0, totalValue, null, null, null, profitLossPercent))

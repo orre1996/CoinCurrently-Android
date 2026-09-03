@@ -1,7 +1,7 @@
 package com.cryptium.coincurrently.features.PriceAlerts
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.util.Log
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.google.gson.reflect.TypeToken
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
@@ -51,7 +51,7 @@ class PriceAlertsRepository {
                 return null
             }
 
-            val currencyCode = GlobalFunctions.getSelectedCurrency(null).code
+            val currencyCode = UserPreferences.getSelectedCurrency(null).code
             val url = CacheUrls.getMultipleCoins(idsStr, currencyCode)
 
             RetrofitBuilder.getCachedList<Toplist>(url)?.let { cached ->
@@ -73,7 +73,7 @@ class PriceAlertsRepository {
                 return false
             }
 
-            val currency = GlobalFunctions.getSelectedCurrency()
+            val currency = UserPreferences.getSelectedCurrency()
             val claims = ReferralRepository.getUser()?.user?.customClaims
             val fcmMatches = claims?.fcmToken == fcmToken
             val currencyMatches = claims?.preferredCurrency?.equals(currency.code, ignoreCase = true) == true

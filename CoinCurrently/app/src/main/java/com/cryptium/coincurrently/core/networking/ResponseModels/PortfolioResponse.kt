@@ -1,5 +1,5 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioModel
 import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
@@ -30,7 +30,7 @@ fun PortfolioResponse.getCurrentAmount(withTransfers: Boolean = true): Double {
 
 fun PortfolioResponse.migrateToNewPortfolioModel(): PortfolioModel {
     val transactions = mutableListOf<NewTransaction>()
-    val defaultCurrency = currency ?: GlobalFunctions.getSelectedCurrency().code
+    val defaultCurrency = currency ?: UserPreferences.getSelectedCurrency().code
 
     amount?.let {
         transactions.add(

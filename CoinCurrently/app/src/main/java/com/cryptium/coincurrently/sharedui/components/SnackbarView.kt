@@ -8,7 +8,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -98,6 +98,7 @@ fun SnackbarView(
     )
 
     var interactionLocked by remember { mutableStateOf(false) }
+    val onDismiss by rememberUpdatedState(onDismissRequest)
 
     LaunchedEffect(showSnackBar, snackbarTrigger) {
         if (showSnackBar) {
@@ -105,7 +106,7 @@ fun SnackbarView(
             offsetY.snapTo(200f)
             offsetY.animateTo(0f, SnackbarSlideSpec)
             delay(SnackbarConstants.DISPLAY_DURATION_MS)
-            onDismissRequest()
+            onDismiss()
         } else {
             if (offsetY.value < 199f) {
                 offsetY.animateTo(200f, SnackbarSlideSpec)
@@ -118,7 +119,7 @@ fun SnackbarView(
     fun requestDismiss() {
         if (interactionLocked) return
         interactionLocked = true
-        onDismissRequest()
+        onDismiss()
     }
 
     Row(
@@ -129,17 +130,18 @@ fun SnackbarView(
             .offset(y = offsetY.value.dp - bottomInsetY - animatedStackedOffset)
             .clip(RoundedCornerShape(100))
             .background(MaterialTheme.colors.surfaceContainerHighest)
-            .padding(16.dp)
-            .pointerInput(Unit) {
+            .pointerInput(showSnackBar, snackbarTrigger) {
                 detectVerticalDragGestures { _, _ ->
                     requestDismiss()
                 }
             }
-            .pointerInput(Unit) {
-                detectTapGestures {
-                    requestDismiss()
-                }
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+                requestDismiss()
             }
+            .padding(16.dp)
     ) {
         Image(
             painter = painterResource(icon),
@@ -170,7 +172,7 @@ fun SnackbarView(
                         if (!interactionLocked) {
                             interactionLocked = true
                             buttonAction()
-                            onDismissRequest()
+                            onDismiss()
                         }
                     }
             )

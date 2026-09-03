@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.widgets.glance
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
@@ -47,7 +48,6 @@ import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.satoshiBoldGlance
 import com.cryptium.coincurrently.core.extensions.withoutSymbol
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.widgets.CryptoIdKey
 import com.cryptium.coincurrently.widgets.OpenAppAction
 import com.cryptium.coincurrently.widgets.RefreshWidgetAction
@@ -65,7 +65,7 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 class SmallCryptoGlanceWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        GlobalFunctions.initSharedPreferences(context)
+        UserPreferences.init(context)
 
         val widgetData = withContext(Dispatchers.IO) {
             loadWidgetData(context)
@@ -81,13 +81,13 @@ class SmallCryptoGlanceWidget : GlanceAppWidget() {
     }
 
     private suspend fun loadWidgetData(context: Context): WidgetData {
-        val currency = GlobalFunctions.getFavorites()
+        val currency = UserPreferences.getFavorites()
         val firstId = currency.firstOrNull() ?: ""
         if (firstId.isEmpty()) {
             return WidgetData(null, null)
         }
 
-        val currencyCode = GlobalFunctions.getSelectedCurrency(context)?.code ?: "USD"
+        val currencyCode = UserPreferences.getSelectedCurrency(context)?.code ?: "USD"
         val toplist = CurrencyRepository.getMultipleCurrencies(firstId, currencyCode)
         val data = toplist?.firstOrNull()
         val bitmap = data?.image?.let { url -> loadBitmapFromCache(context, url) }

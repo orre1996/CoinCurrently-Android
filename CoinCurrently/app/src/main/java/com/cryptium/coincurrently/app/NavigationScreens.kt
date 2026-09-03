@@ -246,3 +246,11 @@ fun NavigationScreens.getRouteString(): String {
         is NavigationScreens.Search -> "SelectCoin"
     }
 }
+
+fun navigationScreenForLatestTab(index: Int): NavigationScreens = when (index) {
+    0 -> NavigationScreens.Home
+    1 -> NavigationScreens.Portfolio
+    2 -> NavigationScreens.Market
+    3 -> NavigationScreens.News
+    else -> NavigationScreens.Settings
+}

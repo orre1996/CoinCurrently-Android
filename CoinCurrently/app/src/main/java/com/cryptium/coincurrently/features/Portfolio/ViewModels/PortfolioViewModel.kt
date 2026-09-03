@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.ViewModels
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
@@ -32,7 +33,6 @@ import com.cryptium.coincurrently.core.extensions.is24HourClock
 import com.cryptium.coincurrently.core.extensions.pieContaining
 import com.cryptium.coincurrently.core.extensions.stars
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.sharedui.charts.ChartHoverController
 import com.cryptium.coincurrently.sharedui.components.Point
 import com.cryptium.coincurrently.sharedui.charts.currencyDifferenceValue
@@ -99,7 +99,7 @@ class PortfolioViewModel : ViewModel() {
 
     var hasCompletedInitialLoad: Boolean = false
 
-    var hideData: Boolean by mutableStateOf(GlobalFunctions.getHidePortfolioData())
+    var hideData: Boolean by mutableStateOf(UserPreferences.getHidePortfolioData())
     var typeFilters: MutableState<ArrayList<NewTransactionType>> = mutableStateOf(arrayListOf())
     var dateFilter: MutableState<DateOption> = mutableStateOf(DateOption.All)
     var coinFilters: MutableState<ArrayList<Toplist>> = mutableStateOf(arrayListOf())
@@ -304,7 +304,7 @@ class PortfolioViewModel : ViewModel() {
 
     fun toggleHideData() {
         hideData = !hideData
-        GlobalFunctions.setHidePortfolioData(hideData)
+        UserPreferences.setHidePortfolioData(hideData)
     }
     private fun setTimestamps() {
         val now = Date()
@@ -667,7 +667,7 @@ class PortfolioViewModel : ViewModel() {
             return
         }
 
-        val currencyCode = GlobalFunctions.getSelectedCurrency().code.lowercase()
+        val currencyCode = UserPreferences.getSelectedCurrency().code.lowercase()
         val outerGap = PortfolioPieChartLayout.outerGapDegrees
         val innerGap = PortfolioPieChartLayout.innerGapDegrees
 
@@ -800,14 +800,14 @@ class PortfolioViewModel : ViewModel() {
     private fun setProfitLossPercent() {
         profitLossPercent = portfolio?.getProfitLossPercent(
             coinPrices = portfolioAllCurrencies,
-            showCurrency = GlobalFunctions.getSelectedCurrency().code
+            showCurrency = UserPreferences.getSelectedCurrency().code
         )
     }
 
     private fun setProfitLossValue() {
         profitLossValue = portfolio?.getProfitLossValue(
             coinPrices = portfolioAllCurrencies,
-            showCurrency = GlobalFunctions.getSelectedCurrency().code
+            showCurrency = UserPreferences.getSelectedCurrency().code
         )
     }
 
@@ -870,7 +870,7 @@ class PortfolioViewModel : ViewModel() {
     fun hasBoughtPro(): Boolean = StoreKitManager.currentSubscription.value != null
 
     val portfolioExportCount: Int
-        get() = GlobalFunctions.getPortfolioExportCount()
+        get() = UserPreferences.getPortfolioExportCount()
 
     val remainingFreePortfolioExports: Int
         get() = maxOf(0, freePortfolioExportLimit - portfolioExportCount)
@@ -880,7 +880,7 @@ class PortfolioViewModel : ViewModel() {
 
     fun recordPortfolioExport() {
         if (hasBoughtPro()) return
-        GlobalFunctions.incrementPortfolioExportCount()
+        UserPreferences.incrementPortfolioExportCount()
     }
 
     fun exportPortfolio(
@@ -1164,16 +1164,16 @@ class PortfolioViewModel : ViewModel() {
         block += "Amount: ${transaction.amount}\n"
 
         if (!transaction.transactionType.isTransfer && transaction.pricePerCoin != null) {
-            block += "Price per coin: ${transaction.pricePerCoin.formatCurrency(currency = selectedCurrency ?: GlobalFunctions.getSelectedCurrency(), threshold = FormattingThreshold.NONE)}\n"
+            block += "Price per coin: ${transaction.pricePerCoin.formatCurrency(currency = selectedCurrency ?: UserPreferences.getSelectedCurrency(), threshold = FormattingThreshold.NONE)}\n"
         }
 
         if (!transaction.transactionType.isTransfer && transaction.fee != 0.0) {
-            block += "Fee: ${transaction.fee.formatCurrency(currency = selectedCurrency ?: GlobalFunctions.getSelectedCurrency(), threshold = FormattingThreshold.NONE)}\n"
+            block += "Fee: ${transaction.fee.formatCurrency(currency = selectedCurrency ?: UserPreferences.getSelectedCurrency(), threshold = FormattingThreshold.NONE)}\n"
         }
 
         val value = (transaction.amount * (transaction.pricePerCoin ?: 0.0)) + transaction.fee
         if (!transaction.transactionType.isTransfer && value != 0.0) {
-            block += "Value traded: ${value.formatCurrency(currency = selectedCurrency ?: GlobalFunctions.getSelectedCurrency(), threshold = FormattingThreshold.NONE)}\n"
+            block += "Value traded: ${value.formatCurrency(currency = selectedCurrency ?: UserPreferences.getSelectedCurrency(), threshold = FormattingThreshold.NONE)}\n"
         }
 
         if (!transaction.transactionType.isTransfer) {
@@ -1194,7 +1194,7 @@ class PortfolioViewModel : ViewModel() {
     private fun textExportBlock(swap: com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction): String {
         val selectedCurrency = allCurrencies.firstOrNull {
             it.code.equals(swap.selectedCurrency, ignoreCase = true)
-        } ?: GlobalFunctions.getSelectedCurrency()
+        } ?: UserPreferences.getSelectedCurrency()
         var block = "Date (UTC): ${swap.date.toPortfolioExportDateTimeUTC()}\n"
         block += "From: ${swap.fromAmount} ${swap.fromCurrencySymbol.uppercase(AppLocale.enUsPosix)} @ ${swap.fromUnitPrice.formatCurrency(currency = selectedCurrency, threshold = FormattingThreshold.NONE)}\n"
         block += "To: ${swap.toAmount} ${swap.toCurrencySymbol.uppercase(AppLocale.enUsPosix)} @ ${swap.toUnitPrice.formatCurrency(currency = selectedCurrency, threshold = FormattingThreshold.NONE)}\n"

@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.ViewModels
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
 import com.cryptium.coincurrently.core.networking.ResponseModels.TokenInfo
 import com.cryptium.coincurrently.core.networking.ResponseModels.allIds
@@ -8,7 +9,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
@@ -46,7 +46,7 @@ class WalletDetailsViewModel(
     var syncedDate: Date? by mutableStateOf(null)
     var sortedTokens: List<TokenInfo> by mutableStateOf(listOf())
 
-    var hideData: Boolean by mutableStateOf(GlobalFunctions.getHidePortfolioData())
+    var hideData: Boolean by mutableStateOf(UserPreferences.getHidePortfolioData())
 
 
     init {
@@ -85,7 +85,7 @@ class WalletDetailsViewModel(
 
     fun toggleHideData() {
         hideData = !hideData
-        GlobalFunctions.setHidePortfolioData(hideData)
+        UserPreferences.setHidePortfolioData(hideData)
     }
 
     private fun previousPrice(

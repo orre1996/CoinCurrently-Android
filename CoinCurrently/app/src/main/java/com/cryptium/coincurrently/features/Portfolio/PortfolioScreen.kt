@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.sharedui.theme.*
 import com.cryptium.coincurrently.sharedui.modifiers.*
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
@@ -93,7 +94,6 @@ import com.cryptium.coincurrently.sharedui.charts.hideFromTalkBackWhenEnabled
 import com.cryptium.coincurrently.sharedui.loading.ActivityIndicator
 import com.cryptium.coincurrently.sharedui.components.NewPriceChangeValueView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.sharedui.loading.NewShimmerImageDirection
 import com.cryptium.coincurrently.app.NavigationViewModel
@@ -235,7 +235,7 @@ fun PortfolioScreen(
         viewModel.initializeFromCache()
         viewModel.getPortfolioAndCurrencies(context)
         viewModel.refreshImportWallets()
-        isPieChartShowing = GlobalFunctions.getPortfolioPieChartShowing()
+        isPieChartShowing = UserPreferences.getPortfolioPieChartShowing()
     }
 
     ObserveCurrencyChanges(navigationViewModel) {
@@ -450,7 +450,7 @@ fun PortfolioScreen(
                         togglePieChart = {
                             selectedPieSliceId = null
                             isPieChartShowing = !isPieChartShowing
-                            GlobalFunctions.setPortfolioPieChartShowing(isPieChartShowing)
+                            UserPreferences.setPortfolioPieChartShowing(isPieChartShowing)
                         },
                         toggleHideData = {
                             viewModel.toggleHideData()

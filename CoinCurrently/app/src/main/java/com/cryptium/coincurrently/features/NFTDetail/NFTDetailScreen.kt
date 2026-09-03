@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.NFTDetail
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -56,7 +57,6 @@ import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
 import com.cryptium.coincurrently.sharedui.components.ImageCase
 import com.cryptium.coincurrently.sharedui.loading.ActivityIndicator
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.features.NFTDetail.NFTDetailShareView
 import com.cryptium.coincurrently.core.analytics.AppShareActivityCompleted
 import com.cryptium.coincurrently.core.analytics.CurrencySelected
@@ -106,7 +106,7 @@ fun NftDetailScreen(
     val context = LocalContext.current
     val isTablet = context.isTablet()
     val talkBackEnabled = AccessibilityLayout.isTalkBackEnabled
-    val fixedSelectedCurrency = GlobalFunctions.getSelectedCurrency()
+    val fixedSelectedCurrency = UserPreferences.getSelectedCurrency()
 
     val biggestValue = remember { mutableStateOf(DpSize.Zero) }
 
@@ -119,7 +119,7 @@ fun NftDetailScreen(
     var selectedUrl: String? by remember { mutableStateOf(null) }
 
     val showCurrencySelector = remember { mutableStateOf(false) }
-    var selectedCurrency by remember { mutableStateOf(GlobalFunctions.getSelectedCurrency()) }
+    var selectedCurrency by remember { mutableStateOf(UserPreferences.getSelectedCurrency()) }
 
     val isMarketsSortShowing = remember { mutableStateOf(false) }
 

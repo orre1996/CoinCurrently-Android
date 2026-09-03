@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.Views
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -25,7 +26,6 @@ import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.stars
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 
 @Composable
@@ -38,7 +38,7 @@ fun PortfolioImportView(
     totalCount: Int? = null,
     showTransactionDetails: () -> Unit
 ) {
-    val currency = GlobalFunctions.getSelectedCurrency()
+    val currency = UserPreferences.getSelectedCurrency()
     val formattedValue = if (hideData) {
         stars
     } else {

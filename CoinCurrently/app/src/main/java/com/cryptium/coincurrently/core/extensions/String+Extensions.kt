@@ -1,7 +1,7 @@
 package com.cryptium.coincurrently.core.extensions
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.core.config.AppLocale
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
-import com.cryptium.coincurrently.sharedui.components.PreferredTimeframe
+import com.cryptium.coincurrently.core.models.PreferredTimeframe
 import android.icu.text.DecimalFormatSymbols as IcuDecimalFormatSymbols
 import android.icu.text.NumberFormat as IcuNumberFormat
 import java.text.SimpleDateFormat
@@ -129,14 +129,14 @@ fun String.MMMMddyyyy(): String? {
 
 object TimeframeLabels {
     val preferredWinnersTimeframe: String
-        get() = when (GlobalFunctions.getPreferredTimeframe()) {
+        get() = when (UserPreferences.getPreferredTimeframe()) {
             PreferredTimeframe.DAILY -> "Daily Winners"
             PreferredTimeframe.WEEKLY -> "Weekly Winners"
             PreferredTimeframe.MONTHLY -> "Monthly Winners"
         }
 
     val preferredLosersTimeframe: String
-        get() = when (GlobalFunctions.getPreferredTimeframe()) {
+        get() = when (UserPreferences.getPreferredTimeframe()) {
             PreferredTimeframe.DAILY -> "Daily Losers"
             PreferredTimeframe.WEEKLY -> "Weekly Losers"
             PreferredTimeframe.MONTHLY -> "Monthly Losers"

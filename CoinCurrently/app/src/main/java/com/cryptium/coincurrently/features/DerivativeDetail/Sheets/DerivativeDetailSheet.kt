@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.DerivativeDetail.Sheets
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,7 +57,6 @@ import com.cryptium.coincurrently.core.extensions.timeAgoDisplay
 import com.cryptium.coincurrently.core.extensions.timeUntilExpired
 import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
@@ -547,7 +547,7 @@ private fun indexPriceCurrency(target: String?): CurrencySelectionModel {
         )
     }
 
-    val selectedCurrency = GlobalFunctions.getSelectedCurrency()
+    val selectedCurrency = UserPreferences.getSelectedCurrency()
     val spelledSymbol = symbol.toCharArray().joinToString(" ") { it.toString() }
     return CurrencySelectionModel(
         currency = spelledSymbol,

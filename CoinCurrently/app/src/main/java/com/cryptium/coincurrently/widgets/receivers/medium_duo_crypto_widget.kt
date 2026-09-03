@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.widgets.receivers
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -18,7 +19,6 @@ import com.cryptium.coincurrently.sharedui.charts.getChangeSymbolResource
 import com.cryptium.coincurrently.sharedui.charts.getChangeWithSymbol
 import com.cryptium.coincurrently.sharedui.charts.getFormattedCurrencyString
 import com.cryptium.coincurrently.sharedui.charts.getWidgetChangeColor
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import kotlinx.coroutines.GlobalScope
@@ -85,7 +85,7 @@ fun downloadMultipleCurrencies(currenciesArray: List<String>, context: Context, 
     val currencies = currenciesArray.map { it }.joinToString { it }.replace(" ", "").removeSuffix(",")
 
     GlobalScope.launch {
-        CurrencyRepository.getMultipleCurrencies(currencies, GlobalFunctions.getSelectedCurrency(context)?.code ?: "USD")?.let {
+        CurrencyRepository.getMultipleCurrencies(currencies, UserPreferences.getSelectedCurrency(context)?.code ?: "USD")?.let {
 
             val tempArray: ArrayList<Boolean> = arrayListOf()
             val tempCurrencies: ArrayList<Toplist?> = arrayListOf()

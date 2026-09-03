@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.widgets.glance
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
@@ -35,7 +36,6 @@ import androidx.glance.background
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.sharedui.theme.WidgetColorValues
 import com.cryptium.coincurrently.core.extensions.satoshiBoldGlance
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.widgets.CryptoIdKey
 import com.cryptium.coincurrently.widgets.OpenAppAction
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
@@ -48,15 +48,15 @@ import com.cryptium.coincurrently.widgets.receivers.drawGraphBitmap
 
 /**
  * Large multi crypto widget built with Jetpack Glance.
- * Shows 8 crypto cells in a 4x2 grid. Uses widget currency from GlobalFunctions.getWidgetCurrency().
+ * Shows 8 crypto cells in a 4x2 grid. Uses widget currency from UserPreferences.getWidgetCurrency().
  * Shows buy pro overlay when user hasn't purchased Pro.
  */
 class LargeMultiCryptoGlanceWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        GlobalFunctions.initSharedPreferences(context)
+        UserPreferences.init(context)
 
-        val hasPro = GlobalFunctions.getHasBoughtPro() != null
+        val hasPro = UserPreferences.getHasBoughtPro() != null
 
         val widgetData = if (hasPro) {
             withContext(Dispatchers.IO) { loadWidgetData(context) }
@@ -101,13 +101,13 @@ class LargeMultiCryptoGlanceWidget : GlanceAppWidget() {
     }
 
     private suspend fun loadWidgetData(context: Context): LargeMultiWidgetData {
-        val widgetCurrency = GlobalFunctions.getWidgetCurrency(context)
+        val widgetCurrency = UserPreferences.getWidgetCurrency(context)
         val ids = widgetCurrency.take(8).mapNotNull { it.id }
         if (ids.isEmpty()) {
             return LargeMultiWidgetData(emptyList(), emptyList(), emptyList())
         }
 
-        val currencyCode = GlobalFunctions.getSelectedCurrency(context)?.code ?: "USD"
+        val currencyCode = UserPreferences.getSelectedCurrency(context)?.code ?: "USD"
         val idsString = ids.joinToString(",")
         val toplist = CurrencyRepository.getMultipleCurrencies(idsString, currencyCode)
             ?: return LargeMultiWidgetData(emptyList(), emptyList(), emptyList())

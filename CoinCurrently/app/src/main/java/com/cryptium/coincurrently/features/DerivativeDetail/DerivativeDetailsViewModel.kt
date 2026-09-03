@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.DerivativeDetail
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,7 +10,6 @@ import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.sharedui.models.CachedData
 import com.cryptium.coincurrently.sharedui.models.PriceChange
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import com.cryptium.coincurrently.features.DerivativeDetail.DerivativeDetailRepository
 import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
@@ -132,7 +132,7 @@ class DerivativeDetailsViewModel(
     }
 
     private fun calculatePriceMultiplier(bitcoin: CryptoDetailInfoModel) {
-        val selectedCurrency = GlobalFunctions.getSelectedCurrency()
+        val selectedCurrency = UserPreferences.getSelectedCurrency()
         val targetPrice = bitcoin.market_data?.current_price?.getSelectedCurrency(currency = selectedCurrency.code.uppercase()) ?: 0.0
         val basePrice = bitcoin.market_data?.current_price?.getSelectedCurrency(currency = "USD") ?: 0.0
 

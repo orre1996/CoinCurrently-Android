@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Paywall
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -19,7 +20,6 @@ import com.cryptium.coincurrently.core.extensions.getNormalPricePhase
 import com.cryptium.coincurrently.core.extensions.pricingPhaseToDouble
 import com.cryptium.coincurrently.core.extensions.updateAllWidgets
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.config.RemoteConfigKeys
 import com.cryptium.coincurrently.core.work.NotificationWorker
@@ -132,7 +132,7 @@ class BuyProViewModelImp: ViewModel(), BuyProViewModel {
                 && button.productId != welcomeName
 
         val productId = button.productId
-        val hadExistingSubscription = GlobalFunctions.getHasBoughtPro() != null
+        val hadExistingSubscription = UserPreferences.getHasBoughtPro() != null
 
         var hasLoggedPurchaseOutcome = false
         fun logPurchase(outcome: SubscriptionPurchaseOutcome) {

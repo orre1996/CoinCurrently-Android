@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.PriceAlerts
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.sharedui.modifiers.imageSize
 
 import android.content.Context
@@ -56,7 +57,6 @@ import com.cryptium.coincurrently.core.extensions.satoshiRegular
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
 import com.cryptium.coincurrently.sharedui.loading.ActivityIndicator
 import com.cryptium.coincurrently.sharedui.models.ChangeDirection
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.core.analytics.BuyProAction
 import com.cryptium.coincurrently.core.analytics.CurrencySelected
@@ -121,7 +121,7 @@ fun MyPriceAlertsScreen(
     val isRecurringAlertOn = remember { mutableStateOf(false) }
     val priceInput = remember { mutableDoubleStateOf(0.0) }
     val percentInput = remember { mutableDoubleStateOf(10.0) }
-    var selectedCurrency by remember { mutableStateOf(GlobalFunctions.getSelectedCurrency()) }
+    var selectedCurrency by remember { mutableStateOf(UserPreferences.getSelectedCurrency()) }
     val selectedDirection = remember { mutableStateOf(ChangeDirection.Up) }
     var showError: Boolean by remember { mutableStateOf(false) }
 

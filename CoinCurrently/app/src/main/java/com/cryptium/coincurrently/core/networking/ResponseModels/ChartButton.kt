@@ -1,6 +1,6 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
-import com.cryptium.coincurrently.sharedui.components.PreferredTimeframe
+import com.cryptium.coincurrently.core.persistence.UserPreferences
+import com.cryptium.coincurrently.core.models.PreferredTimeframe
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import kotlinx.serialization.Serializable
@@ -147,7 +147,7 @@ enum class TimeCharts(val label: String) {
         }
 
         fun getPreferredTimeChart(fromFearGreed: Boolean): TimeCharts {
-            return when (GlobalFunctions.getPreferredTimeframe()) {
+            return when (UserPreferences.getPreferredTimeframe()) {
                 PreferredTimeframe.DAILY -> {
                     if (fromFearGreed) aWeek else aDay
                 }

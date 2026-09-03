@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Treasuries.ViewModels
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -6,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.networking.TreasuryEntity
 import com.cryptium.coincurrently.features.Treasuries.TreasuryEntityFilter
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
@@ -211,7 +211,7 @@ class TreasuriesViewModel : ViewModel() {
     }
 
     private fun calculatePriceMultiplier(bitcoin: CryptoDetailInfoModel): Double? {
-        val selectedCurrency = GlobalFunctions.getSelectedCurrency()
+        val selectedCurrency = UserPreferences.getSelectedCurrency()
         val targetPrice = bitcoin.market_data?.current_price?.getSelectedCurrency(
             currency = selectedCurrency.code.uppercase(),
         ) ?: 0.0

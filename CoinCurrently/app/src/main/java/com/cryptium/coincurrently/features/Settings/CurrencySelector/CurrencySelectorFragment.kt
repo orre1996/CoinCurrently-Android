@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Settings.CurrencySelector
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,7 +25,6 @@ import com.cryptium.coincurrently.sharedui.theme.primaryBackground
 import com.cryptium.coincurrently.sharedui.theme.primaryTextColor
 import com.cryptium.coincurrently.sharedui.theme.tabbarAccent
 import com.cryptium.coincurrently.sharedui.theme.transparent
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.app.refreshCachedSectionsAfterCurrencyChange
 import androidx.core.app.NotificationManagerCompat
@@ -41,7 +41,7 @@ fun CurrencySelectorScreen(
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    var selectedCurrency by remember { mutableStateOf(GlobalFunctions.getSelectedCurrency(context)) }
+    var selectedCurrency by remember { mutableStateOf(UserPreferences.getSelectedCurrency(context)) }
 
     Column(
         modifier = modifier
@@ -60,7 +60,7 @@ fun CurrencySelectorScreen(
                     selectedCurrency = selectedCurrency,
                     callback = { currency ->
                         selectedCurrency = currency
-                        GlobalFunctions.setSelectedCurrency(currency)
+                        UserPreferences.setSelectedCurrency(currency)
 
                         coroutineScope.launch {
                             refreshCachedSectionsAfterCurrencyChange()

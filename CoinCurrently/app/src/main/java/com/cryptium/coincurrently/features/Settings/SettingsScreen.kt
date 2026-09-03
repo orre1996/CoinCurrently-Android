@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Settings
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.sharedui.sheets.ModalSheetNavigationBarExtensionSpacer as ComposeModalSheetNavigationBarExtensionSpacer
 import com.cryptium.coincurrently.sharedui.sheets.isEdgeToEdgeEnabled as composeIsEdgeToEdgeEnabled
 import com.cryptium.coincurrently.sharedui.sheets.modalSheetNavigationBarExtensionHeight as composeModalSheetNavigationBarExtensionHeight
@@ -83,10 +84,9 @@ import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.core.extensions.updateCurrecyWidgets
 import com.cryptium.coincurrently.core.extensions.updatePortfolioWidgets
-import com.cryptium.coincurrently.sharedui.components.AppColorScheme
+import com.cryptium.coincurrently.core.models.AppColorScheme
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.app.refreshCachedSectionsAfterCurrencyChange
 import com.cryptium.coincurrently.sharedui.components.appShareMessage
 import com.cryptium.coincurrently.core.persistence.StorageManager
@@ -113,7 +113,7 @@ import com.cryptium.coincurrently.core.analytics.TabBarDoubleTapped
 import com.cryptium.coincurrently.core.analytics.StartTabSelected
 import com.cryptium.coincurrently.core.analytics.ThemeSelected
 import com.cryptium.coincurrently.core.analytics.WebViewOpened
-import com.cryptium.coincurrently.sharedui.components.SelectedStartTab
+import com.cryptium.coincurrently.core.models.SelectedStartTab
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.features.Settings.ViewModels.AuthenticationStatus
 import com.cryptium.coincurrently.features.Settings.ViewModels.BiometricViewModel
@@ -155,15 +155,15 @@ fun SettingsScreen(
 
     val canCloseResetView = remember { mutableStateOf(true) }
 
-    var selectedCurrency by remember { mutableStateOf(GlobalFunctions.getSelectedCurrency()) }
-    var isBiometricEnabled by remember { mutableStateOf(GlobalFunctions.getIsBiometricAuthenticationEnabled()) }
+    var selectedCurrency by remember { mutableStateOf(UserPreferences.getSelectedCurrency()) }
+    var isBiometricEnabled by remember { mutableStateOf(UserPreferences.getIsBiometricAuthenticationEnabled()) }
     var selectedTheme by remember { mutableStateOf(navigationViewModel.appColorScheme) }
-    var selectedStartTab by remember { mutableStateOf(GlobalFunctions.getStartTab()) }
-    var isColorBlindEnabled by remember { mutableStateOf(GlobalFunctions.getColorBlind()) }
+    var selectedStartTab by remember { mutableStateOf(UserPreferences.getStartTab()) }
+    var isColorBlindEnabled by remember { mutableStateOf(UserPreferences.getColorBlind()) }
     var webSocketEnabled by remember { mutableStateOf(false) }
 
     LaunchedEffect(currentSubscription) {
-        webSocketEnabled = GlobalFunctions.isWebSocketEnabled(hasPro = currentSubscription != null)
+        webSocketEnabled = UserPreferences.isWebSocketEnabled(hasPro = currentSubscription != null)
     }
 
     LaunchedEffect(Unit) {
@@ -290,7 +290,7 @@ fun SettingsScreen(
                     },
                     toggleColorBlind = {
                         isColorBlindEnabled = !isColorBlindEnabled
-                        GlobalFunctions.setColorBlind(isColorBlindEnabled)
+                        UserPreferences.setColorBlind(isColorBlindEnabled)
                         navigationViewModel.colorBlindFilter = isColorBlindEnabled
                         if (isColorBlindEnabled) {
                             AnalyticsManager.log(
@@ -309,7 +309,7 @@ fun SettingsScreen(
                         }
 
                         webSocketEnabled = !webSocketEnabled
-                        GlobalFunctions.setWebSocketEnabled(webSocketEnabled)
+                        UserPreferences.setWebSocketEnabled(webSocketEnabled)
                         if (webSocketEnabled) {
                             AnalyticsManager.log(EnabledWebSocket(ScreenLabel.Settings))
                         } else {
@@ -374,7 +374,7 @@ fun SettingsScreen(
                                     if (it == AuthenticationStatus.SUCCESS) {
                                         val wasEnabled = isBiometricEnabled
                                         isBiometricEnabled = !isBiometricEnabled
-                                        GlobalFunctions.setIsBiometricAuthenticationEnabled(
+                                        UserPreferences.setIsBiometricAuthenticationEnabled(
                                             isBiometricEnabled
                                         )
                                         if (!wasEnabled && isBiometricEnabled) {
@@ -443,7 +443,7 @@ fun SettingsScreen(
                 bottomBarInset = tabBarHeight,
                 resetApp = {
                     context.getActivity()?.let {
-                        if (GlobalFunctions.getIsBiometricAuthenticationEnabled()) {
+                        if (UserPreferences.getIsBiometricAuthenticationEnabled()) {
                             biometricViewModel.setPrompt(context, it) {
                                 if (it == AuthenticationStatus.SUCCESS) {
                                     AnalyticsManager.log(ResetApp(ScreenLabel.Settings))
@@ -473,7 +473,7 @@ fun SettingsScreen(
                 selectedOption = selectedCurrency,
                 newOptionSelected = {
                     selectedCurrency = it
-                    GlobalFunctions.setSelectedCurrency(selectedCurrency)
+                    UserPreferences.setSelectedCurrency(selectedCurrency)
                     AnalyticsManager.log(
                         CurrencySelected(
                             fromScreen = ScreenLabel.Settings,
@@ -506,7 +506,7 @@ fun SettingsScreen(
                     val tab = SelectedStartTab.entries.find { it.getName() == option }
                         ?: return@SettingsOptionsSheet
                     selectedStartTab = tab
-                    GlobalFunctions.setStartTab(selectedStartTab)
+                    UserPreferences.setStartTab(selectedStartTab)
                     AnalyticsManager.log(
                         StartTabSelected(ScreenLabel.Settings, selectedStartTab),
                     )

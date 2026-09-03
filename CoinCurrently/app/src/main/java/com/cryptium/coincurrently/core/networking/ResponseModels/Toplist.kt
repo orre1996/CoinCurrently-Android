@@ -1,9 +1,9 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.app.NavigationScreens
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
-import com.cryptium.coincurrently.sharedui.components.PreferredTimeframe
+import com.cryptium.coincurrently.core.models.PreferredTimeframe
 import com.cryptium.coincurrently.core.networking.ResponseModels.Currency
 import kotlinx.serialization.Serializable
 
@@ -33,7 +33,7 @@ data class Sparkline(
 fun Toplist.stableListKey(): String = id ?: symbol ?: name ?: ""
 
 fun Toplist.getPreferredChange(): Double {
-    return when(GlobalFunctions.getPreferredTimeframe()) {
+    return when(UserPreferences.getPreferredTimeframe()) {
         PreferredTimeframe.DAILY -> price_change_percentage_24h_in_currency ?: 0.0
         PreferredTimeframe.WEEKLY -> price_change_percentage_7d_in_currency ?: 0.0
         PreferredTimeframe.MONTHLY -> price_change_percentage_30d_in_currency ?: 0.0

@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.sharedui.charts
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -28,7 +29,6 @@ import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.is24HourClock
 import com.cryptium.coincurrently.core.extensions.numberAccessible
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
 import java.util.Date
@@ -84,7 +84,7 @@ fun Modifier.chartAccessibilityOverlay(
     compareSeriesName: String? = null,
     dontShowTime: Boolean = false,
     useExchangeDateFormat: Boolean = false,
-    currency: CurrencySelectionModel = GlobalFunctions.getSelectedCurrency(),
+    currency: CurrencySelectionModel = UserPreferences.getSelectedCurrency(),
     priceFormatter: ((Double) -> String)? = null,
     showPercentChangeFromStart: Boolean = false,
 ): Modifier {
@@ -110,7 +110,7 @@ fun ChartAccessibilityOverlay(
     compareSeriesName: String? = null,
     dontShowTime: Boolean = false,
     useExchangeDateFormat: Boolean = false,
-    currency: CurrencySelectionModel = GlobalFunctions.getSelectedCurrency(),
+    currency: CurrencySelectionModel = UserPreferences.getSelectedCurrency(),
     priceFormatter: ((Double) -> String)? = null,
     showPercentChangeFromStart: Boolean = false,
     modifier: Modifier = Modifier,

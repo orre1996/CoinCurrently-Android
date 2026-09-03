@@ -1,9 +1,9 @@
 package com.cryptium.coincurrently.features.Achievements.Managers
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.os.Handler
 import android.os.Looper
 import com.cryptium.coincurrently.core.extensions.allTransactionsCount
 import com.cryptium.coincurrently.core.extensions.getProfitPercent
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
@@ -263,7 +263,7 @@ object AchievementManager {
     private fun maxPortfolioGainPercent(): Double {
         val portfolio = PortfolioRepository.portfolio?.data?.data ?: return 0.0
         val prices = PortfolioRepository.portfolioAllCurrencies ?: return 0.0
-        val showCurrency = GlobalFunctions.getSelectedCurrency().code.lowercase()
+        val showCurrency = UserPreferences.getSelectedCurrency().code.lowercase()
 
         var maxGain = 0.0
         for (pie in portfolio) {
@@ -285,7 +285,7 @@ object AchievementManager {
         val transactionCount = PortfolioRepository.portfolio?.data?.data?.allTransactionsCount?.toDouble() ?: 0.0
         val alertsCount = PriceAlertsRepository.priceAlerts?.size?.toDouble() ?: 0.0
         val widgetCount = CurrencyRepository.widgetCurrencies.size.toDouble()
-        val authEnabled = GlobalFunctions.getIsBiometricAuthenticationEnabled()
+        val authEnabled = UserPreferences.getIsBiometricAuthenticationEnabled()
 
         return mapOf(
             AchievementMetric.dailyStreak to AchievementStreakTracker.currentStreak.toDouble(),

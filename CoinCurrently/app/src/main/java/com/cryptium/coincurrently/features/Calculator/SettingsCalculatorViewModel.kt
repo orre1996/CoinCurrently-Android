@@ -5,7 +5,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.features.Calculator.CalculatorRepository
 import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
 import kotlinx.coroutines.launch

@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.core.persistence
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.content.Context
 import android.util.Log
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
@@ -6,7 +7,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.updateCurrecyWidgets
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
@@ -49,7 +49,7 @@ class CurrencyRepository {
         var cryptoPrices: MutableMap<String, PriceVolumeModel>? = null
         var cryptoCandles: MutableMap<String, List<Candle>>? = null
 
-        var widgetCurrencies: List<Toplist> = GlobalFunctions.getWidgetCurrency()
+        var widgetCurrencies: List<Toplist> = UserPreferences.getWidgetCurrency()
         var bitcoinData: CryptoDetailInfoModel? = null
 
         private var hubConnection: HubConnection? = null
@@ -88,7 +88,7 @@ class CurrencyRepository {
                 cryptoInfo = it
             }
 
-            val currencyCode = GlobalFunctions.getSelectedCurrency(null).code
+            val currencyCode = UserPreferences.getSelectedCurrency(null).code
             @Suppress("UNCHECKED_CAST")
             val pv: PriceVolumeModel? =
                 (RetrofitBuilder.getCached(CacheUrls.priceVolume(id, currencyCode, chart.days, chart.interval, true), priceVolumeType, includeExpired)?.data as? PriceVolumeModel)
@@ -138,7 +138,7 @@ class CurrencyRepository {
 
         suspend fun getPriceVolume(id: String?, chart: TimeCharts, context: Context? = null, isFreeUrl: Boolean = true): PriceVolumeModel? {
             val id = id ?: return null
-            val currencyCode = GlobalFunctions.getSelectedCurrency(context).code
+            val currencyCode = UserPreferences.getSelectedCurrency(context).code
             val url = CacheUrls.priceVolume(id, currencyCode, chart.days, chart.interval, isFreeUrl)
 
             @Suppress("UNCHECKED_CAST")
@@ -164,7 +164,7 @@ class CurrencyRepository {
 
         suspend fun getCandleStick(id: String?, days: String, isFreeUrl: Boolean = true): List<Candle>? {
             val id = id ?: return null
-            val currencyCode = GlobalFunctions.getSelectedCurrency(null).code.lowercase()
+            val currencyCode = UserPreferences.getSelectedCurrency(null).code.lowercase()
             val url = CacheUrls.candles(id, currencyCode, days, isFreeUrl)
 
             RetrofitBuilder.getCached<String>(url)?.let { cached ->
@@ -233,7 +233,7 @@ class CurrencyRepository {
         fun changeWidgetsOrder(currencies: List<Toplist>, context: Context) {
             if (currencies != widgetCurrencies) {
                 widgetCurrencies = currencies
-                GlobalFunctions.setWidgetCurrency(currencies)
+                UserPreferences.setWidgetCurrency(currencies)
                 context.getActivity()?.updateCurrecyWidgets()
             }
         }
@@ -242,7 +242,7 @@ class CurrencyRepository {
             val oldList = widgetCurrencies.toMutableList()
             oldList.removeIf { it.id == coin.id }
             widgetCurrencies = oldList
-            GlobalFunctions.setWidgetCurrency(widgetCurrencies)
+            UserPreferences.setWidgetCurrency(widgetCurrencies)
             context.getActivity()?.updateCurrecyWidgets()
         }
 
@@ -355,7 +355,7 @@ class CurrencyRepository {
                 return false
             }
 
-            val selectedCurrency = GlobalFunctions.getSelectedCurrency(null).code.lowercase()
+            val selectedCurrency = UserPreferences.getSelectedCurrency(null).code.lowercase()
             val result = mainRepository.subCoin(
                 coinIds = subscribedCoinIds,
                 currencies = listOf(selectedCurrency),

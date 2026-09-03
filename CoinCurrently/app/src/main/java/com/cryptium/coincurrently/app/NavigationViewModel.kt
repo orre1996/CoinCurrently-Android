@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.app
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.app.NavigationScreens
 import android.content.Context
 import android.os.Handler
@@ -14,7 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.DialogNavigator
-import com.cryptium.coincurrently.sharedui.components.AppColorScheme
+import com.cryptium.coincurrently.core.models.AppColorScheme
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.extensions.getActivity
@@ -29,7 +30,6 @@ import com.google.android.play.core.review.ReviewManagerFactory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 
 class NavigationViewModel(context: Context): ViewModel() {
     companion object {
@@ -69,7 +69,7 @@ class NavigationViewModel(context: Context): ViewModel() {
         }
 
     private val _colorBlindFilter: MutableStateFlow<Boolean> = MutableStateFlow(
-        GlobalFunctions.getColorBlind()
+        UserPreferences.getColorBlind()
     )
     val colorBlindFilterFlow: StateFlow<Boolean> = _colorBlindFilter.asStateFlow()
     var colorBlindFilter: Boolean

@@ -1,7 +1,7 @@
 package com.cryptium.coincurrently.core.extensions
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
 import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioModel
@@ -296,7 +296,7 @@ fun List<Pie>.getAllTransactions(id: String?): List<NewTransaction> {
 
 fun List<Pie>.getProfitLossValue(
     coinPrices: Map<String, Map<String, Double>>?,
-    showCurrency: String = GlobalFunctions.getSelectedCurrency().code
+    showCurrency: String = UserPreferences.getSelectedCurrency().code
 ): Double? {
     if (isEmpty() || coinPrices.isNullOrEmpty()) return 0.0
 
@@ -319,7 +319,7 @@ fun List<Pie>.getProfitLossValue(
 
 fun List<Pie>.getProfitLossPercent(
     coinPrices: Map<String, Map<String, Double>>?,
-    showCurrency: String = GlobalFunctions.getSelectedCurrency().code
+    showCurrency: String = UserPreferences.getSelectedCurrency().code
 ): Double {
     if (isEmpty() || coinPrices.isNullOrEmpty()) return 0.0
 
@@ -365,7 +365,7 @@ private fun safeValue(value: Double): Double? {
 
 fun List<NewTransaction>.getTotalFees(
     prices: Map<String, Double>?,
-    showCurrency: String = GlobalFunctions.getSelectedCurrency().code
+    showCurrency: String = UserPreferences.getSelectedCurrency().code
 ): Double? {
     val fees = mapNotNull { tx ->
         tx.pricePerCoin?.let {
@@ -379,7 +379,7 @@ fun List<NewTransaction>.getTotalFees(
 
 fun List<NewTransaction>.getTotalCost(
     prices: Map<String, Double>?,
-    showCurrency: String = GlobalFunctions.getSelectedCurrency().code
+    showCurrency: String = UserPreferences.getSelectedCurrency().code
 ): Double? {
     val total = filter { it.transactionType == NewTransactionType.Buy }
         .mapNotNull { tx ->
@@ -399,7 +399,7 @@ val List<NewTransaction>.totalBuyAmount: Double
 
 fun List<NewTransaction>.getAverageCost(
     prices: Map<String, Double>?,
-    showCurrency: String = GlobalFunctions.getSelectedCurrency().code.lowercase()
+    showCurrency: String = UserPreferences.getSelectedCurrency().code.lowercase()
 ): Double? {
     val totalCost = filter { it.transactionType == NewTransactionType.Buy }
         .sumOf { tx ->
@@ -412,7 +412,7 @@ fun List<NewTransaction>.getAverageCost(
 
 fun List<NewTransaction>.getProfitPercent(
     prices: Map<String, Double>?,
-    showCurrency: String = GlobalFunctions.getSelectedCurrency().code.lowercase(),
+    showCurrency: String = UserPreferences.getSelectedCurrency().code.lowercase(),
     withTransfers: Boolean = true
 ): Double? {
     val avgCost = getAverageCost(prices) ?: 1.0
@@ -431,7 +431,7 @@ fun List<NewTransaction>.getProfitPercent(
 
 fun List<NewTransaction>.getProfitValue(
     prices: Map<String, Double>?,
-    showCurrency: String = GlobalFunctions.getSelectedCurrency().code,
+    showCurrency: String = UserPreferences.getSelectedCurrency().code,
     withTransfers: Boolean = true
 ): Double? {
     if (prices.isNullOrEmpty()) return 0.0

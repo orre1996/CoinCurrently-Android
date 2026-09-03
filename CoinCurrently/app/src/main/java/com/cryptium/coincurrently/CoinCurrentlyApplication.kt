@@ -14,6 +14,7 @@ import java.io.File
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import com.cryptium.coincurrently.core.config.AppLocale
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 
 /**
  * Configures Coil so images stay available offline after they have been fetched once.
@@ -32,6 +33,7 @@ class CoinCurrentlyApplication : Application() {
         super.onCreate()
         ComposePlatformCompat.warmUp(this)
         Locale.setDefault(AppLocale.enUsPosix)
+        UserPreferences.init(this)
         FirebaseApp.initializeApp(this)
         AnalyticsManager.init(this)
 

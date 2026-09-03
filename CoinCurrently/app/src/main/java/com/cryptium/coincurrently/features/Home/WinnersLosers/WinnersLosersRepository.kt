@@ -1,10 +1,10 @@
 package com.cryptium.coincurrently.features.Home.WinnersLosers
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.util.Log
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
 import com.google.gson.reflect.TypeToken
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.networking.ResponseModels.WinnersLosers
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
@@ -32,8 +32,8 @@ class WinnersLosersRepository {
 
         init {
             try {
-                val duration = GlobalFunctions.preferredTimeFrameTextChange()  // "24h", "7d", "30d"
-                val currency = GlobalFunctions.getSelectedCurrency().code
+                val duration = UserPreferences.preferredTimeFrameTextChange()  // "24h", "7d", "30d"
+                val currency = UserPreferences.getSelectedCurrency().code
                 winnerLoserIds = (RetrofitBuilder.getCached(CacheUrls.winnersLosers(currency, duration), winnersLosersType, includeExpired = true)?.data as? WinnersLosers)
                 PriceChange.entries.forEach { priceChange ->
                     if (priceChange.rawValue == duration) {
@@ -69,7 +69,7 @@ class WinnersLosersRepository {
 
             Log.w("Network call ", "Winners")
 
-            val currency = GlobalFunctions.getSelectedCurrency().code
+            val currency = UserPreferences.getSelectedCurrency().code
             val winnersUrl = CacheUrls.getMultipleCoins(coinIds, currency)
             RetrofitBuilder.getCachedList<Toplist>(winnersUrl)?.let {
                 if (it.data.isNotEmpty()) {
@@ -111,7 +111,7 @@ class WinnersLosersRepository {
 
             Log.w("Network call ", "Losers")
 
-            val currency = GlobalFunctions.getSelectedCurrency().code
+            val currency = UserPreferences.getSelectedCurrency().code
             val losersUrl = CacheUrls.getMultipleCoins(coinIds, currency)
             RetrofitBuilder.getCachedList<Toplist>(losersUrl)?.let {
                 if (it.data.isNotEmpty()) {
@@ -137,7 +137,7 @@ class WinnersLosersRepository {
         }
 
         private suspend fun getWinnersLosersList(priceChange: PriceChange): WinnersLosers? {
-            val url = CacheUrls.winnersLosers(GlobalFunctions.getSelectedCurrency().code, priceChange.rawValue)
+            val url = CacheUrls.winnersLosers(UserPreferences.getSelectedCurrency().code, priceChange.rawValue)
             (RetrofitBuilder.getCached(url, winnersLosersType)?.data as? WinnersLosers)?.let { data ->
                 if (!data.top_gainers.isNullOrEmpty() && !data.top_losers.isNullOrEmpty()) {
                     winnerLoserIds = data
@@ -147,7 +147,7 @@ class WinnersLosersRepository {
 
             Log.w("Network call ", "Winner loser ids")
 
-            val result = mainRepository.getWinnersLosers(GlobalFunctions.getSelectedCurrency().code, priceChange.rawValue).unwrapOrNull()
+            val result = mainRepository.getWinnersLosers(UserPreferences.getSelectedCurrency().code, priceChange.rawValue).unwrapOrNull()
             result?.let {
                 winnerLoserIds = it
             }

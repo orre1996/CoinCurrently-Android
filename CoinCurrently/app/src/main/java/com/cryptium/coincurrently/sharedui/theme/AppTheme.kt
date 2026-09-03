@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.sharedui.theme
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.annotation.SuppressLint
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
@@ -11,7 +12,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.runtime.CompositionLocalProvider
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.sharedui.components.LocalAccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.accessibilityLayoutState
 import com.cryptium.coincurrently.sharedui.modifiers.DynamicTypeSizeCap
@@ -57,7 +57,7 @@ private val LightColorPalette = lightColors(
 @Composable
 fun AppTheme(
     darkTheme: Boolean,
-    colorBlindFilter: Boolean = GlobalFunctions.getColorBlind(),
+    colorBlindFilter: Boolean = UserPreferences.getColorBlind(),
     content: @Composable () -> Unit,
 ) {
     val configuration = LocalConfiguration.current

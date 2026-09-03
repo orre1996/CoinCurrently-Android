@@ -1,7 +1,7 @@
 package com.cryptium.coincurrently.features.Home.NewCoins
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.util.Log
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.sharedui.models.CachedData
@@ -58,7 +58,7 @@ class NewCoinsRepository {
         private suspend fun getNewCoins(ids: String): ArrayList<Toplist>? {
             Log.w("Network call ", "New Coins")
 
-            val currencyCode = GlobalFunctions.getSelectedCurrency().code.lowercase()
+            val currencyCode = UserPreferences.getSelectedCurrency().code.lowercase()
             val url = CacheUrls.getMultipleCoins(ids, currencyCode)
             lastNewCoinsUrl = url
 

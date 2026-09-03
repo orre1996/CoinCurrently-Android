@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.sharedui.charts
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.content.Context
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -7,7 +8,6 @@ import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.trendDown
 import com.cryptium.coincurrently.sharedui.theme.trendUp
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.extensions.roundTo
 import com.cryptium.coincurrently.widgets.receivers.widgetOnSurfaceDim
 import com.cryptium.coincurrently.widgets.receivers.widgetTrendUp
@@ -19,7 +19,7 @@ import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 
 fun Long.getFormattedCurrencyString(withSymbol: Boolean = true, context: Context, currencySelectionModel: CurrencySelectionModel? = null, maximumDigits: Int = 7): String? {
-    val currency = currencySelectionModel ?: (GlobalFunctions.getSelectedCurrency(context) ?: CurrencySelectionModel())
+    val currency = currencySelectionModel ?: (UserPreferences.getSelectedCurrency(context) ?: CurrencySelectionModel())
 
     val locale = currency.formattingLocale
     val symbol = DecimalFormatSymbols(locale)
@@ -38,7 +38,7 @@ fun Long.getFormattedCurrencyString(withSymbol: Boolean = true, context: Context
 }
 
 fun Number.getFormattedCurrencyString(withSymbol: Boolean = true, context: Context? = null, currencySelectionModel: CurrencySelectionModel? = null, maximumDigits: Int = 7, minimumDigits: Int = 2): String? {
-    val currency = currencySelectionModel ?: (GlobalFunctions.getSelectedCurrency(context))
+    val currency = currencySelectionModel ?: (UserPreferences.getSelectedCurrency(context))
 
     val locale = currency.formattingLocale
     val symbol = DecimalFormatSymbols(locale)

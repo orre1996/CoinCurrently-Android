@@ -1,10 +1,10 @@
 package com.cryptium.coincurrently.features.Market.Repositories
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.util.Log
 import com.cryptium.coincurrently.core.extensions.isMoreThanDefaultCache
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.features.Home.NewCoins.NewCoinsRepository
 import com.cryptium.coincurrently.features.Home.Trending.TrendingRepository
 import com.cryptium.coincurrently.features.Home.WinnersLosers.WinnersLosersRepository
@@ -35,7 +35,7 @@ class ToplistRepository {
 
         init {
             try {
-                val currency = GlobalFunctions.getSelectedCurrency().code.lowercase()
+                val currency = UserPreferences.getSelectedCurrency().code.lowercase()
                 smallToplist = RetrofitBuilder.getCachedList<Toplist>(CacheUrls.smallToplist(currency), includeExpired = true)?.data
                 val favoriteCached = StorageManager.get<CachedData<ArrayList<Toplist>>>(StorageKeys.FAVORITE)
                 favorites = favoriteCached?.data
@@ -56,7 +56,7 @@ class ToplistRepository {
         }
 
         suspend fun getSmallToplist(): ArrayList<Toplist>? {
-            val currencyCode = GlobalFunctions.getSelectedCurrency().code.lowercase()
+            val currencyCode = UserPreferences.getSelectedCurrency().code.lowercase()
             RetrofitBuilder.getCachedList<Toplist>(CacheUrls.smallToplist(currencyCode))?.let {
                 if (it.data.isNotEmpty()) {
                     smallToplist = it.data
@@ -89,7 +89,7 @@ class ToplistRepository {
             platformId: String?
         ): ArrayList<Toplist>? {
             val cacheKey = "${sortOption.getOptionKey(priceChange)}-$platformId"
-            val currencyCode = GlobalFunctions.getSelectedCurrency(null).code.lowercase()
+            val currencyCode = UserPreferences.getSelectedCurrency(null).code.lowercase()
 
             if (sortOption != SortOption.PriceChangeDesc && sortOption != SortOption.PriceChangeAsc) {
                 val url = CacheUrls.toplist(currencyCode, sortOption, 250, platformId)
@@ -146,7 +146,7 @@ class ToplistRepository {
 
             favorites?.let {
                 StorageManager.set(StorageKeys.FAVORITE, CachedData(it, Date()))
-                GlobalFunctions.setFavorites(favorites?.mapNotNull { it.id } ?: listOf())
+                UserPreferences.setFavorites(favorites?.mapNotNull { it.id } ?: listOf())
             }
 
             if (isAdding) {
@@ -161,7 +161,7 @@ class ToplistRepository {
         }
 
         suspend fun getFavorites(): List<Toplist>? {
-            val favoriteIds = GlobalFunctions.getFavorites()
+            val favoriteIds = UserPreferences.getFavorites()
 
             if (favoriteIds.isEmpty()) {
                 return null
@@ -209,7 +209,7 @@ class ToplistRepository {
             Log.w("Network call ", "Favorites")
 
             val ids = otherFavorites.joinToString{ it }.replace(" ", "")
-            val favoriteCoins: List<Toplist> = mainRepository.getMultipleCurrencies(ids, GlobalFunctions.getSelectedCurrency().code).unwrapOrNull() ?: return null
+            val favoriteCoins: List<Toplist> = mainRepository.getMultipleCurrencies(ids, UserPreferences.getSelectedCurrency().code).unwrapOrNull() ?: return null
 
             favoriteCoins.forEach { coin ->
                 val index = favorites?.indexOfFirst { it.id == coin.id } ?: -1
@@ -232,7 +232,7 @@ class ToplistRepository {
         }
 
         suspend fun getCoin(id: String): Toplist? {
-            val currencyCode = GlobalFunctions.getSelectedCurrency().code.lowercase()
+            val currencyCode = UserPreferences.getSelectedCurrency().code.lowercase()
             val url = CacheUrls.getMultipleCoins(id, currencyCode)
 
             RetrofitBuilder.getCachedList<Toplist>(url)?.data?.firstOrNull { it.id == id }?.let {

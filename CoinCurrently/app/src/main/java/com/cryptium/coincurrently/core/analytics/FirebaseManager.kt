@@ -1,16 +1,16 @@
 @file:Suppress("SameReturnValue")
 
 package com.cryptium.coincurrently.core.analytics
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import com.cryptium.coincurrently.sharedui.components.AppColorScheme
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
+import com.cryptium.coincurrently.core.models.AppColorScheme
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.StorageKeys
-import com.cryptium.coincurrently.sharedui.components.PreferredTimeframe
+import com.cryptium.coincurrently.core.models.PreferredTimeframe
 import com.google.android.gms.tasks.Tasks
 import com.cryptium.coincurrently.BuildConfig
 import com.google.firebase.FirebaseApp
@@ -338,16 +338,16 @@ class FirebaseManager {
         fun resetApp(callback: () -> Unit) {
             val db = FirebaseFirestore.getInstance()
 
-            GlobalFunctions.setPortfolioCurrency(arrayListOf())
-            GlobalFunctions.setWidgetCurrency(listOf())
-            GlobalFunctions.setSelectedCurrency(CurrencySelectionModel())
-            GlobalFunctions.setFavorites(listOf())
+            UserPreferences.setPortfolioCurrency(arrayListOf())
+            UserPreferences.setWidgetCurrency(listOf())
+            UserPreferences.setSelectedCurrency(CurrencySelectionModel())
+            UserPreferences.setFavorites(listOf())
             StorageManager.set(StorageKeys.APP_COLOR_SCHEME, AppColorScheme.DARK)
-            GlobalFunctions.setIsWidgetDarkModeEnabled(true)
-            GlobalFunctions.setIsBiometricAuthenticationEnabled(false)
-            GlobalFunctions.setIsHidePortfolioEnabled(false)
-            GlobalFunctions.setShowChangesInPercent(true)
-            GlobalFunctions.setPreferredTimeframe(PreferredTimeframe.WEEKLY)
+            UserPreferences.setIsWidgetDarkModeEnabled(true)
+            UserPreferences.setIsBiometricAuthenticationEnabled(false)
+            UserPreferences.setIsHidePortfolioEnabled(false)
+            UserPreferences.setShowChangesInPercent(true)
+            UserPreferences.setPreferredTimeframe(PreferredTimeframe.WEEKLY)
             StorageManager.clearCache()
 
             db.collection(uid.toString())
@@ -359,7 +359,7 @@ class FirebaseManager {
                 }
 
 
-            val collection = GlobalFunctions.getLastLoginCollection()
+            val collection = UserPreferences.getLastLoginCollection()
 
             db.collection("last_login${collection}")
                 .whereEqualTo("uid", uid)

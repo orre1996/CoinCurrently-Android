@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.core.purchases
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
@@ -13,7 +14,6 @@ import com.cryptium.coincurrently.BuildConfig
 import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.getIntroductoryOffer
 import com.cryptium.coincurrently.core.extensions.updateAllWidgets
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.analytics.SubscriptionRestoreOutcome
 import com.revenuecat.purchases.CacheFetchPolicy
 import com.revenuecat.purchases.CustomerInfo
@@ -63,11 +63,11 @@ private val subscriptionProductIds = subscribedProductIds.toList()
 
 class StoreKitManager {
     companion object {
-        val currentSubscription: MutableLiveData<String?> = MutableLiveData(GlobalFunctions.getHasBoughtPro())
-        val subscriptionExpirationDate: MutableLiveData<Date?> = MutableLiveData(GlobalFunctions.getProExpirationDate())
+        val currentSubscription: MutableLiveData<String?> = MutableLiveData(UserPreferences.getHasBoughtPro())
+        val subscriptionExpirationDate: MutableLiveData<Date?> = MutableLiveData(UserPreferences.getProExpirationDate())
 
         val storeProducts: MutableLiveData<List<ProductDetails>> = MutableLiveData()
-        val isEligableForTrial: MutableLiveData<Boolean> = MutableLiveData(GlobalFunctions.getIsEligableForTrial())
+        val isEligableForTrial: MutableLiveData<Boolean> = MutableLiveData(UserPreferences.getIsEligableForTrial())
 
         var successCallback: () -> Unit = { }
         var cancelCallback: () -> Unit = { }
@@ -194,7 +194,7 @@ class StoreKitManager {
                                     if (applyCustomerInfo(customerInfo)) {
                                         if (!hadPro) {
                                             isEligableForTrial.value = false
-                                            GlobalFunctions.setIsEligableForTrial(false)
+                                            UserPreferences.setIsEligableForTrial(false)
                                         }
                                         restoreSuccessCallback()
                                         successCallback()
@@ -638,15 +638,15 @@ class StoreKitManager {
                 val expirationDate = entitlement.expirationDate
                 currentSubscription.value = productId
                 subscriptionExpirationDate.value = expirationDate
-                GlobalFunctions.setHasBoughtPro(productId)
-                GlobalFunctions.setProExpirationDate(expirationDate)
+                UserPreferences.setHasBoughtPro(productId)
+                UserPreferences.setProExpirationDate(expirationDate)
                 return true
             }
 
             currentSubscription.value = null
             subscriptionExpirationDate.value = null
-            GlobalFunctions.setHasBoughtPro(null)
-            GlobalFunctions.setProExpirationDate(null)
+            UserPreferences.setHasBoughtPro(null)
+            UserPreferences.setProExpirationDate(null)
             return false
         }
     }

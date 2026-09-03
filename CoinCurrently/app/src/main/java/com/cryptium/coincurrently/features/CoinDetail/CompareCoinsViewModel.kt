@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.CoinDetail
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,7 +26,6 @@ import com.cryptium.coincurrently.sharedui.components.Point
 import com.cryptium.coincurrently.sharedui.components.getPoint
 import com.cryptium.coincurrently.sharedui.components.getPriceXPosition
 import com.cryptium.coincurrently.sharedui.components.lineChartIndexFromPlotX
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.models.ChartTypes
@@ -117,7 +117,7 @@ class CompareCoinsViewModel(
     private var hasProSubscription = StoreKitManager.currentSubscription.value != null
 
     val isWebSocketEnabled: Boolean
-        get() = GlobalFunctions.isWebSocketEnabled(hasPro = hasProSubscription)
+        get() = UserPreferences.isWebSocketEnabled(hasPro = hasProSubscription)
 
     init {
         val coins: ArrayList<Toplist> = run {
@@ -322,7 +322,7 @@ class CompareCoinsViewModel(
     private fun applyWebSocketUpdate(update: CGSimplePriceUpdate) {
         val updateCoinId = update.coinId?.lowercase() ?: return
 
-        val selectedCurrency = GlobalFunctions.getSelectedCurrency(null).code.lowercase()
+        val selectedCurrency = UserPreferences.getSelectedCurrency(null).code.lowercase()
         if (update.vsCurrency?.lowercase() != selectedCurrency) {
             return
         }

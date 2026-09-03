@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.widgets.glance
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
@@ -22,7 +23,6 @@ import androidx.glance.background
 import androidx.glance.layout.height
 import androidx.glance.layout.width
 import com.cryptium.coincurrently.sharedui.theme.WidgetColorValues
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -31,13 +31,13 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 /**
  * Large quad crypto widget built with Jetpack Glance (Compose-based app widgets).
  * Layout: 2x2 grid of SmallCryptoContent widgets.
- * Uses widget currency from GlobalFunctions.getWidgetCurrency().
+ * Uses widget currency from UserPreferences.getWidgetCurrency().
  */
 
 class LargeQuadCryptoGlanceWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        GlobalFunctions.initSharedPreferences(context)
+        UserPreferences.init(context)
 
         val widgetData = withContext(Dispatchers.IO) {
             loadWidgetData(context)
@@ -59,13 +59,13 @@ class LargeQuadCryptoGlanceWidget : GlanceAppWidget() {
     }
 
     private suspend fun loadWidgetData(context: Context): LargeQuadWidgetData {
-        val widgetCurrency = GlobalFunctions.getWidgetCurrency()
+        val widgetCurrency = UserPreferences.getWidgetCurrency()
         val ids = widgetCurrency.take(4).mapNotNull { it.id }
         if (ids.isEmpty()) {
             return LargeQuadWidgetData(null, null, null, null, null, null, null, null)
         }
 
-        val currencyCode = GlobalFunctions.getSelectedCurrency().code
+        val currencyCode = UserPreferences.getSelectedCurrency().code
         val idsString = ids.joinToString(",")
         val toplist = CurrencyRepository.getMultipleCurrencies(idsString, currencyCode)
             ?: return LargeQuadWidgetData(null, null, null, null, null, null, null, null)

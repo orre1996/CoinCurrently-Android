@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Home
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.util.Log
 import android.app.Application
 import android.content.Context
@@ -20,8 +21,7 @@ import com.cryptium.coincurrently.core.extensions.isMoreThanOneMonthOld
 import com.cryptium.coincurrently.core.extensions.isTablet
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
-import com.cryptium.coincurrently.sharedui.components.PreferredTimeframe
+import com.cryptium.coincurrently.core.models.PreferredTimeframe
 import com.cryptium.coincurrently.core.models.CarouselFilter
 import com.cryptium.coincurrently.features.FearGreed.FearGreedRepository
 import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketData
@@ -359,7 +359,7 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
         showBuyPro: () -> Unit
     ) {
         val isFavorite = favorites?.any { it.id == item.id } ?: false
-        if (StoreKitManager.currentSubscription.value == null && !isFavorite && GlobalFunctions.getFavorites().orEmpty().size >= 2) {
+        if (StoreKitManager.currentSubscription.value == null && !isFavorite && UserPreferences.getFavorites().orEmpty().size >= 2) {
             showBuyPro.invoke()
             return
         }

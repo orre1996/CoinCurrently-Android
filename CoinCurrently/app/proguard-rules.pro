@@ -63,8 +63,13 @@
 -if @kotlinx.serialization.Serializable class **
 -keep class <1> { *; }
 
-# Nested enums stored via Gson (declared inside GlobalFunctions)
--keep class com.cryptium.coincurrently.sharedui.components.GlobalFunctions$* { *; }
+# Nested Gson helpers on UserPreferences (favorites, widget coins, portfolio)
+-keep class com.cryptium.coincurrently.core.persistence.UserPreferences$* { *; }
+
+# Enums persisted as SharedPreferences ordinals
+-keep enum com.cryptium.coincurrently.core.models.PreferredTimeframe { *; }
+-keep enum com.cryptium.coincurrently.core.models.AppColorScheme { *; }
+-keep enum com.cryptium.coincurrently.core.models.SelectedStartTab { *; }
 
 # Portfolio companion touches Gson-backed fields; keep names stable
 -keep class com.cryptium.coincurrently.features.Portfolio.PortfolioRepository { *; }

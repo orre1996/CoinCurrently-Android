@@ -1,11 +1,11 @@
 package com.cryptium.coincurrently.core.networking
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.core.networking.ResponseModels.WalletImportRequest
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
@@ -91,7 +91,7 @@ class ApiHelper(private val apiService: ApiService) {
     suspend fun getNftPriceVolume(id: String, days: String) = apiService.getNFTPriceVolume("${serverBaseUrl}/crypto", id, days)
 
     suspend fun triggerPriceAlert() = apiService.triggerPriceAlert(serverBaseUrl)
-    suspend fun subBigMover() = apiService.subBigMover(serverBaseUrl, mapOf("preferredCurrency" to GlobalFunctions.getSelectedCurrency().code))
+    suspend fun subBigMover() = apiService.subBigMover(serverBaseUrl, mapOf("preferredCurrency" to UserPreferences.getSelectedCurrency().code))
     suspend fun ubsubBigMovers() = apiService.ubsubBigMover(serverBaseUrl)
     suspend fun bigMoverTrigger() = apiService.bigMoverTrigger(serverBaseUrl)
     suspend fun sendFeedback(rating: Int, feedback: String?) = apiService.sendFeedback(
@@ -176,7 +176,7 @@ class ApiHelper(private val apiService: ApiService) {
     suspend fun getAlerts() = apiService.getAlerts(serverBaseUrl)
     suspend fun createAlert(alertCoin: PostAlertCoin) = apiService.createAlert(serverBaseUrl, alertCoin)
     suspend fun deleteAlert(alertId: String) = apiService.deleteAlert(serverBaseUrl, mapOf("alertId" to alertId))
-    suspend fun updateUser(token: String) = apiService.updateUser(serverBaseUrl, mapOf("newFCM" to token, "preferredCurrency" to GlobalFunctions.getSelectedCurrency().code))
+    suspend fun updateUser(token: String) = apiService.updateUser(serverBaseUrl, mapOf("newFCM" to token, "preferredCurrency" to UserPreferences.getSelectedCurrency().code))
 }
 
 fun isOnline(context: Context): Boolean {

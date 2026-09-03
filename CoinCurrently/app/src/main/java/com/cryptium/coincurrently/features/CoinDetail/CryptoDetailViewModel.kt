@@ -7,6 +7,7 @@
 )
 
 package com.cryptium.coincurrently.features.CoinDetail
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
@@ -48,7 +49,6 @@ import com.cryptium.coincurrently.core.extensions.getDifferenceInPercent
 import com.cryptium.coincurrently.core.extensions.groupedTransactions
 import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
 import com.cryptium.coincurrently.features.News.NewsRepository
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
@@ -182,7 +182,7 @@ class CryptoDetailViewModel(
     private var hasProSubscription = StoreKitManager.currentSubscription.value != null
 
     val isWebSocketEnabled: Boolean
-        get() = GlobalFunctions.isWebSocketEnabled(hasPro = hasProSubscription)
+        get() = UserPreferences.isWebSocketEnabled(hasPro = hasProSubscription)
 
     init {
         this.currencyId = cryptoDetail?.id ?: ""
@@ -199,7 +199,7 @@ class CryptoDetailViewModel(
             this.cryptoInfo = cryptoDetail
         }
 
-        inFavoritesList = GlobalFunctions.getFavorites().orEmpty().any { it == (cryptoInfo?.id ?: currencyId) }
+        inFavoritesList = UserPreferences.getFavorites().orEmpty().any { it == (cryptoInfo?.id ?: currencyId) }
 
         currencyRepository.cryptoPrices?.get("$currencyId-$currentDays")?.let { cached ->
             priceVolumeModel = cached
@@ -564,7 +564,7 @@ class CryptoDetailViewModel(
             return
         }
 
-        val selectedCurrency = GlobalFunctions.getSelectedCurrency(null).code.lowercase()
+        val selectedCurrency = UserPreferences.getSelectedCurrency(null).code.lowercase()
         if (update.vsCurrency?.lowercase() != selectedCurrency) {
             return
         }
@@ -640,7 +640,7 @@ class CryptoDetailViewModel(
         currencyRepository.getCryptoDetail(id)?.let { info ->
             cryptoInfo = info
             currencyId = info.id ?: ""
-            inFavoritesList = GlobalFunctions.getFavorites().orEmpty().any { coin -> coin == info.id }
+            inFavoritesList = UserPreferences.getFavorites().orEmpty().any { coin -> coin == info.id }
             cryptoDetailSmallImageBitmap = fetchCryptoSmallIcon(context, info.image?.small)
         }
     }
@@ -706,7 +706,7 @@ class CryptoDetailViewModel(
     ) {
         val toplistItem = cryptoInfo?.toToplist() ?: return
 
-        if (StoreKitManager.currentSubscription.value == null && !inFavoritesList && GlobalFunctions.getFavorites().orEmpty().size >= 2) {
+        if (StoreKitManager.currentSubscription.value == null && !inFavoritesList && UserPreferences.getFavorites().orEmpty().size >= 2) {
             callback.invoke()
             return
         }
@@ -915,7 +915,7 @@ class CryptoDetailViewModel(
 
     fun toggleHideData() {
         hidePortfolioData = !hidePortfolioData
-        GlobalFunctions.setHidePortfolioData(hidePortfolioData)
+        UserPreferences.setHidePortfolioData(hidePortfolioData)
     }
 
     // MARK: - Private main functions

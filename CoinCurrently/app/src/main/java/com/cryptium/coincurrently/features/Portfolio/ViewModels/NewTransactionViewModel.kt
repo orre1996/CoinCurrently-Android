@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.ViewModels
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -10,7 +11,6 @@ import androidx.lifecycle.viewModelScope
 import com.cryptium.coincurrently.app.MainActivity
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.ofType
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
@@ -62,7 +62,7 @@ class NewTransactionViewModel(
     var transaction: NewTransaction? by mutableStateOf(transaction)
     var transactionType: NewTransactionType by mutableStateOf(transactionType)
 
-    var selectedCurrency: MutableState<CurrencySelectionModel> = mutableStateOf(GlobalFunctions.getSelectedCurrency())
+    var selectedCurrency: MutableState<CurrencySelectionModel> = mutableStateOf(UserPreferences.getSelectedCurrency())
     var containsCoin: Boolean by mutableStateOf(false)
     var pie: PortfolioModel? by mutableStateOf(null)
 

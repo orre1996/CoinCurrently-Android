@@ -1,9 +1,9 @@
 package com.cryptium.coincurrently.core.analytics
 import android.os.Bundle
-import com.cryptium.coincurrently.sharedui.components.AppColorScheme
+import com.cryptium.coincurrently.core.models.AppColorScheme
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.sharedui.components.SelectedStartTab
+import com.cryptium.coincurrently.core.models.SelectedStartTab
 import com.cryptium.coincurrently.core.models.CarouselFilter
 import com.cryptium.coincurrently.core.models.ChartTypes
 

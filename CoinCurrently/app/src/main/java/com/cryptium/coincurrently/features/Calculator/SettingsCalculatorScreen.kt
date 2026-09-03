@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Calculator
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -29,7 +30,6 @@ import com.cryptium.coincurrently.core.extensions.poppinsRegular
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.sharedui.inputs.NumericInputField
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
@@ -61,7 +61,7 @@ fun SettingsCalculatorScreen(
     )
 
     var showCurrencySelector by remember { mutableStateOf(false) }
-    var selectedCurrency by remember { mutableStateOf(GlobalFunctions.getSelectedCurrency()) }
+    var selectedCurrency by remember { mutableStateOf(UserPreferences.getSelectedCurrency()) }
     var isRefreshing: Boolean by remember { mutableStateOf(false) }
 
     val focusManager = LocalFocusManager.current
@@ -197,7 +197,7 @@ fun SettingsCalculatorScreen(
                 selectedOption = selectedCurrency,
                 newOptionSelected = {
                     selectedCurrency = it
-                    GlobalFunctions.setSelectedCurrency(selectedCurrency)
+                    UserPreferences.setSelectedCurrency(selectedCurrency)
                     AnalyticsManager.log(
                         CurrencySelected(
                             fromScreen = ScreenLabel.Converter,

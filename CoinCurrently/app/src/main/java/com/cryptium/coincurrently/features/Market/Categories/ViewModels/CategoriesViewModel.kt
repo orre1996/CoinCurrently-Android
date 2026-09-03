@@ -1,11 +1,11 @@
 package com.cryptium.coincurrently.features.Market.Categories.ViewModels
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.features.Market.Repositories.CategoriesRepository
@@ -69,7 +69,7 @@ class CategoriesViewModel : ViewModel() {
             return
         }
 
-        val code = GlobalFunctions.getSelectedCurrency().code
+        val code = UserPreferences.getSelectedCurrency().code
         val target = bitcoin?.market_data?.current_price?.getSelectedCurrency(currency = code.uppercase()) ?: 0.0
         val base = bitcoin?.market_data?.current_price?.getSelectedCurrency(currency = "USD") ?: 0.0
         multiplier = target / base

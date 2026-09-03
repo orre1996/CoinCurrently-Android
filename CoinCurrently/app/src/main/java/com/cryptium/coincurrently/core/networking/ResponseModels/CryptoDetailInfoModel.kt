@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -7,8 +8,7 @@ import com.cryptium.coincurrently.sharedui.theme.neutral
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.trendDown
 import com.cryptium.coincurrently.sharedui.theme.trendUp
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
-import com.cryptium.coincurrently.sharedui.components.PreferredTimeframe
+import com.cryptium.coincurrently.core.models.PreferredTimeframe
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.networking.ResponseModels.Currency
 import kotlinx.serialization.Serializable
@@ -65,7 +65,7 @@ data class MarketData(
 )
 
 fun MarketData.getPreferredChange(): Double? {
-    return when (GlobalFunctions.getPreferredTimeframe()) {
+    return when (UserPreferences.getPreferredTimeframe()) {
         PreferredTimeframe.DAILY -> price_change_percentage_24h
         PreferredTimeframe.WEEKLY -> price_change_percentage_7d
         PreferredTimeframe.MONTHLY -> price_change_percentage_30d

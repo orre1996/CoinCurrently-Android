@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -13,8 +14,7 @@ import com.cryptium.coincurrently.features.Portfolio.Models.TransferType
 import com.cryptium.coincurrently.core.extensions.getAmount
 import com.cryptium.coincurrently.core.extensions.getTransferType
 import com.cryptium.coincurrently.core.extensions.sumAmounts
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
-import com.cryptium.coincurrently.sharedui.components.PreferredTimeframe
+import com.cryptium.coincurrently.core.models.PreferredTimeframe
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioModel
@@ -88,12 +88,12 @@ data class Transaction(
     var note: String? = null,
     var transferType: Int = TransferType.INTYPE.ordinal,
     var address: String? = null,
-    var currency: String? = GlobalFunctions.getSelectedCurrency().code,
+    var currency: String? = UserPreferences.getSelectedCurrency().code,
 )
 
 /*fun Pie.getUnrealizedProfitLossValue(
     prices: Map<String, Double>?,
-    showCurrency: String = GlobalFunctions.getSelectedCurrency().code.lowercase()
+    showCurrency: String = UserPreferences.getSelectedCurrency().code.lowercase()
 ): Double? {
     var spent = transactions
         .filter { it.transactionType == NewTransactionType.Buy }

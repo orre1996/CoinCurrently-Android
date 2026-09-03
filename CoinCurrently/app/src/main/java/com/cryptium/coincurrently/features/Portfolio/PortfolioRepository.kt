@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
 import com.cryptium.coincurrently.core.networking.ResponseModels.Chain
 import android.content.Context
@@ -13,7 +14,6 @@ import com.cryptium.coincurrently.core.extensions.isMoreThanDefaultCache
 import com.cryptium.coincurrently.core.extensions.allTransactionsCount
 import com.cryptium.coincurrently.core.extensions.tenYearsAgo
 import com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.networking.ResponseModels.allCurrencies
 import com.cryptium.coincurrently.core.networking.ApiHelper
 import com.cryptium.coincurrently.core.networking.MainRepository
@@ -131,7 +131,7 @@ class PortfolioRepository {
         fun migratePortfolio() {
             try {
                 val saved = StorageManager.get<List<PortfolioModel>>(StorageKeys.NEW_PORTFOLIO).orEmpty()
-                val old = GlobalFunctions.getPortfolioCurrencies()
+                val old = UserPreferences.getPortfolioCurrencies()
 
                 if (old.isEmpty() || saved.isNotEmpty()) {
                     return
@@ -139,7 +139,7 @@ class PortfolioRepository {
 
                 portfolioModels = old.map { it.migrateToNewPortfolioModel().sanitized() }
                 StorageManager.set(StorageKeys.NEW_PORTFOLIO, portfolioModels.orEmpty())
-                GlobalFunctions.setPortfolioCurrency(emptyList())
+                UserPreferences.setPortfolioCurrency(emptyList())
             } catch (e: Exception) {
                 Log.e("PortfolioRepo", "migratePortfolio failed", e)
             }
@@ -193,7 +193,7 @@ class PortfolioRepository {
             }
 
             val portfolioIds = portfolioModels?.allIds?.joinToString { it }?.replace(" ", "")?.removeSuffix(",") ?: ""
-            val currencyCode = GlobalFunctions.getSelectedCurrency().code.lowercase()
+            val currencyCode = UserPreferences.getSelectedCurrency().code.lowercase()
 
             if (portfolioIds.isEmpty()) {
                 return null
@@ -533,7 +533,7 @@ class PortfolioRepository {
                     }
 
                 if (coinIds.isNotEmpty()) {
-                    val selectedCurrency = GlobalFunctions.getSelectedCurrency().code.lowercase()
+                    val selectedCurrency = UserPreferences.getSelectedCurrency().code.lowercase()
 
                     val coins: List<Toplist>? = mainRepository.getMultipleCurrencies(
                         ids = coinIds.joinToString{ it }.replace(" ", ""),

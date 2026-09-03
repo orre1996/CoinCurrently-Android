@@ -1,10 +1,10 @@
 package com.cryptium.coincurrently.features.CoinDetail.Views.Markets
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.core.config.AppLocale
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.features.CoinDetail.CryptoDetailViewModel
 import com.cryptium.coincurrently.features.ExchangeDetail.ExchangeDetailViewModel
 import com.cryptium.coincurrently.features.NFTDetail.NFTDetailViewModel
@@ -16,7 +16,7 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.Ticker
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 
 private fun ExchangeTickerConverted.getSelectedCurrency(): Double? {
-    val code = GlobalFunctions.getSelectedCurrency().code.lowercase()
+    val code = UserPreferences.getSelectedCurrency().code.lowercase()
     return when (code) {
         "btc" -> btc
         "eth" -> eth

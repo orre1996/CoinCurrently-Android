@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.widgets.receivers
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
@@ -11,8 +12,6 @@ import android.os.Looper
 import android.widget.RemoteViews
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.core.extensions.normalise
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
-import com.cryptium.coincurrently.sharedui.components.getRandomChart
 import com.cryptium.coincurrently.sharedui.charts.getWidgetChangeColor
 import com.cryptium.coincurrently.core.extensions.roundTo
 import com.cryptium.coincurrently.widgets.glance.SmallCryptoWidgetReceiver
@@ -36,7 +35,7 @@ internal fun createSmallWidget(
     val views = RemoteViews(context.packageName, R.layout.small_crypto_widget)
     views.setInt(R.id.ll_view, "setBackgroundResource", if (isDark) R.drawable.widget_background_dark else R.drawable.widget_background_light)
 
-    if (GlobalFunctions.getWidgetCurrency(context).isEmpty()) {
+    if (UserPreferences.getWidgetCurrency(context).isEmpty()) {
         val widget = createSmallWidget(null, context, appWidgetManager, appWidgetId)
         views.removeAllViews(R.id.ll_view)
         views.removeAllViews(R.id.btn_open)
@@ -44,7 +43,7 @@ internal fun createSmallWidget(
         return
     }
 
-    downloadCryptoDetail(GlobalFunctions.getWidgetCurrency(context).first().id ?: "", context) { data, bitmap ->
+    downloadCryptoDetail(UserPreferences.getWidgetCurrency(context).first().id ?: "", context) { data, bitmap ->
         views.removeAllViews(R.id.ll_view)
         views.removeAllViews(R.id.btn_open)
 
@@ -158,7 +157,7 @@ fun widgetOnSurface(context: Context): Int {
 
 fun widgetTrendUp(context: Context): Int {
     val isDark = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) != 0
-    val accessible = GlobalFunctions.getColorBlind()
+    val accessible = UserPreferences.getColorBlind()
     return when {
         accessible && isDark -> Color.parseColor("#56B4E9")
         accessible && !isDark -> Color.parseColor("#0072B2")
@@ -169,7 +168,7 @@ fun widgetTrendUp(context: Context): Int {
 
 fun widgetTrendDown(context: Context): Int {
     val isDark = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) != 0
-    val accessible = GlobalFunctions.getColorBlind()
+    val accessible = UserPreferences.getColorBlind()
     return when {
         accessible && isDark -> Color.parseColor("#E69F00")
         accessible && !isDark -> Color.parseColor("#D55E00")
@@ -204,10 +203,11 @@ internal fun drawGraphBitmap(
     width: Int = 425,
     height: Int = 200,
 ): Bitmap? {
+    if (prices.isNullOrEmpty()) return null
+
     val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
 
-    val prices = (prices ?: listOf()).ifEmpty { getRandomChart(168) }
     val minP = prices.minOrNull()?.toFloat() ?: 0f
     val maxP = prices.maxOrNull()?.toFloat() ?: 0f
     val normalizedPrices = prices.map { price ->

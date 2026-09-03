@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.Sheets
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -55,7 +56,6 @@ import com.cryptium.coincurrently.sharedui.components.rememberDragHandlerHeight
 import com.cryptium.coincurrently.sharedui.sheets.rememberModalSheetMaxBodyHeight
 import com.cryptium.coincurrently.sharedui.sheets.ModalSheetBody
 import com.cryptium.coincurrently.sharedui.sheets.ModalSheetColumnLayout
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import java.util.Date
 
@@ -102,7 +102,7 @@ fun TransactionDetailSheet(
         ) {
             val isHorizontal = AccessibilityLayout.isHorizontal
             val currency = allCurrencies.firstOrNull { it.code.lowercase() == transaction.currency.lowercase() }
-                ?: GlobalFunctions.getSelectedCurrency()
+                ?: UserPreferences.getSelectedCurrency()
 
             ModalSheetColumnLayout(
                 maxBodyHeight = maxBodyHeight,

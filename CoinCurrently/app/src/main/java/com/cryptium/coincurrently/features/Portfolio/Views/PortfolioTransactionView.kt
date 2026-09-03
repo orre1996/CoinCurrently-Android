@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.Views
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -31,7 +32,6 @@ import com.cryptium.coincurrently.core.extensions.is24HourClock
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.stars
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.isAddOrInTransferTransaction
 import com.cryptium.coincurrently.core.persistence.allCurrencies
@@ -52,7 +52,7 @@ fun PortfolioTransactionView(
     val context = LocalContext.current
     val isHorizontal = AccessibilityLayout.isHorizontal
     val currency = allCurrencies.firstOrNull { it.code.lowercase() == transaction?.currency?.lowercase() }
-        ?: GlobalFunctions.getSelectedCurrency()
+        ?: UserPreferences.getSelectedCurrency()
 
     val currentPrice: Double? = if (transaction?.currency == currency.code) {
         coin?.sparkline_in_7d?.price?.lastOrNull()

@@ -1,10 +1,10 @@
 package com.cryptium.coincurrently.features.Market.NFT.ViewModels
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketRepository
 import com.cryptium.coincurrently.core.persistence.StorageKeys
@@ -154,7 +154,7 @@ class NftToplistViewModel : ViewModel() {
     }
 
     private fun calculatePriceMultiplier(bitcoin: CryptoDetailInfoModel): Double? {
-        val selectedCurrency = GlobalFunctions.getSelectedCurrency()
+        val selectedCurrency = UserPreferences.getSelectedCurrency()
         val targetPrice = bitcoin.market_data?.current_price?.getSelectedCurrency(currency = selectedCurrency.code.uppercase()) ?: 0.0
         val basePrice = bitcoin.market_data?.current_price?.getSelectedCurrency(currency = "USD") ?: 0.0
 

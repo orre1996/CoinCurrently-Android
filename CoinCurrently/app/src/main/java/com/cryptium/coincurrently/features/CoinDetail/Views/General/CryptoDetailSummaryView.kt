@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.CoinDetail.Views.General
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.graphics.Bitmap
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -44,7 +45,6 @@ import com.cryptium.coincurrently.core.extensions.roundTo
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.sharedui.components.NewPriceChangeValueView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.features.Treasuries.Models.CountryFlagEmojis
 import kotlinx.coroutines.delay
@@ -61,7 +61,7 @@ fun CryptoDetailSummaryView(
     prices: List<Double>?,
     selectedTimeframe: TimeCharts,
     shortPrice: Boolean,
-    currency: CurrencySelectionModel = GlobalFunctions.getSelectedCurrency(),
+    currency: CurrencySelectionModel = UserPreferences.getSelectedCurrency(),
     valueAccessibilityLabel: String = "current price",
     changeMetricLabel: String = "price",
     changeCoinAccessibilityHint: String? = null,

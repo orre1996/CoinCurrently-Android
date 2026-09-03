@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.widgets.views
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
@@ -33,7 +34,6 @@ import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.satoshiBoldGlance
 import com.cryptium.coincurrently.core.extensions.withoutSymbol
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 import com.cryptium.coincurrently.core.networking.ResponseModels.getPreferredChange
 import com.cryptium.coincurrently.widgets.CryptoIdKey
@@ -55,7 +55,7 @@ internal fun MultiWidgetCellContent(
     refreshWidgetType: String = "LargeMultiCryptoGlanceWidget",
     modifier: GlanceModifier = GlanceModifier,
 ) {
-    val currency = GlobalFunctions.getSelectedCurrency()
+    val currency = UserPreferences.getSelectedCurrency()
     val preferredChange = data?.getPreferredChange() ?: 0.0
 
     Box(
@@ -148,7 +148,7 @@ internal fun MultiWidgetCellContent(
                         modifier = GlanceModifier.defaultWeight(),
                     ) {
                         Text(
-                            text = GlobalFunctions.getPreferredTimeframeChangeTitle(),
+                            text = UserPreferences.getPreferredTimeframeChangeTitle(),
                             style = satoshiBoldGlance(12, WidgetColorValues.onSurface()),
                         )
                         Spacer(modifier = GlanceModifier.width(3.dp))

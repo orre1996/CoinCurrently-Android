@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.widgets.receivers
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
@@ -47,12 +48,12 @@ internal fun createSmallPortfolioWidget(
     appWidgetId: Int
 ) {
 
-    /*if (GlobalFunctions.getIsHidePortfolioEnabled()) {
+    /*if (UserPreferences.getIsHidePortfolioEnabled()) {
         val views = RemoteViews(context.packageName, R.layout.small_portfolio_disabled_widget)
         views.setInt(
             R.id.ll_view,
             "setBackgroundResource",
-            if (GlobalFunctions.getIsWidgetDarkModeEnabled()) R.drawable.widget_background_dark else R.drawable.widget_background_light
+            if (UserPreferences.getIsWidgetDarkModeEnabled()) R.drawable.widget_background_dark else R.drawable.widget_background_light
         )
         views.setTextColor(R.id.txt_message, widgetOnSurface(context))
 
@@ -101,7 +102,7 @@ internal fun createSmallPortfolioWidget(
 
     val handler = Handler()
 
-    val coins: List<PortfolioResponse> = GlobalFunctions.getPortfolioCurrencies(context)
+    val coins: List<PortfolioResponse> = UserPreferences.getPortfolioCurrencies(context)
 
     val array: ArrayList<Pie> = arrayListOf()
     var totalValue = 0.0
@@ -111,13 +112,13 @@ internal fun createSmallPortfolioWidget(
         createSmallPortfolioWidget(context, appWidgetManager, appWidgetId)
     }
 
-    PortfolioRepository.portfolioModels = GlobalFunctions.getPortfolioCurrencies(context)
+    PortfolioRepository.portfolioModels = UserPreferences.getPortfolioCurrencies(context)
 
     GlobalScope.launch {
         PortfolioRepository.getPortfolioAllCurrencies()?.let { coinPrices ->
 
             downloadMultipleCurrencies(
-                GlobalFunctions.getPortfolioCurrencies(context).map { it.id ?: "" }, context
+                UserPreferences.getPortfolioCurrencies(context).map { it.id ?: "" }, context
             ) { currencies, bitmaps ->
 
                 if (currencies?.isEmpty() == true) {
@@ -127,7 +128,7 @@ internal fun createSmallPortfolioWidget(
                     }
                 }
 
-                GlobalFunctions.getPortfolioCurrencies(context).forEachIndexed { index, portfolioItem ->
+                UserPreferences.getPortfolioCurrencies(context).forEachIndexed { index, portfolioItem ->
 
                         val currentCurrency = currencies?.first { it.id == portfolioItem.id }
                         val color = if (bitmaps?.get(index)?.isRecycled == false) {
@@ -144,7 +145,7 @@ internal fun createSmallPortfolioWidget(
                                 color,
                                 0,
                                 entryPrice = portfolioItem.entryCost,
-                                currency = GlobalFunctions.getSelectedCurrency(context)?.code ?: "USD",
+                                currency = UserPreferences.getSelectedCurrency(context)?.code ?: "USD",
                                 buyTransactions = portfolioItem.buyTransactions ?: arrayListOf(),
                                 sellTransactions = portfolioItem.sellTransactions ?: arrayListOf(),
                                 inTransactions = portfolioItem.inTransferTransactions ?: arrayListOf(),
@@ -167,13 +168,13 @@ internal fun createSmallPortfolioWidget(
                             it.percent = price.div((totalValue)).times(100)
                             it.totalValue = price
 
-                            if (GlobalFunctions.getShowChangesInPercent()) {
-                               // it.getProfitPercent(prices, GlobalFunctions.getSelectedCurrency(context)?.code?.lowercase() ?: "usd")?.let { value ->
-                                    it.profitLossPercent = it.getProfitPercent(prices, GlobalFunctions.getSelectedCurrency(context)?.code?.lowercase() ?: "usd") ?: 0.0
+                            if (UserPreferences.getShowChangesInPercent()) {
+                               // it.getProfitPercent(prices, UserPreferences.getSelectedCurrency(context)?.code?.lowercase() ?: "usd")?.let { value ->
+                                    it.profitLossPercent = it.getProfitPercent(prices, UserPreferences.getSelectedCurrency(context)?.code?.lowercase() ?: "usd") ?: 0.0
                                // }
                             } else {
-                               // it.getProfitValue(prices, GlobalFunctions.getSelectedCurrency(context)?.code?.lowercase() ?: "usd")?.let { value ->
-                                    it.profitLossPercent = it.getProfitValue(prices, GlobalFunctions.getSelectedCurrency(context)?.code?.lowercase() ?: "usd") ?: 0.0
+                               // it.getProfitValue(prices, UserPreferences.getSelectedCurrency(context)?.code?.lowercase() ?: "usd")?.let { value ->
+                                    it.profitLossPercent = it.getProfitValue(prices, UserPreferences.getSelectedCurrency(context)?.code?.lowercase() ?: "usd") ?: 0.0
                                // }
                             }
                         }
@@ -220,19 +221,19 @@ internal fun createSmallPortfolioWidget(
                                 views.setTextViewText(R.id.txt_performer_value, "Value: $it")
                             }
 
-                            val weekChange = bestPerformer.first().getProfitPercent(prices, GlobalFunctions.getSelectedCurrency(context)?.code?.lowercase() ?: "usd", false) ?: 0.0
-                            val value = bestPerformer.first().getProfitValue(prices, GlobalFunctions.getSelectedCurrency(context)?.code?.lowercase() ?: "usd") ?: 0.0
-                            val realChange = if (GlobalFunctions.getShowChangesInPercent()) weekChange.getChangeWithSymbolPortfolio() else value.formatCurrencyFromHundred(
+                            val weekChange = bestPerformer.first().getProfitPercent(prices, UserPreferences.getSelectedCurrency(context)?.code?.lowercase() ?: "usd", false) ?: 0.0
+                            val value = bestPerformer.first().getProfitValue(prices, UserPreferences.getSelectedCurrency(context)?.code?.lowercase() ?: "usd") ?: 0.0
+                            val realChange = if (UserPreferences.getShowChangesInPercent()) weekChange.getChangeWithSymbolPortfolio() else value.formatCurrencyFromHundred(
                                 fromPortfolio = true,
                                 fromPriceChange = true,
-                                currencySelectionModel = GlobalFunctions.getSelectedCurrency(context)
+                                currencySelectionModel = UserPreferences.getSelectedCurrency(context)
                             ).replace("-", "").replace("+", "")
 
                             views.setTextViewText(R.id.txt_change1, realChange)
 
                             val changePercentColor = weekChange.getWidgetPercentChangeColorPortfolio(context)
                             val changeValueColor = value.getWidgetPercentChangeColorPortfolio(context)
-                            val realChangeColor = if (GlobalFunctions.getShowChangesInPercent()) changePercentColor else changeValueColor
+                            val realChangeColor = if (UserPreferences.getShowChangesInPercent()) changePercentColor else changeValueColor
 
                             realChangeColor.let {
                                 views.setTextColor(R.id.txt_change1, it)
@@ -240,7 +241,7 @@ internal fun createSmallPortfolioWidget(
 
                             val changePercentIcon = weekChange.getPercentChangeDrawablePortfolio()
                             val changeValueIcon = value.getPercentChangeDrawablePortfolio()
-                            val realChangeIcon = if (GlobalFunctions.getShowChangesInPercent()) changePercentIcon else changeValueIcon
+                            val realChangeIcon = if (UserPreferences.getShowChangesInPercent()) changePercentIcon else changeValueIcon
 
                             realChangeIcon.let {
                                 views.setImageViewResource(R.id.view_price_change1, it)
@@ -269,22 +270,22 @@ internal fun createSmallPortfolioWidget(
                                 views.setViewVisibility(R.id.view_price_change1, View.GONE)
                             }
 
-                            val totalProfitLoss = GlobalFunctions.getPortfolioProfitLossPercent(
+                            val totalProfitLoss = UserPreferences.getPortfolioProfitLossPercent(
                                 array,
                                 coinPrices,
-                                GlobalFunctions.getSelectedCurrency(context)?.code ?: "usd"
+                                UserPreferences.getSelectedCurrency(context)?.code ?: "usd"
                             )
 
-                            val totalProfitLossValue = GlobalFunctions.getPortfolioProfitLossValue(
+                            val totalProfitLossValue = UserPreferences.getPortfolioProfitLossValue(
                                 array,
                                 coinPrices,
-                                GlobalFunctions.getSelectedCurrency(context)?.code ?: "usd"
+                                UserPreferences.getSelectedCurrency(context)?.code ?: "usd"
                             )
 
-                            val realChange = if (GlobalFunctions.getShowChangesInPercent()) totalProfitLoss.getChangeWithSymbolPortfolio() else totalProfitLossValue.formatCurrencyFromHundred(
+                            val realChange = if (UserPreferences.getShowChangesInPercent()) totalProfitLoss.getChangeWithSymbolPortfolio() else totalProfitLossValue.formatCurrencyFromHundred(
                                 fromPortfolio = true,
                                 fromPriceChange = true,
-                                currencySelectionModel = GlobalFunctions.getSelectedCurrency(context)
+                                currencySelectionModel = UserPreferences.getSelectedCurrency(context)
                             ).replace("-", "").replace("+", "")
 
                             views.setTextViewText(
@@ -294,11 +295,11 @@ internal fun createSmallPortfolioWidget(
 
                             val changePercentColor = totalProfitLoss.getWidgetPercentChangeColorPortfolio(context)
                             val changeValueColor = totalProfitLossValue.getWidgetPercentChangeColorPortfolio(context)
-                            val realChangeColor = if (GlobalFunctions.getShowChangesInPercent()) changePercentColor else changeValueColor
+                            val realChangeColor = if (UserPreferences.getShowChangesInPercent()) changePercentColor else changeValueColor
 
                             val changePercentIcon = totalProfitLoss.getPercentChangeDrawablePortfolio()
                             val changeValueIcon = totalProfitLossValue.getPercentChangeDrawablePortfolio()
-                            val realChangeIcon = if (GlobalFunctions.getShowChangesInPercent()) changePercentIcon else changeValueIcon
+                            val realChangeIcon = if (UserPreferences.getShowChangesInPercent()) changePercentIcon else changeValueIcon
 
                             views.setTextColor(
                                 R.id.txt_change,

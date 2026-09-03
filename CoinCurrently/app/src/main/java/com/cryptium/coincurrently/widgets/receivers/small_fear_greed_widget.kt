@@ -12,7 +12,6 @@ import android.view.View
 import android.widget.RemoteViews
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.app.MainActivity
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.features.FearGreed.FearGreedRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

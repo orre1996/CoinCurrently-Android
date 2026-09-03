@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.CoinDetail.Views.Portfolio
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.sharedui.modifiers.imageSize
 
 import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
@@ -59,7 +60,6 @@ import com.cryptium.coincurrently.sharedui.sheets.EmptyContent
 import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
 import com.cryptium.coincurrently.sharedui.components.NewPriceChangeValueView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.core.analytics.BuyProAction
@@ -240,7 +240,7 @@ private fun OverviewView(
                 end = 16.dp
             )
     ) {
-        val currency = GlobalFunctions.getSelectedCurrency()
+        val currency = UserPreferences.getSelectedCurrency()
         val allTransactions = portfolio?.getAllTransactions(cryptoInfo?.id)
         val currentPrice = pie?.data?.sparkline_in_7d?.price?.lastOrNull()
             ?: cryptoInfo?.market_data?.current_price?.getSelectedCurrency()

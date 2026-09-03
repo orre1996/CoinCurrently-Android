@@ -1,8 +1,8 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 
 import com.cryptium.coincurrently.sharedui.models.DateSerializer
 import com.cryptium.coincurrently.sharedui.models.UUIDSerializer
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
 import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
@@ -66,7 +66,7 @@ data class AddressImport(
 ): PortfolioEvent {
     fun importTransaction(): NewTransaction? {
         val balanceValue = balance.toDoubleOrNull() ?: return null
-        val currency = GlobalFunctions.getSelectedCurrency()
+        val currency = UserPreferences.getSelectedCurrency()
 
         return NewTransaction(
             id = id,
@@ -83,7 +83,7 @@ data class AddressImport(
     fun totalValue(mainId: String?, prices: MutableMap<String, Map<String, Double>>?): Double? {
         if (mainId == null || prices == null) return null
 
-        val currency = GlobalFunctions.getSelectedCurrency()
+        val currency = UserPreferences.getSelectedCurrency()
 
         var total = 0.0
 

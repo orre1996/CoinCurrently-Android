@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Treasuries.ViewModels
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,7 +23,6 @@ import com.cryptium.coincurrently.core.extensions.roundTo
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.sharedui.charts.ChartHoverController
 import com.cryptium.coincurrently.sharedui.components.Point
 import com.cryptium.coincurrently.sharedui.charts.currencyDifferenceValue
@@ -175,7 +175,7 @@ class TreasuryDetailViewModel(
     }
 
     fun setSelectedCurrency() {
-        val fiatCurrency = GlobalFunctions.getSelectedCurrency()
+        val fiatCurrency = UserPreferences.getSelectedCurrency()
         if (isChartFiat) {
             selectedCurrency = fiatCurrency
             return
@@ -489,7 +489,7 @@ class TreasuryDetailViewModel(
 
     private fun setPriceMultiplier() {
         val btc = bitcoin ?: return
-        val code = GlobalFunctions.getSelectedCurrency().code
+        val code = UserPreferences.getSelectedCurrency().code
         val target = btc.market_data?.current_price?.getSelectedCurrency(currency = code.uppercase()) ?: 0.0
         val base = btc.market_data?.current_price?.getSelectedCurrency(currency = "USD") ?: 0.0
         multiplier = if (base > 0) target / base else null

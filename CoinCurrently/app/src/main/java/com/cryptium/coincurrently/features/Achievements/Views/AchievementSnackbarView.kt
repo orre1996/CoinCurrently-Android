@@ -6,8 +6,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -177,15 +178,16 @@ fun AchievementSnackbarView(
             )
             .padding(horizontal = 16.dp, vertical = 14.dp)
             .semantics { contentDescription = accessibilityLabel }
-            .pointerInput(Unit) {
+            .pointerInput(snackbarTrigger) {
                 detectVerticalDragGestures { _, _ ->
                     requestDismiss()
                 }
             }
-            .pointerInput(Unit) {
-                detectTapGestures {
-                    requestDismiss()
-                }
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+                requestDismiss()
             }
     ) {
         Box(

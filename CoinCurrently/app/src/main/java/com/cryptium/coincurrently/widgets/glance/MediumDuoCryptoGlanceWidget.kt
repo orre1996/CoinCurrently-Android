@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.widgets.glance
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
@@ -24,7 +25,6 @@ import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.background
 import com.cryptium.coincurrently.sharedui.theme.WidgetColorValues
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -33,13 +33,13 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 /**
  * Medium duo crypto widget built with Jetpack Glance (Compose-based app widgets).
  * Consists of two SmallCryptoContent widgets with a vertical separator in between.
- * Uses widget currency from GlobalFunctions.getWidgetCurrency().
+ * Uses widget currency from UserPreferences.getWidgetCurrency().
  */
 
 class MediumDuoCryptoGlanceWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        GlobalFunctions.initSharedPreferences(context)
+        UserPreferences.init(context)
 
         val widgetData = withContext(Dispatchers.IO) {
             loadWidgetData(context)
@@ -57,13 +57,13 @@ class MediumDuoCryptoGlanceWidget : GlanceAppWidget() {
     }
 
     private suspend fun loadWidgetData(context: Context): MediumDuoWidgetData {
-        val widgetCurrency = GlobalFunctions.getWidgetCurrency(context)
+        val widgetCurrency = UserPreferences.getWidgetCurrency(context)
         val ids = widgetCurrency.take(2).mapNotNull { it.id }
         if (ids.isEmpty()) {
             return MediumDuoWidgetData(null, null, null, null)
         }
 
-        val currencyCode = GlobalFunctions.getSelectedCurrency(context)?.code ?: "USD"
+        val currencyCode = UserPreferences.getSelectedCurrency(context)?.code ?: "USD"
         val idsString = ids.joinToString(",")
         val toplist = CurrencyRepository.getMultipleCurrencies(idsString, currencyCode) ?: return MediumDuoWidgetData(null, null, null, null)
 

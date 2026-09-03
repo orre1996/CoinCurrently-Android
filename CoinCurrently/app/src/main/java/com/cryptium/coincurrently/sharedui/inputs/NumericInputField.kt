@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.sharedui.inputs
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.R
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -45,7 +46,6 @@ import com.cryptium.coincurrently.sharedui.modifiers.DynamicTypeSizeCap
 import com.cryptium.coincurrently.core.extensions.formatCurrencyInput
 import com.cryptium.coincurrently.core.extensions.roundTo
 import com.cryptium.coincurrently.core.extensions.satoshiBold
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import java.text.DecimalFormat
 
@@ -53,7 +53,7 @@ import java.text.DecimalFormat
 fun NumericInputField(
     input: Double?,
     placeholder: String = "Enter a number",
-    currency: CurrencySelectionModel = GlobalFunctions.getSelectedCurrency(),
+    currency: CurrencySelectionModel = UserPreferences.getSelectedCurrency(),
     isFromConverter: Boolean = false,
     forceShowCurrency: Boolean = false,
     accessibilityValue: String? = null,

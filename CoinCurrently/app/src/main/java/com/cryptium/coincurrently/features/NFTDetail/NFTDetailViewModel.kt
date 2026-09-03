@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.NFTDetail
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Handler
@@ -25,7 +26,6 @@ import com.cryptium.coincurrently.core.extensions.getDifferenceInPercent
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.is24HourClock
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.sharedui.charts.ChartHoverController
 import com.cryptium.coincurrently.sharedui.components.Point
 import com.cryptium.coincurrently.sharedui.charts.currencyDifferenceValue
@@ -163,7 +163,7 @@ class NFTDetailViewModel(
     }
 
     fun setSelectedCurrency() {
-        val fiatCurrency = GlobalFunctions.getSelectedCurrency()
+        val fiatCurrency = UserPreferences.getSelectedCurrency()
 
         if (isChartFiat) {
             selectedCurrency = fiatCurrency

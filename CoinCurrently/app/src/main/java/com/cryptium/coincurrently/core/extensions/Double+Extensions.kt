@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.core.extensions
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.content.Context
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -16,7 +17,6 @@ import com.cryptium.coincurrently.sharedui.theme.trendDown
 import com.cryptium.coincurrently.sharedui.theme.trendUp
 import com.cryptium.coincurrently.sharedui.charts.getFormattedCurrencyString
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.core.networking.ResponseModels.Currency
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import java.lang.Integer.min
@@ -117,7 +117,7 @@ fun Double.formattedRemovingTrailingZeros(
 }
 
 fun Double.formatGroupedWholeNumber(
-    locale: Locale = GlobalFunctions.getSelectedCurrency().formattingLocale,
+    locale: Locale = UserPreferences.getSelectedCurrency().formattingLocale,
 ): String {
     return abs(roundTo(0)).formattedRemovingTrailingZeros(
         locale = locale,
@@ -261,7 +261,7 @@ fun Double.numberAccessible(maxPlaces: Int = 7): String {
 }
 
 fun Double.currencyAccessible(
-    currency: CurrencySelectionModel = GlobalFunctions.getSelectedCurrency(),
+    currency: CurrencySelectionModel = UserPreferences.getSelectedCurrency(),
     maxDecimals: Int? = null,
 ): String {
     return accessibleCurrencyAmount(currency = currency, maxDecimals = maxDecimals)
@@ -418,7 +418,7 @@ private fun accessibleCurrencyUnit(amount: Double, pluralName: String): String {
 
 fun Double.formatCurrency(
     threshold: FormattingThreshold? = null,
-    currency: CurrencySelectionModel = GlobalFunctions.getSelectedCurrency(),
+    currency: CurrencySelectionModel = UserPreferences.getSelectedCurrency(),
     minDecimals: Int? = null,
     maxDecimals: Int? = null,
     accessible: Boolean = false,
@@ -442,7 +442,7 @@ fun Double.formatCurrency(
 
 /** Formats a currency amount for editable input fields (no currency symbol). */
 fun Double.formatCurrencyInput(
-    currency: CurrencySelectionModel = GlobalFunctions.getSelectedCurrency(),
+    currency: CurrencySelectionModel = UserPreferences.getSelectedCurrency(),
 ): String {
     val decimals = if (abs(this) < 1) 7 else 2
     val rounded = roundTo(decimals)
@@ -524,7 +524,7 @@ private fun formattedString(
 
 fun Number.formatCurrency(short: Boolean = false, withSymbol: Boolean = true, context: Context? = null, currencySelectionModel: CurrencySelectionModel? = null, fromPriceChange: Boolean = false, roundToClosest: Boolean = false, fromWidgets: Boolean = false): String {
     val shortings = arrayListOf("K", "M", "B", "T", "Q")
-    val currency = currencySelectionModel ?: GlobalFunctions.getSelectedCurrency(context)
+    val currency = currencySelectionModel ?: UserPreferences.getSelectedCurrency(context)
     val currencySuffix = if (currency?.suffix == true && withSymbol) " ${currency.symbol}" else ""
 
     var price = BigDecimal(BigDecimal(this.toDouble()).toPlainString()).setScale(7, RoundingMode.FLOOR)
@@ -602,7 +602,7 @@ fun roundUp(number: BigDecimal, near: BigDecimal): BigDecimal {
 
 fun Double.formatCurrencyFromThousand(withSymbol: Boolean = true, context: Context? = null, currencySelectionModel: CurrencySelectionModel? = null): String {
     val shortings = arrayListOf("K", "M", "B", "T", "Q")
-    val currency = currencySelectionModel ?: GlobalFunctions.getSelectedCurrency(context)
+    val currency = currencySelectionModel ?: UserPreferences.getSelectedCurrency(context)
     val currencySuffix = if (currency?.suffix == true && withSymbol) " ${currency.symbol}" else ""
 
     val long = kotlin.math.abs(this.toLong())
@@ -617,7 +617,7 @@ fun Double.formatCurrencyFromThousand(withSymbol: Boolean = true, context: Conte
 
 fun Double.formatCurrencyFromHundred(withSymbol: Boolean = true, context: Context? = null, fromPortfolio: Boolean = false, currencySelectionModel: CurrencySelectionModel? = null, fromPriceChange: Boolean = false): String {
     val shortings = arrayListOf("K", "M", "B", "T", "Q")
-    val currency = currencySelectionModel ?: GlobalFunctions.getSelectedCurrency(context)
+    val currency = currencySelectionModel ?: UserPreferences.getSelectedCurrency(context)
     val currencySuffix = if (currency?.suffix == true && withSymbol) " ${currency.symbol}" else ""
     val prefix = if (fromPortfolio && this > 0) "" else ""
 
@@ -652,7 +652,7 @@ fun Double.formatCurrencyFromHundred(withSymbol: Boolean = true, context: Contex
 }
 
 fun Currency.getSelectedCurrency(context: Context? = null, currency: String? = null): Double? {
-    when (currency ?: (GlobalFunctions.getSelectedCurrency(context).code)) {
+    when (currency ?: (UserPreferences.getSelectedCurrency(context).code)) {
         "AED" -> { return this.aed }
         "AUD" -> { return this.aud }
         "BTC" -> { return this.btc }

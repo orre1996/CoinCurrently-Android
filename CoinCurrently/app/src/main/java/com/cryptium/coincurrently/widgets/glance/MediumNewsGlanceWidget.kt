@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.widgets.glance
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
@@ -38,7 +39,6 @@ import com.cryptium.coincurrently.sharedui.theme.WidgetColorValues
 import com.cryptium.coincurrently.core.extensions.satoshiBoldGlance
 import com.cryptium.coincurrently.core.extensions.satoshiMediumGlance
 import com.cryptium.coincurrently.core.extensions.satoshiRegularGlance
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.widgets.CryptoIdKey
 import com.cryptium.coincurrently.widgets.OpenAppAction
 import com.cryptium.coincurrently.features.News.NewsRepository
@@ -55,9 +55,9 @@ import com.cryptium.coincurrently.widgets.views.NewsWidgetCard
 class MediumNewsGlanceWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        GlobalFunctions.initSharedPreferences(context)
+        UserPreferences.init(context)
 
-        val hasPro = GlobalFunctions.getHasBoughtPro() != null
+        val hasPro = UserPreferences.getHasBoughtPro() != null
         val newsData = if (hasPro) {
             withContext(Dispatchers.IO) { loadNewsData(context) }
         } else {

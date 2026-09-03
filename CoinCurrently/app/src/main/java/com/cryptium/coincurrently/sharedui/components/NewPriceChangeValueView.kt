@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.sharedui.components
+import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.MaterialTheme
@@ -19,7 +20,6 @@ import com.cryptium.coincurrently.core.extensions.roundTo
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.stars
 import com.cryptium.coincurrently.core.extensions.withoutSymbol
-import com.cryptium.coincurrently.sharedui.components.GlobalFunctions
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.sharedui.loading.NewShimmerImageDirection
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
@@ -33,7 +33,7 @@ fun NewPriceChangeValueView(
     size: ChangeSize = ChangeSize.MEDIUM,
     hideData: Boolean = false,
     showDirection: Boolean = true,
-    selectedCurrency: CurrencySelectionModel = GlobalFunctions.getSelectedCurrency(),
+    selectedCurrency: CurrencySelectionModel = UserPreferences.getSelectedCurrency(),
     isDownloading: Boolean,
     modifier: Modifier = Modifier
 ) {
