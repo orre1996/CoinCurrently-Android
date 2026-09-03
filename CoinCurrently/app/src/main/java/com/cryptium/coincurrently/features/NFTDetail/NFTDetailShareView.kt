@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.sharedui.theme.AppTheme
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
+import com.cryptium.coincurrently.sharedui.charts.getChangeColorCompose
 import com.cryptium.coincurrently.sharedui.charts.CandleChart
 import com.cryptium.coincurrently.sharedui.charts.CandleChartHover
 import com.cryptium.coincurrently.core.extensions.dpToPx
@@ -85,7 +86,8 @@ fun NFTDetailShareView(
                 } else {
                     MainChart(
                         prices = viewModel.onlyPrices,
-                        chartColor = viewModel.mainChartColor,
+                        chartColor = viewModel.changePercent?.getChangeColorCompose()
+                            ?: MaterialTheme.colors.onSurfaceDim,
                         dragIndex = null,
                         isDragging = false,
                         dragPoint = Point(0.dp, 0.dp),

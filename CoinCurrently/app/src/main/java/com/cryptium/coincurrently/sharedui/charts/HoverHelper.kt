@@ -3,6 +3,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
+import androidx.compose.ui.unit.min
 import com.cryptium.coincurrently.core.config.AppLocale
 import com.cryptium.coincurrently.core.networking.ResponseModels.Candle
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
@@ -112,20 +115,39 @@ class HoverHelper {
         hoverPrices = listOf(candle?.close ?: 0.0)
     }
 
+    fun currentHoverXPosition(chartWidth: Dp, dragPosition: Dp): Dp {
+        if (chartWidth.value <= 0f) return 0.dp
+        if (offset.isEmpty()) {
+            return max(0.dp, min(dragPosition, chartWidth))
+        }
+        return if (hoverPrices.size == 2) {
+            val average = offset.sumOf { it.value.toDouble() } / offset.size
+            max(0.dp, min(average.toFloat().dp, chartWidth))
+        } else {
+            max(0.dp, min(offset.first(), chartWidth))
+        }
+    }
+
     private fun getHoverDateFormat(
         timeChart: TimeCharts?,
         is24HourClock: Boolean,
         dontShowTime: Boolean = false,
-    ): String {
-        return when (timeChart) {
-            TimeCharts.aWeek -> {
-                if (dontShowTime) "dd MMM yyyy" else {
-                    if (is24HourClock) "dd MMM 'at' HH:mm" else "dd MMM 'at' hh:mm a"
-                }
+    ): String = hoverDatePattern(timeChart, is24HourClock, dontShowTime)
+}
+
+fun hoverDatePattern(
+    timeChart: TimeCharts?,
+    is24HourClock: Boolean,
+    dontShowTime: Boolean = false,
+): String {
+    return when (timeChart) {
+        TimeCharts.aWeek -> {
+            if (dontShowTime) "dd MMM yyyy" else {
+                if (is24HourClock) "dd MMM 'at' HH:mm" else "dd MMM 'at' hh:mm a"
             }
-            TimeCharts.aMonth, TimeCharts.threeMonths, TimeCharts.aYear -> "dd MMM yyyy"
-            TimeCharts.max -> "MMM yyyy"
-            else -> if (is24HourClock) "dd MMM 'at' HH:mm" else "dd MMM 'at' hh:mm a"
         }
+        TimeCharts.aMonth, TimeCharts.threeMonths, TimeCharts.aYear -> "dd MMM yyyy"
+        TimeCharts.max -> "MMM yyyy"
+        else -> if (is24HourClock) "dd MMM 'at' HH:mm" else "dd MMM 'at' hh:mm a"
     }
 }

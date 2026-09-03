@@ -71,30 +71,16 @@ class ChartHoverController {
     }
 }
 
-@Composable
 fun ChartHoverController.currentHoverXPosition(chartWidth: Dp): Dp {
     if (chartWidth.value <= 0f) return 0.dp
-
-    val hoverPoints = hoverHelper.offset
-    if (hoverPoints.isEmpty()) {
-        return max(0.dp, min(dragPosition.value, chartWidth))
-    }
-
-    return if (hoverHelper.hoverPrices.size == 2) {
-        val average = hoverPoints.sumOf { it.value.toDouble() } / hoverPoints.size
-        max(0.dp, min(average.toFloat().dp, chartWidth))
-    } else {
-        max(0.dp, min(hoverPoints.first(), chartWidth))
-    }
+    return hoverHelper.currentHoverXPosition(chartWidth, dragPosition.value)
 }
 
-@Composable
 fun ChartHoverController.hoverDragIndex(chartWidth: Dp, pointCount: Int): Int {
     if (pointCount <= 1 || chartWidth.value <= 0f) return 0
     return lineChartIndexFromPlotX(currentHoverXPosition(chartWidth), chartWidth, pointCount)
 }
 
-@Composable
 fun ChartHoverController.dragPositions(
     chartSize: DpSize,
     prices: List<Double>,
@@ -113,11 +99,11 @@ fun ChartHoverController.dragPositions(
 }
 
 @Composable
-fun ChartHoverController.multiHoverGraphColor(defaultColor: Color): Color {
-    if (hoverHelper.hoverPrices.size != 2 || !isDragging) return defaultColor
+fun HoverHelper.multiHoverGraphColor(defaultColor: Color, isDragging: Boolean): Color {
+    if (hoverPrices.size != 2 || !isDragging) return defaultColor
 
-    val first = hoverHelper.hoverPrices.getOrNull(0) ?: 0.0
-    val second = hoverHelper.hoverPrices.getOrNull(1) ?: 0.0
+    val first = hoverPrices.getOrNull(0) ?: 0.0
+    val second = hoverPrices.getOrNull(1) ?: 0.0
     val change = (second - first).roundTo(7)
 
     if (change == 0.0) {
@@ -127,36 +113,49 @@ fun ChartHoverController.multiHoverGraphColor(defaultColor: Color): Color {
     return change.getChangeColorCompose()
 }
 
-fun ChartHoverController.currencyDifferenceValue(): String {
-    val first = hoverHelper.hoverPrices.getOrNull(0) ?: 0.0
-    val second = hoverHelper.hoverPrices.getOrNull(1) ?: 0.0
+@Composable
+fun ChartHoverController.multiHoverGraphColor(defaultColor: Color): Color =
+    hoverHelper.multiHoverGraphColor(defaultColor, isDragging)
+
+fun HoverHelper.currencyDifferenceValue(): String {
+    val first = hoverPrices.getOrNull(0) ?: 0.0
+    val second = hoverPrices.getOrNull(1) ?: 0.0
     val percent = getDifferenceInPercent(second, first)?.roundTo(2) ?: 0.0
     val sign = if (percent < 0) "" else "+"
     val difference = (second - first).formatCurrency(threshold = FormattingThreshold.MILLION)
     return "$sign$difference"
 }
 
-fun ChartHoverController.differencePercent(): String {
-    val first = hoverHelper.hoverPrices.getOrNull(0) ?: 0.0
-    val second = hoverHelper.hoverPrices.getOrNull(1) ?: 0.0
+fun ChartHoverController.currencyDifferenceValue(): String = hoverHelper.currencyDifferenceValue()
+
+fun HoverHelper.differencePercent(): String {
+    val first = hoverPrices.getOrNull(0) ?: 0.0
+    val second = hoverPrices.getOrNull(1) ?: 0.0
     val difference = getDifferenceInPercent(second, first) ?: 0.0
     return difference.getChangeWithSymbol(withSymbol = true, force = true)
 }
 
-fun ChartHoverController.indexDifferenceValue(): String {
-    val first = hoverHelper.hoverPrices.getOrNull(0) ?: 0.0
-    val second = hoverHelper.hoverPrices.getOrNull(1) ?: 0.0
+fun ChartHoverController.differencePercent(): String = hoverHelper.differencePercent()
+
+fun HoverHelper.indexDifferenceValue(): String {
+    val first = hoverPrices.getOrNull(0) ?: 0.0
+    val second = hoverPrices.getOrNull(1) ?: 0.0
     val percent = getDifferenceInPercent(second, first)?.roundTo(2) ?: 0.0
     val sign = if (percent < 0) "" else "+"
     val difference = (second - first).toInt()
     return "$sign$difference"
 }
 
-fun ChartHoverController.decimalDifferenceValue(decimals: Int = 2): String {
-    val first = hoverHelper.hoverPrices.getOrNull(0) ?: 0.0
-    val second = hoverHelper.hoverPrices.getOrNull(1) ?: 0.0
+fun ChartHoverController.indexDifferenceValue(): String = hoverHelper.indexDifferenceValue()
+
+fun HoverHelper.decimalDifferenceValue(decimals: Int = 2): String {
+    val first = hoverPrices.getOrNull(0) ?: 0.0
+    val second = hoverPrices.getOrNull(1) ?: 0.0
     val percent = getDifferenceInPercent(second, first)?.roundTo(2) ?: 0.0
     val sign = if (percent < 0) "" else "+"
     val difference = (second - first).roundTo(decimals)
     return "$sign${"%.${decimals}f".format(difference)}"
 }
+
+fun ChartHoverController.decimalDifferenceValue(decimals: Int = 2): String =
+    hoverHelper.decimalDifferenceValue(decimals)

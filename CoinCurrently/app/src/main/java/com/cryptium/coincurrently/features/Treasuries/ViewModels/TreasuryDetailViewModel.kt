@@ -1,37 +1,20 @@
 package com.cryptium.coincurrently.features.Treasuries.ViewModels
 import com.cryptium.coincurrently.core.persistence.UserPreferences
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.cryptium.coincurrently.core.config.AppLocale
-import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
-import com.cryptium.coincurrently.sharedui.charts.getChangeColorCompose
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.getDifferenceInPercent
-import com.cryptium.coincurrently.core.extensions.is24HourClock
 import com.cryptium.coincurrently.core.extensions.roundTo
-import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.sharedui.charts.ChartHoverController
-import com.cryptium.coincurrently.sharedui.components.Point
-import com.cryptium.coincurrently.sharedui.charts.currencyDifferenceValue
-import com.cryptium.coincurrently.sharedui.charts.differencePercent
-import com.cryptium.coincurrently.sharedui.charts.dragPositions
-import com.cryptium.coincurrently.sharedui.components.getPoint
-import com.cryptium.coincurrently.sharedui.components.getPriceXPosition
-import com.cryptium.coincurrently.sharedui.charts.hoverDragIndex
-import com.cryptium.coincurrently.sharedui.charts.multiHoverGraphColor
 import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketRepository
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
@@ -52,8 +35,6 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.TreasuryDetailE
 import com.cryptium.coincurrently.core.networking.ResponseModels.TreasuryHoldingChartModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.TreasuryTransactionHistoryModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.resolvedEntityId
-import java.text.SimpleDateFormat
-import java.util.Date
 
 class TreasuryDetailViewModelFactory(
     private val holder: PublicTreasuryHolder,
@@ -495,57 +476,6 @@ class TreasuryDetailViewModel(
         multiplier = if (base > 0) target / base else null
     }
 
-    val hoverPrice: String @Composable get() {
-        return chartHover.hoverHelper.hoverPrices.firstOrNull()
-            ?.formatCurrency(threshold = FormattingThreshold.MILLION, currency = selectedCurrency)
-            ?: prices.getOrNull(dragIndex)?.formatCurrency(
-                threshold = FormattingThreshold.MILLION,
-                currency = selectedCurrency,
-            )
-            ?: "N/A"
-    }
-
-    val hoverTimePosition: Dp @Composable get() {
-        return getXPosition(hoverPriceTextWidth.value) - hoverPriceTextWidth.value / 2
-    }
-
-    val dragIndex: Int @Composable get() {
-        if (prices.size <= 1) return 0
-        return chartHover.hoverDragIndex(chartSize.value.width, prices.size)
-    }
-
-    val dragPositions: List<Point> @Composable get() = chartHover.dragPositions(chartSize.value, prices)
-
-    val multiHoverGraphColor: Color @Composable get() = chartHover.multiHoverGraphColor(mainChartColor)
-
-    val differenceValue: String @Composable get() = chartHover.currencyDifferenceValue()
-
-    val differencePercent: String @Composable get() = chartHover.differencePercent()
-
-    val hoverTime: String @Composable get() {
-        return chartHover.hoverHelper.hoverTimes.firstOrNull() ?: run {
-            val context = LocalContext.current
-            var formatter = if (context.is24HourClock) "dd MMM 'at' HH:mm" else "dd MMM 'at' hh:mm a"
-
-            when (selectedTimeFrame) {
-                TimeCharts.aMonth,
-                TimeCharts.threeMonths,
-                TimeCharts.sixMonths,
-                TimeCharts.aYear,
-                TimeCharts.twoYears -> formatter = "dd MMM YYYY"
-                TimeCharts.max -> formatter = "MMM YYYY"
-                else -> {}
-            }
-
-            if (timeStamps.isEmpty()) {
-                return@run ""
-            }
-
-            val currentValue = timeStamps.getOrNull(dragIndex)?.toLong() ?: 0
-            SimpleDateFormat(formatter, AppLocale.enUsPosix).format(Date(currentValue))
-        }
-    }
-
     fun updateHoverStats(touchXs: List<Dp>, is24HourClock: Boolean) {
         chartHover.updateHoverStats(
             touchXs = touchXs,
@@ -566,10 +496,6 @@ class TreasuryDetailViewModel(
         return getDifferenceInPercent(last, first)?.roundTo(7)
     }
 
-    val mainChartColor: Color @Composable get() {
-        return changePercent?.getChangeColorCompose() ?: MaterialTheme.colors.onSurfaceDim
-    }
-
     val mainGraphStats: List<String?> get() {
         return (0 until 6).map { getPriceInChart(prices, it) }
     }
@@ -581,19 +507,5 @@ class TreasuryDetailViewModel(
         val step = (max - min) / 5
         val value = min + (step * at)
         return value.formatCurrency(currency = CurrencySelectionModel.empty())
-    }
-
-    @Composable
-    private fun getXPosition(textSize: Dp): Dp {
-        val xPoint = getPoint(
-            index = dragIndex,
-            rect = chartSize.value,
-            prices = prices,
-        ).x
-        return getPriceXPosition(
-            position = xPoint,
-            textSize = textSize,
-            readerWidthSize = chartSize.value.width,
-        )
     }
 }

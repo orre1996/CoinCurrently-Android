@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.sharedui.theme.AppTheme
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
+import com.cryptium.coincurrently.sharedui.charts.getChangeColorCompose
+import com.cryptium.coincurrently.sharedui.charts.rememberCandleHoverUi
 import com.cryptium.coincurrently.sharedui.charts.CandleChartHover
 import com.cryptium.coincurrently.core.extensions.dpToPx
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
@@ -44,6 +46,19 @@ fun CryptoDetailShareView(
     viewModel: CryptoDetailViewModel
 ) {
     val biggestValue = remember { mutableStateOf(DpSize.Zero) }
+    val candleHoverUi = rememberCandleHoverUi(
+        dragPosition = viewModel.dragPosition.value,
+        chartSize = viewModel.chartSize.value,
+        candleSticks = viewModel.candleSticks,
+        hoverCandlePriceTextWidth = viewModel.hoverCandlePriceTextWidth.value,
+        timeChart = viewModel.selectedTimeFrame,
+        candleMiddlePrices = viewModel.candleMiddlePrices,
+        highestCandleValue = viewModel.highestCandleValue,
+        lowestCandleValue = viewModel.lowestCandleValue,
+        candleTimestamps = viewModel.candleTimestamps,
+    )
+    val chartColor = viewModel.changePercent?.getChangeColorCompose()
+        ?: MaterialTheme.colors.onSurfaceDim
 
     Box(
         modifier = Modifier
@@ -84,15 +99,15 @@ fun CryptoDetailShareView(
                         CandleChart(
                             candleSticks = viewModel.candleSticks,
                             isDragging = viewModel.isDragging,
-                            hoverXPosition = viewModel.candleXPosition.dpToPx(),
-                            pointCandle = viewModel.pointCandle,
+                            hoverXPosition = candleHoverUi.xPosition.dpToPx(),
+                            pointCandle = candleHoverUi.pointY,
                             chartSize = viewModel.chartSize,
                             biggestValue = biggestValue.value,
                         )
                     } else {
                         MainChart(
                             prices = viewModel.onlyPrices,
-                            chartColor = viewModel.mainChartColor,
+                            chartColor = chartColor,
                             dragIndex = null,
                             isDragging = false,
                             dragPoint = Point(0.dp, 0.dp),

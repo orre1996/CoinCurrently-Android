@@ -72,6 +72,7 @@ import com.cryptium.coincurrently.sharedui.charts.ChartAccessibilityOverlay
 import com.cryptium.coincurrently.sharedui.charts.chartAccessibilityOverlay
 import com.cryptium.coincurrently.sharedui.charts.chartTalkBackSection
 import com.cryptium.coincurrently.sharedui.charts.hideFromTalkBackWhenEnabled
+import com.cryptium.coincurrently.sharedui.charts.rememberCompareChartHoverUi
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
 import com.cryptium.coincurrently.sharedui.components.ImageCase
 import com.cryptium.coincurrently.sharedui.loading.ActivityIndicator
@@ -129,6 +130,17 @@ fun CompareCoinsScreen(
             priceVolumeModel = priceVolumeModel,
             compareId = compareId
         )
+    )
+
+    val hoverUi = rememberCompareChartHoverUi(
+        dragPosition = viewModel.dragPosition.value,
+        chartSize = viewModel.chartSize.value,
+        hoverPriceTextWidth = viewModel.hoverPriceTextWidth.value,
+        timeChart = viewModel.selectedTimeFrame,
+        prices = viewModel.getPrices(),
+        comparePrices = viewModel.getComparePrices(),
+        timeStamps = viewModel.getTimestamps(),
+        compareTimeStamps = viewModel.getCompareTimestamps(),
     )
 
     BackHandler(onBack = {
@@ -286,14 +298,14 @@ fun CompareCoinsScreen(
                     )
 
                     CompareTouchChartStats(
-                        mainHoverPrice = viewModel.hoverPrice,
+                        mainHoverPrice = hoverUi.hoverPrice,
                         mainSymbol = viewModel.mainCryptoInfo?.symbol,
-                        mainPercentChange = viewModel.mainDifferencePercent,
-                        compareHoverPrice = viewModel.comparedHoverPrice,
+                        mainPercentChange = hoverUi.mainDifferencePercent,
+                        compareHoverPrice = hoverUi.comparedHoverPrice,
                         compareSymbol = viewModel.compareCryptoInfo?.symbol,
-                        comparePercentChange = viewModel.compareDifferencePercent,
-                        hoverTime = viewModel.hoverTime,
-                        xPositionTime = viewModel.hoverTimePosition,
+                        comparePercentChange = hoverUi.compareDifferencePercent,
+                        hoverTime = hoverUi.hoverTime,
+                        xPositionTime = hoverUi.hoverTimePosition,
                         isDragging = viewModel.isDragging,
                         hoverPriceTextWidth = viewModel.hoverPriceTextWidth
                     )
@@ -356,7 +368,7 @@ fun CompareCoinsScreen(
                                     MainChart(
                                         prices = viewModel.getPrices(),
                                         chartColor = MaterialTheme.colors.primary50,
-                                        dragIndex = if (viewModel.isDragging) viewModel.dragIndex else null,
+                                        dragIndex = if (viewModel.isDragging) hoverUi.dragIndex else null,
                                         chartSize = viewModel.chartSize,
                                         biggestValue = biggestValue.value,
                                         isDragging = viewModel.isDragging,
@@ -366,17 +378,17 @@ fun CompareCoinsScreen(
                                     CompareChart(
                                         prices = viewModel.getComparePrices(),
                                         chartColor = MaterialTheme.colors.blue50,
-                                        dragIndex = if (viewModel.isDragging) viewModel.dragIndex else null,
+                                        dragIndex = if (viewModel.isDragging) hoverUi.dragIndex else null,
                                         biggestValue = biggestValue.value,
                                         isDragging = viewModel.isDragging,
                                         showLivePriceIndicator = viewModel.isWebSocketEnabled && viewModel.currentChartType.value == ChartTypes.PRICE,
                                     )
 
                                     CompareChartHoverView(
-                                        mainPosition = viewModel.dragPoint,
-                                        hideMainMark = viewModel.getPrices(dropLastTwo = true).getOrNull(viewModel.dragIndex) == -1.0,
-                                        comparePosition = viewModel.compareDragPoint,
-                                        hideCompareMark = viewModel.getComparePrices(dropLastTwo = true).getOrNull(viewModel.dragIndex) == -1.0,
+                                        mainPosition = hoverUi.dragPoint,
+                                        hideMainMark = viewModel.getPrices(dropLastTwo = true).getOrNull(hoverUi.dragIndex) == -1.0,
+                                        comparePosition = hoverUi.compareDragPoint,
+                                        hideCompareMark = viewModel.getComparePrices(dropLastTwo = true).getOrNull(hoverUi.dragIndex) == -1.0,
                                         isDragging = viewModel.isDragging,
                                         topPadding = biggestValue.value.height / 2,
                                     )

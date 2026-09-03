@@ -1,6 +1,5 @@
 package com.cryptium.coincurrently.sharedui.components
 import android.util.Log
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -26,7 +25,6 @@ fun getPriceXPosition(position: Dp, textSize: Dp, readerWidthSize: Dp): Dp {
     return position
 }
 
-@Composable
 fun getPoint(
     index: Int,
     rect: DpSize,

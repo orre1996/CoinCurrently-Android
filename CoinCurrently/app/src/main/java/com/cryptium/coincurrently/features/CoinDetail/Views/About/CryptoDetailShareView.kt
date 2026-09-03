@@ -25,8 +25,12 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
+import com.cryptium.coincurrently.sharedui.charts.getChangeColorCompose
+import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.sharedui.charts.ChartBackground
+import com.cryptium.coincurrently.sharedui.charts.rememberLineChartHoverUi
+import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.charts.ChartTimeStamps
 import com.cryptium.coincurrently.sharedui.charts.LineChart
 import com.cryptium.coincurrently.sharedui.components.ImageCase
@@ -45,6 +49,20 @@ fun CryptoDetailShareView(
 ) {
     val biggestValue = remember { mutableStateOf(DpSize.Zero) }
     val coroutineScope = rememberCoroutineScope()
+    val hoverUi = rememberLineChartHoverUi(
+        hoverHelper = viewModel.hoverHelper,
+        isDragging = viewModel.isDragging,
+        dragPosition = viewModel.dragPosition.value,
+        prices = viewModel.prices,
+        timeStamps = viewModel.timeStamps,
+        chartSize = viewModel.chartSize.value,
+        hoverPriceTextWidth = viewModel.hoverPriceTextWidth.value,
+        timeChart = viewModel.selectedTimeFrame,
+        changePercent = viewModel.changePercent,
+        formatPrice = { it.formatCurrency(threshold = FormattingThreshold.MILLION) },
+    )
+    val chartColor = viewModel.changePercent?.getChangeColorCompose()
+        ?: MaterialTheme.colors.onSurfaceDim
 
     Column(
         modifier = Modifier
@@ -82,10 +100,10 @@ fun CryptoDetailShareView(
 
         if (!viewModel.candleChartEnabled) {
             SingleTouchChartStats(
-                hoverPrice = viewModel.hoverPrice,
+                hoverPrice = hoverUi.hoverPrice,
                 priceColor = MaterialTheme.colors.onSurface,
-                hoverTime = viewModel.hoverTime,
-                xPositionTime = viewModel.hoverTimePosition,
+                hoverTime = hoverUi.hoverTime,
+                xPositionTime = hoverUi.hoverTimePosition,
                 isDragging = viewModel.isDragging,
                 viewModel.hoverPriceTextWidth
             )
@@ -111,8 +129,8 @@ fun CryptoDetailShareView(
                 } else {
                     MainChart(
                         prices = viewModel.prices,
-                        chartColor = viewModel.mainChartColor,
-                        dragIndex = if (viewModel.isDragging) viewModel.dragIndex else null,
+                        chartColor = chartColor,
+                        dragIndex = if (viewModel.isDragging) hoverUi.dragIndex else null,
                         chartSize = viewModel.chartSize,
                         isInCompareMode = false,
                         biggestValue = biggestValue.value

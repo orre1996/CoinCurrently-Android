@@ -74,6 +74,10 @@ import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.sharedui.charts.ChartBackground
 import com.cryptium.coincurrently.sharedui.charts.ChartHoverStats
+import com.cryptium.coincurrently.sharedui.charts.rememberLineChartHoverUi
+import com.cryptium.coincurrently.sharedui.charts.HoverTimeFallback
+import com.cryptium.coincurrently.sharedui.charts.decimalDifferenceValue
+import com.cryptium.coincurrently.core.extensions.roundTo
 import com.cryptium.coincurrently.sharedui.charts.ChartTimeStamps
 import com.cryptium.coincurrently.sharedui.charts.ChartAccessibilityOverlay
 import com.cryptium.coincurrently.sharedui.charts.chartAccessibilityOverlay
@@ -88,6 +92,7 @@ import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.features.GasFees.Views.EstimateGasFeeCost
 import com.cryptium.coincurrently.features.GasFees.Views.GasFeesHistoricView
+import com.cryptium.coincurrently.features.GasFees.Views.getGasIndexColor
 import com.cryptium.coincurrently.features.GasFees.Views.getGasIndexString
 import com.cryptium.coincurrently.features.GasFees.GasUnits
 import com.cryptium.coincurrently.features.GasFees.Sheets.GasCostHelpSheet
@@ -113,6 +118,26 @@ fun GasFeesScreen(
     var isRefreshing by remember { mutableStateOf(false) }
     val viewModel: GasFeesViewModel = viewModel(
         factory = GasFeesViewModelFactory()
+    )
+    val hoverUi = rememberLineChartHoverUi(
+        chartHover = viewModel.chartHover,
+        prices = viewModel.prices.value,
+        timeStamps = viewModel.timeStamps.value,
+        chartSize = viewModel.chartSize.value,
+        hoverPriceTextWidth = viewModel.hoverPriceTextWidth.value,
+        timeChart = TimeCharts.aWeek,
+        changePercent = null,
+        formatPrice = { "%.2f".format(it.roundTo(2)) },
+        formatDifferenceValue = { decimalDifferenceValue() },
+        dropLastCount = 2,
+        chartColor = getGasIndexColor(
+            (viewModel.prices.value.dropLast(2).lastOrNull() ?: 0).toString()
+        ),
+        timeFallback = HoverTimeFallback.DateOnly,
+        emptyPrice = "0.00",
+    )
+    val hoverPriceColor = getGasIndexColor(
+        (viewModel.prices.value.dropLast(2).getOrNull(hoverUi.dragIndex)?.toInt() ?: 0).toString()
     )
     val swipeScope = rememberCoroutineScope()
 
@@ -210,15 +235,15 @@ fun GasFeesScreen(
                     )
 
                     ChartHoverStats(
-                        isMultiHover = viewModel.multiHoverTimes.size == 2,
-                        hoverTimes = viewModel.multiHoverTimes,
-                        differenceValue = viewModel.differenceValue,
-                        differencePercent = viewModel.differencePercent,
-                        multiHoverColor = viewModel.multiHoverGraphColor,
-                        hoverPrice = viewModel.hoverPrice,
-                        hoverPriceColor = viewModel.hoverColor,
-                        hoverTime = viewModel.hoverTime,
-                        hoverTimePosition = viewModel.hoverTimePosition,
+                        isMultiHover = hoverUi.isMultiHover,
+                        hoverTimes = hoverUi.hoverTimes,
+                        differenceValue = hoverUi.differenceValue,
+                        differencePercent = hoverUi.differencePercent,
+                        multiHoverColor = hoverUi.multiHoverGraphColor,
+                        hoverPrice = hoverUi.hoverPrice,
+                        hoverPriceColor = hoverPriceColor,
+                        hoverTime = hoverUi.hoverTime,
+                        hoverTimePosition = hoverUi.hoverTimePosition,
                         isDragging = viewModel.isDragging,
                         hoverPriceTextWidth = viewModel.hoverPriceTextWidth,
                     )
@@ -247,12 +272,12 @@ fun GasFeesScreen(
                         viewModel.gasFeePrices?.let {
                             LineChart(
                                 prices = viewModel.prices.value,
-                                color = viewModel.graphColor,
-                                dragIndex = if (viewModel.isDragging) viewModel.dragIndex else null,
+                                color = hoverUi.chartColor,
+                                dragIndex = if (viewModel.isDragging) hoverUi.dragIndex else null,
                                 dropCount = 2,
                                 isDragging = viewModel.isDragging,
                                 dragPositionXs = if (viewModel.isDragging) {
-                                    viewModel.dragPositions.map { with(localDensity) { it.x.toPx() } }
+                                    hoverUi.dragPositions.map { with(localDensity) { it.x.toPx() } }
                                 } else {
                                     emptyList()
                                 },
@@ -276,9 +301,9 @@ fun GasFeesScreen(
 
                             Box(modifier = Modifier.hideFromTalkBackWhenEnabled()) {
                                 ChartHoverView(
-                                    positions = viewModel.dragPositions,
+                                    positions = hoverUi.dragPositions,
                                     isDragging = viewModel.isDragging,
-                                    color = viewModel.graphColor,
+                                    color = hoverUi.chartColor,
                                     topPadding = biggestValue.value.height / 2,
                                 )
                             }

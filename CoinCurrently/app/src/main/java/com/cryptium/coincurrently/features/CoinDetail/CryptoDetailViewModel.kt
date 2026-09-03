@@ -11,20 +11,11 @@ import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -32,15 +23,15 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.min
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.cryptium.coincurrently.core.config.AppLocale
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 import com.cryptium.coincurrently.app.MainActivity
 import com.cryptium.coincurrently.sharedui.components.CustomImageView
-import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
-import com.cryptium.coincurrently.sharedui.charts.getChangeColorCompose
 import com.cryptium.coincurrently.core.extensions.DateFormat
 import com.cryptium.coincurrently.core.extensions.convertStringToDate
 import com.cryptium.coincurrently.core.extensions.formatCurrency
@@ -54,19 +45,8 @@ import com.cryptium.coincurrently.features.News.NewsRepository
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
 import com.cryptium.coincurrently.core.purchases.StoreKitManager
-import com.cryptium.coincurrently.core.extensions.is24HourClock
 import com.cryptium.coincurrently.core.extensions.pieContaining
-import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.sharedui.charts.getChangeWithSymbol
-import com.cryptium.coincurrently.core.extensions.roundTo
 import com.cryptium.coincurrently.sharedui.charts.HoverHelper
-import com.cryptium.coincurrently.sharedui.components.candleBinCenterX
-import com.cryptium.coincurrently.sharedui.components.candleChartIndexFromPlotX
-import com.cryptium.coincurrently.sharedui.components.getPoint
-import com.cryptium.coincurrently.sharedui.components.Point
-import com.cryptium.coincurrently.sharedui.components.lineChartIndexFromPlotX
-import com.cryptium.coincurrently.sharedui.components.getPriceXPosition
-import kotlin.math.roundToInt
 import com.cryptium.coincurrently.sharedui.components.renderComposableToBitmap
 import com.cryptium.coincurrently.sharedui.components.saveBitmapToCache
 import com.cryptium.coincurrently.sharedui.components.shareBitmap
@@ -91,7 +71,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
 import com.cryptium.coincurrently.core.networking.NewsCategory
 import com.cryptium.coincurrently.core.networking.ResponseModels.*
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.min
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
@@ -239,35 +218,6 @@ class CryptoDetailViewModel(
         }
     }
 
-    val dragIndex: Int @Composable get() {
-        val cappedDragPosition = currentHoverXPosition()
-        val n = prices.size
-        if (n <= 1) return 0
-        if (chartSize.value.width.value <= 0f) return 0
-        return lineChartIndexFromPlotX(cappedDragPosition, chartSize.value.width, n)
-    }
-
-    val dragPositions: List<Point>
-        @Composable get() {
-            return hoverHelper.offset.map { touchX ->
-                val index = lineChartIndexFromPlotX(touchX, chartSize.value.width, prices.size)
-                getPoint(
-                    index = index,
-                    rect = chartSize.value,
-                    prices = prices,
-                )
-            }
-        }
-
-    val dragPoint: Point
-    @Composable get() {
-        return getPoint(
-            index = dragIndex,
-            rect = chartSize.value,
-            prices = prices
-        )
-    }
-
     val allPriceAlertsCount: Int get() {
         return priceAlertsRepository.priceAlerts?.count() ?: 0
     }
@@ -296,67 +246,6 @@ class CryptoDetailViewModel(
 
     val mainGraphStats: List<String?> get() {
         return (0 until 6).map { if(isCandleChartEnabled) getChartCandlePrice(it) else getPriceInChart(prices, it) }
-    }
-
-    val mainChartColor: Color @Composable get() {
-        return changePercent?.getChangeColorCompose() ?: MaterialTheme.colors.onSurfaceDim
-    }
-
-    val hoverPrice: String @Composable get() {
-        return hoverHelper.hoverPrices.firstOrNull()
-            ?.formatCurrency(threshold = FormattingThreshold.MILLION) ?: "N/A"
-    }
-
-    val differenceValue: String @Composable get() {
-        val first = hoverHelper.hoverPrices.getOrNull(0) ?: 0.0
-        val second = hoverHelper.hoverPrices.getOrNull(1) ?: 0.0
-        val percent = getDifferenceInPercent(second, first)?.roundTo(2) ?: 0.0
-        val sign = if (percent < 0) "" else "+"
-        val difference = (second - first).formatCurrency(threshold = FormattingThreshold.MILLION)
-        return "$sign$difference"
-    }
-
-    val differencePercent: String @Composable get() {
-        val first = hoverHelper.hoverPrices.getOrNull(0) ?: 0.0
-        val second = hoverHelper.hoverPrices.getOrNull(1) ?: 0.0
-        val difference = getDifferenceInPercent(second, first) ?: 0.0
-        return difference.getChangeWithSymbol(withSymbol = true, force = true)
-    }
-
-    val multiHoverGraphColor: Color @Composable get() {
-        if (hoverHelper.hoverPrices.size != 2 || !isDragging) {
-            return changePercent?.getChangeColorCompose() ?: MaterialTheme.colors.onSurfaceDim
-        }
-
-        val first = hoverHelper.hoverPrices.getOrNull(0) ?: 0.0
-        val second = hoverHelper.hoverPrices.getOrNull(1) ?: 0.0
-        val change = (second - first).roundTo(7)
-
-        if (change == 0.0) {
-            val percent = getDifferenceInPercent(second, first)?.roundTo(7)
-            return percent?.getChangeColorCompose() ?: MaterialTheme.colors.onSurfaceDim
-        }
-
-        return change.getChangeColorCompose()
-    }
-
-    val hoverTimePosition: Dp @Composable get() {
-        return getXPosition(hoverPriceTextWidth.value) - hoverPriceTextWidth.value / 2
-    }
-
-    val hoverCandleTimePosition: Dp @Composable get() {
-        return getCandleXPosition(hoverCandlePriceTextWidth.value) - hoverCandlePriceTextWidth.value / 2
-    }
-
-    val candleDragIndex: Int @Composable get() {
-        val cappedDragPosition = max(0.dp, min(dragPosition.value, chartSize.value.width))
-        val n = candleSticks.size
-        if (n <= 1) return 0
-        return candleChartIndexFromPlotX(cappedDragPosition, chartSize.value.width, n)
-    }
-
-    val candleXPosition: Dp @Composable get() {
-        return max(0.dp, min(chartSize.value.width, dragPosition.value))
     }
 
     val candlePrices: List<Double> get() {
@@ -392,56 +281,6 @@ class CryptoDetailViewModel(
         })
 
         return prices
-    }
-
-    val pointCandle: Dp @Composable get() {
-        var prices = candleMiddlePrices
-
-        val highest = highestCandleValue ?: return 0.5.dp
-        val lowest = lowestCandleValue ?: return 0.5.dp
-
-        prices = prices + highest
-        prices = prices + lowest
-
-        return getPoint(
-            index = candleDragIndex,
-            rect = chartSize.value,
-            prices = prices,
-            dropLastTwo = true
-        ).y
-    }
-
-    val getCandleHoverStats: List<String>? @Composable get() {
-        val context = LocalContext.current
-        var index = candleDragIndex
-
-        if (index < 0) {
-            index = 0
-        } else if (index >= candleSticks.size) {
-            index = candleSticks.size.minus(1)
-        }
-
-        val currentCandle = candleSticks.getOrNull(index) ?: return null
-        var formatter = if(context.is24HourClock) "dd MMM 'at' HH:mm" else "dd MMM 'at' hh:mm a"
-
-        when (selectedTimeFrame) {
-            TimeCharts.aMonth,
-            TimeCharts.threeMonths,
-            TimeCharts.aYear -> { formatter = "dd MMM YYYY" }
-            TimeCharts.max -> { formatter = "MMM YYYY" }
-            else -> {}
-        }
-
-        val dateFormat = SimpleDateFormat(formatter, AppLocale.enUsPosix)
-        val dateString = dateFormat.format(Date(candleTimestamps.get(index).toLong()))
-
-        return listOf(
-            dateString,
-            currentCandle.open?.formatCurrency(threshold = FormattingThreshold.NONE) ?: "",
-            currentCandle.high?.formatCurrency(threshold = FormattingThreshold.NONE) ?: "",
-            currentCandle.low?.formatCurrency(threshold = FormattingThreshold.NONE) ?: "",
-            currentCandle.close?.formatCurrency(threshold = FormattingThreshold.NONE) ?: ""
-        )
     }
 
     suspend fun getCryptoNews(forceSymbol: String? = null) {
@@ -750,29 +589,6 @@ class CryptoDetailViewModel(
         return value.formatCurrency(currency = CurrencySelectionModel.empty())
     }
 
-    @Composable
-    fun getCandleXPosition(textWidth: Dp): Dp {
-        val n = candleSticks.size
-        val xPosition = if (n <= 0) {
-            0.dp
-        } else {
-            candleBinCenterX(candleDragIndex, chartSize.value.width, n)
-        }
-
-        return getPriceXPosition(xPosition, textWidth, chartSize.value.width)
-    }
-
-    @Composable
-    fun getXPosition(textWidth: Dp): Dp {
-        val xPosition = getPoint(
-            index = dragIndex,
-            rect = chartSize.value,
-            prices = prices
-        ).x
-
-        return getPriceXPosition(xPosition, textWidth, chartSize.value.width)
-    }
-
     // Candle chart
 
     private suspend fun getCandleChart(id: String?, days: String) {
@@ -980,10 +796,6 @@ class CryptoDetailViewModel(
         }
     }
 
-    val hoverTime: String @Composable get() {
-        return hoverHelper.hoverTimes.firstOrNull().orEmpty()
-    }
-
     fun updateHoverStats(touchXs: List<Dp>, is24HourClock: Boolean) {
         if (mainReloading) return
 
@@ -1024,23 +836,6 @@ class CryptoDetailViewModel(
                 is24HourClock = is24HourClock,
                 isDragging = isDragging,
             )
-        }
-    }
-
-    @Composable
-    private fun currentHoverXPosition(): Dp {
-        if (chartSize.value.width.value <= 0f) return 0.dp
-
-        val hoverPoints = hoverHelper.offset
-        if (hoverPoints.isEmpty()) {
-            return max(0.dp, min(dragPosition.value, chartSize.value.width))
-        }
-
-        return if (hoverHelper.hoverPrices.size == 2) {
-            val average = hoverPoints.sumOf { it.value.toDouble() } / hoverPoints.size
-            max(0.dp, min(average.toFloat().dp, chartSize.value.width))
-        } else {
-            max(0.dp, min(hoverPoints.first(), chartSize.value.width))
         }
     }
 

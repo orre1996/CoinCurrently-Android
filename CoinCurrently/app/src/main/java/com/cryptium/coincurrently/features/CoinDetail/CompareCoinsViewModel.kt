@@ -1,31 +1,19 @@
 package com.cryptium.coincurrently.features.CoinDetail
 import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.util.Log
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
-import androidx.compose.ui.unit.min
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.cryptium.coincurrently.core.config.AppLocale
-import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.getDifferenceInDecimal
 import com.cryptium.coincurrently.core.extensions.getDifferenceInPercent
-import com.cryptium.coincurrently.core.extensions.is24HourClock
-import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.sharedui.components.Point
-import com.cryptium.coincurrently.sharedui.components.getPoint
-import com.cryptium.coincurrently.sharedui.components.getPriceXPosition
-import com.cryptium.coincurrently.sharedui.components.lineChartIndexFromPlotX
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.models.ChartTypes
@@ -42,8 +30,6 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInf
 import com.cryptium.coincurrently.core.networking.ResponseModels.PriceVolumeModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
-import java.text.SimpleDateFormat
-import java.util.Date
 import kotlin.math.abs
 
 class CompareCoinsViewModelFactory(
@@ -183,7 +169,7 @@ class CompareCoinsViewModel(
         }
     }
 
-    private fun getTimestamps(dropLastTwo: Boolean = false): List<Double> {
+    fun getTimestamps(dropLastTwo: Boolean = false): List<Double> {
         return if (dropLastTwo && prices.size > 1) {
             timeStamps.dropLast(2)
         } else {
@@ -199,7 +185,7 @@ class CompareCoinsViewModel(
         }
     }
 
-    private fun getCompareTimestamps(dropLastTwo: Boolean = false): List<Double> {
+    fun getCompareTimestamps(dropLastTwo: Boolean = false): List<Double> {
         return if (dropLastTwo && compareTimeStamps.size > 1) {
             compareTimeStamps.map { it }.dropLast(2)
         } else {
@@ -386,66 +372,6 @@ class CompareCoinsViewModel(
         onChartPricesUpdate(updatedChartPrices)
     }
 
-    val hoverPrice: String @Composable get() {
-        val currentPrice = getPrices(true).getOrNull(dragIndex)
-        return if(currentPrice == -1.0) "N/A" else currentPrice?.formatCurrency(threshold = FormattingThreshold.MILLION) ?: "N/A"
-    }
-
-    val hoverTimePosition: Dp @Composable get() {
-        return getXPosition(hoverPriceTextWidth.value) - hoverPriceTextWidth.value / 2
-    }
-
-    val comparedHoverPrice: String @Composable get() {
-        val currentPrice = getComparePrices(true).getOrNull(dragIndex)
-        return if(currentPrice == -1.0) "N/A" else currentPrice?.formatCurrency(threshold = FormattingThreshold.MILLION) ?: "N/A"
-    }
-
-    val hoverTime: String @Composable get() {
-        val context = LocalContext.current
-        var formatter = if(context.is24HourClock) "dd MMM 'at' HH:mm" else "dd MMM 'at' hh:mm a"
-
-        when (selectedTimeFrame) {
-            TimeCharts.aMonth,
-            TimeCharts.threeMonths,
-            TimeCharts.aYear -> { formatter = "dd MMM YYYY" }
-            TimeCharts.max -> { formatter = "MMM YYYY" }
-            else -> {}
-        }
-
-        val timeStamps = getTimestamps(true)
-        val compareTimeStamps = getCompareTimestamps(true)
-
-        if (timeStamps.isEmpty()) {
-            return ""
-        }
-
-        val lowestTimeStamp = if((timeStamps.filter { it != -1.0 }.minOrNull()
-                ?: Double.POSITIVE_INFINITY) < (compareTimeStamps.filter { it != -1.0 }.minOrNull()
-                ?: Double.POSITIVE_INFINITY)
-        ) timeStamps else compareTimeStamps
-
-        if (lowestTimeStamp.isEmpty()) {
-            return ""
-        }
-
-        val currentValue = lowestTimeStamp.getOrNull(dragIndex)?.toLong() ?: 0
-        val dateFormat = SimpleDateFormat(formatter, AppLocale.enUsPosix)
-
-        return dateFormat.format(Date(currentValue))
-    }
-
-    @Composable
-    fun getXPosition(textWidth: Dp): Dp {
-        val xPosition = getPoint(
-            index = dragIndex,
-            rect = chartSize.value,
-            prices = getPrices(),
-            dropLastTwo = true
-        ).x
-
-        return getPriceXPosition(xPosition, textWidth, chartSize.value.width)
-    }
-
     val graphStats: List<String?>
         get() {
             val mainPrices = getPrices(dropLastTwo = true).filter { it != -1.0 }
@@ -566,26 +492,6 @@ class CompareCoinsViewModel(
         compareVolumes = tempCompareVolumes
     }
 
-    val mainDifferencePercent: Double
-        @Composable
-        get() {
-            val first = prices.firstOrNull { it != -1.0 } ?: 0.0
-            val second = getPrices(true).getOrNull(dragIndex) ?: 0.0
-            val difference = getDifferenceInPercent(second, first) ?: 0.0
-
-            return difference
-        }
-
-    val compareDifferencePercent: Double
-        @Composable
-        get() {
-            val first = comparePrices.firstOrNull { it != -1.0 } ?: 0.0
-            val second = getComparePrices(true).getOrNull(dragIndex) ?: 0.0
-            val difference = getDifferenceInPercent(second, first) ?: 0.0
-
-            return difference
-        }
-
     private fun setOnlyPrices() {
         val prefix = getPricesRangePrefix(mainPriceVolumeModel)
 
@@ -675,32 +581,5 @@ class CompareCoinsViewModel(
             TimeCharts.anHour -> { ((priceVolume?.prices?.size ?: 0) / 24) }
             else -> (priceVolume?.prices?.size ?: 0)
         }
-    }
-
-    val dragIndex: Int @Composable get() {
-        val cappedDragPosition = max(0.dp, min(dragPosition.value, chartSize.value.width))
-        val drawCount = getPrices(true).size
-        if (drawCount <= 1) return 0
-        return lineChartIndexFromPlotX(cappedDragPosition, chartSize.value.width, drawCount)
-    }
-
-    val dragPoint: Point @Composable get() {
-        val point = getPoint(
-            index = dragIndex,
-            rect = chartSize.value,
-            prices = getPrices(),
-            dropLastTwo = true
-        )
-        return point
-    }
-
-    val compareDragPoint: Point @Composable get() {
-        val point = getPoint(
-            index = dragIndex,
-            rect = chartSize.value,
-            prices = getComparePrices(),
-            dropLastTwo = true
-        )
-        return point
     }
 }

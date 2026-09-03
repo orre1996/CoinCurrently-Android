@@ -32,9 +32,10 @@ import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.sharedui.theme.*
 import com.cryptium.coincurrently.sharedui.modifiers.*
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
-import com.cryptium.coincurrently.sharedui.charts.differencePercent
-import com.cryptium.coincurrently.sharedui.charts.dragPositions
-import com.cryptium.coincurrently.sharedui.charts.multiHoverGraphColor
+import com.cryptium.coincurrently.sharedui.charts.ChartHoverStats
+import com.cryptium.coincurrently.sharedui.charts.rememberLineChartHoverUi
+import com.cryptium.coincurrently.sharedui.charts.HoverTimeFallback
+import com.cryptium.coincurrently.sharedui.charts.indexDifferenceValue
 import com.cryptium.coincurrently.core.extensions.dpToPx
 import com.cryptium.coincurrently.core.extensions.is24HourClock
 import com.cryptium.coincurrently.core.extensions.numberAccessible
@@ -48,7 +49,6 @@ import com.cryptium.coincurrently.sharedui.charts.delayTouches
 import com.cryptium.coincurrently.sharedui.charts.hideFromTalkBackWhenEnabled
 import com.cryptium.coincurrently.sharedui.charts.LineChart
 import com.cryptium.coincurrently.sharedui.charts.ChartBackground
-import com.cryptium.coincurrently.sharedui.charts.ChartHoverStats
 import com.cryptium.coincurrently.sharedui.charts.ChartTimeframeButtonsView
 import com.cryptium.coincurrently.sharedui.charts.ChartTimeStamps
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
@@ -57,6 +57,7 @@ import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.features.Home.Views.getFearGreedClarification
+import com.cryptium.coincurrently.features.Home.Views.getFearGreedColorCompose
 import com.cryptium.coincurrently.features.FearGreed.Views.FearGreedHistoricView
 import com.cryptium.coincurrently.features.FearGreed.Sheets.FearGreedHelpSheet
 import com.cryptium.coincurrently.features.FearGreed.FearAndGreedViewModel
@@ -78,6 +79,24 @@ fun FearAndGreedScreen(
     val screenHeight = configuration.screenHeightDp.dp
     val viewModel: FearAndGreedViewModel = viewModel(
         factory = FearAndGreedViewModelFactory()
+    )
+    val hoverUi = rememberLineChartHoverUi(
+        chartHover = viewModel.chartHover,
+        prices = viewModel.prices,
+        timeStamps = viewModel.timeStamps,
+        chartSize = viewModel.chartSize.value,
+        hoverPriceTextWidth = viewModel.hoverPriceTextWidth.value,
+        timeChart = viewModel.selectedChartTimeFrame,
+        changePercent = null,
+        formatPrice = { it.toInt().toString() },
+        formatDifferenceValue = { indexDifferenceValue() },
+        dropLastCount = 2,
+        chartColor = getFearGreedColorCompose(viewModel.prices.dropLast(2).lastOrNull()?.toInt() ?: 0),
+        timeFallback = HoverTimeFallback.MonthYearOrDate,
+        emptyPrice = "0",
+    )
+    val hoverPriceColor = getFearGreedColorCompose(
+        viewModel.prices.dropLast(2).getOrNull(hoverUi.dragIndex)?.toInt() ?: 0,
     )
 
     var isRefreshing by remember { mutableStateOf(false) }
@@ -161,15 +180,15 @@ fun FearAndGreedScreen(
                     )
 
                     ChartHoverStats(
-                        isMultiHover = viewModel.multiHoverTimes.size == 2,
-                        hoverTimes = viewModel.multiHoverTimes,
-                        differenceValue = viewModel.differenceValue,
-                        differencePercent = viewModel.differencePercent,
-                        multiHoverColor = viewModel.multiHoverGraphColor,
-                        hoverPrice = viewModel.hoverPrice,
-                        hoverPriceColor = viewModel.hoverColor,
-                        hoverTime = viewModel.hoverTime,
-                        hoverTimePosition = viewModel.hoverTimePosition,
+                        isMultiHover = hoverUi.isMultiHover,
+                        hoverTimes = hoverUi.hoverTimes,
+                        differenceValue = hoverUi.differenceValue,
+                        differencePercent = hoverUi.differencePercent,
+                        multiHoverColor = hoverUi.multiHoverGraphColor,
+                        hoverPrice = hoverUi.hoverPrice,
+                        hoverPriceColor = hoverPriceColor,
+                        hoverTime = hoverUi.hoverTime,
+                        hoverTimePosition = hoverUi.hoverTimePosition,
                         isDragging = viewModel.isDragging,
                         hoverPriceTextWidth = viewModel.hoverPriceTextWidth,
                     )
@@ -202,12 +221,12 @@ fun FearAndGreedScreen(
                             viewModel.fearGreedModel?.let {
                                 LineChart(
                                     prices = viewModel.prices,
-                                    color = viewModel.graphColor,
-                                    dragIndex = if (viewModel.isDragging) viewModel.dragIndex else null,
+                                    color = hoverUi.chartColor,
+                                    dragIndex = if (viewModel.isDragging) hoverUi.dragIndex else null,
                                     dropCount = 2,
                                     isDragging = viewModel.isDragging,
                                     dragPositionXs = if (viewModel.isDragging) {
-                                        viewModel.dragPositions.map { with(localDensity) { it.x.toPx() } }
+                                        hoverUi.dragPositions.map { with(localDensity) { it.x.toPx() } }
                                     } else {
                                         emptyList()
                                     },
@@ -229,9 +248,9 @@ fun FearAndGreedScreen(
                                 )
 
                                 ChartHoverView(
-                                    positions = viewModel.dragPositions,
+                                    positions = hoverUi.dragPositions,
                                     isDragging = viewModel.isDragging,
-                                    color = viewModel.graphColor,
+                                    color = hoverUi.chartColor,
                                     topPadding = biggestValue.value.height / 2,
                                 )
                             } ?: run {

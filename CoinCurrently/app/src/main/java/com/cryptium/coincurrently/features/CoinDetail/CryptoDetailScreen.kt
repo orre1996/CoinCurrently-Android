@@ -54,9 +54,11 @@ import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.sharedui.components.conditionalStickyHeader
 import com.cryptium.coincurrently.sharedui.components.tabPageItem
 import com.cryptium.coincurrently.sharedui.buttons.ScrollToTopButton
-import com.cryptium.coincurrently.sharedui.charts.differencePercent
-import com.cryptium.coincurrently.sharedui.charts.dragPositions
-import com.cryptium.coincurrently.sharedui.charts.multiHoverGraphColor
+import com.cryptium.coincurrently.sharedui.charts.ChartHoverStats
+import com.cryptium.coincurrently.sharedui.charts.rememberLineChartHoverUi
+import com.cryptium.coincurrently.sharedui.charts.rememberCandleHoverUi
+import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
+import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.features.CoinDetail.Sheets.SentimentInfoSheet
 import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
 import com.cryptium.coincurrently.sharedui.charts.CandleChart
@@ -77,7 +79,6 @@ import com.cryptium.coincurrently.sharedui.charts.ChartTimeStamps
 import com.cryptium.coincurrently.sharedui.charts.ChartTimeframeButtonsView
 import com.cryptium.coincurrently.sharedui.charts.ChartAccessibilityOverlay
 import com.cryptium.coincurrently.sharedui.charts.chartAccessibilityOverlay
-import com.cryptium.coincurrently.sharedui.charts.ChartHoverStats
 import com.cryptium.coincurrently.sharedui.charts.ChartHoverView
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
 import com.cryptium.coincurrently.sharedui.components.ImageCase
@@ -162,6 +163,30 @@ fun CryptoDetailScreen(
         factory = CryptoDetailViewModelFactory(
             cryptoDetailInfoModel
         )
+    )
+
+    val hoverUi = rememberLineChartHoverUi(
+        hoverHelper = viewModel.hoverHelper,
+        isDragging = viewModel.isDragging,
+        dragPosition = viewModel.dragPosition.value,
+        prices = viewModel.prices,
+        timeStamps = viewModel.timeStamps,
+        chartSize = viewModel.chartSize.value,
+        hoverPriceTextWidth = viewModel.hoverPriceTextWidth.value,
+        timeChart = viewModel.selectedTimeFrame,
+        changePercent = viewModel.changePercent,
+        formatPrice = { it.formatCurrency(threshold = FormattingThreshold.MILLION) },
+    )
+    val candleHoverUi = rememberCandleHoverUi(
+        dragPosition = viewModel.dragPosition.value,
+        chartSize = viewModel.chartSize.value,
+        candleSticks = viewModel.candleSticks,
+        hoverCandlePriceTextWidth = viewModel.hoverCandlePriceTextWidth.value,
+        timeChart = viewModel.selectedTimeFrame,
+        candleMiddlePrices = viewModel.candleMiddlePrices,
+        highestCandleValue = viewModel.highestCandleValue,
+        lowestCandleValue = viewModel.lowestCandleValue,
+        candleTimestamps = viewModel.candleTimestamps,
     )
 
     val context = LocalContext.current
@@ -577,8 +602,8 @@ fun CryptoDetailScreen(
                         ) {
                             Box(Modifier.fillMaxWidth()) {
                                 CandleChartHoverStatsView(
-                                    currentCandleChart = viewModel.getCandleHoverStats,
-                                    xPosition = viewModel.hoverCandleTimePosition,
+                                    currentCandleChart = candleHoverUi.stats,
+                                    xPosition = candleHoverUi.timePosition,
                                     isDragging = viewModel.isDragging && viewModel.isCandleChartEnabled,
                                     hoverCandlePriceTextWidth = viewModel.hoverCandlePriceTextWidth,
                                     horizontalEdgePadding = 0.dp,
@@ -588,15 +613,15 @@ fun CryptoDetailScreen(
                                 )
 
                                 ChartHoverStats(
-                                    isMultiHover = viewModel.hoverHelper.hoverPrices.size == 2,
-                                    hoverTimes = viewModel.hoverHelper.hoverTimes,
-                                    differenceValue = viewModel.differenceValue,
-                                    differencePercent = viewModel.differencePercent,
-                                    multiHoverColor = viewModel.multiHoverGraphColor,
-                                    hoverPrice = viewModel.hoverPrice,
-                                    hoverPriceColor = MaterialTheme.colors.onSurface,
-                                    hoverTime = viewModel.hoverTime,
-                                    hoverTimePosition = viewModel.hoverTimePosition,
+                                    isMultiHover = hoverUi.isMultiHover,
+                                    hoverTimes = hoverUi.hoverTimes,
+                                    differenceValue = hoverUi.differenceValue,
+                                    differencePercent = hoverUi.differencePercent,
+                                    multiHoverColor = hoverUi.multiHoverGraphColor,
+                                    hoverPrice = hoverUi.hoverPrice,
+                                    hoverPriceColor = hoverUi.hoverColor,
+                                    hoverTime = hoverUi.hoverTime,
+                                    hoverTimePosition = hoverUi.hoverTimePosition,
                                     isDragging = viewModel.isDragging && !viewModel.candleChartEnabled,
                                     hoverPriceTextWidth = viewModel.hoverPriceTextWidth,
                                     horizontalEdgePadding = 0.dp,
@@ -626,8 +651,8 @@ fun CryptoDetailScreen(
                                     CandleChart(
                                         candleSticks = viewModel.candleSticks,
                                         isDragging = viewModel.isDragging,
-                                        hoverXPosition = viewModel.candleXPosition.dpToPx(),
-                                        pointCandle = viewModel.pointCandle,
+                                        hoverXPosition = candleHoverUi.xPosition.dpToPx(),
+                                        pointCandle = candleHoverUi.pointY,
                                         chartSize = viewModel.chartSize,
                                         biggestValue = biggestValue.value,
                                         hideFromTalkBack = talkBackEnabled,
@@ -635,10 +660,10 @@ fun CryptoDetailScreen(
                                 } else {
                                     MainChart(
                                         prices = viewModel.prices,
-                                        chartColor = viewModel.mainChartColor,
-                                        dragIndex = if (viewModel.isDragging) viewModel.dragIndex else null,
+                                        chartColor = hoverUi.chartColor,
+                                        dragIndex = if (viewModel.isDragging) hoverUi.dragIndex else null,
                                         isDragging = viewModel.isDragging,
-                                        dragPositions = viewModel.dragPositions,
+                                        dragPositions = hoverUi.dragPositions,
                                         chartSize = viewModel.chartSize,
                                         biggestValue = biggestValue.value,
                                         hideFromTalkBack = talkBackEnabled,

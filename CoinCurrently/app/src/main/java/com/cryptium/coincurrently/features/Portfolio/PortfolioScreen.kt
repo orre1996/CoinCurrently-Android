@@ -79,6 +79,8 @@ import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
 import com.cryptium.coincurrently.core.extensions.*
 import com.cryptium.coincurrently.sharedui.charts.ChartBackground
 import com.cryptium.coincurrently.sharedui.charts.ChartHoverStats
+import com.cryptium.coincurrently.sharedui.charts.rememberLineChartHoverUi
+import com.cryptium.coincurrently.sharedui.charts.HoverTimeFallback
 import com.cryptium.coincurrently.sharedui.charts.ChartTimeStamps
 import com.cryptium.coincurrently.sharedui.charts.ChartAccessibilityOverlay
 import com.cryptium.coincurrently.sharedui.charts.ChartHoverView
@@ -159,6 +161,28 @@ fun PortfolioScreen(
 ) {
     val context = LocalContext.current
     val viewModel: PortfolioViewModel = viewModel()
+    val hoverUi = rememberLineChartHoverUi(
+        chartHover = viewModel.chartHover,
+        prices = viewModel.prices,
+        timeStamps = viewModel.timeStamps,
+        chartSize = viewModel.chartSize.value,
+        hoverPriceTextWidth = viewModel.hoverPriceTextWidth.value,
+        timeChart = viewModel.selectedChartTimeFrame,
+        changePercent = viewModel.changePercent,
+        formatPrice = {
+            if (viewModel.hideData) stars else it.formatCurrency(threshold = FormattingThreshold.MILLION)
+        },
+        dropLastCount = viewModel.chartDropCount,
+        timeFallback = HoverTimeFallback.LocalClock,
+        emptyPrice = if (viewModel.hideData) stars else "N/A",
+        transformDragPoint = { point ->
+            if ((viewModel.portfolio?.isEmpty() != false) || viewModel.prices.all { it == 0.0 }) {
+                point.copy(y = viewModel.chartSize.value.height)
+            } else {
+                point
+            }
+        },
+    )
 
     val currentSubscription by StoreKitManager.currentSubscription.observeAsState()
     var doubleBackToExitPressedOnce by remember { mutableStateOf(false) }
@@ -577,15 +601,15 @@ fun PortfolioScreen(
                                             },
                                     ) {
                                         ChartHoverStats(
-                                                isMultiHover = viewModel.chartHover.hoverHelper.hoverPrices.size == 2,
-                                                hoverTimes = viewModel.chartHover.hoverHelper.hoverTimes,
-                                                differenceValue = viewModel.differenceValue,
-                                                differencePercent = viewModel.differencePercent,
-                                                multiHoverColor = viewModel.multiHoverGraphColor,
-                                                hoverPrice = viewModel.hoverPrice,
-                                                hoverPriceColor = viewModel.hoverColor,
-                                                hoverTime = viewModel.hoverTime,
-                                                hoverTimePosition = viewModel.hoverTimePosition,
+                                                isMultiHover = hoverUi.isMultiHover,
+                                                hoverTimes = hoverUi.hoverTimes,
+                                                differenceValue = hoverUi.differenceValue,
+                                                differencePercent = hoverUi.differencePercent,
+                                                multiHoverColor = hoverUi.multiHoverGraphColor,
+                                                hoverPrice = hoverUi.hoverPrice,
+                                                hoverPriceColor = hoverUi.hoverColor,
+                                                hoverTime = hoverUi.hoverTime,
+                                                hoverTimePosition = hoverUi.hoverTimePosition,
                                                 isDragging = viewModel.isDragging,
                                                 hoverPriceTextWidth = viewModel.hoverPriceTextWidth,
                                             )
@@ -638,13 +662,13 @@ fun PortfolioScreen(
                                             } else {
                                                 LineChart(
                                                     prices = viewModel.prices,
-                                                    color = viewModel.chartColor,
-                                                    dragIndex = if (viewModel.isDragging) viewModel.dragIndex else null,
+                                                    color = hoverUi.chartColor,
+                                                    dragIndex = if (viewModel.isDragging) hoverUi.dragIndex else null,
                                                     isEmptyAtBottom = true,
                                                     isDragging = viewModel.isDragging,
                                                     dropCount = viewModel.chartDropCount,
                                                     dragPositionXs = if (viewModel.isDragging) {
-                                                        viewModel.dragPositions.map { with(localDensity) { it.x.toPx() } }
+                                                        hoverUi.dragPositions.map { with(localDensity) { it.x.toPx() } }
                                                     } else {
                                                         emptyList()
                                                     },
@@ -670,14 +694,14 @@ fun PortfolioScreen(
                                                     LineChart(
                                                         prices = viewModel.benchmarkPrices,
                                                         color = MaterialTheme.colors.primary,
-                                                        dragIndex = if (viewModel.isDragging) viewModel.dragIndex else null,
+                                                        dragIndex = if (viewModel.isDragging) hoverUi.dragIndex else null,
                                                         showFill = false,
                                                         isEmptyAtBottom = true,
                                                         isDragging = viewModel.isDragging,
                                                         dropCount = viewModel.chartDropCount,
                                                         dash = floatArrayOf(8f, 5f),
                                                         dragPositionXs = if (viewModel.isDragging) {
-                                                            viewModel.dragPositions.map { with(localDensity) { it.x.toPx() } }
+                                                            hoverUi.dragPositions.map { with(localDensity) { it.x.toPx() } }
                                                         } else {
                                                             emptyList()
                                                         },
@@ -692,9 +716,9 @@ fun PortfolioScreen(
 
                                                 Box(modifier = Modifier.hideFromTalkBackWhenEnabled()) {
                                                     ChartHoverView(
-                                                        positions = viewModel.dragPositions,
+                                                        positions = hoverUi.dragPositions,
                                                         isDragging = viewModel.isDragging,
-                                                        color = viewModel.chartColor,
+                                                        color = hoverUi.chartColor,
                                                         topPadding = biggestValue.value.height / 2,
                                                     )
                                                 }
@@ -771,7 +795,7 @@ fun PortfolioScreen(
                                                     .fillMaxWidth()
                                                     .padding(bottom = 32.dp),
                                             ) {
-                                                CompareRectangleView(color = viewModel.chartColor)
+                                                CompareRectangleView(color = hoverUi.chartColor)
 
                                                 Text(
                                                     text = "Portfolio",

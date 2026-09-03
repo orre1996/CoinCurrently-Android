@@ -31,15 +31,15 @@ import com.cryptium.coincurrently.sharedui.theme.*
 import com.cryptium.coincurrently.sharedui.modifiers.*
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.contentScreenWidthPx
-import com.cryptium.coincurrently.sharedui.charts.differencePercent
-import com.cryptium.coincurrently.sharedui.charts.dragPositions
-import com.cryptium.coincurrently.sharedui.charts.multiHoverGraphColor
+import com.cryptium.coincurrently.sharedui.charts.ChartBackground
+import com.cryptium.coincurrently.sharedui.charts.ChartHoverStats
+import com.cryptium.coincurrently.sharedui.charts.rememberLineChartHoverUi
+import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
+import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.dpToPx
 import com.cryptium.coincurrently.core.extensions.is24HourClock
 import com.cryptium.coincurrently.core.extensions.pxToDp
 import com.cryptium.coincurrently.core.extensions.satoshiBold
-import com.cryptium.coincurrently.sharedui.charts.ChartBackground
-import com.cryptium.coincurrently.sharedui.charts.ChartHoverStats
 import com.cryptium.coincurrently.sharedui.charts.ChartTimeStamps
 import com.cryptium.coincurrently.sharedui.charts.ChartTimeframeButtonsView
 import com.cryptium.coincurrently.sharedui.charts.ChartAccessibilityOverlay
@@ -87,6 +87,16 @@ fun GlobalMarketScreen(
 
     val viewModel: GlobalMarketViewModel = viewModel(
         factory = GlobalMarketViewModelFactory()
+    )
+    val hoverUi = rememberLineChartHoverUi(
+        chartHover = viewModel.chartHover,
+        prices = viewModel.prices,
+        timeStamps = viewModel.timeStamps,
+        chartSize = viewModel.chartSize.value,
+        hoverPriceTextWidth = viewModel.hoverPriceTextWidth.value,
+        timeChart = viewModel.selectedTimeFrame,
+        changePercent = viewModel.changePercent,
+        formatPrice = { it.formatCurrency(threshold = FormattingThreshold.MILLION) },
     )
 
     LaunchedEffect(Unit) {
@@ -167,15 +177,15 @@ fun GlobalMarketScreen(
                 )
 
                 ChartHoverStats(
-                    isMultiHover = viewModel.chartHover.hoverHelper.hoverPrices.size == 2,
-                    hoverTimes = viewModel.chartHover.hoverHelper.hoverTimes,
-                    differenceValue = viewModel.differenceValue,
-                    differencePercent = viewModel.differencePercent,
-                    multiHoverColor = viewModel.multiHoverGraphColor,
-                    hoverPrice = viewModel.hoverPrice,
-                    hoverPriceColor = MaterialTheme.colors.onSurface,
-                    hoverTime = viewModel.hoverTime,
-                    hoverTimePosition = viewModel.hoverTimePosition,
+                    isMultiHover = hoverUi.isMultiHover,
+                    hoverTimes = hoverUi.hoverTimes,
+                    differenceValue = hoverUi.differenceValue,
+                    differencePercent = hoverUi.differencePercent,
+                    multiHoverColor = hoverUi.multiHoverGraphColor,
+                    hoverPrice = hoverUi.hoverPrice,
+                    hoverPriceColor = hoverUi.hoverColor,
+                    hoverTime = hoverUi.hoverTime,
+                    hoverTimePosition = hoverUi.hoverTimePosition,
                     isDragging = viewModel.isDragging,
                     hoverPriceTextWidth = viewModel.hoverPriceTextWidth,
                 )
@@ -207,10 +217,10 @@ fun GlobalMarketScreen(
                     } else {
                         MainChart(
                             prices = viewModel.prices,
-                            chartColor = viewModel.mainChartColor,
-                            dragIndex = if (viewModel.isDragging) viewModel.dragIndex else null,
+                            chartColor = hoverUi.chartColor,
+                            dragIndex = if (viewModel.isDragging) hoverUi.dragIndex else null,
                             isDragging = viewModel.isDragging,
-                            dragPositions = viewModel.dragPositions,
+                            dragPositions = hoverUi.dragPositions,
                             chartSize = viewModel.chartSize,
                             biggestValue = biggestValue.value,
                             hideFromTalkBack = talkBackEnabled,

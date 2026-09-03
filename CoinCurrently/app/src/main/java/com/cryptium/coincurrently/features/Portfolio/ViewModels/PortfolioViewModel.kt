@@ -3,23 +3,14 @@ import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
-import androidx.compose.ui.unit.min
 import androidx.lifecycle.*
-import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
-import com.cryptium.coincurrently.sharedui.charts.getChangeColorCompose
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.extensions.getAllTransactions
@@ -29,20 +20,10 @@ import com.cryptium.coincurrently.core.extensions.getProfitLossValue
 import com.cryptium.coincurrently.core.extensions.getDifferenceInDecimal
 import com.cryptium.coincurrently.core.extensions.getDifferenceInPercent
 import com.cryptium.coincurrently.core.extensions.groupedTransactions
-import com.cryptium.coincurrently.core.extensions.is24HourClock
 import com.cryptium.coincurrently.core.extensions.pieContaining
 import com.cryptium.coincurrently.core.extensions.stars
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.charts.ChartHoverController
-import com.cryptium.coincurrently.sharedui.components.Point
-import com.cryptium.coincurrently.sharedui.charts.currencyDifferenceValue
-import com.cryptium.coincurrently.sharedui.charts.differencePercent
-import com.cryptium.coincurrently.sharedui.charts.dragPositions
-import com.cryptium.coincurrently.sharedui.components.getPoint
-import com.cryptium.coincurrently.sharedui.components.getPriceXPosition
-import com.cryptium.coincurrently.sharedui.charts.hoverDragIndex
-import com.cryptium.coincurrently.sharedui.charts.multiHoverGraphColor
-import com.cryptium.coincurrently.sharedui.components.lineChartIndexFromPlotX
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
 import com.cryptium.coincurrently.core.config.AppLocale
@@ -73,9 +54,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import com.cryptium.coincurrently.core.networking.ResponseModels.*
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.TimeZone
 import java.util.UUID
 import kotlin.collections.map
 import kotlin.math.abs
@@ -196,70 +175,6 @@ class PortfolioViewModel : ViewModel() {
 
             return mainList
         }
-
-    val dragIndex: Int @Composable get() {
-        val chartPrices = getPrices(dropLastTwo = benchmarkCoin != null)
-        if (chartPrices.size <= 1) return 0
-        return chartHover.hoverDragIndex(chartSize.value.width, chartPrices.size)
-    }
-
-    val hoverPrice: String @Composable get() {
-        val value = chartHover.hoverHelper.hoverPrices.firstOrNull() ?: prices.getOrNull(dragIndex)
-        return if (hideData) stars else value?.formatCurrency(threshold = FormattingThreshold.MILLION) ?: "N/A"
-    }
-
-    val hoverTimePosition: Dp @Composable get() {
-        return getXPosition(hoverPriceTextWidth.value) - hoverPriceTextWidth.value / 2
-    }
-
-    val dragPoint: Point @Composable get() {
-        val point = getPoint(
-            index = dragIndex,
-            rect = chartSize.value,
-            prices = prices,
-            dropLastTwo = benchmarkCoin != null,
-        )
-
-        return Point(
-            x = point.x,
-            y = if ((portfolio?.isEmpty() != false) || prices.all { it == 0.0 }) {
-                chartSize.value.height
-            } else {
-                point.y
-            }
-        )
-    }
-
-    val chartColor: Color @Composable get() {
-        return changePercent?.getChangeColorCompose() ?: MaterialTheme.colors.onSurfaceDim
-    }
-
-    val hoverColor: Color @Composable get() {
-        return MaterialTheme.colors.onSurface
-    }
-
-    val hoverTime: String @Composable get() {
-        return chartHover.hoverHelper.hoverTimes.firstOrNull() ?: run {
-            val context = LocalContext.current
-            val formatter = if (context.is24HourClock) "dd MMM 'at' HH:mm" else "dd MMM 'at' hh:mm a"
-            val currentTimestamp = timeStamps.getOrNull(dragIndex)?.toLong() ?: 0
-            val dateFormat = SimpleDateFormat(formatter, AppLocale.enUsPosix)
-            dateFormat.timeZone = TimeZone.getDefault()
-            dateFormat.format(Date(currentTimestamp))
-        }
-    }
-
-    val multiHoverGraphColor: Color @Composable get() = chartHover.multiHoverGraphColor(chartColor)
-
-    val differenceValue: String @Composable get() = chartHover.currencyDifferenceValue()
-
-    val differencePercent: String @Composable get() = chartHover.differencePercent()
-
-    val dragPositions: List<Point> @Composable get() = chartHover.dragPositions(
-        chartSize.value,
-        prices,
-        dropLastCount = chartDropCount,
-    )
 
     fun updateHoverStats(touchXs: List<Dp>, is24HourClock: Boolean) {
         chartHover.updateHoverStats(
@@ -529,17 +444,6 @@ class PortfolioViewModel : ViewModel() {
 
     suspend fun findTransaction(transactionId: String): Pair<PortfolioEvent?, Toplist?> {
         return portfolioRepository.findPortfolioEventByTransactionId(transactionId)
-    }
-
-    @Composable
-    fun getXPosition(textWidth: Dp): Dp {
-        val xPosition = getPoint(
-            index = dragIndex,
-            rect = chartSize.value,
-            prices = prices,
-        ).x
-
-        return getPriceXPosition(xPosition, textWidth, chartSize.value.width)
     }
 
     private fun processPortfolioData(portfolio: CachedData<PortfolioPiesData>?) {
