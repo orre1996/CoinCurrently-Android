@@ -87,7 +87,6 @@ import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.Navigate
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.core.analytics.screenLabelFromRoute
-import dagger.hilt.android.AndroidEntryPoint
 import com.cryptium.coincurrently.app.getRouteString
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -101,7 +100,7 @@ import java.util.Calendar
 import java.util.Date
 import kotlin.math.max
 import kotlin.time.Duration.Companion.seconds
-@AndroidEntryPoint
+
 class MainActivity: FragmentActivity() {
     lateinit var navigationViewModel: NavigationViewModel
 

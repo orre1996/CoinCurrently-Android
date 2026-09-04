@@ -39,8 +39,6 @@
 
 # Retrofit API DTOs
 -keep class com.cryptium.coincurrently.core.networking.ResponseModels.** { *; }
--keep class com.cryptium.coincurrently.core.networking.Resource { *; }
--keep class com.cryptium.coincurrently.core.networking.Status { *; }
 
 # Shared cache wrappers + app models
 -keep class com.cryptium.coincurrently.sharedui.models.** { *; }
