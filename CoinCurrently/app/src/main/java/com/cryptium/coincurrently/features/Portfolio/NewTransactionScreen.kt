@@ -39,7 +39,6 @@ import com.cryptium.coincurrently.features.Portfolio.ViewModels.NewTransactionVi
 import com.cryptium.coincurrently.features.Portfolio.ViewModels.NewTransactionViewModelFactory
 import com.cryptium.coincurrently.core.extensions.*
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
-import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.inputs.NumericInputField
 import com.cryptium.coincurrently.sharedui.inputs.TextInputField
 import com.cryptium.coincurrently.app.NavigationViewModel
@@ -374,9 +373,8 @@ private fun UnitPriceField(
         Row {
             NumericInputField(
                 input = unitPriceInput.value,
-                placeholder = (currentPrice ?: 0.0).formatCurrency(
-                    threshold = FormattingThreshold.NONE,
-                    currency = CurrencySelectionModel.empty()
+                placeholder = (currentPrice ?: 0.0).formatCurrencyInput(
+                    currency = selectedCurrency
                 ),
                 currency = selectedCurrency,
                 forceShowCurrency = !selectedCurrency.suffix,
