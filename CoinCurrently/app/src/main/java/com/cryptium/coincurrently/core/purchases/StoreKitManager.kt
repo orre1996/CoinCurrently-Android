@@ -43,9 +43,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import com.cryptium.coincurrently.core.networking.ApiHelper
 import com.cryptium.coincurrently.core.networking.MainRepository
-import com.cryptium.coincurrently.core.networking.RetrofitBuilder
 import java.util.Date
 
 val monthlyName = "com.monthly.subscription"
@@ -129,7 +127,7 @@ class StoreKitManager {
 
         private fun getUser() {
             GlobalScope.launch(Dispatchers.IO) {
-                MainRepository(ApiHelper(RetrofitBuilder.apiService)).getUser()
+                MainRepository.getUser()
             }
         }
 

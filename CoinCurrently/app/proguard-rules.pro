@@ -71,9 +71,8 @@
 -keep enum com.cryptium.coincurrently.core.models.AppColorScheme { *; }
 -keep enum com.cryptium.coincurrently.core.models.SelectedStartTab { *; }
 
-# Portfolio companion touches Gson-backed fields; keep names stable
+# Portfolio object touches Gson-backed fields; keep names stable
 -keep class com.cryptium.coincurrently.features.Portfolio.PortfolioRepository { *; }
--keep class com.cryptium.coincurrently.features.Portfolio.PortfolioRepository$Companion { *; }
 
 # kotlinx.serialization generated serializers for app + API models
 -keep,includedescriptorclasses class com.cryptium.coincurrently.core.networking.ResponseModels.**$$serializer { *; }

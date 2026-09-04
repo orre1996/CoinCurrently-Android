@@ -22,7 +22,10 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.serverBaseUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ApiHelper(private val apiService: ApiService) {
+object ApiHelper {
+    private val apiService: ApiService
+        get() = RetrofitBuilder.apiService
+
     private val baseUrl: String
         get() = "${serverBaseUrl}/crypto"
 

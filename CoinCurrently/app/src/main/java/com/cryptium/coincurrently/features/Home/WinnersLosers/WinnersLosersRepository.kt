@@ -9,7 +9,6 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.WinnersLosers
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.sharedui.models.CachedData
-import com.cryptium.coincurrently.core.networking.ApiHelper
 import com.cryptium.coincurrently.core.networking.CacheUrls
 import com.cryptium.coincurrently.core.networking.MainRepository
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
@@ -17,162 +16,159 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.getSortedToplis
 import com.cryptium.coincurrently.core.networking.RetrofitBuilder
 import java.util.Date
 
-class WinnersLosersRepository {
-    companion object {
-        private val mainRepository by lazy { MainRepository(ApiHelper(RetrofitBuilder.apiService)) }
-        private var winnersLosersUrls: MutableMap<String, String>
-            get() = StorageManager.get<MutableMap<String, String>>(StorageKeys.LAST_WINNERS_LOSERS_URLS) ?: mutableMapOf()
-            set(value) { StorageManager.set(StorageKeys.LAST_WINNERS_LOSERS_URLS, value) }
+object WinnersLosersRepository {
+    private var winnersLosersUrls: MutableMap<String, String>
+        get() = StorageManager.get<MutableMap<String, String>>(StorageKeys.LAST_WINNERS_LOSERS_URLS) ?: mutableMapOf()
+        set(value) { StorageManager.set(StorageKeys.LAST_WINNERS_LOSERS_URLS, value) }
 
-        private val winnersLosersType = object : TypeToken<WinnersLosers>() {}.type
+    private val winnersLosersType = object : TypeToken<WinnersLosers>() {}.type
 
-        private var winnerLoserIds: WinnersLosers? = null
-        var winners: List<Toplist>? = null
-        var losers: List<Toplist>? = null
+    private var winnerLoserIds: WinnersLosers? = null
+    var winners: List<Toplist>? = null
+    var losers: List<Toplist>? = null
 
-        init {
-            try {
-                val duration = UserPreferences.preferredTimeFrameTextChange()  // "24h", "7d", "30d"
-                val currency = UserPreferences.getSelectedCurrency().code
-                winnerLoserIds = (RetrofitBuilder.getCached(CacheUrls.winnersLosers(currency, duration), winnersLosersType, includeExpired = true)?.data as? WinnersLosers)
-                PriceChange.entries.forEach { priceChange ->
-                    if (priceChange.rawValue == duration) {
-                        winnersLosersUrls["winners_${priceChange.rawValue}"]?.let { url ->
-                            winners = RetrofitBuilder.getCachedList<Toplist>(url, includeExpired = true)?.data
-                                ?.getSortedToplist(SortOption.PriceChangeDesc, priceChange)
-                        }
-                        winnersLosersUrls["losers_${priceChange.rawValue}"]?.let { url ->
-                            losers = RetrofitBuilder.getCachedList<Toplist>(url, includeExpired = true)?.data
-                                ?.getSortedToplist(SortOption.PriceChangeAsc, priceChange)
-                        }
-                    }
-                }
-            } catch (_: Exception) {
-                // StorageManager/RetrofitBuilder may not be ready yet; cache will populate on first fetch
-            }
-        }
-
-        suspend fun getWinners(priceChange: PriceChange): ArrayList<Toplist>? {
-            val url = winnersLosersUrls["winners_${priceChange.rawValue}"]
-            url?.let {
-                RetrofitBuilder.getCachedList<Toplist>(it)?.let { cached ->
-                    if (cached.data.isNotEmpty()) {
-                        val sorted = ArrayList(cached.data.getSortedToplist(SortOption.PriceChangeDesc, priceChange))
-                        winners = sorted
-                        return sorted
-                    }
-                }
-            }
-
-            val winnersLosers = getWinnersLosersList(priceChange)
-            val coinIds = winnersLosers?.top_gainers?.joinToString(",") { it.id } ?: ""
-
-            Log.w("Network call ", "Winners")
-
+    init {
+        try {
+            val duration = UserPreferences.preferredTimeFrameTextChange()  // "24h", "7d", "30d"
             val currency = UserPreferences.getSelectedCurrency().code
-            val winnersUrl = CacheUrls.getMultipleCoins(coinIds, currency)
-            RetrofitBuilder.getCachedList<Toplist>(winnersUrl)?.let {
-                if (it.data.isNotEmpty()) {
-                    val sorted = ArrayList(it.data.getSortedToplist(SortOption.PriceChangeDesc, priceChange))
+            winnerLoserIds = (RetrofitBuilder.getCached(CacheUrls.winnersLosers(currency, duration), winnersLosersType, includeExpired = true)?.data as? WinnersLosers)
+            PriceChange.entries.forEach { priceChange ->
+                if (priceChange.rawValue == duration) {
+                    winnersLosersUrls["winners_${priceChange.rawValue}"]?.let { url ->
+                        winners = RetrofitBuilder.getCachedList<Toplist>(url, includeExpired = true)?.data
+                            ?.getSortedToplist(SortOption.PriceChangeDesc, priceChange)
+                    }
+                    winnersLosersUrls["losers_${priceChange.rawValue}"]?.let { url ->
+                        losers = RetrofitBuilder.getCachedList<Toplist>(url, includeExpired = true)?.data
+                            ?.getSortedToplist(SortOption.PriceChangeAsc, priceChange)
+                    }
+                }
+            }
+        } catch (_: Exception) {
+            // StorageManager/RetrofitBuilder may not be ready yet; cache will populate on first fetch
+        }
+    }
+
+    suspend fun getWinners(priceChange: PriceChange): ArrayList<Toplist>? {
+        val url = winnersLosersUrls["winners_${priceChange.rawValue}"]
+        url?.let {
+            RetrofitBuilder.getCachedList<Toplist>(it)?.let { cached ->
+                if (cached.data.isNotEmpty()) {
+                    val sorted = ArrayList(cached.data.getSortedToplist(SortOption.PriceChangeDesc, priceChange))
                     winners = sorted
-                    val urls = winnersLosersUrls.toMutableMap()
-                    urls["winners_${priceChange.rawValue}"] = winnersUrl
-                    winnersLosersUrls = urls
                     return sorted
                 }
             }
+        }
 
-            val result = mainRepository.getMultipleCurrencies(coinIds, currency).unwrapOrNull()?.let { raw ->
-                ArrayList(raw.getSortedToplist(SortOption.PriceChangeDesc, priceChange))
-            }
-            result?.let {
-                winners = it
+        val winnersLosers = getWinnersLosersList(priceChange)
+        val coinIds = winnersLosers?.top_gainers?.joinToString(",") { it.id } ?: ""
+
+        Log.w("Network call ", "Winners")
+
+        val currency = UserPreferences.getSelectedCurrency().code
+        val winnersUrl = CacheUrls.getMultipleCoins(coinIds, currency)
+        RetrofitBuilder.getCachedList<Toplist>(winnersUrl)?.let {
+            if (it.data.isNotEmpty()) {
+                val sorted = ArrayList(it.data.getSortedToplist(SortOption.PriceChangeDesc, priceChange))
+                winners = sorted
                 val urls = winnersLosersUrls.toMutableMap()
                 urls["winners_${priceChange.rawValue}"] = winnersUrl
                 winnersLosersUrls = urls
+                return sorted
             }
-            return result
         }
 
-        suspend fun getLosers(priceChange: PriceChange): ArrayList<Toplist>? {
-            val url = winnersLosersUrls["losers_${priceChange.rawValue}"]
-            url?.let {
-                RetrofitBuilder.getCachedList<Toplist>(it)?.let { cached ->
-                    if (cached.data.isNotEmpty()) {
-                        val sorted = ArrayList(cached.data.getSortedToplist(SortOption.PriceChangeAsc, priceChange))
-                        losers = sorted
-                        return sorted
-                    }
-                }
-            }
+        val result = MainRepository.getMultipleCurrencies(coinIds, currency).unwrapOrNull()?.let { raw ->
+            ArrayList(raw.getSortedToplist(SortOption.PriceChangeDesc, priceChange))
+        }
+        result?.let {
+            winners = it
+            val urls = winnersLosersUrls.toMutableMap()
+            urls["winners_${priceChange.rawValue}"] = winnersUrl
+            winnersLosersUrls = urls
+        }
+        return result
+    }
 
-            val winnersLosers = getWinnersLosersList(priceChange)
-            val coinIds = winnersLosers?.top_losers?.joinToString(",") { it.id } ?: ""
-
-            Log.w("Network call ", "Losers")
-
-            val currency = UserPreferences.getSelectedCurrency().code
-            val losersUrl = CacheUrls.getMultipleCoins(coinIds, currency)
-            RetrofitBuilder.getCachedList<Toplist>(losersUrl)?.let {
-                if (it.data.isNotEmpty()) {
-                    val sorted = ArrayList(it.data.getSortedToplist(SortOption.PriceChangeAsc, priceChange))
+    suspend fun getLosers(priceChange: PriceChange): ArrayList<Toplist>? {
+        val url = winnersLosersUrls["losers_${priceChange.rawValue}"]
+        url?.let {
+            RetrofitBuilder.getCachedList<Toplist>(it)?.let { cached ->
+                if (cached.data.isNotEmpty()) {
+                    val sorted = ArrayList(cached.data.getSortedToplist(SortOption.PriceChangeAsc, priceChange))
                     losers = sorted
-                    val urls = winnersLosersUrls.toMutableMap()
-                    urls["losers_${priceChange.rawValue}"] = losersUrl
-                    winnersLosersUrls = urls
                     return sorted
                 }
             }
+        }
 
-            val result = mainRepository.getMultipleCurrencies(coinIds, currency).unwrapOrNull()?.let { raw ->
-                ArrayList(raw.getSortedToplist(SortOption.PriceChangeAsc, priceChange))
-            }
-            result?.let {
-                losers = it
+        val winnersLosers = getWinnersLosersList(priceChange)
+        val coinIds = winnersLosers?.top_losers?.joinToString(",") { it.id } ?: ""
+
+        Log.w("Network call ", "Losers")
+
+        val currency = UserPreferences.getSelectedCurrency().code
+        val losersUrl = CacheUrls.getMultipleCoins(coinIds, currency)
+        RetrofitBuilder.getCachedList<Toplist>(losersUrl)?.let {
+            if (it.data.isNotEmpty()) {
+                val sorted = ArrayList(it.data.getSortedToplist(SortOption.PriceChangeAsc, priceChange))
+                losers = sorted
                 val urls = winnersLosersUrls.toMutableMap()
                 urls["losers_${priceChange.rawValue}"] = losersUrl
                 winnersLosersUrls = urls
+                return sorted
             }
-            return result
         }
 
-        private suspend fun getWinnersLosersList(priceChange: PriceChange): WinnersLosers? {
-            val url = CacheUrls.winnersLosers(UserPreferences.getSelectedCurrency().code, priceChange.rawValue)
-            (RetrofitBuilder.getCached(url, winnersLosersType)?.data as? WinnersLosers)?.let { data ->
-                if (!data.top_gainers.isNullOrEmpty() && !data.top_losers.isNullOrEmpty()) {
-                    winnerLoserIds = data
-                    return data
-                }
-            }
+        val result = MainRepository.getMultipleCurrencies(coinIds, currency).unwrapOrNull()?.let { raw ->
+            ArrayList(raw.getSortedToplist(SortOption.PriceChangeAsc, priceChange))
+        }
+        result?.let {
+            losers = it
+            val urls = winnersLosersUrls.toMutableMap()
+            urls["losers_${priceChange.rawValue}"] = losersUrl
+            winnersLosersUrls = urls
+        }
+        return result
+    }
 
-            Log.w("Network call ", "Winner loser ids")
-
-            val result = mainRepository.getWinnersLosers(UserPreferences.getSelectedCurrency().code, priceChange.rawValue).unwrapOrNull()
-            result?.let {
-                winnerLoserIds = it
+    private suspend fun getWinnersLosersList(priceChange: PriceChange): WinnersLosers? {
+        val url = CacheUrls.winnersLosers(UserPreferences.getSelectedCurrency().code, priceChange.rawValue)
+        (RetrofitBuilder.getCached(url, winnersLosersType)?.data as? WinnersLosers)?.let { data ->
+            if (!data.top_gainers.isNullOrEmpty() && !data.top_losers.isNullOrEmpty()) {
+                winnerLoserIds = data
+                return data
             }
-            return result
         }
 
-        /** True if we previously loaded non-empty winners/losers for this timeframe (URL map + disk or in-memory rows). */
-        fun hasCachedWinnerCoinRows(priceChange: PriceChange): Boolean {
-            val key = "winners_${priceChange.rawValue}"
-            winnersLosersUrls[key]?.let { url ->
-                if (RetrofitBuilder.getCachedList<Toplist>(url, includeExpired = true)?.data?.isNotEmpty() == true) {
-                    return true
-                }
-            }
-            return winners?.isNotEmpty() == true && winnersLosersUrls.containsKey(key)
-        }
+        Log.w("Network call ", "Winner loser ids")
 
-        fun hasCachedLoserCoinRows(priceChange: PriceChange): Boolean {
-            val key = "losers_${priceChange.rawValue}"
-            winnersLosersUrls[key]?.let { url ->
-                if (RetrofitBuilder.getCachedList<Toplist>(url, includeExpired = true)?.data?.isNotEmpty() == true) {
-                    return true
-                }
-            }
-            return losers?.isNotEmpty() == true && winnersLosersUrls.containsKey(key)
+        val result = MainRepository.getWinnersLosers(UserPreferences.getSelectedCurrency().code, priceChange.rawValue).unwrapOrNull()
+        result?.let {
+            winnerLoserIds = it
         }
+        return result
+    }
+
+    /** True if we previously loaded non-empty winners/losers for this timeframe (URL map + disk or in-memory rows). */
+    fun hasCachedWinnerCoinRows(priceChange: PriceChange): Boolean {
+        val key = "winners_${priceChange.rawValue}"
+        winnersLosersUrls[key]?.let { url ->
+            if (RetrofitBuilder.getCachedList<Toplist>(url, includeExpired = true)?.data?.isNotEmpty() == true) {
+                return true
+            }
+        }
+        return winners?.isNotEmpty() == true && winnersLosersUrls.containsKey(key)
+    }
+
+    fun hasCachedLoserCoinRows(priceChange: PriceChange): Boolean {
+        val key = "losers_${priceChange.rawValue}"
+        winnersLosersUrls[key]?.let { url ->
+            if (RetrofitBuilder.getCachedList<Toplist>(url, includeExpired = true)?.data?.isNotEmpty() == true) {
+                return true
+            }
+        }
+        return losers?.isNotEmpty() == true && winnersLosersUrls.containsKey(key)
     }
 }
