@@ -415,7 +415,7 @@ fun List<NewTransaction>.getProfitPercent(
     showCurrency: String = UserPreferences.getSelectedCurrency().code.lowercase(),
     withTransfers: Boolean = true
 ): Double? {
-    val avgCost = getAverageCost(prices) ?: 1.0
+    val avgCost = getAverageCost(prices, showCurrency) ?: 1.0
     val originalCost = totalBuyAmount * avgCost
 
     val sellCost = filter { it.transactionType == NewTransactionType.Sell }
@@ -424,7 +424,7 @@ fun List<NewTransaction>.getProfitPercent(
             tx.amount * ((tx.pricePerCoin ?: 0.0) * multiplier)
         }
 
-    val currentValue = getAmount(withTransfers) * (prices?.get(showCurrency) ?: 0.0) + sellCost
+    val currentValue = getAmount(withTransfers) * (prices?.get(showCurrency.lowercase()) ?: 0.0) + sellCost
 
     return safeValue(((currentValue / originalCost) - 1) * 100)
 }
@@ -441,7 +441,7 @@ fun List<NewTransaction>.getProfitValue(
     val inValue = sumAmounts(NewTransactionType.TransferIn, withTransfers) * price
     val outValue = sumAmounts(NewTransactionType.TransferOut, withTransfers) * price
 
-    val profitPercent = getProfitPercent(prices, withTransfers = false) ?: 0.0
+    val profitPercent = getProfitPercent(prices, showCurrency, withTransfers = false) ?: 0.0
     val avgCost = getAverageCost(prices, showCurrency) ?: 0.0
 
     val profit = (profitPercent / 100) * (avgCost * totalBuyAmount) + importValues + inValue - outValue
