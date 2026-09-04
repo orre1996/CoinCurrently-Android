@@ -39,6 +39,7 @@ import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
+import com.cryptium.coincurrently.core.networking.ResponseModels.holdingPrice
 
 @Composable
 fun PortfolioCoinView(
@@ -53,9 +54,7 @@ fun PortfolioCoinView(
     val isHorizontal = AccessibilityLayout.isHorizontal
     val currency = UserPreferences.getSelectedCurrency()
     val currentAmount = transactions?.getAmount()
-    val currentPrice = prices?.get(currency.code.lowercase())
-        ?: pie?.data?.sparkline_in_7d?.price?.lastOrNull()
-        ?: 0.0
+    val currentPrice = pie?.data?.holdingPrice(prices, currency.code) ?: 0.0
     val isDownloading = pie?.data == null
     val coinName = pie?.data?.name ?: pie?.data?.symbol ?: ""
     val holdingsValue = (currentAmount ?: 0.0) * currentPrice

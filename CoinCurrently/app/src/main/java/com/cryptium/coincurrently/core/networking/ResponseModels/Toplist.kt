@@ -32,6 +32,20 @@ data class Sparkline(
 /** Bundle-safe key for LazyColumn / reorderable; never use [Toplist] as the key object. */
 fun Toplist.stableListKey(): String = id ?: symbol ?: name ?: ""
 
+/**
+ * Current holding price for portfolio totals, pie slices, and asset rows.
+ * Live vs-currency map first, then [current_price], then the last 7d sparkline point.
+ */
+fun Toplist.holdingPrice(
+    vsCurrencyPrices: Map<String, Double>?,
+    currencyCode: String,
+): Double {
+    return vsCurrencyPrices?.get(currencyCode.lowercase())
+        ?: current_price
+        ?: sparkline_in_7d?.price?.lastOrNull()
+        ?: 0.0
+}
+
 fun Toplist.getPreferredChange(): Double {
     return when(UserPreferences.getPreferredTimeframe()) {
         PreferredTimeframe.DAILY -> price_change_percentage_24h_in_currency ?: 0.0

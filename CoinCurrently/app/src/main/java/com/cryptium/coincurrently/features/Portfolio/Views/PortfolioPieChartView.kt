@@ -287,7 +287,7 @@ private fun parseHexColor(hex: String): Color? {
 private fun formattedPiePercent(percentage: Double): String {
     val value = percentage * 100.0
     return if (value >= 99.995) {
-        String.format("%.1f%%", value)
+        "100%"
     } else {
         String.format("%.2f%%", value)
     }

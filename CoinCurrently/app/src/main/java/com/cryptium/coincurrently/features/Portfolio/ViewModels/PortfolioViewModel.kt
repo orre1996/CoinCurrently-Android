@@ -276,6 +276,12 @@ class PortfolioViewModel : ViewModel() {
             }
         }
 
+        livePortfolioValue()?.let { currentTotal ->
+            if (newPrices.isNotEmpty()) {
+                newPrices[newPrices.lastIndex] = currentTotal
+            }
+        }
+
         // Assign new immutable list to trigger recomposition
         prices = newPrices.toList()
         rawPrices = prices
@@ -571,7 +577,6 @@ class PortfolioViewModel : ViewModel() {
             return
         }
 
-        val currencyCode = UserPreferences.getSelectedCurrency().code.lowercase()
         val outerGap = PortfolioPieChartLayout.outerGapDegrees
         val innerGap = PortfolioPieChartLayout.innerGapDegrees
 
@@ -580,9 +585,8 @@ class PortfolioViewModel : ViewModel() {
             val id = pie.data?.id ?: return@mapNotNull null
             if (portfolio.getAllTransactions(id).isEmpty()) return@mapNotNull null
 
-            val lastPrice = portfolioAllCurrencies?.get(id)?.get(currencyCode) ?: 0.0
             val amount = getCachedAmount(id)
-            val value = lastPrice * amount
+            val value = holdingPrice(pie) * amount
             if (value <= 0.0) return@mapNotNull null
 
             pie to value
@@ -623,12 +627,11 @@ class PortfolioViewModel : ViewModel() {
 
         if (sliceInputs.size == 1) {
             val slice = sliceInputs.first()
-            val percentage = (slice.value / total).coerceIn(0.0, 1.0)
             portfolioPieSlices = listOf(
                 PortfolioPieSlice(
                     id = slice.id,
                     symbol = slice.symbol,
-                    percentage = percentage,
+                    percentage = 1.0,
                     color = slice.color,
                     outerStartAngle = -90.0,
                     outerEndAngle = 270.0,
@@ -675,12 +678,23 @@ class PortfolioViewModel : ViewModel() {
         val color: String?,
     )
 
-    private fun setTotalValue() {
-        totalValue = portfolio?.fold(0.0) { sum, pie ->
-            val lastPrice = pie.data?.sparkline_in_7d?.price?.lastOrNull() ?: 0.0
-            val amount = getCachedAmount(pie.data?.id)
-            sum + (lastPrice * amount)
+    private fun holdingPrice(pie: Pie): Double {
+        val id = pie.data?.id ?: return 0.0
+        return pie.data?.holdingPrice(
+            vsCurrencyPrices = portfolioAllCurrencies?.get(id),
+            currencyCode = UserPreferences.getSelectedCurrency().code,
+        ) ?: 0.0
+    }
+
+    private fun livePortfolioValue(): Double? {
+        val portfolio = portfolio ?: return null
+        return portfolio.sumOf { pie ->
+            holdingPrice(pie) * getCachedAmount(pie.data?.id)
         }
+    }
+
+    private fun setTotalValue() {
+        totalValue = livePortfolioValue()
     }
 
     private fun setChangePercent() {
