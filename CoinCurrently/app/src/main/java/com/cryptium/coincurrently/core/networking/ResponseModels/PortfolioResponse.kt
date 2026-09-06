@@ -1,8 +1,8 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
 import com.cryptium.coincurrently.core.persistence.UserPreferences
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioModel
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import kotlinx.serialization.Serializable
 import java.util.ArrayList
 
@@ -29,17 +29,17 @@ fun PortfolioResponse.getCurrentAmount(withTransfers: Boolean = true): Double {
 }
 
 fun PortfolioResponse.migrateToNewPortfolioModel(): PortfolioModel {
-    val transactions = mutableListOf<NewTransaction>()
+    val transactions = mutableListOf<PortfolioTransaction>()
     val defaultCurrency = currency ?: UserPreferences.getSelectedCurrency().code
 
     amount?.let {
         transactions.add(
-            NewTransaction(
+            PortfolioTransaction(
                 amount = it,
                 pricePerCoin = entryCost,
                 fee = 0.0,
                 note = "",
-                transactionType = NewTransactionType.Buy,
+                transactionType = PortfolioTransactionType.Buy,
                 currency = defaultCurrency
             )
         )
@@ -47,12 +47,12 @@ fun PortfolioResponse.migrateToNewPortfolioModel(): PortfolioModel {
 
     buyTransactions.orEmpty().forEach {
         transactions.add(
-            NewTransaction(
+            PortfolioTransaction(
                 amount = it.amount,
                 pricePerCoin = it.pricePerCoin,
                 fee = it.fee ?: 0.0,
                 note = it.note ?: "",
-                transactionType = NewTransactionType.Buy,
+                transactionType = PortfolioTransactionType.Buy,
                 currency = it.currency ?: defaultCurrency
             )
         )
@@ -60,12 +60,12 @@ fun PortfolioResponse.migrateToNewPortfolioModel(): PortfolioModel {
 
     sellTransactions.orEmpty().forEach {
         transactions.add(
-            NewTransaction(
+            PortfolioTransaction(
                 amount = it.amount,
                 pricePerCoin = it.pricePerCoin,
                 fee = it.fee ?: 0.0,
                 note = it.note ?: "",
-                transactionType = NewTransactionType.Sell,
+                transactionType = PortfolioTransactionType.Sell,
                 currency = it.currency ?: defaultCurrency
             )
         )
@@ -73,12 +73,12 @@ fun PortfolioResponse.migrateToNewPortfolioModel(): PortfolioModel {
 
     inTransferTransactions.orEmpty().forEach {
         transactions.add(
-            NewTransaction(
+            PortfolioTransaction(
                 amount = it.amount,
                 pricePerCoin = it.pricePerCoin,
                 fee = it.fee ?: 0.0,
                 note = it.note ?: "",
-                transactionType = NewTransactionType.TransferIn,
+                transactionType = PortfolioTransactionType.TransferIn,
                 currency = it.currency ?: defaultCurrency
             )
         )
@@ -86,12 +86,12 @@ fun PortfolioResponse.migrateToNewPortfolioModel(): PortfolioModel {
 
     outTransferTransactions.orEmpty().forEach {
         transactions.add(
-            NewTransaction(
+            PortfolioTransaction(
                 amount = it.amount,
                 pricePerCoin = it.pricePerCoin,
                 fee = it.fee ?: 0.0,
                 note = it.note ?: "",
-                transactionType = NewTransactionType.TransferOut,
+                transactionType = PortfolioTransactionType.TransferOut,
                 currency = it.currency ?: defaultCurrency
             )
         )
@@ -99,12 +99,12 @@ fun PortfolioResponse.migrateToNewPortfolioModel(): PortfolioModel {
 
     importTransactions.orEmpty().forEach {
         transactions.add(
-            NewTransaction(
+            PortfolioTransaction(
                 amount = it.amount,
                 pricePerCoin = it.pricePerCoin,
                 fee = it.fee ?: 0.0,
                 note = it.note ?: "",
-                transactionType = NewTransactionType.ImportAddress,
+                transactionType = PortfolioTransactionType.ImportAddress,
                 address = it.address,
                 currency = it.currency ?: defaultCurrency
             )

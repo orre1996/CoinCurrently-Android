@@ -8,17 +8,17 @@ import com.cryptium.coincurrently.core.config.AppLocale
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.sharedui.theme.mainGreen
 import com.cryptium.coincurrently.sharedui.theme.mainRed
-import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
+import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.features.Portfolio.Models.TransactionType
 import com.cryptium.coincurrently.features.Portfolio.Models.TransferType
 import com.cryptium.coincurrently.core.extensions.getAmount
 import com.cryptium.coincurrently.core.extensions.getTransferType
 import com.cryptium.coincurrently.core.extensions.sumAmounts
 import com.cryptium.coincurrently.core.models.PreferredTimeframe
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioModel
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
@@ -30,8 +30,8 @@ data class Pie(
     val data: Toplist?,
     var color: String? = null,
     // Nullable at runtime: Gson ignores Kotlin defaults for older / partial cache JSON.
-    var transactions: MutableList<NewTransaction> = mutableListOf(),
-    var swaps: MutableList<NewSwapTransaction> = mutableListOf(),
+    var transactions: MutableList<PortfolioTransaction> = mutableListOf(),
+    var swaps: MutableList<PortfolioSwapTransaction> = mutableListOf(),
     var imports: MutableList<AddressImport> = mutableListOf()
 )
 
@@ -40,9 +40,9 @@ data class Pie(
  */
 fun Pie.sanitizeGsonNullLists(): Pie {
     @Suppress("UNCHECKED_CAST")
-    transactions = (transactions as MutableList<NewTransaction>?) ?: mutableListOf()
+    transactions = (transactions as MutableList<PortfolioTransaction>?) ?: mutableListOf()
     @Suppress("UNCHECKED_CAST")
-    swaps = (swaps as MutableList<NewSwapTransaction>?) ?: mutableListOf()
+    swaps = (swaps as MutableList<PortfolioSwapTransaction>?) ?: mutableListOf()
     @Suppress("UNCHECKED_CAST")
     imports = (imports as MutableList<AddressImport>?) ?: mutableListOf()
     return this
@@ -96,35 +96,35 @@ data class Transaction(
     showCurrency: String = UserPreferences.getSelectedCurrency().code.lowercase()
 ): Double? {
     var spent = transactions
-        .filter { it.transactionType == NewTransactionType.Buy }
+        .filter { it.transactionType == PortfolioTransactionType.Buy }
         .sumOf { tx ->
             val multiplier = priceMultiplier(prices, showCurrency, tx.currency)
             tx.amount * ((tx.pricePerCoin ?: 1.0) * multiplier)
         }
 
     spent += transactions
-        .filter { it.transactionType == NewTransactionType.TransferIn }
+        .filter { it.transactionType == PortfolioTransactionType.TransferIn }
         .sumOf { tx ->
             val multiplier = priceMultiplier(prices, showCurrency, tx.currency)
             tx.amount * ((prices?.get(showCurrency.lowercase()) ?: 0.0) * multiplier)
         }
 
     transactions
-        .filter { it.transactionType == NewTransactionType.Sell }
+        .filter { it.transactionType == PortfolioTransactionType.Sell }
         .forEach { tx ->
             val multiplier = priceMultiplier(prices, showCurrency, tx.currency)
             spent -= tx.amount * ((tx.pricePerCoin ?: 1.0) * multiplier)
         }
 
     transactions
-        .filter { it.transactionType == NewTransactionType.TransferOut }
+        .filter { it.transactionType == PortfolioTransactionType.TransferOut }
         .forEach { tx ->
             val multiplier = priceMultiplier(prices, showCurrency, tx.currency)
             spent -= tx.amount * ((prices?.get(showCurrency.lowercase()) ?: 0.0) * multiplier)
         }
 
     spent += transactions
-        .filter { it.transactionType == NewTransactionType.ImportAddress }
+        .filter { it.transactionType == PortfolioTransactionType.ImportAddress }
         .sumOf { tx ->
             val multiplier = priceMultiplier(prices, showCurrency, tx.currency)
             tx.amount * ((prices?.get(showCurrency.lowercase()) ?: 0.0) * multiplier)

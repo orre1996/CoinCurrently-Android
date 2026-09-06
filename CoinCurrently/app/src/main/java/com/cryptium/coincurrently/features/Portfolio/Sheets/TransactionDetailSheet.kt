@@ -45,7 +45,7 @@ import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiRegular
 import com.cryptium.coincurrently.core.extensions.stars
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.isAddOrInTransferTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.totalSpent
 import kotlinx.coroutines.launch
@@ -63,10 +63,10 @@ import java.util.Date
 @OptIn(ExperimentalMaterial3Api::class)
 fun TransactionDetailSheet(
     coin: Toplist?,
-    transaction: NewTransaction,
+    transaction: PortfolioTransaction,
     hideData: Boolean,
-    editTransaction: (NewTransaction) -> Unit,
-    deleteTransaction: (NewTransaction) -> Unit,
+    editTransaction: (PortfolioTransaction) -> Unit,
+    deleteTransaction: (PortfolioTransaction) -> Unit,
     close: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -304,7 +304,7 @@ private fun StatSeparator() {
 @Composable
 private fun HeaderView(
     coin: Toplist?,
-    transaction: NewTransaction,
+    transaction: PortfolioTransaction,
     modifier: Modifier
 ) {
     val coinName = coin?.name ?: coin?.symbol ?: ""

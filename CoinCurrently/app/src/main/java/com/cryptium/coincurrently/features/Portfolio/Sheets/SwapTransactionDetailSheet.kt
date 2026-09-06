@@ -38,7 +38,7 @@ import com.cryptium.coincurrently.sharedui.theme.outline
 import com.cryptium.coincurrently.sharedui.theme.primaryTextColor
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
 import com.cryptium.coincurrently.sharedui.theme.trendDown
-import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
+import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.core.extensions.DateFormat
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.formatDate
@@ -64,10 +64,10 @@ import kotlin.text.lowercase
 @OptIn(ExperimentalMaterial3Api::class)
 fun SwapTransactionDetailSheet(
     coin: Toplist?,
-    transaction: NewSwapTransaction,
+    transaction: PortfolioSwapTransaction,
     hideData: Boolean,
-    editTransaction: (NewSwapTransaction) -> Unit,
-    deleteTransaction: (NewSwapTransaction) -> Unit,
+    editTransaction: (PortfolioSwapTransaction) -> Unit,
+    deleteTransaction: (PortfolioSwapTransaction) -> Unit,
     close: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -403,7 +403,7 @@ private fun StatView(
 @Composable
 private fun HeaderView(
     coin: Toplist?,
-    transaction: NewSwapTransaction,
+    transaction: PortfolioSwapTransaction,
     modifier: Modifier
 ) {
     val title = "Swapped ${transaction.fromCurrencySymbol.uppercase()} for ${transaction.toCurrencySymbol.uppercase()}"

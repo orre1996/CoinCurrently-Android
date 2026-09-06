@@ -50,7 +50,7 @@ import com.cryptium.coincurrently.core.extensions.directionAccessible
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.numberAccessible
 import com.cryptium.coincurrently.core.extensions.satoshiBold
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
+import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
@@ -264,7 +264,7 @@ private fun PriceChangeView(
         alignment = Alignment.CenterEnd,
         modifier = modifier,
     ) {
-        NewPriceChangePercentView(
+        PriceChangePercentView(
             change = change,
             size = ChangeSize.MEDIUM,
             isDownloading = isLoading

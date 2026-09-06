@@ -33,7 +33,7 @@ import androidx.glance.appwidget.action.actionRunCallback
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.tabPageTalkBackTraversal
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
-import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
+import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.core.extensions.DateFormat
 import com.cryptium.coincurrently.core.extensions.formatDate
 import com.cryptium.coincurrently.core.extensions.pieContaining
@@ -41,10 +41,10 @@ import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.sharedui.sheets.EmptyContent
 import com.cryptium.coincurrently.sharedui.buttons.FilterButton
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
 import com.cryptium.coincurrently.features.Portfolio.Enums.DateOption
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import com.cryptium.coincurrently.features.Portfolio.Enums.rangeTitle
 import com.cryptium.coincurrently.widgets.NewsIdKey
 import com.cryptium.coincurrently.widgets.OpenAppAction
@@ -62,7 +62,7 @@ fun LazyListScope.TransactionsView(
     groupedTransactions: Map<Date, List<PortfolioEvent>>,
     prices: MutableMap<String, Map<String, Double>>?,
     hideData: Boolean,
-    typeFilters: ArrayList<NewTransactionType>,
+    typeFilters: ArrayList<PortfolioTransactionType>,
     dateFilter: DateOption,
     coinFilters: List<Toplist>,
     typeFilterPressed: () -> Unit,
@@ -160,7 +160,7 @@ fun LazyListScope.TransactionsView(
 
 @Composable
 private fun FiltersView(
-    typeFilters: ArrayList<NewTransactionType>,
+    typeFilters: ArrayList<PortfolioTransactionType>,
     dateFilter: DateOption,
     coinFilters: List<Toplist>,
     typeFilterPressed: () -> Unit,
@@ -266,7 +266,7 @@ private fun LazyListScope.TransactionsView(
                     val transactionIndex = transactionItems.indexOf(item)
 
                     when (event) {
-                        is NewTransaction -> {
+                        is PortfolioTransaction -> {
                             PortfolioTransactionView(
                                 coin = coin,
                                 transaction = event,
@@ -278,7 +278,7 @@ private fun LazyListScope.TransactionsView(
                             )
                         }
 
-                        is NewSwapTransaction -> {
+                        is PortfolioSwapTransaction -> {
                             PortfolioSwapView(
                                 coin = coin,
                                 transaction = event,

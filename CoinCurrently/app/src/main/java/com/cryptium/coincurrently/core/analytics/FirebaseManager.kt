@@ -23,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.revenuecat.purchases.CacheFetchPolicy
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Purchases
@@ -217,7 +217,7 @@ class FirebaseManager {
                     object : ReceiveCustomerInfoCallback {
                         override fun onReceived(customerInfo: CustomerInfo) {
                             Handler(Looper.getMainLooper()).post {
-                                StoreKitManager.applyCustomerInfo(customerInfo)
+                                BillingManager.applyCustomerInfo(customerInfo)
                             }
                         }
 

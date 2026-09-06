@@ -23,7 +23,7 @@ import com.cryptium.coincurrently.sharedui.components.AdaptiveStack
 import com.cryptium.coincurrently.sharedui.components.CachedUrlImage
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
-import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
+import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.core.extensions.DateFormat
 import com.cryptium.coincurrently.core.extensions.addedAccessibilityDescription
 import com.cryptium.coincurrently.core.extensions.formatCurrency
@@ -39,7 +39,7 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 @Composable
 fun PortfolioSwapView(
     coin: Toplist?,
-    transaction: NewSwapTransaction?,
+    transaction: PortfolioSwapTransaction?,
     portfolio: List<Pie>? = null,
     hideData: Boolean,
     index: Int? = null,
@@ -160,7 +160,7 @@ fun PortfolioSwapView(
 
 @Composable
 private fun SwapInfoView(
-    transaction: NewSwapTransaction?,
+    transaction: PortfolioSwapTransaction?,
     isDownloading: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -190,7 +190,7 @@ private fun SwapInfoView(
 
 @Composable
 private fun SwapValuesView(
-    transaction: NewSwapTransaction?,
+    transaction: PortfolioSwapTransaction?,
     hideData: Boolean,
     isDownloading: Boolean,
     modifier: Modifier = Modifier,
@@ -222,7 +222,7 @@ private fun SwapValuesView(
 
 @Composable
 private fun SwapValuesSubtitleView(
-    transaction: NewSwapTransaction?,
+    transaction: PortfolioSwapTransaction?,
     hideData: Boolean,
     isDownloading: Boolean,
     modifier: Modifier = Modifier,

@@ -34,7 +34,7 @@ import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.config.RemoteConfigKeys
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.analytics.FavoriteAdded
 import com.cryptium.coincurrently.core.analytics.FavoriteRemoved
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
@@ -154,7 +154,7 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
     private var cachedStoreProducts: List<StoreProduct>? = null
 
     override fun loadPremiumOfferProducts(context: Context) {
-        StoreKitManager.setUpBillingClient(context) { products, revenueCatProducts ->
+        BillingManager.setUpBillingClient(context) { products, revenueCatProducts ->
             cachedPlayProducts = products
             cachedStoreProducts = revenueCatProducts
             refreshPremiumOffer()
@@ -166,14 +166,14 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
             return
         }
         storeKitObserversInitialized = true
-        StoreKitManager.storeProducts.observe(lifecycleOwner) { products ->
+        BillingManager.storeProducts.observe(lifecycleOwner) { products ->
             if (!products.isNullOrEmpty()) {
                 cachedPlayProducts = products
             }
             refreshPremiumOffer()
         }
-        StoreKitManager.isEligableForTrial.observe(lifecycleOwner) { refreshPremiumOffer() }
-        StoreKitManager.currentSubscription.observe(lifecycleOwner) { refreshPremiumOffer() }
+        BillingManager.isEligableForTrial.observe(lifecycleOwner) { refreshPremiumOffer() }
+        BillingManager.currentSubscription.observe(lifecycleOwner) { refreshPremiumOffer() }
     }
 
     private fun refreshPremiumOffer() {
@@ -185,10 +185,10 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
     private suspend fun refreshPremiumOfferInternal() {
         FirebaseManager.ensureRemoteConfigFetched()
         val playProducts = cachedPlayProducts?.takeIf { it.isNotEmpty() }
-            ?: StoreKitManager.storeProducts.value?.takeIf { it.isNotEmpty() }
+            ?: BillingManager.storeProducts.value?.takeIf { it.isNotEmpty() }
         val storeProducts = cachedStoreProducts?.takeIf { it.isNotEmpty() }
-        val isEligibleForTrial = StoreKitManager.isEligableForTrial.value
-        val hasActiveSubscription = StoreKitManager.currentSubscription.value != null
+        val isEligibleForTrial = BillingManager.isEligableForTrial.value
+        val hasActiveSubscription = BillingManager.currentSubscription.value != null
 
         when {
             !playProducts.isNullOrEmpty() ->
@@ -363,7 +363,7 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
         showBuyPro: () -> Unit
     ) {
         val isFavorite = favorites?.any { it.id == item.id } ?: false
-        if (StoreKitManager.currentSubscription.value == null && !isFavorite && UserPreferences.getFavorites().orEmpty().size >= 2) {
+        if (BillingManager.currentSubscription.value == null && !isFavorite && UserPreferences.getFavorites().orEmpty().size >= 2) {
             showBuyPro.invoke()
             return
         }

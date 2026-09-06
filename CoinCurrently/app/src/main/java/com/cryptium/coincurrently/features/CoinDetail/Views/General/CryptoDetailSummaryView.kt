@@ -43,7 +43,7 @@ import com.cryptium.coincurrently.core.extensions.getDifferenceInPercent
 import com.cryptium.coincurrently.core.extensions.numberAccessible
 import com.cryptium.coincurrently.core.extensions.roundTo
 import com.cryptium.coincurrently.core.extensions.satoshiBold
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangeValueView
+import com.cryptium.coincurrently.sharedui.components.PriceChangeValueView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.features.Treasuries.Models.CountryFlagEmojis
@@ -299,7 +299,7 @@ private fun ChangeView(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         modifier = childModifier,
     ) {
-        NewPriceChangeValueView(
+        PriceChangeValueView(
             change = changeValue,
             size = ChangeSize.EXTRA_SMALL,
             selectedCurrency = currency,

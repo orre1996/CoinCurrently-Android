@@ -1,12 +1,12 @@
 package com.cryptium.coincurrently.core.extensions
 import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
-import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
+import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioModel
 import com.cryptium.coincurrently.features.Portfolio.Enums.DateOption
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 import com.cryptium.coincurrently.core.networking.ResponseModels.sanitizeGsonNullLists
@@ -46,20 +46,20 @@ fun List<Double>.normalizeCustom(min: Double, max: Double): List<Float> {
     }
 }
 
-fun List<NewTransaction>.ofType(type: NewTransactionType): List<NewTransaction> {
+fun List<PortfolioTransaction>.ofType(type: PortfolioTransactionType): List<PortfolioTransaction> {
     return this.filter { it.transactionType == type }
 }
 
-private fun List<NewTransaction>.filtered(
-    type: NewTransactionType? = null,
+private fun List<PortfolioTransaction>.filtered(
+    type: PortfolioTransactionType? = null,
     withTransfers: Boolean = true,
     after: Date = Date(0), // distantPast
     before: Date = Date()
-): List<NewTransaction> {
+): List<PortfolioTransaction> {
     return this.filter { tx ->
         type?.let {
             if (tx.transactionType != it) return@filter false
-            if (!withTransfers && (it.isTransfer || it == NewTransactionType.ImportAddress)) return@filter false
+            if (!withTransfers && (it.isTransfer || it == PortfolioTransactionType.ImportAddress)) return@filter false
         }
 
         if (tx.date.before(after) || tx.date.after(before)) return@filter false
@@ -67,8 +67,8 @@ private fun List<NewTransaction>.filtered(
     }
 }
 
-fun List<NewTransaction>.sumAmounts(
-    type: NewTransactionType,
+fun List<PortfolioTransaction>.sumAmounts(
+    type: PortfolioTransactionType,
     withTransfers: Boolean = true,
     after: Date = Date(0), // distantPast
     before: Date = Date()
@@ -77,23 +77,23 @@ fun List<NewTransaction>.sumAmounts(
         .sumOf { it.amount }
 }
 
-fun List<NewTransaction>.getAmount(
+fun List<PortfolioTransaction>.getAmount(
     withTransfers: Boolean = true,
     after: Date = Date(0), // distantPast
     before: Date = Date()
 ): Double {
-    return this.sumAmounts(NewTransactionType.ImportAddress, withTransfers, after, before) +
-        this.sumAmounts(NewTransactionType.Buy, true, after, before) +
-        this.sumAmounts(NewTransactionType.TransferIn, withTransfers, after, before) -
-        this.sumAmounts(NewTransactionType.Sell, true, after, before) -
-        this.sumAmounts(NewTransactionType.TransferOut, withTransfers, after, before)
+    return this.sumAmounts(PortfolioTransactionType.ImportAddress, withTransfers, after, before) +
+        this.sumAmounts(PortfolioTransactionType.Buy, true, after, before) +
+        this.sumAmounts(PortfolioTransactionType.TransferIn, withTransfers, after, before) -
+        this.sumAmounts(PortfolioTransactionType.Sell, true, after, before) -
+        this.sumAmounts(PortfolioTransactionType.TransferOut, withTransfers, after, before)
 }
 
-fun List<NewTransaction>.afterDate(date: Date): List<NewTransaction> {
+fun List<PortfolioTransaction>.afterDate(date: Date): List<PortfolioTransaction> {
     return this.filtered(after = date)
 }
 
-fun List<NewTransaction>.beforeDate(date: Date): List<NewTransaction> {
+fun List<PortfolioTransaction>.beforeDate(date: Date): List<PortfolioTransaction> {
     return this.filtered(before = date)
 }
 
@@ -116,10 +116,10 @@ val List<PortfolioModel>.allIds: List<String>
 fun List<Pie>.pieContaining(event: PortfolioEvent): Pie? {
     val id = event.id
     return when (event) {
-        is NewTransaction -> firstOrNull { pie ->
+        is PortfolioTransaction -> firstOrNull { pie ->
             pie.sanitizeGsonNullLists().transactions.any { it.id == id }
         }
-        is NewSwapTransaction -> firstOrNull { pie ->
+        is PortfolioSwapTransaction -> firstOrNull { pie ->
             pie.sanitizeGsonNullLists().swaps.any { it.id == id }
         }
         else -> firstOrNull { pie ->
@@ -129,7 +129,7 @@ fun List<Pie>.pieContaining(event: PortfolioEvent): Pie? {
 }
 
 fun List<Pie>.groupedTransactions(
-    types: List<NewTransactionType>,
+    types: List<PortfolioTransactionType>,
     dateOption: DateOption,
     coinNames: List<Toplist>
 ): Map<Date, List<PortfolioEvent>> {
@@ -202,7 +202,7 @@ fun List<Pie>.groupedTransactions(
         // Swaps
         for (swap in pie.swaps) {
             if (types.isNotEmpty() &&
-                !types.contains(NewTransactionType.Swap)
+                !types.contains(PortfolioTransactionType.Swap)
             ) continue
 
             if (!isInRange(swap.date, range)) continue
@@ -214,7 +214,7 @@ fun List<Pie>.groupedTransactions(
         // Imports
         for (importEvent in pie.imports) {
             if (types.isNotEmpty() &&
-                !types.contains(NewTransactionType.ImportAddress)
+                !types.contains(PortfolioTransactionType.ImportAddress)
             ) continue
 
             if (!isInRange(importEvent.date, range)) continue
@@ -259,7 +259,7 @@ private fun Calendar.startOfDay(date: Date): Date {
 }
 
 
-fun List<Pie>.getAllTransactions(id: String?): List<NewTransaction> {
+fun List<Pie>.getAllTransactions(id: String?): List<PortfolioTransaction> {
     if (id == null) return emptyList()
 
     forEach { it.sanitizeGsonNullLists() }
@@ -363,7 +363,7 @@ private fun safeValue(value: Double): Double? {
     return if (value.isNaN() || value.isInfinite()) null else value
 }
 
-fun List<NewTransaction>.getTotalFees(
+fun List<PortfolioTransaction>.getTotalFees(
     prices: Map<String, Double>?,
     showCurrency: String = UserPreferences.getSelectedCurrency().code
 ): Double? {
@@ -377,11 +377,11 @@ fun List<NewTransaction>.getTotalFees(
     return safeValue(fees) ?: 0.0
 }
 
-fun List<NewTransaction>.getTotalCost(
+fun List<PortfolioTransaction>.getTotalCost(
     prices: Map<String, Double>?,
     showCurrency: String = UserPreferences.getSelectedCurrency().code
 ): Double? {
-    val total = filter { it.transactionType == NewTransactionType.Buy }
+    val total = filter { it.transactionType == PortfolioTransactionType.Buy }
         .mapNotNull { tx ->
             tx.pricePerCoin?.let { price ->
                 val multiplier = priceMultiplier(prices, showCurrency, tx.currency)
@@ -393,15 +393,15 @@ fun List<NewTransaction>.getTotalCost(
     return safeValue(total) ?: 0.0
 }
 
-val List<NewTransaction>.totalBuyAmount: Double
-    get() = filter { it.transactionType == NewTransactionType.Buy }
+val List<PortfolioTransaction>.totalBuyAmount: Double
+    get() = filter { it.transactionType == PortfolioTransactionType.Buy }
         .sumOf { it.amount }
 
-fun List<NewTransaction>.getAverageCost(
+fun List<PortfolioTransaction>.getAverageCost(
     prices: Map<String, Double>?,
     showCurrency: String = UserPreferences.getSelectedCurrency().code.lowercase()
 ): Double? {
-    val totalCost = filter { it.transactionType == NewTransactionType.Buy }
+    val totalCost = filter { it.transactionType == PortfolioTransactionType.Buy }
         .sumOf { tx ->
             val multiplier = priceMultiplier(prices, showCurrency, tx.currency)
             tx.amount * ((tx.pricePerCoin ?: 1.0) * multiplier)
@@ -410,7 +410,7 @@ fun List<NewTransaction>.getAverageCost(
     return safeValue(totalCost / totalBuyAmount)
 }
 
-fun List<NewTransaction>.getProfitPercent(
+fun List<PortfolioTransaction>.getProfitPercent(
     prices: Map<String, Double>?,
     showCurrency: String = UserPreferences.getSelectedCurrency().code.lowercase(),
     withTransfers: Boolean = true
@@ -418,7 +418,7 @@ fun List<NewTransaction>.getProfitPercent(
     val avgCost = getAverageCost(prices, showCurrency) ?: 1.0
     val originalCost = totalBuyAmount * avgCost
 
-    val sellCost = filter { it.transactionType == NewTransactionType.Sell }
+    val sellCost = filter { it.transactionType == PortfolioTransactionType.Sell }
         .sumOf { tx ->
             val multiplier = priceMultiplier(prices, showCurrency, tx.currency)
             tx.amount * ((tx.pricePerCoin ?: 0.0) * multiplier)
@@ -429,7 +429,7 @@ fun List<NewTransaction>.getProfitPercent(
     return safeValue(((currentValue / originalCost) - 1) * 100)
 }
 
-fun List<NewTransaction>.getProfitValue(
+fun List<PortfolioTransaction>.getProfitValue(
     prices: Map<String, Double>?,
     showCurrency: String = UserPreferences.getSelectedCurrency().code,
     withTransfers: Boolean = true
@@ -437,9 +437,9 @@ fun List<NewTransaction>.getProfitValue(
     if (prices.isNullOrEmpty()) return 0.0
 
     val price = prices[showCurrency.lowercase()] ?: 0.0
-    val importValues = sumAmounts(NewTransactionType.ImportAddress, withTransfers) * price
-    val inValue = sumAmounts(NewTransactionType.TransferIn, withTransfers) * price
-    val outValue = sumAmounts(NewTransactionType.TransferOut, withTransfers) * price
+    val importValues = sumAmounts(PortfolioTransactionType.ImportAddress, withTransfers) * price
+    val inValue = sumAmounts(PortfolioTransactionType.TransferIn, withTransfers) * price
+    val outValue = sumAmounts(PortfolioTransactionType.TransferOut, withTransfers) * price
 
     val profitPercent = getProfitPercent(prices, showCurrency, withTransfers = false) ?: 0.0
     val avgCost = getAverageCost(prices, showCurrency) ?: 0.0

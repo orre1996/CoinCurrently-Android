@@ -1,11 +1,11 @@
 package com.cryptium.coincurrently.features.Portfolio.Utilities
 import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
 import com.cryptium.coincurrently.core.config.AppLocale
-import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
+import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.core.extensions.toCoinTrackerExportDateTimeUTC
 import com.cryptium.coincurrently.core.extensions.toPortfolioExportDateTimeUTC
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
 import com.cryptium.coincurrently.core.networking.ResponseModels.sanitizeGsonNullLists
 import java.util.Date
@@ -63,8 +63,8 @@ object PortfolioTaxExportBuilder {
     private fun buildCSV(
         header: String,
         portfolio: List<Pie>,
-        transactionRow: (String, NewTransaction) -> String,
-        swapRow: (NewSwapTransaction) -> String,
+        transactionRow: (String, PortfolioTransaction) -> String,
+        swapRow: (PortfolioSwapTransaction) -> String,
         importRow: (String, AddressImport) -> String,
     ): String {
         val entries = mutableListOf<ExportEntry>()
@@ -121,12 +121,12 @@ object PortfolioTaxExportBuilder {
 
     // MARK: - Koinly
 
-    private fun koinlyRow(coin: String, transaction: NewTransaction): String {
+    private fun koinlyRow(coin: String, transaction: PortfolioTransaction): String {
         val fees = feeFields(transaction.fee, transaction.currency)
         val value = tradeValue(transaction.amount, transaction.pricePerCoin)
 
         return when (transaction.transactionType) {
-            NewTransactionType.Buy -> koinlyColumns(
+            PortfolioTransactionType.Buy -> koinlyColumns(
                 date = transaction.date.toPortfolioExportDateTimeUTC(),
                 sentAmount = csvNumericField(value),
                 sentCurrency = csvField(transaction.currency.uppercase(AppLocale.enUsPosix)),
@@ -136,7 +136,7 @@ object PortfolioTaxExportBuilder {
                 feeCurrency = fees.second,
                 description = csvField(transaction.note),
             )
-            NewTransactionType.Sell -> koinlyColumns(
+            PortfolioTransactionType.Sell -> koinlyColumns(
                 date = transaction.date.toPortfolioExportDateTimeUTC(),
                 sentAmount = csvNumericField(transaction.amount),
                 sentCurrency = csvField(coin),
@@ -146,7 +146,7 @@ object PortfolioTaxExportBuilder {
                 feeCurrency = fees.second,
                 description = csvField(transaction.note),
             )
-            NewTransactionType.TransferIn, NewTransactionType.ImportAddress -> koinlyColumns(
+            PortfolioTransactionType.TransferIn, PortfolioTransactionType.ImportAddress -> koinlyColumns(
                 date = transaction.date.toPortfolioExportDateTimeUTC(),
                 sentAmount = "",
                 sentCurrency = "",
@@ -156,7 +156,7 @@ object PortfolioTaxExportBuilder {
                 feeCurrency = "",
                 description = csvField(transaction.note),
             )
-            NewTransactionType.TransferOut -> koinlyColumns(
+            PortfolioTransactionType.TransferOut -> koinlyColumns(
                 date = transaction.date.toPortfolioExportDateTimeUTC(),
                 sentAmount = csvNumericField(transaction.amount),
                 sentCurrency = csvField(coin),
@@ -166,7 +166,7 @@ object PortfolioTaxExportBuilder {
                 feeCurrency = "",
                 description = csvField(transaction.note),
             )
-            NewTransactionType.Swap -> koinlyColumns(
+            PortfolioTransactionType.Swap -> koinlyColumns(
                 date = transaction.date.toPortfolioExportDateTimeUTC(),
                 sentAmount = "",
                 sentCurrency = "",
@@ -179,7 +179,7 @@ object PortfolioTaxExportBuilder {
         }
     }
 
-    private fun koinlySwapRow(swap: NewSwapTransaction): String {
+    private fun koinlySwapRow(swap: PortfolioSwapTransaction): String {
         val fees = feeFields(swap.fee, swap.selectedCurrency)
 
         return koinlyColumns(
@@ -230,12 +230,12 @@ object PortfolioTaxExportBuilder {
 
     // MARK: - CoinTracker
 
-    private fun coinTrackerRow(coin: String, transaction: NewTransaction): String {
+    private fun coinTrackerRow(coin: String, transaction: PortfolioTransaction): String {
         val fees = feeFields(transaction.fee, transaction.currency)
         val value = tradeValue(transaction.amount, transaction.pricePerCoin)
 
         return when (transaction.transactionType) {
-            NewTransactionType.Buy -> coinTrackerColumns(
+            PortfolioTransactionType.Buy -> coinTrackerColumns(
                 date = transaction.date.toCoinTrackerExportDateTimeUTC(),
                 receivedQuantity = csvNumericField(transaction.amount),
                 receivedCurrency = csvField(coin),
@@ -245,7 +245,7 @@ object PortfolioTaxExportBuilder {
                 feeCurrency = fees.second,
                 tag = "",
             )
-            NewTransactionType.Sell -> coinTrackerColumns(
+            PortfolioTransactionType.Sell -> coinTrackerColumns(
                 date = transaction.date.toCoinTrackerExportDateTimeUTC(),
                 receivedQuantity = csvNumericField(value),
                 receivedCurrency = csvField(transaction.currency.uppercase(AppLocale.enUsPosix)),
@@ -255,7 +255,7 @@ object PortfolioTaxExportBuilder {
                 feeCurrency = fees.second,
                 tag = "",
             )
-            NewTransactionType.TransferIn, NewTransactionType.ImportAddress -> coinTrackerColumns(
+            PortfolioTransactionType.TransferIn, PortfolioTransactionType.ImportAddress -> coinTrackerColumns(
                 date = transaction.date.toCoinTrackerExportDateTimeUTC(),
                 receivedQuantity = csvNumericField(transaction.amount),
                 receivedCurrency = csvField(coin),
@@ -265,7 +265,7 @@ object PortfolioTaxExportBuilder {
                 feeCurrency = "",
                 tag = "",
             )
-            NewTransactionType.TransferOut -> coinTrackerColumns(
+            PortfolioTransactionType.TransferOut -> coinTrackerColumns(
                 date = transaction.date.toCoinTrackerExportDateTimeUTC(),
                 receivedQuantity = "",
                 receivedCurrency = "",
@@ -275,7 +275,7 @@ object PortfolioTaxExportBuilder {
                 feeCurrency = "",
                 tag = "",
             )
-            NewTransactionType.Swap -> coinTrackerColumns(
+            PortfolioTransactionType.Swap -> coinTrackerColumns(
                 date = transaction.date.toCoinTrackerExportDateTimeUTC(),
                 receivedQuantity = "",
                 receivedCurrency = "",
@@ -288,7 +288,7 @@ object PortfolioTaxExportBuilder {
         }
     }
 
-    private fun coinTrackerSwapRow(swap: NewSwapTransaction): String {
+    private fun coinTrackerSwapRow(swap: PortfolioSwapTransaction): String {
         val fees = feeFields(swap.fee, swap.selectedCurrency)
 
         return coinTrackerColumns(
@@ -334,12 +334,12 @@ object PortfolioTaxExportBuilder {
 
     // MARK: - TokenTax
 
-    private fun tokenTaxRow(coin: String, transaction: NewTransaction): String {
+    private fun tokenTaxRow(coin: String, transaction: PortfolioTransaction): String {
         val fees = feeFields(transaction.fee, transaction.currency)
         val value = tradeValue(transaction.amount, transaction.pricePerCoin)
 
         return when (transaction.transactionType) {
-            NewTransactionType.Buy -> tokenTaxColumns(
+            PortfolioTransactionType.Buy -> tokenTaxColumns(
                 type = "Trade",
                 buyAmount = csvNumericField(transaction.amount),
                 buyCurrency = csvField(coin),
@@ -350,7 +350,7 @@ object PortfolioTaxExportBuilder {
                 comment = csvField(transaction.note),
                 date = transaction.date.toPortfolioExportDateTimeUTC(),
             )
-            NewTransactionType.Sell -> tokenTaxColumns(
+            PortfolioTransactionType.Sell -> tokenTaxColumns(
                 type = "Trade",
                 buyAmount = csvNumericField(value),
                 buyCurrency = csvField(transaction.currency.uppercase(AppLocale.enUsPosix)),
@@ -361,7 +361,7 @@ object PortfolioTaxExportBuilder {
                 comment = csvField(transaction.note),
                 date = transaction.date.toPortfolioExportDateTimeUTC(),
             )
-            NewTransactionType.TransferIn, NewTransactionType.ImportAddress -> tokenTaxColumns(
+            PortfolioTransactionType.TransferIn, PortfolioTransactionType.ImportAddress -> tokenTaxColumns(
                 type = "Income",
                 buyAmount = csvNumericField(transaction.amount),
                 buyCurrency = csvField(coin),
@@ -372,7 +372,7 @@ object PortfolioTaxExportBuilder {
                 comment = csvField(transaction.note),
                 date = transaction.date.toPortfolioExportDateTimeUTC(),
             )
-            NewTransactionType.TransferOut -> tokenTaxColumns(
+            PortfolioTransactionType.TransferOut -> tokenTaxColumns(
                 type = "Spending",
                 buyAmount = "",
                 buyCurrency = "",
@@ -383,7 +383,7 @@ object PortfolioTaxExportBuilder {
                 comment = csvField(transaction.note),
                 date = transaction.date.toPortfolioExportDateTimeUTC(),
             )
-            NewTransactionType.Swap -> tokenTaxColumns(
+            PortfolioTransactionType.Swap -> tokenTaxColumns(
                 type = "Trade",
                 buyAmount = "",
                 buyCurrency = "",
@@ -397,7 +397,7 @@ object PortfolioTaxExportBuilder {
         }
     }
 
-    private fun tokenTaxSwapRow(swap: NewSwapTransaction): String {
+    private fun tokenTaxSwapRow(swap: PortfolioSwapTransaction): String {
         val fees = feeFields(swap.fee, swap.selectedCurrency)
 
         return tokenTaxColumns(
@@ -450,12 +450,12 @@ object PortfolioTaxExportBuilder {
 
     // MARK: - ZenLedger
 
-    private fun zenLedgerRow(coin: String, transaction: NewTransaction): String {
+    private fun zenLedgerRow(coin: String, transaction: PortfolioTransaction): String {
         val fees = feeFields(transaction.fee, transaction.currency)
         val value = tradeValue(transaction.amount, transaction.pricePerCoin)
 
         return when (transaction.transactionType) {
-            NewTransactionType.Buy -> zenLedgerColumns(
+            PortfolioTransactionType.Buy -> zenLedgerColumns(
                 timestamp = transaction.date.toPortfolioExportDateTimeUTC(),
                 type = "buy",
                 inAmount = csvNumericField(transaction.amount),
@@ -465,7 +465,7 @@ object PortfolioTaxExportBuilder {
                 feeAmount = fees.first,
                 feeCurrency = fees.second,
             )
-            NewTransactionType.Sell -> zenLedgerColumns(
+            PortfolioTransactionType.Sell -> zenLedgerColumns(
                 timestamp = transaction.date.toPortfolioExportDateTimeUTC(),
                 type = "sell",
                 inAmount = csvNumericField(value),
@@ -475,7 +475,7 @@ object PortfolioTaxExportBuilder {
                 feeAmount = fees.first,
                 feeCurrency = fees.second,
             )
-            NewTransactionType.TransferIn, NewTransactionType.ImportAddress -> zenLedgerColumns(
+            PortfolioTransactionType.TransferIn, PortfolioTransactionType.ImportAddress -> zenLedgerColumns(
                 timestamp = transaction.date.toPortfolioExportDateTimeUTC(),
                 type = "receive",
                 inAmount = csvNumericField(transaction.amount),
@@ -485,7 +485,7 @@ object PortfolioTaxExportBuilder {
                 feeAmount = "",
                 feeCurrency = "",
             )
-            NewTransactionType.TransferOut -> zenLedgerColumns(
+            PortfolioTransactionType.TransferOut -> zenLedgerColumns(
                 timestamp = transaction.date.toPortfolioExportDateTimeUTC(),
                 type = "send",
                 inAmount = "",
@@ -495,7 +495,7 @@ object PortfolioTaxExportBuilder {
                 feeAmount = "",
                 feeCurrency = "",
             )
-            NewTransactionType.Swap -> zenLedgerColumns(
+            PortfolioTransactionType.Swap -> zenLedgerColumns(
                 timestamp = transaction.date.toPortfolioExportDateTimeUTC(),
                 type = "trade",
                 inAmount = "",
@@ -508,7 +508,7 @@ object PortfolioTaxExportBuilder {
         }
     }
 
-    private fun zenLedgerSwapRow(swap: NewSwapTransaction): String {
+    private fun zenLedgerSwapRow(swap: PortfolioSwapTransaction): String {
         val fees = feeFields(swap.fee, swap.selectedCurrency)
 
         return zenLedgerColumns(

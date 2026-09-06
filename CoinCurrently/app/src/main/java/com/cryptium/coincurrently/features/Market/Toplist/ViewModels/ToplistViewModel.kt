@@ -11,7 +11,7 @@ import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.features.CoinDetail.CryptoDetailViewModel
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.sharedui.models.CachedData
 import com.cryptium.coincurrently.core.analytics.FavoriteAdded
 import com.cryptium.coincurrently.core.analytics.FavoriteRemoved
@@ -101,7 +101,7 @@ class ToplistViewModel(
         context: Context,
         showBuyPro: () -> Unit
     ) {
-        if (StoreKitManager.currentSubscription.value == null && !favoritesList.any { it.id == toplistItem.id } && favoritesList.size >= 2) {
+        if (BillingManager.currentSubscription.value == null && !favoritesList.any { it.id == toplistItem.id } && favoritesList.size >= 2) {
             showBuyPro.invoke()
             return
         }

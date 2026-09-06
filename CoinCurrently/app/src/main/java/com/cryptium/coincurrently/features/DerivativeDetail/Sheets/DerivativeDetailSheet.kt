@@ -55,7 +55,7 @@ import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.symbolAccessible
 import com.cryptium.coincurrently.core.extensions.timeAgoDisplay
 import com.cryptium.coincurrently.core.extensions.timeUntilExpired
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
+import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
@@ -472,7 +472,7 @@ private fun ChangeView(
             modifier = Modifier.semantics { invisibleToUser() }
         )
 
-        NewPriceChangePercentView(
+        PriceChangePercentView(
             change = change,
             size = ChangeSize.MEDIUM,
             accessibleTimeframe = "24 hour",

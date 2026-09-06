@@ -31,7 +31,7 @@ import com.cryptium.coincurrently.features.Home.Carousel.ToplistFilterCarouselVi
 import com.cryptium.coincurrently.core.models.CarouselFilter
 import com.cryptium.coincurrently.features.CoinDetail.Views.General.CryptoDetailPageSelector
 import com.cryptium.coincurrently.features.CoinDetail.Sheets.SelectCoinSheet
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.analytics.BuyProOpened
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.NewsFilterSelected
@@ -80,7 +80,7 @@ fun NewsScreen(
     val isVideosRefreshing = remember { mutableStateOf(false) }
     val isPodcastsRefreshing = remember { mutableStateOf(false) }
 
-    val currentSubscription by StoreKitManager.currentSubscription.observeAsState()
+    val currentSubscription by BillingManager.currentSubscription.observeAsState()
 
     LaunchedEffect(Unit) {
         if (!viewModel.hasLoadedAllCoinsOnce) {
@@ -330,7 +330,7 @@ fun NewsScreen(
         }
 
         selectedUrl?.let {
-            WebView(it) {
+            WebViewSheet(it) {
                 selectedUrl = null
             }
         }

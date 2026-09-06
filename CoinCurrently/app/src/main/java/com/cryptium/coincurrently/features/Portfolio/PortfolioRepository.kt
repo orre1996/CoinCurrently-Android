@@ -5,7 +5,7 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.Chain
 import android.content.Context
 import android.util.Log
 import com.cryptium.coincurrently.sharedui.components.CustomImageView
-import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
+import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.core.extensions.allIds
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
 import com.cryptium.coincurrently.core.extensions.allWallets
@@ -21,7 +21,7 @@ import com.cryptium.coincurrently.core.networking.RetrofitBuilder
 import java.util.Date
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.sharedui.models.CachedData
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioModel
@@ -305,11 +305,11 @@ object PortfolioRepository {
         val id = coin.id ?: return
 
         when (val event = event) {
-            is NewTransaction -> {
+            is PortfolioTransaction -> {
                 val newPie = Pie(data = coin, transactions = mutableListOf(event))
                 appendPie(newPie)
             }
-            is NewSwapTransaction -> {
+            is PortfolioSwapTransaction -> {
                 val newPie = Pie(data = coin, swaps = mutableListOf(event))
                 appendPie(newPie)
             }
@@ -339,10 +339,10 @@ object PortfolioRepository {
         val currentPie = currentPortfolio.data.data[index]
 
         when (val event = event) {
-            is NewTransaction -> {
+            is PortfolioTransaction -> {
                 currentPie.transactions.add(event)
             }
-            is NewSwapTransaction -> {
+            is PortfolioSwapTransaction -> {
                 currentPie.swaps.add(event)
             }
             is AddressImport -> {

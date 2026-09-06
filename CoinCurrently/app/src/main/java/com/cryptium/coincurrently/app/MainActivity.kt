@@ -81,7 +81,7 @@ import com.cryptium.coincurrently.sharedui.components.SnackBarType
 import com.cryptium.coincurrently.sharedui.components.SnackbarView
 import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.analytics.BuyProAction
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.Navigate
@@ -125,7 +125,7 @@ class MainActivity: FragmentActivity() {
         RetrofitBuilder.createApiService(baseContext, "App")
         navigationViewModel = NavigationViewModel(baseContext)
         setStatusBarColor(resolvedDarkMode())
-        StoreKitManager.setUpBillingClient(baseContext)
+        BillingManager.setUpBillingClient(baseContext)
 
         if (!ComposePlatformCompat.isComposeSupported(this)) {
             showUnsupportedDeviceScreen()
@@ -398,7 +398,7 @@ class MainActivity: FragmentActivity() {
                         }
 
                         selectedUrl.value?.let {
-                            WebView(it) {
+                            WebViewSheet(it) {
                                 selectedUrl.value = null
                             }
                         }

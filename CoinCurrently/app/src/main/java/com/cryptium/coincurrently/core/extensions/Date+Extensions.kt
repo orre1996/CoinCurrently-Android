@@ -1,6 +1,6 @@
 package com.cryptium.coincurrently.core.extensions
 import com.cryptium.coincurrently.core.config.AppLocale
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -110,7 +110,7 @@ fun Date?.isMoreThanDefaultCache(): Boolean {
 
     val now = Date()
     val diffInMillis = now.time - this.time
-    val thresholdMinutes = if (StoreKitManager.currentSubscription.value != null) 3 else 15
+    val thresholdMinutes = if (BillingManager.currentSubscription.value != null) 3 else 15
 
     return diffInMillis > thresholdMinutes * 60 * 1000
 }

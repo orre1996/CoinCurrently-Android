@@ -49,7 +49,7 @@ import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.numberAccessible
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
+import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.core.networking.ResponseModels.FearGreed
 import com.cryptium.coincurrently.core.networking.ResponseModels.GasFeesModel
@@ -165,7 +165,7 @@ private fun MarketCapView(
                 .semantics { invisibleToUser() },
         )
 
-        NewPriceChangePercentView(
+        PriceChangePercentView(
             change = change,
             size = ChangeSize.SMALL,
             isDownloading = globalMarket == null,

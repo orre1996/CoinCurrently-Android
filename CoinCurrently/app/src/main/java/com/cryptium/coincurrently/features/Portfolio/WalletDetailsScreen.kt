@@ -64,10 +64,10 @@ import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.stars
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangeValueView
+import com.cryptium.coincurrently.sharedui.components.PriceChangeValueView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
-import com.cryptium.coincurrently.sharedui.loading.NewShimmerImageDirection
+import com.cryptium.coincurrently.sharedui.loading.PriceChangeDirectionView
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.features.Portfolio.Views.WalletCoinView
 import com.cryptium.coincurrently.features.Portfolio.Views.WalletHeaderView
@@ -595,7 +595,7 @@ private fun ChangeView(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.semantics { invisibleToUser() }
                     ) {
-                        NewShimmerImageDirection(
+                        PriceChangeDirectionView(
                             change = 0.0,
                             size = ChangeSize.SMALL,
                             isDownloading = changePercent == null
@@ -609,7 +609,7 @@ private fun ChangeView(
                         )
                     }
                 } else {
-                    NewPriceChangeValueView(
+                    PriceChangeValueView(
                         change = changeValue,
                         isDownloading = changeValue == null
                     )

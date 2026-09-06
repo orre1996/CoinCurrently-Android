@@ -59,7 +59,7 @@ import com.cryptium.coincurrently.features.GlobalMarket.Views.MarketShareView
 import com.cryptium.coincurrently.sharedui.components.ImageCase
 import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketViewModel
 import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketViewModelFactory
-import com.cryptium.coincurrently.features.CoinDetail.Views.General.ChartButtonsView
+import com.cryptium.coincurrently.features.CoinDetail.Views.General.ChartTypeButtonsView
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.cryptium.coincurrently.core.networking.ResponseModels.Percentages
@@ -164,7 +164,7 @@ fun GlobalMarketScreen(
                     selectedTimeframe = viewModel.selectedTimeFrame
                 )
 
-                ChartButtonsView(
+                ChartTypeButtonsView(
                     fromScreen = ScreenLabel.GlobalMarket,
                     selectedGraphType = viewModel.selectedChartType,
                     isCandleChartEnabled = false,

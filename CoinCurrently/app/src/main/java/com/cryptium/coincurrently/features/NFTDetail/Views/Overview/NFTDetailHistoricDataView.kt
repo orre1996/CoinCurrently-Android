@@ -21,7 +21,7 @@ import com.cryptium.coincurrently.core.extensions.DateFormat
 import com.cryptium.coincurrently.core.extensions.convertStringToDate
 import com.cryptium.coincurrently.core.extensions.daysAgo
 import com.cryptium.coincurrently.core.extensions.satoshiBold
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
+import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.core.networking.ResponseModels.NFTDetail
 import com.cryptium.coincurrently.features.CoinDetail.Views.Overview.HistoricDataChangeView
@@ -170,7 +170,7 @@ private fun AllTimeHighView(
                 modifier = Modifier.semantics { invisibleToUser() },
             )
 
-            NewPriceChangePercentView(
+            PriceChangePercentView(
                 change = nftDetail?.ath_change_percentage?.usd,
                 accessibleTimeframe = "Change since all time high:",
                 size = ChangeSize.MEDIUM,

@@ -3,7 +3,7 @@ import com.cryptium.coincurrently.app.SearchScreenCase
 import android.net.Uri
 import android.os.Bundle
 import androidx.navigation.NavType
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 

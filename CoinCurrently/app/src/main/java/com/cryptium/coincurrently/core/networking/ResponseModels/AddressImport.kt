@@ -3,9 +3,9 @@ import com.cryptium.coincurrently.core.persistence.UserPreferences
 
 import com.cryptium.coincurrently.sharedui.models.DateSerializer
 import com.cryptium.coincurrently.sharedui.models.UUIDSerializer
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import kotlinx.serialization.Serializable
 import java.util.Date
 import java.util.UUID
@@ -64,18 +64,18 @@ data class AddressImport(
     val tokenInfos: List<TokenInfo>? = null,
     val blockChain: Chain = Chain.BTC
 ): PortfolioEvent {
-    fun importTransaction(): NewTransaction? {
+    fun importTransaction(): PortfolioTransaction? {
         val balanceValue = balance.toDoubleOrNull() ?: return null
         val currency = UserPreferences.getSelectedCurrency()
 
-        return NewTransaction(
+        return PortfolioTransaction(
             id = id,
             date = date,
             amount = balanceValue,
             pricePerCoin = null,
             fee = 0.0,
             note = "",
-            transactionType = NewTransactionType.ImportAddress,
+            transactionType = PortfolioTransactionType.ImportAddress,
             currency = currency.code
         )
     }

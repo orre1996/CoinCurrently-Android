@@ -9,7 +9,7 @@ import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.ApiService
 import com.cryptium.coincurrently.core.networking.ResponseModels.NewNewsModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.PostAlertCoin
@@ -30,7 +30,7 @@ object ApiHelper {
         get() = "${serverBaseUrl}/crypto"
 
     private fun freeUrl(isFree: Boolean): String {
-        return if (isFree && StoreKitManager.currentSubscription.value != null) {
+        return if (isFree && BillingManager.currentSubscription.value != null) {
             "https://api.coingecko.com"
         } else {
             "${serverBaseUrl}/crypto"

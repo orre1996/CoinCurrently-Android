@@ -40,7 +40,7 @@ fun ChartHoverStats(
             ),
     ) {
         if (isMultiHover) {
-            NewMultiHoverTextView(
+            MultiHoverTextView(
                 hoverTimes = hoverTimes,
                 differenceValue = differenceValue,
                 differencePercent = differencePercent,

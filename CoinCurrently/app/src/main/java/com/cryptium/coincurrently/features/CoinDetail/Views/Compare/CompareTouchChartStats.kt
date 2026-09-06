@@ -36,7 +36,7 @@ import com.cryptium.coincurrently.sharedui.modifiers.CappedFontScale
 import com.cryptium.coincurrently.sharedui.modifiers.DynamicTypeSizeCap
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.sharedui.charts.hideFromTalkBackWhenEnabled
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
+import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.core.networking.ResponseModels.getSentimentColor
 import com.cryptium.coincurrently.core.networking.ResponseModels.getSentimentSign
@@ -115,7 +115,7 @@ fun CompareTouchChartStats(
                 if (mainHoverPrice == "N/A") {
                     NAView()
                 } else {
-                    NewPriceChangePercentView(
+                    PriceChangePercentView(
                         change = mainPercentChange,
                         size = ChangeSize.SMALL,
                         isDownloading = false
@@ -143,7 +143,7 @@ fun CompareTouchChartStats(
                 if (compareHoverPrice == "N/A") {
                     NAView()
                 } else {
-                    NewPriceChangePercentView(
+                    PriceChangePercentView(
                         change = comparePercentChange,
                         size = ChangeSize.SMALL,
                         isDownloading = false

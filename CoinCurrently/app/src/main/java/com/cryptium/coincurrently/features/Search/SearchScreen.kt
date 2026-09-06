@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.features.CoinDetail.Sheets.SelectCoinBaseView
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.Navigate
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
@@ -62,8 +62,8 @@ fun SearchScreen(
                             )
                         }
                         is SearchScreenCase.Transaction -> {
-                            if (screenCase.transactionType == NewTransactionType.Swap) {
-                                val dest = NavigationScreens.NewPortfolioSwapTransaction(
+                            if (screenCase.transactionType == PortfolioTransactionType.Swap) {
+                                val dest = NavigationScreens.AddPortfolioSwapTransaction(
                                     transactionType = screenCase.transactionType,
                                     currencyDataModel = coin.toCryptoDetail(),
                                     transaction = null,
@@ -73,12 +73,12 @@ fun SearchScreen(
                                 AnalyticsManager.log(
                                     Navigate(
                                         fromScreen = ScreenLabel.Search,
-                                        toScreen = ScreenLabel.NewSwapTransaction,
+                                        toScreen = ScreenLabel.PortfolioSwapTransaction,
                                         coinName = coin.name ?: "",
                                     ),
                                 )
                             } else {
-                                val dest = NavigationScreens.NewPortfolioTransaction(
+                                val dest = NavigationScreens.AddPortfolioTransaction(
                                     transactionType = screenCase.transactionType,
                                     currencyDataModel = coin.toCryptoDetail(),
                                     transaction = null,
@@ -88,7 +88,7 @@ fun SearchScreen(
                                 AnalyticsManager.log(
                                     Navigate(
                                         fromScreen = ScreenLabel.Search,
-                                        toScreen = ScreenLabel.NewPortfolioTransaction,
+                                        toScreen = ScreenLabel.AddPortfolioTransaction,
                                         coinName = coin.name ?: "",
                                     ),
                                 )

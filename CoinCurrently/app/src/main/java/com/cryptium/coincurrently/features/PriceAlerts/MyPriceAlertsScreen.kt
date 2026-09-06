@@ -73,10 +73,10 @@ import com.cryptium.coincurrently.core.analytics.SheetOpened
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.features.CoinDetail.Views.General.CryptoDetailAlertCellView
 import com.cryptium.coincurrently.features.CoinDetail.Sheets.SelectCoinSheet
-import com.cryptium.coincurrently.features.PriceAlerts.NewPriceAlertSheet
+import com.cryptium.coincurrently.features.PriceAlerts.CreatePriceAlertSheet
 import com.cryptium.coincurrently.sharedui.components.SnackBarType
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertCreateResult
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.features.Settings.CurrencySelector.CurrencyOptionsSheet
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -125,7 +125,7 @@ fun MyPriceAlertsScreen(
     val selectedDirection = remember { mutableStateOf(ChangeDirection.Up) }
     var showError: Boolean by remember { mutableStateOf(false) }
 
-    val currentSubscription by StoreKitManager.currentSubscription.observeAsState()
+    val currentSubscription by BillingManager.currentSubscription.observeAsState()
 
     LaunchedEffect(Unit) {
         viewModel.notificationsEnabled = NotificationManagerCompat.from(context).areNotificationsEnabled()
@@ -333,7 +333,7 @@ fun MyPriceAlertsScreen(
         }
 
         selectedCoin?.let {
-            NewPriceAlertSheet(
+            CreatePriceAlertSheet(
                 sheetState = sheetState,
                 cryptoDetailModel = it,
                 selectedCurrency = selectedCurrency,

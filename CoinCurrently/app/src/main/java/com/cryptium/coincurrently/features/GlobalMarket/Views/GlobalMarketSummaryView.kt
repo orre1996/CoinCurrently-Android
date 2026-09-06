@@ -22,7 +22,7 @@ import com.cryptium.coincurrently.core.extensions.changeWithSymbol
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.getChangeInValue
 import com.cryptium.coincurrently.core.extensions.satoshiBold
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangeValueView
+import com.cryptium.coincurrently.sharedui.components.PriceChangeValueView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
@@ -119,7 +119,7 @@ private fun ChangeView(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         modifier = childModifier,
     ) {
-        NewPriceChangeValueView(
+        PriceChangeValueView(
             change = changeValue,
             size = ChangeSize.EXTRA_SMALL,
             showDirection = true,

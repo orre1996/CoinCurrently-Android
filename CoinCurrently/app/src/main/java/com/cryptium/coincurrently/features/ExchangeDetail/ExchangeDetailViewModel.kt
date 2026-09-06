@@ -16,7 +16,7 @@ import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
-import com.cryptium.coincurrently.features.ExchangeDetail.ExchangeDetailsRepostory
+import com.cryptium.coincurrently.features.ExchangeDetail.ExchangeDetailRepository
 import com.cryptium.coincurrently.features.News.NewsRepository
 import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
 import kotlinx.coroutines.async
@@ -42,7 +42,7 @@ class ExchangeDetailViewModel(
     exchange: ExchangeResponse
 ) : ViewModel() {
 
-    private val exchangeDetailsRepostory by lazy { ExchangeDetailsRepostory }
+    private val exchangeDetailRepository by lazy { ExchangeDetailRepository }
     private val newsRepository by lazy { NewsRepository }
     private val currencyRepository by lazy { CurrencyRepository }
     private val toplistRepository by lazy { ToplistRepository }
@@ -83,13 +83,13 @@ class ExchangeDetailViewModel(
     init {
         exchangeInfo = exchange
 
-        exchangeDetailsRepostory.loadCachedDataForExchange(exchangeInfo?.id ?: "", currentDays)
+        exchangeDetailRepository.loadCachedDataForExchange(exchangeInfo?.id ?: "", currentDays)
 
-        exchangeDetailsRepostory.exchangeDetail?.get(exchangeInfo?.id)?.let {
+        exchangeDetailRepository.exchangeDetail?.get(exchangeInfo?.id)?.let {
             exchangeInfo = it.copyWithId(exchange.id)
         }
 
-        exchangeDetailsRepostory.exchangePrices?.get("${exchangeInfo?.id}-$currentDays")?.let { cached ->
+        exchangeDetailRepository.exchangePrices?.get("${exchangeInfo?.id}-$currentDays")?.let { cached ->
             exchangeVolume = cached
         }
 
@@ -117,7 +117,7 @@ class ExchangeDetailViewModel(
     suspend fun getExchangeInfo(
         id: String?
     ) {
-        exchangeDetailsRepostory.getExchange(id)?.let {
+        exchangeDetailRepository.getExchange(id)?.let {
             exchangeInfo = it
         }
     }
@@ -126,7 +126,7 @@ class ExchangeDetailViewModel(
         id: String?,
         days: String
     ) {
-        exchangeVolume = exchangeDetailsRepostory.getExchangePrices(id, days)
+        exchangeVolume = exchangeDetailRepository.getExchangePrices(id, days)
         showMainPriceError = exchangeVolume == null
     }
 

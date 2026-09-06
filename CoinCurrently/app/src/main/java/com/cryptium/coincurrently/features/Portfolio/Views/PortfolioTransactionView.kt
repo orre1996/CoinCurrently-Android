@@ -32,7 +32,7 @@ import com.cryptium.coincurrently.core.extensions.is24HourClock
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.stars
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.isAddOrInTransferTransaction
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
@@ -41,7 +41,7 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 @Composable
 fun PortfolioTransactionView(
     coin: Toplist?,
-    transaction: NewTransaction?,
+    transaction: PortfolioTransaction?,
     prices: Map<String, Double>?,
     hideData: Boolean,
     index: Int? = null,
@@ -164,7 +164,7 @@ fun PortfolioTransactionView(
 @Composable
 private fun TransactionInfoView(
     coin: Toplist?,
-    transaction: NewTransaction?,
+    transaction: PortfolioTransaction?,
     isDownloading: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -195,7 +195,7 @@ private fun TransactionInfoView(
 @Composable
 private fun TransactionValuesView(
     coin: Toplist?,
-    transaction: NewTransaction?,
+    transaction: PortfolioTransaction?,
     currentPrice: Double?,
     currency: CurrencySelectionModel,
     hideData: Boolean,
@@ -240,7 +240,7 @@ private fun TransactionValuesView(
 @Composable
 private fun TransactionValuesSubtitleView(
     coin: Toplist?,
-    transaction: NewTransaction?,
+    transaction: PortfolioTransaction?,
     currentPrice: Double?,
     currency: CurrencySelectionModel,
     hideData: Boolean,

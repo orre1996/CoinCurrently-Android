@@ -417,7 +417,7 @@ fun BuyProScreen(close: () -> Unit) {
             }
 
             selectedUrl?.let {
-                WebView(it) {
+                WebViewSheet(it) {
                     selectedUrl = null
                 }
             }

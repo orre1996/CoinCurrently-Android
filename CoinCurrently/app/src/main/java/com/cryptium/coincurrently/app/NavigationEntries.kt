@@ -14,19 +14,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.cryptium.coincurrently.app.FragmentLoadingScreen
-import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
+import com.cryptium.coincurrently.app.RootLoadingScreen
+import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.app.NavTypes.CategoryDetailNavType
-import com.cryptium.coincurrently.features.Portfolio.NewTransactionScreen
+import com.cryptium.coincurrently.features.Portfolio.AddTransactionScreen
 import com.cryptium.coincurrently.app.NavTypes.CryptoDetailInfoModelNavType
 import com.cryptium.coincurrently.app.NavTypes.DerivativeNavType
 import com.cryptium.coincurrently.app.NavTypes.ExchangeResponseNavType
 import com.cryptium.coincurrently.app.NavTypes.NFTToplistNavType
-import com.cryptium.coincurrently.app.NavTypes.NewTransactionTypeNavType
+import com.cryptium.coincurrently.app.NavTypes.PortfolioTransactionTypeNavType
 import com.cryptium.coincurrently.app.NavTypes.PublicTreasuryHolderNavType
 import com.cryptium.coincurrently.app.NavTypes.PriceVolumeModelNavType
 import com.cryptium.coincurrently.app.NavTypes.SearchCaseNavType
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import com.cryptium.coincurrently.app.NavTypes.SwapTransactionNavType
 import com.cryptium.coincurrently.app.NavTypes.ToplistNavType
 import com.cryptium.coincurrently.app.NavTypes.TransactionNavType
@@ -53,9 +53,9 @@ import com.cryptium.coincurrently.features.Referral.ReferralScreen
 import com.cryptium.coincurrently.features.Calculator.SettingsCalculatorScreen
 import com.cryptium.coincurrently.features.News.NewsScreen
 import com.cryptium.coincurrently.features.Portfolio.PortfolioScreen
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
-import com.cryptium.coincurrently.features.Portfolio.NewImportTransactionScreen
-import com.cryptium.coincurrently.features.Portfolio.NewSwapTransactionScreen
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
+import com.cryptium.coincurrently.features.Portfolio.ImportWalletTransactionScreen
+import com.cryptium.coincurrently.features.Portfolio.AddSwapTransactionScreen
 import com.cryptium.coincurrently.features.Portfolio.WalletDetailsScreen
 import com.cryptium.coincurrently.features.Settings.Feedback.FeedbackScreen
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoCategory
@@ -119,7 +119,7 @@ fun NavigationEntries(
             )
 
         composable<NavigationScreens.Loading> {
-            FragmentLoadingScreen(
+            RootLoadingScreen(
                 isLoggedIn = isLoggedIn,
                 isLocked = isLocked,
                 needsToUpdate = needsToUpdate,
@@ -236,16 +236,16 @@ fun NavigationEntries(
             )
         }
 
-        composable<NavigationScreens.NewPortfolioTransaction>(
+        composable<NavigationScreens.AddPortfolioTransaction>(
             typeMap = mapOf(
-                typeOf<NewTransactionType>() to NewTransactionTypeNavType.transactionType,
+                typeOf<PortfolioTransactionType>() to PortfolioTransactionTypeNavType.transactionType,
                 typeOf<CryptoDetailInfoModel?>() to CryptoDetailInfoModelNavType.cryptoDetailInfoModel,
-                typeOf<NewTransaction?>() to TransactionNavType.transaction
+                typeOf<PortfolioTransaction?>() to TransactionNavType.transaction
             )
         ) {
-            val args = it.toRoute<NavigationScreens.NewPortfolioTransaction>()
+            val args = it.toRoute<NavigationScreens.AddPortfolioTransaction>()
 
-            NewTransactionScreen(
+            AddTransactionScreen(
                 navigationViewModel,
                 childScreenBottomOffsetModifier,
                 transactionType = args.transactionType,
@@ -255,16 +255,16 @@ fun NavigationEntries(
             )
         }
 
-        composable<NavigationScreens.NewPortfolioSwapTransaction>(
+        composable<NavigationScreens.AddPortfolioSwapTransaction>(
             typeMap = mapOf(
-                typeOf<NewTransactionType>() to NewTransactionTypeNavType.transactionType,
+                typeOf<PortfolioTransactionType>() to PortfolioTransactionTypeNavType.transactionType,
                 typeOf<CryptoDetailInfoModel?>() to CryptoDetailInfoModelNavType.cryptoDetailInfoModel,
-                typeOf<NewSwapTransaction?>() to SwapTransactionNavType.swapTransaction
+                typeOf<PortfolioSwapTransaction?>() to SwapTransactionNavType.swapTransaction
             )
         ) {
-            val args = it.toRoute<NavigationScreens.NewPortfolioSwapTransaction>()
+            val args = it.toRoute<NavigationScreens.AddPortfolioSwapTransaction>()
 
-            NewSwapTransactionScreen(
+            AddSwapTransactionScreen(
                 navigationViewModel,
                 childScreenBottomOffsetModifier,
                 transactionType = args.transactionType,
@@ -274,10 +274,10 @@ fun NavigationEntries(
             )
         }
 
-        composable<NavigationScreens.NewImportTransaction> {
-            val args = it.toRoute<NavigationScreens.NewImportTransaction>()
+        composable<NavigationScreens.ImportWalletTransaction> {
+            val args = it.toRoute<NavigationScreens.ImportWalletTransaction>()
 
-            NewImportTransactionScreen(
+            ImportWalletTransactionScreen(
                 navigationViewModel,
                 childScreenBottomOffsetModifier,
                 popToRoot = args.popToRoot

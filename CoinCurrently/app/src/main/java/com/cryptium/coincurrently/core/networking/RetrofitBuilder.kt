@@ -8,7 +8,7 @@ import com.cryptium.coincurrently.sharedui.models.CachedData
 import com.cryptium.coincurrently.sharedui.components.SnackBarType
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.persistence.StorageManager
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.BuildConfig
 import com.cryptium.coincurrently.core.networking.ResponseModels.ApiService
 import com.cryptium.coincurrently.core.networking.ResponseModels.serverBaseUrl
@@ -64,7 +64,7 @@ import java.util.concurrent.TimeUnit
             MainActivity.showSnackbar(
                 context,
                 SnackBarType.FAILURE,
-                NetworkManagerError.CouldntGenerateIdToken.errorMessage(null, context)
+                NetworkError.CouldntGenerateIdToken.errorMessage(null, context)
             )
         }
 
@@ -411,7 +411,7 @@ class ResultCall<T>(private val delegate: Call<T>, val context: Context, private
                             @Suppress("UNCHECKED_CAST")
                             val stale: CachedData<T>? = RetrofitBuilder.getStaleGetCache<T>(url, responseType)
                             if (stale != null) {
-                                val err: NetworkManagerError = NetworkManagerError.fromHttpCode(response.code())
+                                val err: NetworkError = NetworkError.fromHttpCode(response.code())
                                 MainActivity.showSnackbar(
                                     context,
                                     SnackBarType.FAILURE,
@@ -424,7 +424,7 @@ class ResultCall<T>(private val delegate: Call<T>, val context: Context, private
                                 return
                             }
                         }
-                        val err: NetworkManagerError = NetworkManagerError.fromHttpCode(response.code())
+                        val err: NetworkError = NetworkError.fromHttpCode(response.code())
                         if (!isRedeemCode) {
                             MainActivity.showSnackbar(
                                 context,
@@ -449,7 +449,7 @@ class ResultCall<T>(private val delegate: Call<T>, val context: Context, private
                             @Suppress("UNCHECKED_CAST")
                             val stale: CachedData<T>? = RetrofitBuilder.getStaleGetCache<T>(url, responseType)
                             if (stale != null) {
-                                val networkErr: NetworkManagerError = NetworkManagerError.fromThrowable(t)
+                                val networkErr: NetworkError = NetworkError.fromThrowable(t)
                                 val errorMessage: String = networkErr.errorMessage(stale.date, context)
                                 MainActivity.showSnackbar(
                                     context,
@@ -463,7 +463,7 @@ class ResultCall<T>(private val delegate: Call<T>, val context: Context, private
                                 return
                             }
                         }
-                        val networkErr: NetworkManagerError = NetworkManagerError.fromThrowable(t)
+                        val networkErr: NetworkError = NetworkError.fromThrowable(t)
                         val errorMessage: String = networkErr.errorMessage(null, context)
                         MainActivity.showSnackbar(
                             context,
@@ -529,7 +529,7 @@ class ResultCall<T>(private val delegate: Call<T>, val context: Context, private
 }
 
 private val REWRITE_RESPONSE_INTERCEPTOR = Interceptor { chain ->
-    val hasPro = StoreKitManager.currentSubscription.value != null
+    val hasPro = BillingManager.currentSubscription.value != null
     val originalResponse = chain.proceed(chain.request())
     val cacheControl = originalResponse.header("Cache-Control")
 

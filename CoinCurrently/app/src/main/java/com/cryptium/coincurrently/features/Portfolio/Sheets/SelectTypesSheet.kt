@@ -35,7 +35,7 @@ import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.sharedui.components.DragHandle
 import com.cryptium.coincurrently.features.Portfolio.Views.TransactionTypeView
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import com.cryptium.coincurrently.sharedui.sheets.ModalBottomSheetSystemNavigationBar
 import com.cryptium.coincurrently.sharedui.sheets.rememberModalSheetMaxBodyHeight
 import com.cryptium.coincurrently.sharedui.sheets.ModalSheetBody
@@ -48,9 +48,9 @@ import com.cryptium.coincurrently.core.analytics.TransactionTypeFilterRemoved
 import kotlinx.coroutines.launch
 
 private fun toggleTransactionType(
-    transactionTypes: MutableState<ArrayList<NewTransactionType>>,
+    transactionTypes: MutableState<ArrayList<PortfolioTransactionType>>,
     fromScreen: ScreenLabel,
-    type: NewTransactionType,
+    type: PortfolioTransactionType,
 ) {
     val current = transactionTypes.value
     val wasSelected = current.contains(type)
@@ -79,7 +79,7 @@ private fun toggleTransactionType(
 @OptIn(ExperimentalMaterial3Api::class)
 fun SelectTypesSheet(
     fromScreen: ScreenLabel,
-    transactionTypes: MutableState<ArrayList<NewTransactionType>>,
+    transactionTypes: MutableState<ArrayList<PortfolioTransactionType>>,
     close: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -155,9 +155,9 @@ fun SelectTypesSheet(
                     subtitle = "Imported a crypto wallet.",
                     image = R.drawable.walletimport,
                     isMultiSelectEnabled = true,
-                    isSelected = transactionTypes.value.contains(NewTransactionType.ImportAddress),
+                    isSelected = transactionTypes.value.contains(PortfolioTransactionType.ImportAddress),
                     viewTapped = {
-                        toggleTransactionType(transactionTypes, fromScreen, NewTransactionType.ImportAddress)
+                        toggleTransactionType(transactionTypes, fromScreen, PortfolioTransactionType.ImportAddress)
                     },
                 )
 
@@ -166,9 +166,9 @@ fun SelectTypesSheet(
                     subtitle = "Bought coins with cash.",
                     image = R.drawable.plus,
                     isMultiSelectEnabled = true,
-                    isSelected = transactionTypes.value.contains(NewTransactionType.Buy),
+                    isSelected = transactionTypes.value.contains(PortfolioTransactionType.Buy),
                     viewTapped = {
-                        toggleTransactionType(transactionTypes, fromScreen, NewTransactionType.Buy)
+                        toggleTransactionType(transactionTypes, fromScreen, PortfolioTransactionType.Buy)
                     }
                 )
 
@@ -177,9 +177,9 @@ fun SelectTypesSheet(
                     subtitle = "Sold coins with cash.",
                     image = R.drawable.minus,
                     isMultiSelectEnabled = true,
-                    isSelected = transactionTypes.value.contains(NewTransactionType.Sell),
+                    isSelected = transactionTypes.value.contains(PortfolioTransactionType.Sell),
                     viewTapped = {
-                        toggleTransactionType(transactionTypes, fromScreen, NewTransactionType.Sell)
+                        toggleTransactionType(transactionTypes, fromScreen, PortfolioTransactionType.Sell)
                     },
                 )
 
@@ -188,9 +188,9 @@ fun SelectTypesSheet(
                     subtitle = "Swapped one coin for another.",
                     image = R.drawable.trade,
                     isMultiSelectEnabled = true,
-                    isSelected = transactionTypes.value.contains(NewTransactionType.Swap),
+                    isSelected = transactionTypes.value.contains(PortfolioTransactionType.Swap),
                     viewTapped = {
-                        toggleTransactionType(transactionTypes, fromScreen, NewTransactionType.Swap)
+                        toggleTransactionType(transactionTypes, fromScreen, PortfolioTransactionType.Swap)
                     },
                 )
 
@@ -199,9 +199,9 @@ fun SelectTypesSheet(
                     subtitle = "Deposited coins into your wallet.",
                     image = R.drawable.deposit,
                     isMultiSelectEnabled = true,
-                    isSelected = transactionTypes.value.contains(NewTransactionType.TransferIn),
+                    isSelected = transactionTypes.value.contains(PortfolioTransactionType.TransferIn),
                     viewTapped = {
-                        toggleTransactionType(transactionTypes, fromScreen, NewTransactionType.TransferIn)
+                        toggleTransactionType(transactionTypes, fromScreen, PortfolioTransactionType.TransferIn)
                     }
                 )
 
@@ -210,9 +210,9 @@ fun SelectTypesSheet(
                     subtitle = "Withdrawn coins out of your wallet.",
                     image = R.drawable.withdraw,
                     isMultiSelectEnabled = true,
-                    isSelected = transactionTypes.value.contains(NewTransactionType.TransferOut),
+                    isSelected = transactionTypes.value.contains(PortfolioTransactionType.TransferOut),
                     viewTapped = {
-                        toggleTransactionType(transactionTypes, fromScreen, NewTransactionType.TransferOut)
+                        toggleTransactionType(transactionTypes, fromScreen, PortfolioTransactionType.TransferOut)
                     },
                 )
                     }

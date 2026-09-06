@@ -2,9 +2,9 @@ package com.cryptium.coincurrently.features.Portfolio.DataClasses
 import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
 import com.cryptium.coincurrently.core.networking.ResponseModels.Chain
 import com.cryptium.coincurrently.core.networking.ResponseModels.TokenInfo
-import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
+import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.sharedui.models.Iso8601DateSerializer
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import kotlinx.serialization.Serializable
 import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
 import com.cryptium.coincurrently.core.networking.ResponseModels.sanitizeGsonNullLists
@@ -26,7 +26,7 @@ data class PortfolioExportTransaction(
     val pricePerCoin: Double?,
     val fee: Double,
     val note: String,
-    val transactionType: NewTransactionType,
+    val transactionType: PortfolioTransactionType,
     val address: String?,
     val currency: String,
 )
@@ -60,7 +60,7 @@ data class PortfolioExportImport(
     val blockChain: Chain,
 )
 
-fun NewTransaction.toPortfolioExportTransaction() = PortfolioExportTransaction(
+fun PortfolioTransaction.toPortfolioExportTransaction() = PortfolioExportTransaction(
     date = date,
     amount = amount,
     pricePerCoin = pricePerCoin,
@@ -71,7 +71,7 @@ fun NewTransaction.toPortfolioExportTransaction() = PortfolioExportTransaction(
     currency = currency,
 )
 
-fun NewSwapTransaction.toPortfolioExportSwap() = PortfolioExportSwap(
+fun PortfolioSwapTransaction.toPortfolioExportSwap() = PortfolioExportSwap(
     date = date,
     selectedCurrency = selectedCurrency,
     fromCurrencyId = fromCurrencyId,

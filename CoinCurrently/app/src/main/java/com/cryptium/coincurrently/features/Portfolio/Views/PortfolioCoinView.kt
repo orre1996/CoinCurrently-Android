@@ -32,11 +32,11 @@ import com.cryptium.coincurrently.core.extensions.getProfitPercent
 import com.cryptium.coincurrently.core.extensions.getProfitValue
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.stars
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangeValueView
+import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
+import com.cryptium.coincurrently.sharedui.components.PriceChangeValueView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
 import com.cryptium.coincurrently.core.networking.ResponseModels.holdingPrice
@@ -44,7 +44,7 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.holdingPrice
 @Composable
 fun PortfolioCoinView(
     pie: Pie?,
-    transactions: List<NewTransaction>?,
+    transactions: List<PortfolioTransaction>?,
     prices: Map<String, Double>?,
     hideData: Boolean,
     index: Int? = null,
@@ -253,7 +253,7 @@ private fun HoldingsSubtitleView(
 
 @Composable
 private fun ProfitLossView(
-    transactions: List<NewTransaction>?,
+    transactions: List<PortfolioTransaction>?,
     prices: Map<String, Double>?,
     hideData: Boolean,
     isDownloading: Boolean,
@@ -270,7 +270,7 @@ private fun ProfitLossView(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             horizontalAlignment = Alignment.End,
         ) {
-            NewPriceChangeValueView(
+            PriceChangeValueView(
                 change = transactions?.getProfitValue(prices = prices),
                 size = ChangeSize.MEDIUM,
                 hideData = hideData,
@@ -278,7 +278,7 @@ private fun ProfitLossView(
                 isDownloading = isDownloading,
             )
 
-            NewPriceChangePercentView(
+            PriceChangePercentView(
                 change = transactions?.getProfitPercent(prices = prices),
                 size = ChangeSize.SMALL,
                 isDownloading = isDownloading,

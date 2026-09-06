@@ -33,7 +33,7 @@ import com.cryptium.coincurrently.sharedui.modifiers.*
 import com.cryptium.coincurrently.sharedui.models.*
 import com.cryptium.coincurrently.sharedui.theme.*
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
-import com.cryptium.coincurrently.sharedui.loading.NewShimmerImageDirection
+import com.cryptium.coincurrently.sharedui.loading.PriceChangeDirectionView
 
 @Composable
 internal fun TotalValueView(
@@ -159,7 +159,7 @@ internal fun ValueChangeView(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.semantics { invisibleToUser() }
                 ) {
-                    NewShimmerImageDirection(
+                    PriceChangeDirectionView(
                         change = 0.0,
                         size = ChangeSize.SMALL,
                         isDownloading = changePercent == null
@@ -173,7 +173,7 @@ internal fun ValueChangeView(
                     )
                 }
             } else {
-                NewPriceChangeValueView(
+                PriceChangeValueView(
                     change = changeValue,
                     size = ChangeSize.SMALL,
                     isDownloading = changeValue == null
@@ -234,7 +234,7 @@ internal fun ProfitLossView(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.semantics { invisibleToUser() }
                 ) {
-                    NewShimmerImageDirection(
+                    PriceChangeDirectionView(
                         change = 0.0,
                         size = ChangeSize.SMALL,
                         isDownloading = changeValue == null
@@ -248,7 +248,7 @@ internal fun ProfitLossView(
                     )
                 }
             } else {
-                NewPriceChangeValueView(
+                PriceChangeValueView(
                     change = changeValue,
                     size = ChangeSize.SMALL,
                     hideData = hideData,

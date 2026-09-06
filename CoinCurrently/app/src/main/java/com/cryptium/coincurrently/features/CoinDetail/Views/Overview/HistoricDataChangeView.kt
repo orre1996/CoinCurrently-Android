@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.core.extensions.satoshiBold
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
+import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 
 @Composable
@@ -37,7 +37,7 @@ fun HistoricDataChangeView(
             },
         )
 
-        NewPriceChangePercentView(
+        PriceChangePercentView(
             change = change,
             accessibleTimeframe = timeframe.lowercase(),
             size = ChangeSize.MEDIUM,

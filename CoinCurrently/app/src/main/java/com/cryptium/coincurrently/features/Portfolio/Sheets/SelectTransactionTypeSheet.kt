@@ -26,7 +26,7 @@ import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.sharedui.components.DragHandle
 import com.cryptium.coincurrently.features.Portfolio.Views.TransactionTypeView
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import com.cryptium.coincurrently.sharedui.sheets.ModalBottomSheetSystemNavigationBar
 import com.cryptium.coincurrently.sharedui.sheets.rememberModalSheetMaxBodyHeight
 import com.cryptium.coincurrently.sharedui.sheets.ModalSheetBody
@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun SelectTransactionTypeSheet(
-    transactionSelected: (NewTransactionType?) -> Unit
+    transactionSelected: (PortfolioTransactionType?) -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
@@ -90,7 +90,7 @@ fun SelectTransactionTypeSheet(
                     viewTapped = {
                         coroutineScope.launch {
                             sheetState.hide()
-                            transactionSelected.invoke(NewTransactionType.Buy)
+                            transactionSelected.invoke(PortfolioTransactionType.Buy)
                         }
                     }
                 )
@@ -102,7 +102,7 @@ fun SelectTransactionTypeSheet(
                     viewTapped = {
                         coroutineScope.launch {
                             sheetState.hide()
-                            transactionSelected.invoke(NewTransactionType.Sell)
+                            transactionSelected.invoke(PortfolioTransactionType.Sell)
                         }
                     }
                 )
@@ -114,7 +114,7 @@ fun SelectTransactionTypeSheet(
                     viewTapped = {
                         coroutineScope.launch {
                             sheetState.hide()
-                            transactionSelected.invoke(NewTransactionType.Swap)
+                            transactionSelected.invoke(PortfolioTransactionType.Swap)
                         }
                     }
                 )
@@ -126,7 +126,7 @@ fun SelectTransactionTypeSheet(
                     viewTapped = {
                         coroutineScope.launch {
                             sheetState.hide()
-                            transactionSelected.invoke(NewTransactionType.TransferIn)
+                            transactionSelected.invoke(PortfolioTransactionType.TransferIn)
                         }
                     }
                 )
@@ -138,7 +138,7 @@ fun SelectTransactionTypeSheet(
                     viewTapped = {
                         coroutineScope.launch {
                             sheetState.hide()
-                            transactionSelected.invoke(NewTransactionType.TransferOut)
+                            transactionSelected.invoke(PortfolioTransactionType.TransferOut)
                         }
                     },
                 )

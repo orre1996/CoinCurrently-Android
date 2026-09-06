@@ -2,34 +2,34 @@ package com.cryptium.coincurrently.app.NavTypes
 import android.net.Uri
 import android.os.Bundle
 import androidx.navigation.NavType
-import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
+import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 object SwapTransactionNavType {
-    val swapTransaction = object: NavType<NewSwapTransaction?>(
+    val swapTransaction = object: NavType<PortfolioSwapTransaction?>(
         isNullableAllowed = true
     ) {
         override fun get(
             bundle: Bundle,
             key: String
-        ): NewSwapTransaction? {
+        ): PortfolioSwapTransaction? {
             return Json.Default.decodeFromString(bundle.getString(key) ?: return null)
         }
 
-        override fun parseValue(value: String): NewSwapTransaction? {
+        override fun parseValue(value: String): PortfolioSwapTransaction? {
             return Json.Default.decodeFromString(Uri.decode(value))
         }
 
-        override fun serializeAsValue(value: NewSwapTransaction?): String {
+        override fun serializeAsValue(value: PortfolioSwapTransaction?): String {
             return Uri.encode(Json.Default.encodeToString(value))
         }
 
         override fun put(
             bundle: Bundle,
             key: String,
-            value: NewSwapTransaction?
+            value: PortfolioSwapTransaction?
         ) {
             bundle.putString(key, Json.Default.encodeToString(value))
         }

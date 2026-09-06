@@ -21,13 +21,13 @@ import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.core.analytics.TabBarDoubleTapped
-import com.cryptium.coincurrently.features.Market.Categories.Views.CategoriesFragment
+import com.cryptium.coincurrently.features.Market.Categories.Views.CategoriesScreen
 import com.cryptium.coincurrently.features.CoinDetail.Views.General.CryptoDetailPageSelector
-import com.cryptium.coincurrently.features.Market.Derivatives.Views.DerivativesListFragment
-import com.cryptium.coincurrently.features.Market.Exchanges.Views.ExchangeListFragment
-import com.cryptium.coincurrently.features.Market.NFT.Views.NftToplistFragment
-import com.cryptium.coincurrently.features.Market.Toplist.Views.ToplistFragment
-import com.cryptium.coincurrently.features.Treasuries.Views.TreasuriesListFragment
+import com.cryptium.coincurrently.features.Market.Derivatives.Views.DerivativesListScreen
+import com.cryptium.coincurrently.features.Market.Exchanges.Views.ExchangeListScreen
+import com.cryptium.coincurrently.features.Market.NFT.Views.NftToplistScreen
+import com.cryptium.coincurrently.features.Market.Toplist.Views.ToplistScreen
+import com.cryptium.coincurrently.features.Treasuries.Views.TreasuriesListScreen
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -212,7 +212,7 @@ private fun MarketTabContent(
 ) {
     when (tabIndex) {
         0 -> {
-            ToplistFragment(
+            ToplistScreen(
                 currentPage = currentPage,
                 category = null,
                 scrollState = toplistScrollState,
@@ -221,7 +221,7 @@ private fun MarketTabContent(
         }
 
         1 -> {
-            NftToplistFragment(
+            NftToplistScreen(
                 currentPage = currentPage,
                 scrollState = nftsScrollState,
                 navigationViewModel = navigationViewModel
@@ -229,7 +229,7 @@ private fun MarketTabContent(
         }
 
         treasuriesPageIndex -> {
-            TreasuriesListFragment(
+            TreasuriesListScreen(
                 currentPage = currentPage,
                 scrollState = treasuriesScrollState,
                 navigationViewModel = navigationViewModel,
@@ -237,7 +237,7 @@ private fun MarketTabContent(
         }
 
         sectorsPageIndex -> {
-            CategoriesFragment(
+            CategoriesScreen(
                 currentPage = currentPage,
                 scrollState = categoriesScrollState,
                 navigationViewModel = navigationViewModel
@@ -245,7 +245,7 @@ private fun MarketTabContent(
         }
 
         exchangesPageIndex -> {
-            ExchangeListFragment(
+            ExchangeListScreen(
                 currentPage = currentPage,
                 scrollState = exchangesScrollState,
                 navigationViewModel = navigationViewModel
@@ -253,7 +253,7 @@ private fun MarketTabContent(
         }
 
         derivativesPageIndex -> {
-            DerivativesListFragment(
+            DerivativesListScreen(
                 currentPage = currentPage,
                 scrollState = derivativesScrollState,
                 navigationViewModel = navigationViewModel

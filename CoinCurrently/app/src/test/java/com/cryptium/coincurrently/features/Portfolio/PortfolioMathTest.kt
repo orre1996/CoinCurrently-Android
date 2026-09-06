@@ -5,9 +5,9 @@ import com.cryptium.coincurrently.core.extensions.getProfitLossValue
 import com.cryptium.coincurrently.core.extensions.groupedTransactions
 import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.features.Portfolio.Enums.DateOption
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -91,7 +91,7 @@ class PortfolioMathTest {
         assertEquals(2, allBtc[startOfDay()]?.size)
 
         val buysOnly = portfolio.groupedTransactions(
-            types = listOf(NewTransactionType.Buy),
+            types = listOf(PortfolioTransactionType.Buy),
             dateOption = DateOption.All,
             coinNames = listOf(Toplist(id = "bitcoin", symbol = "btc", name = "Bitcoin")),
         )
@@ -112,31 +112,31 @@ class PortfolioMathTest {
         id: String,
         symbol: String = id,
         name: String = id,
-        transactions: List<NewTransaction>,
+        transactions: List<PortfolioTransaction>,
     ) = Pie(
         data = Toplist(id = id, symbol = symbol, name = name),
         transactions = transactions.toMutableList(),
     )
 
-    private fun buy(amount: Double, price: Double, date: Date = Date()) = NewTransaction(
+    private fun buy(amount: Double, price: Double, date: Date = Date()) = PortfolioTransaction(
         id = UUID.randomUUID(),
         date = date,
         amount = amount,
         pricePerCoin = price,
         fee = 0.0,
         note = "",
-        transactionType = NewTransactionType.Buy,
+        transactionType = PortfolioTransactionType.Buy,
         currency = "usd",
     )
 
-    private fun sell(amount: Double, price: Double, date: Date = Date()) = NewTransaction(
+    private fun sell(amount: Double, price: Double, date: Date = Date()) = PortfolioTransaction(
         id = UUID.randomUUID(),
         date = date,
         amount = amount,
         pricePerCoin = price,
         fee = 0.0,
         note = "",
-        transactionType = NewTransactionType.Sell,
+        transactionType = PortfolioTransactionType.Sell,
         currency = "usd",
     )
 

@@ -38,13 +38,13 @@ import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.getDifferenceInPercent
 import com.cryptium.coincurrently.core.extensions.groupedTransactions
-import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
+import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
 import com.cryptium.coincurrently.features.News.NewsRepository
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.extensions.pieContaining
 import com.cryptium.coincurrently.sharedui.charts.HoverHelper
 import com.cryptium.coincurrently.sharedui.components.renderComposableToBitmap
@@ -61,7 +61,7 @@ import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.sharedui.models.CachedData
-import com.cryptium.coincurrently.features.CoinDetail.Views.About.CryptoDetailShareView
+import com.cryptium.coincurrently.features.CoinDetail.Views.About.CryptoDetailAboutShareChart
 import com.cryptium.coincurrently.core.models.ChartTypes
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioModel
@@ -158,7 +158,7 @@ class CryptoDetailViewModel(
 
     var selectedSortOption by mutableStateOf(SortOption.VolumeDesc)
 
-    private var hasProSubscription = StoreKitManager.currentSubscription.value != null
+    private var hasProSubscription = BillingManager.currentSubscription.value != null
 
     val isWebSocketEnabled: Boolean
         get() = UserPreferences.isWebSocketEnabled(hasPro = hasProSubscription)
@@ -315,7 +315,7 @@ class CryptoDetailViewModel(
             isRefreshing = showRefreshIndicator
             mainReloading = showReload
 
-            hasProSubscription = StoreKitManager.currentSubscription.value != null
+            hasProSubscription = BillingManager.currentSubscription.value != null
 
             val days = newDays ?: currentDays
             val chart = newTimeChart ?: selectedTimeFrame
@@ -545,7 +545,7 @@ class CryptoDetailViewModel(
     ) {
         val toplistItem = cryptoInfo?.toToplist() ?: return
 
-        if (StoreKitManager.currentSubscription.value == null && !inFavoritesList && UserPreferences.getFavorites().orEmpty().size >= 2) {
+        if (BillingManager.currentSubscription.value == null && !inFavoritesList && UserPreferences.getFavorites().orEmpty().size >= 2) {
             callback.invoke()
             return
         }
@@ -692,7 +692,7 @@ class CryptoDetailViewModel(
             val seenIds: MutableSet<UUID> = result.values
                 .flatMap { ev -> ev.map { it.id } }
                 .toMutableSet()
-            val fromSwaps: List<NewSwapTransaction> = portfolio
+            val fromSwaps: List<PortfolioSwapTransaction> = portfolio
                 ?.onEach { it.sanitizeGsonNullLists() }
                 ?.flatMap { it.swaps }
                 ?.filter { it.fromCurrencyId == targetId } ?: listOf()
@@ -847,7 +847,7 @@ class CryptoDetailViewModel(
         renderComposableToBitmap(
             activity = activity,
             composable = {
-                CryptoDetailShareView(this)
+                CryptoDetailAboutShareChart(this)
             },
             onBitmapReady = { bitmap ->
                 saveBitmapToCache(context, bitmap, cryptoInfo?.name ?: "coin")

@@ -52,7 +52,7 @@ import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.pxToDp
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.sharedui.charts.hideFromTalkBackWhenEnabled
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
+import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
@@ -385,7 +385,7 @@ private fun AllTimeLowView(
                 modifier = Modifier.semantics { invisibleToUser() },
             )
 
-            NewPriceChangePercentView(
+            PriceChangePercentView(
                 change = cryptoDetailInfoModel?.market_data?.atl_change_percentage?.getSelectedCurrency(),
                 accessibleTimeframe = "Change since all time low:",
                 size = ChangeSize.MEDIUM,
@@ -451,7 +451,7 @@ private fun AllTimeHighView(
                 modifier = Modifier.semantics { invisibleToUser() },
             )
 
-            NewPriceChangePercentView(
+            PriceChangePercentView(
                 change = cryptoDetailInfoModel?.market_data?.ath_change_percentage?.getSelectedCurrency(),
                 accessibleTimeframe = "Change since all time high:",
                 size = ChangeSize.MEDIUM,

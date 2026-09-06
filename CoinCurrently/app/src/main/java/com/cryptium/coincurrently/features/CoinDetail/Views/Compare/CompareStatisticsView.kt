@@ -31,7 +31,7 @@ import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.sharedui.components.CustomProgressBarView
 import com.cryptium.coincurrently.sharedui.charts.hideFromTalkBackWhenEnabled
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
+import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
@@ -237,7 +237,7 @@ private fun PriceChangeView(
                     color = MaterialTheme.colors.primary50
                 )
 
-                NewPriceChangePercentView(
+                PriceChangePercentView(
                     change = mainPriceChange,
                     size = ChangeSize.MEDIUM,
                     isDownloading = mainPrices == null,
@@ -261,7 +261,7 @@ private fun PriceChangeView(
                     color = MaterialTheme.colors.blue50
                 )
 
-                NewPriceChangePercentView(
+                PriceChangePercentView(
                     change = comparePriceChange,
                     size = ChangeSize.MEDIUM,
                     isDownloading = mainPrices == null,

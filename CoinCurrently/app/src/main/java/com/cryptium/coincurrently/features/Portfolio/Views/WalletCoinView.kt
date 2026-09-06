@@ -29,7 +29,7 @@ import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.stars
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
+import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
@@ -274,7 +274,7 @@ private fun PriceChangeView(
         alignment = Alignment.CenterEnd,
         modifier = modifier,
     ) {
-        NewPriceChangePercentView(
+        PriceChangePercentView(
             change = change,
             isDownloading = isDownloading,
         )

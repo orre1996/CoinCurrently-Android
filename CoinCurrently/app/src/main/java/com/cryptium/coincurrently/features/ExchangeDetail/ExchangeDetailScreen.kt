@@ -434,7 +434,7 @@ fun ExchangeDetailScreen(
             }
 
             selectedUrl?.let {
-                WebView(it) {
+                WebViewSheet(it) {
                     selectedUrl = null
                 }
             }

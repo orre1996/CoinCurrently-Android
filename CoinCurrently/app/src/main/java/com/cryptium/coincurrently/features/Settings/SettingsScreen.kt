@@ -121,7 +121,7 @@ import com.cryptium.coincurrently.features.Home.NewCoins.NewCoinsRepository
 import com.cryptium.coincurrently.features.Home.WinnersLosers.WinnersLosersRepository
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import java.util.Date
 import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
 import com.cryptium.coincurrently.features.Settings.CurrencySelector.CurrencyOptionsSheet
@@ -148,8 +148,8 @@ fun SettingsScreen(
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
 
-    val currentSubscription by StoreKitManager.currentSubscription.observeAsState()
-    val subscriptionExpirationDate by StoreKitManager.subscriptionExpirationDate.observeAsState()
+    val currentSubscription by BillingManager.currentSubscription.observeAsState()
+    val subscriptionExpirationDate by BillingManager.subscriptionExpirationDate.observeAsState()
 
     val showResetApp = remember { mutableStateOf(false) }
 

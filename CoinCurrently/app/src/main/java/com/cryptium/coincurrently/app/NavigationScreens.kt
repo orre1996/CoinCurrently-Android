@@ -1,8 +1,8 @@
 package com.cryptium.coincurrently.app
 
-import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.Derivative
 import com.cryptium.coincurrently.core.networking.ResponseModels.ExchangeList
@@ -45,7 +45,7 @@ sealed class SearchScreenCase {
     @Serializable
     data class Search(val list: SearchCase) : SearchScreenCase()
     @Serializable
-    data class Transaction(val transactionType: NewTransactionType) : SearchScreenCase()
+    data class Transaction(val transactionType: PortfolioTransactionType) : SearchScreenCase()
     @Serializable
     data class FixedList(val list: List<Toplist>) : SearchScreenCase()
 }
@@ -113,24 +113,24 @@ sealed class NavigationScreens() {
     ): NavigationScreens()
 
     @Serializable
-    data class NewPortfolioTransaction(
-        val transactionType: NewTransactionType,
+    data class AddPortfolioTransaction(
+        val transactionType: PortfolioTransactionType,
         val currencyDataModel: CryptoDetailInfoModel?,
-        val transaction: NewTransaction?,
+        val transaction: PortfolioTransaction?,
         val popToRoot: Boolean
     ): NavigationScreens()
 
     @Serializable
-    data class NewPortfolioSwapTransaction(
-        val transactionType: NewTransactionType,
+    data class AddPortfolioSwapTransaction(
+        val transactionType: PortfolioTransactionType,
         val currencyDataModel: CryptoDetailInfoModel?,
-        val transaction: NewSwapTransaction?,
+        val transaction: PortfolioSwapTransaction?,
         val popToRoot: Boolean
     ): NavigationScreens()
 
 
     @Serializable
-    data class NewImportTransaction(
+    data class ImportWalletTransaction(
         val popToRoot: Boolean
     ): NavigationScreens()
 
@@ -224,9 +224,9 @@ fun NavigationScreens.getRouteString(): String {
         is NavigationScreens.CryptoDetail -> "CryptoDetail"
         is NavigationScreens.CompareCoins -> "CompareCoins"
         is NavigationScreens.WalletDetails -> "WalletDetails"
-        is NavigationScreens.NewPortfolioTransaction -> "NewPortfolioTransaction"
-        is NavigationScreens.NewPortfolioSwapTransaction -> "NewPortfolioSwapTransaction"
-        is NavigationScreens.NewImportTransaction -> "NewImportTransaction"
+        is NavigationScreens.AddPortfolioTransaction -> "NewPortfolioTransaction"
+        is NavigationScreens.AddPortfolioSwapTransaction -> "NewPortfolioSwapTransaction"
+        is NavigationScreens.ImportWalletTransaction -> "NewImportTransaction"
         is NavigationScreens.Feedback -> "Feedback"
         is NavigationScreens.FearGreed -> "FearGreed"
         is NavigationScreens.FearGreedHelp -> "FearGreedHelp"

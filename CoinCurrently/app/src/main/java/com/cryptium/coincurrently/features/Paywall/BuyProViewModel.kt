@@ -22,13 +22,13 @@ import com.cryptium.coincurrently.core.extensions.updateAllWidgets
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.config.RemoteConfigKeys
-import com.cryptium.coincurrently.core.work.NotificationWorker
+import com.cryptium.coincurrently.core.work.TrialEndingReminderWorker
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.features.Paywall.TierButton
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.sharedui.components.SnackBarType
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.core.analytics.SubscriptionPurchaseCompleted
@@ -73,7 +73,7 @@ interface BuyProViewModel {
 }
 
 class BuyProViewModelImp: ViewModel(), BuyProViewModel {
-    private val storeKitManager = StoreKitManager
+    private val storeKitManager = BillingManager
 
     override var buttons: List<TierButton>? by mutableStateOf(null)
     override var selectedButton: TierButton? by mutableStateOf(null)
@@ -346,7 +346,7 @@ class BuyProViewModelImp: ViewModel(), BuyProViewModel {
 
     private fun scheduleTrialNotification(context: Context) {
         val workRequest =
-            OneTimeWorkRequestBuilder<NotificationWorker>()
+            OneTimeWorkRequestBuilder<TrialEndingReminderWorker>()
                 .setInitialDelay(6, TimeUnit.DAYS)
                 .build()
 

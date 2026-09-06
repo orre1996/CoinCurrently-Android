@@ -29,17 +29,17 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
 import com.cryptium.coincurrently.core.config.AppLocale
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioPieChartLayout
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioPieSlice
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.toPortfolioExportModel
 import com.cryptium.coincurrently.features.Portfolio.Enums.DateOption
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioExportFormat
 import com.cryptium.coincurrently.features.Portfolio.Utilities.PortfolioExportHelper
 import com.cryptium.coincurrently.features.Portfolio.Utilities.PortfolioTaxExportBuilder
 import com.cryptium.coincurrently.core.extensions.toPortfolioExportDateTimeUTC
 import com.cryptium.coincurrently.sharedui.models.CachedData
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import com.cryptium.coincurrently.features.Portfolio.PortfolioPiesData
@@ -79,7 +79,7 @@ class PortfolioViewModel : ViewModel() {
     var hasCompletedInitialLoad: Boolean = false
 
     var hideData: Boolean by mutableStateOf(UserPreferences.getHidePortfolioData())
-    var typeFilters: MutableState<ArrayList<NewTransactionType>> = mutableStateOf(arrayListOf())
+    var typeFilters: MutableState<ArrayList<PortfolioTransactionType>> = mutableStateOf(arrayListOf())
     var dateFilter: MutableState<DateOption> = mutableStateOf(DateOption.All)
     var coinFilters: MutableState<ArrayList<Toplist>> = mutableStateOf(arrayListOf())
     var groupedTransactions: Map<Date, List<PortfolioEvent>> by mutableStateOf(mapOf())
@@ -785,7 +785,7 @@ class PortfolioViewModel : ViewModel() {
         }
     }
 
-    fun hasBoughtPro(): Boolean = StoreKitManager.currentSubscription.value != null
+    fun hasBoughtPro(): Boolean = BillingManager.currentSubscription.value != null
 
     val portfolioExportCount: Int
         get() = UserPreferences.getPortfolioExportCount()
@@ -985,7 +985,7 @@ class PortfolioViewModel : ViewModel() {
     private fun csvNumericField(value: Double?): String =
         value?.let { csvField(it.toString()) } ?: ""
 
-    private fun csvRow(coin: String, transaction: NewTransaction): String {
+    private fun csvRow(coin: String, transaction: PortfolioTransaction): String {
         val isTransfer = transaction.transactionType.isTransfer
         val value = (transaction.amount * (transaction.pricePerCoin ?: 0.0)) + transaction.fee
 
@@ -1003,14 +1003,14 @@ class PortfolioViewModel : ViewModel() {
         ).joinToString(",")
     }
 
-    private fun csvSwapRow(swap: com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction): String {
+    private fun csvSwapRow(swap: com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction): String {
         val coin = "${swap.fromCurrencySymbol.uppercase(AppLocale.enUsPosix)} → ${swap.toCurrencySymbol.uppercase(AppLocale.enUsPosix)}"
         val value = (swap.fromAmount * swap.fromUnitPrice) + swap.fee
 
         return listOf(
             swap.date.toPortfolioExportDateTimeUTC(),
             coin,
-            NewTransactionType.Swap.value,
+            PortfolioTransactionType.Swap.value,
             csvField(swap.fromAmount.toString()),
             csvNumericField(swap.fromUnitPrice),
             csvNumericField(swap.fee),
@@ -1025,7 +1025,7 @@ class PortfolioViewModel : ViewModel() {
         return listOf(
             importEvent.date.toPortfolioExportDateTimeUTC(),
             coin,
-            NewTransactionType.ImportAddress.value,
+            PortfolioTransactionType.ImportAddress.value,
             csvField(importEvent.balance),
             "",
             "",
@@ -1044,10 +1044,10 @@ class PortfolioViewModel : ViewModel() {
         val transactionsByType = pie.transactions.groupBy { it.transactionType }
 
         listOf(
-            NewTransactionType.Buy,
-            NewTransactionType.Sell,
-            NewTransactionType.TransferIn,
-            NewTransactionType.TransferOut,
+            PortfolioTransactionType.Buy,
+            PortfolioTransactionType.Sell,
+            PortfolioTransactionType.TransferIn,
+            PortfolioTransactionType.TransferOut,
         ).forEach { type ->
             val transactions = transactionsByType[type].orEmpty()
             if (transactions.isEmpty()) return@forEach
@@ -1074,7 +1074,7 @@ class PortfolioViewModel : ViewModel() {
         return section
     }
 
-    private fun textExportBlock(transaction: NewTransaction): String {
+    private fun textExportBlock(transaction: PortfolioTransaction): String {
         val selectedCurrency = allCurrencies.firstOrNull {
             it.code.equals(transaction.currency, ignoreCase = true)
         }
@@ -1109,7 +1109,7 @@ class PortfolioViewModel : ViewModel() {
         return "$block\n"
     }
 
-    private fun textExportBlock(swap: com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction): String {
+    private fun textExportBlock(swap: com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction): String {
         val selectedCurrency = allCurrencies.firstOrNull {
             it.code.equals(swap.selectedCurrency, ignoreCase = true)
         } ?: UserPreferences.getSelectedCurrency()

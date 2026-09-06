@@ -1,7 +1,7 @@
 package com.cryptium.coincurrently.core.networking
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.serverBaseUrl
 
 /**
@@ -121,7 +121,7 @@ object CacheUrls {
         "$baseUrl/api/v3/coins/markets?order=market_cap_desc&per_page=100&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d%2C30d&ids=$ids&vs_currency=$currencyCode"
 
     private fun cryptoBaseUrl(freeUrl: Boolean): String =
-        if (freeUrl && StoreKitManager.currentSubscription.value != null) {
+        if (freeUrl && BillingManager.currentSubscription.value != null) {
             "https://api.coingecko.com"
         } else {
             "${serverBaseUrl}/crypto"

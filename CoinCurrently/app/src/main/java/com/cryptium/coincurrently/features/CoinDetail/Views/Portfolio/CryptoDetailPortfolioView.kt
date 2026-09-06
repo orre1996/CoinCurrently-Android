@@ -39,7 +39,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.theme.primaryBackgroundNoRipple
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
-import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
+import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.core.extensions.DateFormat
 import com.cryptium.coincurrently.core.extensions.allTransactionsCount
 import com.cryptium.coincurrently.core.extensions.formatCurrency
@@ -57,8 +57,8 @@ import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.core.extensions.changePercentDecimalPoints
 import com.cryptium.coincurrently.core.extensions.directionAccessible
 import com.cryptium.coincurrently.sharedui.sheets.EmptyContent
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangeValueView
+import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
+import com.cryptium.coincurrently.sharedui.components.PriceChangeValueView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.app.NavigationViewModel
@@ -74,9 +74,9 @@ import com.cryptium.coincurrently.features.CoinDetail.CryptoDetailViewModel
 import com.cryptium.coincurrently.features.Portfolio.Views.PortfolioImportTransaction
 import com.cryptium.coincurrently.features.Portfolio.Views.PortfolioSwapView
 import com.cryptium.coincurrently.features.Portfolio.Views.PortfolioTransactionView
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
@@ -484,7 +484,7 @@ private fun ProfitLossView(
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            NewPriceChangeValueView(
+            PriceChangeValueView(
                 change = profitValue,
                 size = ChangeSize.MEDIUM,
                 hideData = hidePortfolioData,
@@ -492,7 +492,7 @@ private fun ProfitLossView(
                 isDownloading = isDownloading
             )
 
-            NewPriceChangePercentView(
+            PriceChangePercentView(
                 change = profitPercent,
                 size = ChangeSize.EXTRA_SMALL,
                 isDownloading = isDownloading,
@@ -625,7 +625,7 @@ private fun LazyListScope.RealList(
                         ) {
                             val coin = portfolio?.pieContaining(event)?.data
                             when (event) {
-                                is NewTransaction -> {
+                                is PortfolioTransaction -> {
                                     PortfolioTransactionView(
                                         coin = coin,
                                         transaction = event,
@@ -637,7 +637,7 @@ private fun LazyListScope.RealList(
                                     )
                                 }
 
-                                is NewSwapTransaction -> {
+                                is PortfolioSwapTransaction -> {
                                     PortfolioSwapView(
                                         coin = coin,
                                         transaction = event,

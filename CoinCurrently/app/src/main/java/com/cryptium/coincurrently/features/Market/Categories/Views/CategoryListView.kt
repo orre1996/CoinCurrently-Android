@@ -27,7 +27,7 @@ import com.cryptium.coincurrently.core.extensions.directionAccessible
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.numberAccessible
 import com.cryptium.coincurrently.core.extensions.satoshiBold
-import com.cryptium.coincurrently.sharedui.components.NewPriceChangePercentView
+import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoCategory
 
 @Composable
@@ -217,7 +217,7 @@ private fun PriceChangeView(
         alignment = Alignment.CenterEnd,
         modifier = modifier,
     ) {
-        NewPriceChangePercentView(
+        PriceChangePercentView(
             change = currentCategory?.market_cap_change_24h,
             accessibleTimeframe = "24 hour",
             isDownloading = isLoading,

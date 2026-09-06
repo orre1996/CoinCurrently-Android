@@ -2,8 +2,8 @@ package com.cryptium.coincurrently.features.Portfolio
 import com.cryptium.coincurrently.core.extensions.toPortfolioExportDateTimeUTC
 import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import com.cryptium.coincurrently.features.Portfolio.Utilities.PortfolioTaxExportBuilder
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -22,14 +22,14 @@ class PortfolioTaxExportTest {
             Pie(
                 data = Toplist(id = "bitcoin", symbol = "btc", name = "Bitcoin"),
                 transactions = mutableListOf(
-                    NewTransaction(
+                    PortfolioTransaction(
                         id = UUID.randomUUID(),
                         date = date,
                         amount = 1.5,
                         pricePerCoin = 100.0,
                         fee = 0.25,
                         note = "test buy",
-                        transactionType = NewTransactionType.Buy,
+                        transactionType = PortfolioTransactionType.Buy,
                         currency = "usd",
                     ),
                 ),
@@ -65,12 +65,12 @@ class PortfolioTaxExportTest {
             Pie(
                 data = Toplist(id = "ethereum", symbol = "eth", name = "Ethereum"),
                 transactions = mutableListOf(
-                    NewTransaction(
+                    PortfolioTransaction(
                         amount = 2.0,
                         pricePerCoin = 50.0,
                         fee = 0.0,
                         note = "",
-                        transactionType = NewTransactionType.Sell,
+                        transactionType = PortfolioTransactionType.Sell,
                         currency = "usd",
                     ),
                 ),

@@ -60,7 +60,7 @@ import com.cryptium.coincurrently.sharedui.charts.rememberCandleHoverUi
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.features.CoinDetail.Sheets.SentimentInfoSheet
-import com.cryptium.coincurrently.features.Portfolio.Models.NewSwapTransaction
+import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.sharedui.charts.CandleChart
 import com.cryptium.coincurrently.sharedui.charts.CandleChartHover
 import com.cryptium.coincurrently.features.CoinDetail.Views.News.DetailNews
@@ -83,7 +83,7 @@ import com.cryptium.coincurrently.sharedui.charts.ChartHoverView
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
 import com.cryptium.coincurrently.sharedui.components.ImageCase
 import com.cryptium.coincurrently.sharedui.loading.ActivityIndicator
-import com.cryptium.coincurrently.features.CoinDetail.Share.CryptoDetailShareView
+import com.cryptium.coincurrently.features.CoinDetail.Share.CryptoDetailShareCard
 import com.cryptium.coincurrently.sharedui.models.ChangeDirection
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.app.NavigationViewModel
@@ -95,9 +95,9 @@ import com.cryptium.coincurrently.sharedui.charts.LineChart
 import com.cryptium.coincurrently.sharedui.components.Point
 import com.cryptium.coincurrently.sharedui.sheets.WebView
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertCreateResult
-import com.cryptium.coincurrently.core.purchases.StoreKitManager
+import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
-import com.cryptium.coincurrently.features.CoinDetail.Views.General.ChartButtonsView
+import com.cryptium.coincurrently.features.CoinDetail.Views.General.ChartTypeButtonsView
 import com.cryptium.coincurrently.core.models.ChartTypes
 import com.cryptium.coincurrently.features.CoinDetail.Views.About.CryptoDetailAboutView
 import com.cryptium.coincurrently.features.CoinDetail.Views.About.toDetailAboutData
@@ -132,9 +132,9 @@ import com.cryptium.coincurrently.core.analytics.TabChanged
 import com.cryptium.coincurrently.core.analytics.WidgetAdded
 import com.cryptium.coincurrently.core.analytics.WidgetReplaceUndone
 import com.cryptium.coincurrently.core.analytics.WidgetReplaced
-import com.cryptium.coincurrently.features.Portfolio.DataClasses.NewTransaction
+import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
-import com.cryptium.coincurrently.features.Portfolio.Enums.NewTransactionType
+import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import com.cryptium.coincurrently.features.Portfolio.Sheets.SelectTransactionTypeSheet
 import com.cryptium.coincurrently.features.Portfolio.Sheets.SwapTransactionDetailSheet
 import com.cryptium.coincurrently.features.Portfolio.Sheets.TransactionDetailSheet
@@ -149,7 +149,7 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
 import com.cryptium.coincurrently.core.networking.ResponseModels.toCryptoDetail
 import com.cryptium.coincurrently.core.networking.ResponseModels.toToplist
 import kotlin.math.floor
-import com.cryptium.coincurrently.features.PriceAlerts.NewPriceAlertSheet
+import com.cryptium.coincurrently.features.PriceAlerts.CreatePriceAlertSheet
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @SuppressLint("UnrememberedMutableState")
@@ -215,7 +215,7 @@ fun CryptoDetailScreen(
 
     val isDropDownExpanded = remember { mutableStateOf(false) }
 
-    val currentSubscription by StoreKitManager.currentSubscription.observeAsState()
+    val currentSubscription by BillingManager.currentSubscription.observeAsState()
 
     val isMarketsSortShowing = remember { mutableStateOf(false) }
     val showSentimentInfo = remember { mutableStateOf(false) }
@@ -329,7 +329,7 @@ fun CryptoDetailScreen(
         val symbol = coin?.symbol?.uppercase(AppLocale.enUsPosix) ?: "Coin"
 
         when (event) {
-            is NewTransaction -> {
+            is PortfolioTransaction -> {
                 navigationViewModel.showSnackbar(
                     context = context,
                     type = SnackBarType.SUCCESS,
@@ -344,7 +344,7 @@ fun CryptoDetailScreen(
                 )
             }
 
-            is NewSwapTransaction -> {
+            is PortfolioSwapTransaction -> {
                 navigationViewModel.showSnackbar(
                     context = context,
                     type = SnackBarType.SUCCESS,
@@ -524,7 +524,7 @@ fun CryptoDetailScreen(
                             },
                             shareDetailPage = {
                                 context.getActivity()?.let { activity ->
-                                    CryptoDetailShareView(
+                                    CryptoDetailShareCard(
                                         activity = activity,
                                         context = context,
                                         viewModel = viewModel
@@ -569,7 +569,7 @@ fun CryptoDetailScreen(
                     }
 
                     item {
-                        ChartButtonsView(
+                        ChartTypeButtonsView(
                             fromScreen = ScreenLabel.CryptoDetail,
                             selectedGraphType = viewModel.currentChartType.value,
                             isCandleChartEnabled = viewModel.isCandleChartEnabled,
@@ -1062,7 +1062,7 @@ fun CryptoDetailScreen(
             }
 
             if (showAddAlert) {
-                NewPriceAlertSheet(
+                CreatePriceAlertSheet(
                     sheetState = sheetState,
                     cryptoDetailModel = viewModel.cryptoInfo,
                     selectedCurrency = selectedAlertCurrency,
@@ -1156,9 +1156,9 @@ fun CryptoDetailScreen(
 
                         it?.let {
                             when {
-                                (it == NewTransactionType.Swap) -> {
-                                    val dest = NavigationScreens.NewPortfolioSwapTransaction(
-                                        transactionType = NewTransactionType.Swap,
+                                (it == PortfolioTransactionType.Swap) -> {
+                                    val dest = NavigationScreens.AddPortfolioSwapTransaction(
+                                        transactionType = PortfolioTransactionType.Swap,
                                         currencyDataModel = viewModel.cryptoInfo,
                                         transaction = null,
                                         popToRoot = false
@@ -1166,7 +1166,7 @@ fun CryptoDetailScreen(
                                     AnalyticsManager.log(
                                         Navigate(
                                             fromScreen = ScreenLabel.CryptoDetail,
-                                            toScreen = ScreenLabel.NewSwapTransaction,
+                                            toScreen = ScreenLabel.PortfolioSwapTransaction,
                                             coinName = viewModel.cryptoInfo?.name ?: "",
                                         ),
                                     )
@@ -1174,7 +1174,7 @@ fun CryptoDetailScreen(
                                 }
 
                                 else -> {
-                                    val dest = NavigationScreens.NewPortfolioTransaction(
+                                    val dest = NavigationScreens.AddPortfolioTransaction(
                                         transactionType = it,
                                         currencyDataModel = viewModel.cryptoInfo,
                                         transaction = null,
@@ -1183,7 +1183,7 @@ fun CryptoDetailScreen(
                                     AnalyticsManager.log(
                                         Navigate(
                                             fromScreen = ScreenLabel.CryptoDetail,
-                                            toScreen = ScreenLabel.NewPortfolioTransaction,
+                                            toScreen = ScreenLabel.AddPortfolioTransaction,
                                             coinName = viewModel.cryptoInfo?.name ?: "",
                                         ),
                                     )
@@ -1197,7 +1197,7 @@ fun CryptoDetailScreen(
 
             selectedTransaction?.let {
                 when (val event = it) {
-                    is NewTransaction -> {
+                    is PortfolioTransaction -> {
                         val coin = viewModel.portfolio?.pieContaining(event)?.data
 
                         TransactionDetailSheet(
@@ -1205,7 +1205,7 @@ fun CryptoDetailScreen(
                             transaction = event,
                             editTransaction = {
                                 selectedTransaction = null
-                                val dest = NavigationScreens.NewPortfolioTransaction(
+                                val dest = NavigationScreens.AddPortfolioTransaction(
                                     transactionType = it.transactionType,
                                     currencyDataModel = viewModel.portfolio?.pieContaining(it)?.data?.toCryptoDetail(),
                                     transaction = it,
@@ -1214,7 +1214,7 @@ fun CryptoDetailScreen(
                                 AnalyticsManager.log(
                                     Navigate(
                                         fromScreen = ScreenLabel.CryptoDetail,
-                                        toScreen = ScreenLabel.NewPortfolioTransaction,
+                                        toScreen = ScreenLabel.AddPortfolioTransaction,
                                         coinName = coin?.name,
                                     ),
                                 )
@@ -1240,15 +1240,15 @@ fun CryptoDetailScreen(
                         )
                     }
 
-                    is NewSwapTransaction -> {
+                    is PortfolioSwapTransaction -> {
                         val swapCoin = viewModel.portfolio?.pieContaining(event)?.data
                         SwapTransactionDetailSheet(
                             coin = swapCoin,
                             transaction = event,
                             editTransaction = {
                                 selectedTransaction = null
-                                val dest = NavigationScreens.NewPortfolioSwapTransaction(
-                                    transactionType = NewTransactionType.Swap,
+                                val dest = NavigationScreens.AddPortfolioSwapTransaction(
+                                    transactionType = PortfolioTransactionType.Swap,
                                     currencyDataModel = CryptoDetailInfoModel(
                                         id = it.fromCurrencyId,
                                         symbol = it.fromCurrencySymbol
@@ -1259,7 +1259,7 @@ fun CryptoDetailScreen(
                                 AnalyticsManager.log(
                                     Navigate(
                                         fromScreen = ScreenLabel.CryptoDetail,
-                                        toScreen = ScreenLabel.NewSwapTransaction,
+                                        toScreen = ScreenLabel.PortfolioSwapTransaction,
                                         coinName = swapCoin?.name,
                                     ),
                                 )
@@ -1290,7 +1290,7 @@ fun CryptoDetailScreen(
             }
 
             selectedUrl?.let {
-                WebView(it) {
+                WebViewSheet(it) {
                     selectedUrl = null
                 }
             }

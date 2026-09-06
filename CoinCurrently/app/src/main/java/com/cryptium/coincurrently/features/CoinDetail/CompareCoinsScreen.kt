@@ -90,7 +90,7 @@ import com.cryptium.coincurrently.features.CoinDetail.Views.Compare.CompareRecta
 import com.cryptium.coincurrently.features.CoinDetail.Views.Compare.CompareSentimentView
 import com.cryptium.coincurrently.features.CoinDetail.Views.Compare.CompareStatisticsView
 import com.cryptium.coincurrently.features.CoinDetail.Views.Compare.CompareTouchChartStats
-import com.cryptium.coincurrently.features.CoinDetail.Views.General.ChartButtonsView
+import com.cryptium.coincurrently.features.CoinDetail.Views.General.ChartTypeButtonsView
 import com.cryptium.coincurrently.features.CoinDetail.Views.General.CryptoDetailSummaryView
 import com.cryptium.coincurrently.core.models.ChartTypes
 import com.cryptium.coincurrently.features.CoinDetail.Sheets.SelectCoinSheet
@@ -285,7 +285,7 @@ fun CompareCoinsScreen(
                         )
                     }
 
-                    ChartButtonsView(
+                    ChartTypeButtonsView(
                         fromScreen = ScreenLabel.CompareCoins,
                         selectedGraphType = viewModel.currentChartType.value,
                         isCandleChartEnabled = false,
