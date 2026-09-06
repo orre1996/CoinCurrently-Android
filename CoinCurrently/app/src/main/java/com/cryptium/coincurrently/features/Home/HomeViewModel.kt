@@ -103,7 +103,9 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
     private val gasFeesRepository by lazy { GasFeesRepository }
     private val winnersLosersRepository by lazy { WinnersLosersRepository }
 
-    override var selectedFilter: CarouselFilter by mutableStateOf(CarouselFilter.TopCoins)
+    override var selectedFilter: CarouselFilter by mutableStateOf(
+        CarouselFilter.defaultHomeFilter(hasFavorites = UserPreferences.getFavorites().isNotEmpty())
+    )
     var hasResolvedDefaultHomeFilter by mutableStateOf(false)
         private set
 
@@ -345,7 +347,9 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
     private fun applyDefaultHomeFilterIfNeeded() {
         if (hasResolvedDefaultHomeFilter) return
         hasResolvedDefaultHomeFilter = true
-        selectedFilter = CarouselFilter.defaultHomeFilter(hasFavorites = !favorites.isNullOrEmpty())
+        selectedFilter = CarouselFilter.defaultHomeFilter(
+            hasFavorites = !favorites.isNullOrEmpty() || UserPreferences.getFavorites().isNotEmpty()
+        )
     }
 
     private suspend fun getFavorites() {

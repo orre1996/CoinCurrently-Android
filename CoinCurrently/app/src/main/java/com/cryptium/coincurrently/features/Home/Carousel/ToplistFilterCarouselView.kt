@@ -47,6 +47,7 @@ fun ToplistFilterCarouselView(
     scrollState: LazyListState,
     paddingValues: PaddingValues = PaddingValues(top = 24.dp, bottom = 16.dp),
     hasPro: Boolean = true,
+    animateSelectionChanges: Boolean = true,
     onFilterSelected: (CarouselFilter) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -70,7 +71,11 @@ fun ToplistFilterCarouselView(
     }
 
     LaunchedEffect(voiceOverFilterIndex) {
-        scrollState.animateScrollToItem(voiceOverFilterIndex, offset)
+        if (animateSelectionChanges) {
+            scrollState.animateScrollToItem(voiceOverFilterIndex, offset)
+        } else {
+            scrollState.scrollToItem(voiceOverFilterIndex, offset)
+        }
     }
 
     LaunchedEffect(voiceOverFilterIndex, talkBackEnabled) {

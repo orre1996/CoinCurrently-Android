@@ -23,8 +23,12 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -47,8 +51,8 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -148,7 +152,9 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import com.cryptium.coincurrently.core.networking.ResponseModels.*
+import kotlinx.coroutines.delay
 import java.util.Date
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class,
     ExperimentalPagerApi::class
@@ -227,13 +233,11 @@ fun PortfolioScreen(
     var isPickingStartDate: Boolean by remember { mutableStateOf(false) }
     var isDatePickerShowing: Boolean by remember { mutableStateOf(false) }
     var isPieChartShowing by remember { mutableStateOf(false) }
+    var didRestorePieChartPreference by remember { mutableStateOf(false) }
+    var animatePieChartToggle by remember { mutableStateOf(false) }
     var selectedPieSliceId by remember { mutableStateOf<String?>(null) }
     var lineChartHeight by remember { mutableStateOf(0.dp) }
     val chartPlotHeight = (screenHeight.dpToPx() * 0.35).pxToDp()
-    val chartHoverAreaHeight = 44.dp
-    val defaultChartAreaHeight =
-        chartPlotHeight + biggestValue.value.height + 32.dp + chartHoverAreaHeight
-    val chartAreaHeight = maxOf(lineChartHeight, defaultChartAreaHeight)
 
     val tabs = listOf("Assets", "Transactions", "Wallets")
 
@@ -259,7 +263,14 @@ fun PortfolioScreen(
         viewModel.initializeFromCache()
         viewModel.getPortfolioAndCurrencies(context)
         viewModel.refreshImportWallets()
-        isPieChartShowing = UserPreferences.getPortfolioPieChartShowing()
+    }
+
+    LaunchedEffect(Unit) {
+        if (!didRestorePieChartPreference && lineChartHeight > 0.dp) {
+            delay(0.1.seconds)
+            isPieChartShowing = UserPreferences.getPortfolioPieChartShowing()
+            didRestorePieChartPreference = true
+        }
     }
 
     ObserveCurrencyChanges(navigationViewModel) {
@@ -473,6 +484,7 @@ fun PortfolioScreen(
                         isPieChartShowing = isPieChartShowing,
                         togglePieChart = {
                             selectedPieSliceId = null
+                            animatePieChartToggle = true
                             isPieChartShowing = !isPieChartShowing
                             UserPreferences.setPortfolioPieChartShowing(isPieChartShowing)
                         },
@@ -556,7 +568,9 @@ fun PortfolioScreen(
                             AnimatedContent(
                                 targetState = isPieChartShowing,
                                 transitionSpec = {
-                                    if (targetState) {
+                                    if (!animatePieChartToggle) {
+                                        EnterTransition.None togetherWith ExitTransition.None using SizeTransform { _, _ -> snap() }
+                                    } else if (targetState) {
                                         slideInHorizontally(
                                             initialOffsetX = { fullWidth -> fullWidth },
                                             animationSpec = tween(400),
@@ -584,7 +598,7 @@ fun PortfolioScreen(
                                         isLoading = viewModel.isDownloading,
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .height(chartAreaHeight)
+                                            .height(lineChartHeight.coerceAtLeast(1.dp))
                                             .padding(
                                                 horizontal = 16.dp,
                                                 vertical = 48.dp,
@@ -778,11 +792,21 @@ fun PortfolioScreen(
                                             viewModel.selectedChartTimeFrame,
                                             viewModel.getTimeStamps(dropLastTwo = viewModel.benchmarkCoin != null),
                                             modifier = Modifier
-                                                .offset(y = -biggestValue.value.height / 2)
+                                                .layout { measurable, constraints ->
+                                                    val placeable = measurable.measure(constraints)
+                                                    val overlap = (biggestValue.value.height / 2).roundToPx()
+                                                    layout(
+                                                        placeable.width,
+                                                        (placeable.height - overlap).coerceAtLeast(0),
+                                                    ) {
+                                                        placeable.placeRelative(0, -overlap)
+                                                    }
+                                                }
                                                 .padding(
                                                     start = 16.dp,
                                                     end = 16.dp + biggestValue.value.width,
-                                                    bottom = (if (viewModel.benchmarkCoin == null) 32 else 16).dp + biggestValue.value.height / 2
+                                                    bottom = (if (viewModel.benchmarkCoin == null) 32 else 16).dp +
+                                                        biggestValue.value.height / 2,
                                                 )
                                                 .hideFromTalkBackWhenEnabled()
                                         )

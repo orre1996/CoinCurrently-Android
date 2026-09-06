@@ -393,7 +393,9 @@ fun HomeScreen(
                             viewModel.selectedFilter == CarouselFilter.Favorites && viewModel.favorites?.isEmpty() == true
                         val headerAlpha: Float by animateFloatAsState(
                             targetValue = if (hideToplistHeader) 0f else 1f,
-                            animationSpec = tween(durationMillis = 220),
+                            animationSpec = tween(
+                                durationMillis = if (hasScrolledToDefaultHomeFilter) 220 else 0
+                            ),
                             label = "toplistHeaderAlpha"
                         )
 
@@ -406,6 +408,7 @@ fun HomeScreen(
                                 selectedFilter = viewModel.selectedFilter,
                                 scrollState = filterListState,
                                 paddingValues = PaddingValues(top = 24.dp, bottom = 16.dp),
+                                animateSelectionChanges = hasScrolledToDefaultHomeFilter,
                                 onFilterSelected = { filter ->
                                     viewModel.selectedFilter = filter
                                     AnalyticsManager.log(

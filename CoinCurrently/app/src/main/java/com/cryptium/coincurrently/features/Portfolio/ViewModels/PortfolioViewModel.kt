@@ -184,7 +184,7 @@ class PortfolioViewModel : ViewModel() {
             dates = getTimeStamps(dropLastTwo = benchmarkCoin != null),
             timeChart = selectedChartTimeFrame,
             is24HourClock = is24HourClock,
-            isBlocked = portfolio.isNullOrEmpty(),
+            isBlocked = portfolio == null,
         )
         isDragging = chartHover.isDragging
         dragPosition.value = chartHover.dragPosition.value
