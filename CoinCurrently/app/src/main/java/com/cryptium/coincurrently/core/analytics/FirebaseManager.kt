@@ -208,8 +208,12 @@ class FirebaseManager {
                 }
         }
 
-        fun syncPurchases() {
+        fun syncPurchases(onComplete: (() -> Unit)? = null) {
             val appUserId = uid ?: FirebaseAuth.getInstance().currentUser?.uid
+
+            fun finish() {
+                onComplete?.invoke()
+            }
 
             fun fetchAndApplyCurrentCustomerInfo() {
                 Purchases.sharedInstance.getCustomerInfo(
@@ -218,11 +222,12 @@ class FirebaseManager {
                         override fun onReceived(customerInfo: CustomerInfo) {
                             Handler(Looper.getMainLooper()).post {
                                 BillingManager.applyCustomerInfo(customerInfo)
+                                finish()
                             }
                         }
 
                         override fun onError(error: PurchasesError) {
-                            // Cached pro state remains until next sync.
+                            finish()
                         }
                     },
                 )
@@ -245,6 +250,17 @@ class FirebaseManager {
                     }
                 },
             )
+        }
+
+        suspend fun awaitSyncPurchases() = suspendCancellableCoroutine { continuation ->
+            var resumed = false
+            fun resumeOnce() {
+                if (!resumed && continuation.isActive) {
+                    resumed = true
+                    continuation.resume(Unit)
+                }
+            }
+            syncPurchases { resumeOnce() }
         }
 
         fun setupFirebase(

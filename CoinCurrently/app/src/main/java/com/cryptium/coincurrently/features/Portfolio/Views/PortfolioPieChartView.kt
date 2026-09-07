@@ -26,9 +26,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.invisibleToUser
-import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.onClick
-import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.Constraints
@@ -266,9 +264,7 @@ private fun PieSliceTalkBackOverlay(
     val minSizePx = with(LocalDensity.current) { 48.dp.toPx() }
 
     Layout(
-        modifier = Modifier
-            .fillMaxSize()
-            .semantics { isTraversalGroup = true },
+        modifier = Modifier.fillMaxSize(),
         content = {
             slices.forEachIndexed { index, slice ->
                 val isSelected = slice.id == selectedSliceId
@@ -277,9 +273,8 @@ private fun PieSliceTalkBackOverlay(
                         .focusable()
                         .clearAndSetSemantics {
                             contentDescription = portfolioPieAccessibilityLabel(slice)
-                            selected = isSelected
                             traversalIndex = index.toFloat()
-                            onClick(label = if (isSelected) "Deselect" else "Select") {
+                            onClick {
                                 onSelectedSliceIdChange(if (isSelected) null else slice.id)
                                 true
                             }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.features.Referral.ReferralRepository
 import com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager
 import com.cryptium.coincurrently.features.Achievements.Models.AchievementCounterKey
@@ -67,10 +68,11 @@ class ReferralViewModel(
         referralLink = result.inviteLink
     }
 
-    suspend fun getUser(ignoreCache: Boolean = false) {
-        val response = ReferralRepository.getUser(ignoreCache = ignoreCache) ?: return
+    suspend fun getUser() {
+        val response = ReferralRepository.getUser(ignoreCache = true) ?: return
         user = response
         currentReferrals = response.referralCount
+        FirebaseManager.awaitSyncPurchases()
     }
 
     fun redeemCode() {

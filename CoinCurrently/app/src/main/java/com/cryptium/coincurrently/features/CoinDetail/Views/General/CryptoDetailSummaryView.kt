@@ -101,7 +101,18 @@ fun CryptoDetailSummaryView(
             currency = currency,
             accessible = true,
         ) ?: ""
-        "${name ?: "coin"}$accessibilityCountryText. $valueAccessibilityLabel: $currentPriceText. ${selectedTimeframe.accessibilityTimeframe} $changeMetricLabel change. $changeDirection $formattedChangePercent percent"
+        val changeValueText = if (changeMetricLabel == "holdings") {
+            val changeValue = roundedChange.getChangeInValue(currentValue = currentPrice ?: 0.0)
+            val formattedChangeValue = kotlin.math.abs(changeValue).formatCurrency(
+                threshold = accessibilityFormattingThreshold,
+                currency = currency,
+                accessible = true,
+            )
+            "$formattedChangeValue. "
+        } else {
+            ""
+        }
+        "${name ?: "coin"}$accessibilityCountryText. $valueAccessibilityLabel: $currentPriceText. ${selectedTimeframe.accessibilityTimeframe} $changeMetricLabel change. $changeDirection $changeValueText$formattedChangePercent percent"
     }
     val fullAccessibilityLabel = if (changeCoinAccessibilityHint != null) {
         "$accessibilityLabel. $changeCoinAccessibilityHint"

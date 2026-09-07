@@ -300,6 +300,7 @@ class MainActivity: FragmentActivity() {
                                 GlobalScope.launch {
                                     PriceAlertsRepository.updateUser()
                                 }
+                                FirebaseManager.syncPurchases()
                             }
 
                             if (UserPreferences.getIsBiometricAuthenticationEnabled() && biometricViewModel.isAppLocked) {

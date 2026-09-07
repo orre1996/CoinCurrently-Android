@@ -161,13 +161,6 @@ fun TreasuryTransactionItemView(
                 add(if (type == TreasuryTransactionType.buy) "Buy" else "Sell")
             }
             add(coinName)
-            add(
-                "Balance: ${(transaction.holding_balance ?: 0.0).formatCurrency(
-                    threshold = FormattingThreshold.NONE,
-                    currency = accessibilityHoldingsCurrency,
-                    accessible = true,
-                )}"
-            )
             val change = transaction.holding_net_change ?: 0.0
             val changeAmount = kotlin.math.abs(change).formatCurrency(
                 threshold = FormattingThreshold.NONE,
@@ -180,6 +173,13 @@ fun TreasuryTransactionItemView(
                     change < 0 -> "Change down $changeAmount"
                     else -> "Change $changeAmount"
                 }
+            )
+            add(
+                "Balance: ${(transaction.holding_balance ?: 0.0).formatCurrency(
+                    threshold = FormattingThreshold.NONE,
+                    currency = accessibilityHoldingsCurrency,
+                    accessible = true,
+                )}"
             )
         }.joinToString(". ")
     }

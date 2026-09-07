@@ -326,6 +326,7 @@ class BillingManager {
 
         private fun syncSubscriptionState(context: Context) {
             Purchases.sharedInstance.getCustomerInfo(
+                CacheFetchPolicy.FETCH_CURRENT,
                 object : ReceiveCustomerInfoCallback {
                     override fun onReceived(customerInfo: CustomerInfo) {
                         GlobalScope.launch {

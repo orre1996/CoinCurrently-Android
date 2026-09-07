@@ -58,7 +58,7 @@ object ReferralRepository {
         Log.w("Network call ", "Redeem referral code")
         val result = RedeemCodeResult.fromResult(MainRepository.redeemCode(refCode))
         if (result == RedeemCodeResult.Success) {
-            FirebaseManager.syncPurchases()
+            FirebaseManager.awaitSyncPurchases()
         }
         return result
     }

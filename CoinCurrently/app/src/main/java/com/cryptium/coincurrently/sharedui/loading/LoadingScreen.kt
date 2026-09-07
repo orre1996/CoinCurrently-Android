@@ -29,13 +29,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
-import com.cryptium.coincurrently.sharedui.sheets.ModalSheetNavigationBarExtensionSpacer
-import com.cryptium.coincurrently.sharedui.sheets.modalSheetNavigationBarsPadding
-import com.cryptium.coincurrently.sharedui.theme.primaryTextColor
+import com.cryptium.coincurrently.core.extensions.getActivity
+import com.cryptium.coincurrently.core.extensions.getNavigationBarHeight
 import com.cryptium.coincurrently.core.extensions.poppinsSemibold
-import com.cryptium.coincurrently.sharedui.theme.tabbarAccent
 import com.cryptium.coincurrently.core.extensions.poppinsRegular
+import com.cryptium.coincurrently.core.extensions.pxToDp
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.sharedui.theme.primaryTextColor
+import com.cryptium.coincurrently.sharedui.theme.tabbarAccent
 import com.cryptium.coincurrently.sharedui.loading.ActivityIndicator
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
@@ -47,6 +48,8 @@ fun LoadingScreen(
     authenticate: () -> Unit
 ) {
     val context = LocalContext.current
+    val systemNavigationBarBottomInset =
+        (context.getActivity()?.getNavigationBarHeight() ?: 0).pxToDp()
     var showSpinner by remember { mutableStateOf(false) }
     val spinnerAlpha by animateFloatAsState(
         targetValue = if (showSpinner) 1f else 0f,
@@ -112,7 +115,7 @@ fun LoadingScreen(
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.modalSheetNavigationBarsPadding(context),
+            modifier = Modifier.fillMaxSize(),
         ) {
             Spacer(modifier = Modifier.weight(1f))
 
@@ -120,9 +123,8 @@ fun LoadingScreen(
                 text = "Privacy by Default",
                 style = satoshiBold(18),
                 color = MaterialTheme.colors.onSurface,
-                modifier = Modifier.padding(bottom = 40.dp),
+                modifier = Modifier.padding(bottom = 40.dp + systemNavigationBarBottomInset),
             )
-            ModalSheetNavigationBarExtensionSpacer(context)
         }
     }
 }
