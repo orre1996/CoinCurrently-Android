@@ -11,7 +11,9 @@ import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.BuildConfig
 import com.cryptium.coincurrently.core.networking.ResponseModels.ApiService
+import com.cryptium.coincurrently.core.networking.ResponseModels.PublicTreasuryModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.serverBaseUrl
+import com.google.gson.Gson
 import okhttp3.Cache
 import okhttp3.CacheControl
 import okhttp3.Interceptor
@@ -362,6 +364,35 @@ class ResultCall<T>(private val delegate: Call<T>, val context: Context, private
         return response.body()!!
     }
 
+    private fun readErrorBody(response: Response<T>): String? {
+        return try {
+            response.errorBody()?.string()
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun emptyBodyIfNotFound(url: String, error: NetworkError): T? {
+        if (!NetworkError.isPublicTreasuryListUrl(url)) return null
+        if (error != NetworkError.NotFound) return null
+        return emptyPublicTreasury()
+    }
+
+    private fun emptyPublicTreasury(): T? {
+        return try {
+            if (responseType == PublicTreasuryModel::class.java) {
+                @Suppress("UNCHECKED_CAST")
+                return PublicTreasuryModel() as T
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            Gson().fromJson("{}", responseType) as? T
+        } catch (_: Exception) {
+            @Suppress("UNCHECKED_CAST")
+            (PublicTreasuryModel() as? T)
+        }
+    }
+
     override fun enqueue(callback: Callback<Result<T>>) {
         val url = delegate.request().url.toString()
         val isGetRequest = delegate.request().method == "GET"
@@ -407,11 +438,22 @@ class ResultCall<T>(private val delegate: Call<T>, val context: Context, private
                             )
                         )
                     } else {
+                        val errorBody = readErrorBody(response)
+                        val err = NetworkError.fromHttpCode(response.code(), errorBody)
+                        emptyBodyIfNotFound(url, err)?.let { empty ->
+                            if (isGetRequest) {
+                                RetrofitBuilder.setCached(url, CachedData(empty, Date()))
+                            }
+                            callback.onResponse(
+                                this@ResultCall,
+                                Response.success(200, Result.success(empty))
+                            )
+                            return
+                        }
                         if (isGetRequest) {
                             @Suppress("UNCHECKED_CAST")
                             val stale: CachedData<T>? = RetrofitBuilder.getStaleGetCache<T>(url, responseType)
                             if (stale != null) {
-                                val err: NetworkError = NetworkError.fromHttpCode(response.code())
                                 MainActivity.showSnackbar(
                                     context,
                                     SnackBarType.FAILURE,
@@ -424,7 +466,6 @@ class ResultCall<T>(private val delegate: Call<T>, val context: Context, private
                                 return
                             }
                         }
-                        val err: NetworkError = NetworkError.fromHttpCode(response.code())
                         if (!isRedeemCode) {
                             MainActivity.showSnackbar(
                                 context,
@@ -500,6 +541,11 @@ class ResultCall<T>(private val delegate: Call<T>, val context: Context, private
             if (response.isSuccessful) {
                 Response.success(Result.success(successValue(response)))
             } else {
+                val errorBody = readErrorBody(response)
+                val err = NetworkError.fromHttpCode(response.code(), errorBody)
+                emptyBodyIfNotFound(delegate.request().url.toString(), err)?.let { empty ->
+                    return Response.success(Result.success(empty))
+                }
                 Response.success(Result.failure(HttpException(response)))
             }
         } catch (t: Throwable) {

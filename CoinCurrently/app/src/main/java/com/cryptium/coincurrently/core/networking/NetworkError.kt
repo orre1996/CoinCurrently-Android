@@ -58,16 +58,38 @@ enum class NetworkError(val code: Int) {
     }
 
     companion object {
-        fun fromHttpCode(code: Int): NetworkError = when (code) {
-            400 -> InvalidRequest
-            401 -> UnauthorizedRequest
-            403 -> ForbiddenRequest
-            404 -> NotFound
-            429 -> TooManyRequests
-            500 -> ServerError
-            503 -> ApiUnavailable
-            998 -> CouldntGenerateIdToken
-            else -> UnknownError
+        fun isPublicTreasuryListUrl(url: String): Boolean {
+            return url.contains("/companies/public_treasury/") ||
+                url.contains("/governments/public_treasury/")
+        }
+
+        // Backend error bodies use `{ "detail": "..." }`. Upstream 404s are often
+        // forwarded as 500s with a HttpRequestException in `detail`.
+        fun isUpstreamNotFound(errorBody: String?): Boolean {
+            if (errorBody.isNullOrBlank()) return false
+
+            val detail = try {
+                org.json.JSONObject(errorBody).optString("detail").ifBlank { errorBody }
+            } catch (_: Exception) {
+                errorBody
+            }
+
+            return detail.contains("404") && detail.contains("Not Found", ignoreCase = true)
+        }
+
+        fun fromHttpCode(code: Int, errorBody: String? = null): NetworkError {
+            if (isUpstreamNotFound(errorBody)) return NotFound
+            return when (code) {
+                400 -> InvalidRequest
+                401 -> UnauthorizedRequest
+                403 -> ForbiddenRequest
+                404 -> NotFound
+                429 -> TooManyRequests
+                500 -> ServerError
+                503 -> ApiUnavailable
+                998 -> CouldntGenerateIdToken
+                else -> UnknownError
+            }
         }
 
         fun fromThrowable(error: Throwable): NetworkError {
