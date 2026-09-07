@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.sharedui.components.CachedUrlImage
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
+import com.cryptium.coincurrently.core.extensions.accessibleLongDateDescription
 import com.cryptium.coincurrently.core.extensions.changeColor
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.formatDate
@@ -32,6 +34,8 @@ import com.cryptium.coincurrently.core.extensions.DateFormat
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 import com.cryptium.coincurrently.core.networking.ResponseModels.TreasuryTransaction
+import com.cryptium.coincurrently.core.networking.ResponseModels.TreasuryTransactionType
+import com.cryptium.coincurrently.core.persistence.allCurrencies
 
 @Composable
 fun TreasuryTransactionHistoryView(
@@ -86,7 +90,7 @@ fun TreasuryTransactionHistoryHeaderView() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 6.dp)
-            .semantics { invisibleToUser() },
+            .clearAndSetSemantics { invisibleToUser() },
     ) {
         MinimumTextSize(
             text = "Dec 31, 2025",
@@ -123,9 +127,13 @@ fun TreasuryTransactionItemView(
     coin: Toplist?,
 ) {
     val holdingsCurrency = holdingsCurrency(coin, transaction)
+    val accessibilityHoldingsCurrency = accessibleHoldingsCurrency(coin, transaction)
     val formattedDate = transaction?.date?.let { timestamp ->
         java.util.Date(timestamp.toLong()).formatDate(DateFormat.MMMdyyyy)
     } ?: "000000"
+    val accessibilityDate = transaction?.date?.let { timestamp ->
+        java.util.Date(timestamp.toLong()).accessibleLongDateDescription()
+    } ?: formattedDate
     val coinName = coin?.name ?: transaction?.coin_id?.replaceFirstChar { it.uppercase() } ?: "00000"
     val balanceText = (transaction?.holding_balance ?: 843_738.0).formatCurrency(
         threshold = FormattingThreshold.NONE,
@@ -147,12 +155,33 @@ fun TreasuryTransactionItemView(
     val accessibilityLabel = if (transaction == null) {
         "Loading transaction"
     } else {
-        listOf(
-            formattedDate,
-            coinName,
-            "Balance $balanceText",
-            "Change $netChangeText",
-        ).joinToString(". ")
+        buildList {
+            add(accessibilityDate)
+            transaction.type?.let { type ->
+                add(if (type == TreasuryTransactionType.buy) "Buy" else "Sell")
+            }
+            add(coinName)
+            add(
+                "Balance: ${(transaction.holding_balance ?: 0.0).formatCurrency(
+                    threshold = FormattingThreshold.NONE,
+                    currency = accessibilityHoldingsCurrency,
+                    accessible = true,
+                )}"
+            )
+            val change = transaction.holding_net_change ?: 0.0
+            val changeAmount = kotlin.math.abs(change).formatCurrency(
+                threshold = FormattingThreshold.NONE,
+                currency = accessibilityHoldingsCurrency,
+                accessible = true,
+            )
+            add(
+                when {
+                    change > 0 -> "Change up $changeAmount"
+                    change < 0 -> "Change down $changeAmount"
+                    else -> "Change $changeAmount"
+                }
+            )
+        }.joinToString(". ")
     }
 
     Row(
@@ -177,7 +206,8 @@ fun TreasuryTransactionItemView(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .shimmeringModifier(transaction == null),
+                    .shimmeringModifier(transaction == null)
+                    .semantics { invisibleToUser() },
             )
         }
 
@@ -185,7 +215,8 @@ fun TreasuryTransactionItemView(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier
-                .padding(end = 12.dp),
+                .padding(end = 12.dp)
+                .semantics { invisibleToUser() },
         ) {
             CachedUrlImage(
                 model = coin?.image,
@@ -206,7 +237,8 @@ fun TreasuryTransactionItemView(
         Column(
             horizontalAlignment = Alignment.End,
             modifier = Modifier
-                .weight(1f),
+                .weight(1f)
+                .semantics { invisibleToUser() },
         ) {
             Text(
                 text = balanceText,
@@ -241,4 +273,25 @@ private fun holdingsCurrency(
         symbol = symbol,
         suffix = true,
     )
+}
+
+private fun accessibleHoldingsCurrency(
+    coin: Toplist?,
+    transaction: TreasuryTransaction?,
+): CurrencySelectionModel {
+    val symbol = coin?.symbol?.uppercase()
+        ?: transaction?.coin_id?.uppercase()
+
+    if (!symbol.isNullOrEmpty()) {
+        allCurrencies.firstOrNull { it.code == symbol }?.let { return it }
+        return CurrencySelectionModel(
+            currency = symbol.map { it.toString() }.joinToString(" "),
+            code = symbol,
+            symbol = symbol,
+            suffix = true,
+            readAccessibilityAsSymbol = true,
+        )
+    }
+
+    return holdingsCurrency(coin, transaction)
 }

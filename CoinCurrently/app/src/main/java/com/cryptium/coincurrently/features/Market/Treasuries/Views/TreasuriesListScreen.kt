@@ -285,6 +285,7 @@ private fun LazyListScope.realList(
     }) { index, treasury ->
         TreasuriesItemView(
             data = treasury.holder,
+            entity = treasury.entity,
             coinSymbol = viewModel.selectedCoin?.symbol,
             priceMultiplier = viewModel.multiplier,
             listIndex = index,

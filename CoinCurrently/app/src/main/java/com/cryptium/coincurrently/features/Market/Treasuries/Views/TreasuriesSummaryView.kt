@@ -20,6 +20,7 @@ import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
+import com.cryptium.coincurrently.core.persistence.allCurrencies
 
 @Composable
 fun TreasuriesSummaryView(
@@ -30,23 +31,23 @@ fun TreasuriesSummaryView(
 ) {
     val isHorizontal = !AccessibilityLayout.isHorizontal
     val holdingsCurrency = holdingsCurrency(coinSymbol)
+    val accessibilityHoldingsCurrency = accessibleHoldingsCurrency(coinSymbol)
     val formattedTotalHoldings = (totalHoldings ?: 1_272_129.0).formatCurrency(
         threshold = if (isHorizontal) FormattingThreshold.MILLION else FormattingThreshold.NONE,
         currency = holdingsCurrency,
     )
     val roundedDominance = (marketCapDominance ?: 0.0).roundTo(2)
     val formattedDominance = "%.2f".format(roundedDominance)
-    val summaryAccessibilityLabel = buildString {
-        append(
-            "Total Holdings: ${
-                (totalHoldings ?: 0.0).formatCurrency(
-                    threshold = if (isHorizontal) FormattingThreshold.MILLION else FormattingThreshold.NONE,
-                    currency = holdingsCurrency,
-                    accessible = true,
-                )
-            }. "
-        )
-        append("Market Cap Dominance: ${roundedDominance.numberAccessible(maxPlaces = 2)} percent")
+    val summaryAccessibilityLabel = if (totalHoldings == null && marketCapDominance == null) {
+        "Loading total holdings"
+    } else {
+        "Total Holdings: ${
+            (totalHoldings ?: 0.0).formatCurrency(
+                threshold = if (isHorizontal) FormattingThreshold.MILLION else FormattingThreshold.NONE,
+                currency = accessibilityHoldingsCurrency,
+                accessible = true,
+            )
+        }. Market Cap Dominance: ${roundedDominance.numberAccessible(maxPlaces = 2)} percent"
     }
 
     Column(
@@ -96,6 +97,27 @@ private fun holdingsCurrency(coinSymbol: String?): CurrencySelectionModel {
         currency = "",
         code = coinSymbol?.uppercase() ?: "BTC",
         symbol = coinSymbol?.uppercase() ?: "BTC",
+        suffix = true,
+    )
+}
+
+private fun accessibleHoldingsCurrency(coinSymbol: String?): CurrencySelectionModel {
+    val symbol = coinSymbol?.uppercase()
+    if (!symbol.isNullOrEmpty()) {
+        allCurrencies.firstOrNull { it.code == symbol }?.let { return it }
+        return CurrencySelectionModel(
+            currency = symbol.map { it.toString() }.joinToString(" "),
+            code = symbol,
+            symbol = symbol,
+            suffix = true,
+            readAccessibilityAsSymbol = true,
+        )
+    }
+
+    return CurrencySelectionModel(
+        currency = "",
+        code = "BTC",
+        symbol = "BTC",
         suffix = true,
     )
 }

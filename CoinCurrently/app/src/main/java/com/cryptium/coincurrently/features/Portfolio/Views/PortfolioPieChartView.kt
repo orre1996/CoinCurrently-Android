@@ -3,6 +3,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -16,28 +17,37 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
-import kotlin.math.cos
-import kotlin.math.sin
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.invisibleToUser
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.core.extensions.numberAccessible
 import com.cryptium.coincurrently.core.extensions.roundTo
-import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
-import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
-import com.cryptium.coincurrently.sharedui.theme.primary20
-import com.cryptium.coincurrently.sharedui.modifiers.shimmer
-import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioPieChartLayout
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioPieSlice
+import com.cryptium.coincurrently.sharedui.modifiers.shimmer
+import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
+import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
+import com.cryptium.coincurrently.sharedui.theme.primary20
+import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
 import kotlin.math.PI
 import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.roundToInt
+import kotlin.math.sin
 import kotlin.math.sqrt
 
 private const val selectedOuterRadiusScale = 1.1f
@@ -154,6 +164,7 @@ private fun InteractivePortfolioPieChart(
             Canvas(
                 modifier = Modifier
                     .fillMaxSize()
+                    .semantics { invisibleToUser() }
                     .then(
                         if (isLoading) {
                             Modifier.shimmer(1500, true)
@@ -217,16 +228,11 @@ private fun InteractivePortfolioPieChart(
             }
             }
 
-            slices.forEach { slice ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .semantics {
-                            contentDescription = portfolioPieAccessibilityLabel(slice)
-                            selected = slice.id == selectedSliceId
-                        },
-                )
-            }
+            PieSliceTalkBackOverlay(
+                slices = slices,
+                selectedSliceId = selectedSliceId,
+                onSelectedSliceIdChange = onSelectedSliceIdChange,
+            )
 
             selectedSlice?.let { slice ->
                 Column(
@@ -249,6 +255,123 @@ private fun InteractivePortfolioPieChart(
             }
         }
     }
+}
+
+@Composable
+private fun PieSliceTalkBackOverlay(
+    slices: List<PortfolioPieSlice>,
+    selectedSliceId: String?,
+    onSelectedSliceIdChange: (String?) -> Unit,
+) {
+    val minSizePx = with(LocalDensity.current) { 48.dp.toPx() }
+
+    Layout(
+        modifier = Modifier
+            .fillMaxSize()
+            .semantics { isTraversalGroup = true },
+        content = {
+            slices.forEachIndexed { index, slice ->
+                val isSelected = slice.id == selectedSliceId
+                Box(
+                    modifier = Modifier
+                        .focusable()
+                        .clearAndSetSemantics {
+                            contentDescription = portfolioPieAccessibilityLabel(slice)
+                            selected = isSelected
+                            traversalIndex = index.toFloat()
+                            onClick(label = if (isSelected) "Deselect" else "Select") {
+                                onSelectedSliceIdChange(if (isSelected) null else slice.id)
+                                true
+                            }
+                        },
+                )
+            }
+        },
+    ) { measurables, constraints ->
+        val chartSize = minOf(constraints.maxWidth, constraints.maxHeight).toFloat()
+        val placeables = measurables.mapIndexed { index, measurable ->
+            val bounds = sliceTalkBackBounds(
+                slice = slices[index],
+                chartSize = chartSize,
+                minSize = minSizePx,
+            )
+            val width = bounds.width.roundToInt().coerceAtLeast(1)
+            val height = bounds.height.roundToInt().coerceAtLeast(1)
+            Triple(
+                measurable.measure(Constraints.fixed(width, height)),
+                bounds.left.roundToInt(),
+                bounds.top.roundToInt(),
+            )
+        }
+
+        layout(constraints.maxWidth, constraints.maxHeight) {
+            placeables.forEach { (placeable, x, y) ->
+                placeable.place(x, y)
+            }
+        }
+    }
+}
+
+private fun sliceTalkBackBounds(
+    slice: PortfolioPieSlice,
+    chartSize: Float,
+    minSize: Float,
+): Rect {
+    val center = Offset(chartSize / 2f, chartSize / 2f)
+    val outerRadius = chartSize / 2f
+    val innerRadius = outerRadius * PortfolioPieChartLayout.innerRadiusRatio
+    val isFullRing = slice.outerEndAngle - slice.outerStartAngle >= 359.0
+
+    if (isFullRing) {
+        return Rect(0f, 0f, chartSize, chartSize)
+    }
+
+    fun pointOnCircle(angleDegrees: Double, radius: Float): Offset {
+        val radians = angleDegrees * PI / 180.0
+        return Offset(
+            x = center.x + (cos(radians) * radius).toFloat(),
+            y = center.y + (sin(radians) * radius).toFloat(),
+        )
+    }
+
+    val points = buildList {
+        add(pointOnCircle(slice.outerStartAngle, outerRadius))
+        add(pointOnCircle(slice.outerEndAngle, outerRadius))
+        add(pointOnCircle(slice.innerStartAngle, innerRadius))
+        add(pointOnCircle(slice.innerEndAngle, innerRadius))
+
+        for (cardinal in listOf(0.0, 90.0, 180.0, 270.0)) {
+            if (containsAngle(cardinal, slice.outerStartAngle, slice.outerEndAngle)) {
+                add(pointOnCircle(cardinal, outerRadius))
+            }
+            if (containsAngle(cardinal, slice.innerStartAngle, slice.innerEndAngle)) {
+                add(pointOnCircle(cardinal, innerRadius))
+            }
+        }
+    }
+
+    var left = points.minOf { it.x }
+    var top = points.minOf { it.y }
+    var right = points.maxOf { it.x }
+    var bottom = points.maxOf { it.y }
+
+    if (right - left < minSize || bottom - top < minSize) {
+        val midAngle = (slice.outerStartAngle + slice.outerEndAngle) / 2.0
+        val midRadius = (outerRadius + innerRadius) / 2f
+        val centroid = pointOnCircle(midAngle, midRadius)
+        val half = minSize / 2f
+        left = centroid.x - half
+        top = centroid.y - half
+        right = centroid.x + half
+        bottom = centroid.y + half
+    }
+
+    return Rect(
+        left = left.coerceIn(0f, chartSize),
+        top = top.coerceIn(0f, chartSize),
+        right = right.coerceIn(0f, chartSize),
+        bottom = bottom.coerceIn(0f, chartSize),
+    )
 }
 
 @Composable

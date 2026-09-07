@@ -28,11 +28,13 @@ import com.cryptium.coincurrently.features.Market.Exchanges.Models.CountryFlagEm
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.PublicTreasuryHolder
+import com.cryptium.coincurrently.core.networking.TreasuryEntity
 import java.util.Locale
 
 @Composable
 fun TreasuriesItemView(
     data: PublicTreasuryHolder?,
+    entity: TreasuryEntity? = null,
     coinSymbol: String?,
     priceMultiplier: Double?,
     listIndex: Int? = null,
@@ -60,6 +62,7 @@ fun TreasuriesItemView(
     }
     val accessibilityLabelText = buildAccessibilityLabel(
         data = data,
+        entity = entity,
         coinSymbol = coinSymbol,
         priceMultiplier = priceMultiplier,
         listIndex = listIndex,
@@ -143,25 +146,32 @@ private fun CountryFlagView(
         text = flag ?: country ?: "00000",
         style = satoshiBold(16),
         color = MaterialTheme.colors.onSurface,
-        modifier = Modifier.shimmeringModifier(isLoading && flag == null),
+        modifier = Modifier
+            .shimmeringModifier(isLoading && flag == null)
+            .semantics { invisibleToUser() },
     )
 }
 
 private fun buildAccessibilityLabel(
     data: PublicTreasuryHolder?,
+    entity: TreasuryEntity?,
     coinSymbol: String?,
     priceMultiplier: Double?,
     listIndex: Int?,
     listCount: Int?,
     holdingsCurrency: CurrencySelectionModel,
 ): String {
+    if (data == null) return "Loading treasury"
+
     val components = mutableListOf<String>()
 
     if (listIndex != null && listCount != null) {
-        components.add("Treasury ${listIndex + 1} of $listCount, ${data?.name ?: ""}")
+        components.add("Treasury ${listIndex + 1} of $listCount, ${data.name ?: ""}")
     } else {
-        components.add(data?.name ?: "")
+        components.add(data.name ?: "")
     }
+
+    entity?.displayName?.let { components.add(it) }
 
     data?.country?.let { countryCode ->
         val countryName = Locale.Builder().setRegion(countryCode).build().displayCountry

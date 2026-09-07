@@ -50,6 +50,7 @@ import com.cryptium.coincurrently.features.Market.Exchanges.Models.CountryFlagEm
 import kotlinx.coroutines.delay
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
+import java.util.Locale
 
 @Composable
 fun CryptoDetailSummaryView(
@@ -81,20 +82,26 @@ fun CryptoDetailSummaryView(
     )?.roundTo(2) ?: 0.0
     val formattedChangePercent = roundedChange.numberAccessible(maxPlaces = 2)
     val changeDirection = if (roundedChange >= 0) "up" else "down"
+    val accessibilityCountryText = countryCode
+        ?.takeIf { it.isNotEmpty() }
+        ?.let { Locale.Builder().setRegion(it).build().displayCountry }
+        ?.takeIf { it.isNotEmpty() }
+        ?.let { ". Country: $it" }
+        ?: ""
     val accessibilityLabel = if (changeMetricLabel == "volume") {
         val volumeText = currentPrice?.formatCurrency(
             threshold = accessibilityFormattingThreshold,
             currency = currency,
             accessible = true,
         ) ?: ""
-        "${name ?: "coin"}. $valueAccessibilityLabel. $volumeText. $changeDirection $formattedChangePercent percent ${selectedTimeframe.accessibilityChangePeriod}"
+        "${name ?: "coin"}$accessibilityCountryText. $valueAccessibilityLabel. $volumeText. $changeDirection $formattedChangePercent percent ${selectedTimeframe.accessibilityChangePeriod}"
     } else {
         val currentPriceText = currentPrice?.formatCurrency(
             threshold = accessibilityFormattingThreshold,
             currency = currency,
             accessible = true,
         ) ?: ""
-        "${name ?: "coin"}. $valueAccessibilityLabel: $currentPriceText. ${selectedTimeframe.accessibilityTimeframe} $changeMetricLabel change. $changeDirection $formattedChangePercent percent"
+        "${name ?: "coin"}$accessibilityCountryText. $valueAccessibilityLabel: $currentPriceText. ${selectedTimeframe.accessibilityTimeframe} $changeMetricLabel change. $changeDirection $formattedChangePercent percent"
     }
     val fullAccessibilityLabel = if (changeCoinAccessibilityHint != null) {
         "$accessibilityLabel. $changeCoinAccessibilityHint"

@@ -67,8 +67,8 @@ class ReferralViewModel(
         referralLink = result.inviteLink
     }
 
-    suspend fun getUser() {
-        val response = ReferralRepository.getUser() ?: return
+    suspend fun getUser(ignoreCache: Boolean = false) {
+        val response = ReferralRepository.getUser(ignoreCache = ignoreCache) ?: return
         user = response
         currentReferrals = response.referralCount
     }

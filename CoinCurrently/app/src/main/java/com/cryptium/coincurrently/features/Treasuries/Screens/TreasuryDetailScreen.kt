@@ -50,6 +50,8 @@ import com.cryptium.coincurrently.sharedui.charts.ChartHoverView
 import com.cryptium.coincurrently.sharedui.charts.LineChart
 import com.cryptium.coincurrently.sharedui.charts.MultiTouchView
 import com.cryptium.coincurrently.sharedui.charts.chartAccessibilityOverlay
+import com.cryptium.coincurrently.sharedui.charts.chartTalkBackSection
+import com.cryptium.coincurrently.sharedui.charts.deferTalkBackAfterChartAccessibility
 import com.cryptium.coincurrently.sharedui.charts.delayTouches
 import com.cryptium.coincurrently.sharedui.charts.hideFromTalkBackWhenEnabled
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
@@ -165,6 +167,8 @@ fun TreasuryDetailScreen(
                         selectedTimeframe = viewModel.selectedTimeFrame,
                         shortPrice = false,
                         currency = viewModel.selectedCurrency,
+                        valueAccessibilityLabel = "current holdings",
+                        changeMetricLabel = "holdings",
                         changeCoin = { },
                         modifier = Modifier.padding(
                             16.dp
@@ -173,115 +177,111 @@ fun TreasuryDetailScreen(
                 }
 
                 item {
-                    ChartHoverStats(
-                        isMultiHover = hoverUi.isMultiHover,
-                        hoverTimes = hoverUi.hoverTimes,
-                        differenceValue = hoverUi.differenceValue,
-                        differencePercent = hoverUi.differencePercent,
-                        multiHoverColor = hoverUi.multiHoverGraphColor,
-                        hoverPrice = hoverUi.hoverPrice,
-                        hoverPriceColor = hoverUi.hoverColor,
-                        hoverTime = hoverUi.hoverTime,
-                        hoverTimePosition = hoverUi.hoverTimePosition,
-                        isDragging = viewModel.isDragging,
-                        hoverPriceTextWidth = viewModel.hoverPriceTextWidth,
-                    )
-                }
+                    Column(modifier = Modifier.chartTalkBackSection()) {
+                        ChartHoverStats(
+                            isMultiHover = hoverUi.isMultiHover,
+                            hoverTimes = hoverUi.hoverTimes,
+                            differenceValue = hoverUi.differenceValue,
+                            differencePercent = hoverUi.differencePercent,
+                            multiHoverColor = hoverUi.multiHoverGraphColor,
+                            hoverPrice = hoverUi.hoverPrice,
+                            hoverPriceColor = hoverUi.hoverColor,
+                            hoverTime = hoverUi.hoverTime,
+                            hoverTimePosition = hoverUi.hoverTimePosition,
+                            isDragging = viewModel.isDragging,
+                            hoverPriceTextWidth = viewModel.hoverPriceTextWidth,
+                        )
 
-                item {
-                    Box(
-                        modifier = Modifier
-                            .height((screenHeight.dpToPx() * 0.35).pxToDp())
-                            .clipToBounds()
-                            .delayTouches()
-                            .padding(horizontal = 16.dp)
-                            .chartAccessibilityOverlay(
+                        Box(
+                            modifier = Modifier
+                                .height((screenHeight.dpToPx() * 0.35).pxToDp())
+                                .clipToBounds()
+                                .delayTouches()
+                                .padding(horizontal = 16.dp)
+                                .chartAccessibilityOverlay(
+                                    timeStamps = viewModel.timeStamps,
+                                    prices = viewModel.prices,
+                                    timeChart = viewModel.selectedTimeFrame,
+                                    currency = viewModel.selectedCurrency,
+                                    trailingPadding = biggestValue.value.width,
+                                ),
+                        ) {
+                            Box(modifier = Modifier.hideFromTalkBackWhenEnabled()) {
+                                ChartBackground(
+                                    values = viewModel.mainGraphStats,
+                                    biggestValue = biggestValue,
+                                )
+                            }
+
+                            if (viewModel.mainReloading) {
+                                ActivityIndicator(
+                                    modifier = Modifier.hideFromTalkBackWhenEnabled(),
+                                )
+                            } else {
+                                TreasuryDetailChart(
+                                    prices = viewModel.prices,
+                                    chartColor = hoverUi.chartColor,
+                                    dragIndex = if (viewModel.isDragging) hoverUi.dragIndex else null,
+                                    isDragging = viewModel.isDragging,
+                                    dragPositions = hoverUi.dragPositions,
+                                    chartSize = viewModel.chartSize,
+                                    biggestValue = biggestValue.value,
+                                    hideFromTalkBack = talkBackEnabled,
+                                )
+                            }
+
+                            ChartAccessibilityOverlay(
                                 timeStamps = viewModel.timeStamps,
                                 prices = viewModel.prices,
                                 timeChart = viewModel.selectedTimeFrame,
                                 currency = viewModel.selectedCurrency,
                                 trailingPadding = biggestValue.value.width,
-                            ),
-                    ) {
-                        Box(modifier = Modifier.hideFromTalkBackWhenEnabled()) {
-                            ChartBackground(
-                                values = viewModel.mainGraphStats,
-                                biggestValue = biggestValue,
+                            )
+
+                            MultiTouchView(
+                                modifier = Modifier.matchParentSize(),
+                                onTouchesChanged = { touchXs ->
+                                    viewModel.updateHoverStats(
+                                        touchXs = touchXs.map { touchX ->
+                                            max(
+                                                0.dp,
+                                                min(
+                                                    touchX,
+                                                    viewModel.chartSize.value.width - 0.001.dp,
+                                                ),
+                                            )
+                                        },
+                                        is24HourClock = context.is24HourClock,
+                                    )
+                                },
                             )
                         }
 
-                        if (viewModel.mainReloading) {
-                            ActivityIndicator(
-                                modifier = Modifier.hideFromTalkBackWhenEnabled(),
-                            )
-                        } else {
-                            TreasuryDetailChart(
-                                prices = viewModel.prices,
-                                chartColor = hoverUi.chartColor,
-                                dragIndex = if (viewModel.isDragging) hoverUi.dragIndex else null,
-                                isDragging = viewModel.isDragging,
-                                dragPositions = hoverUi.dragPositions,
-                                chartSize = viewModel.chartSize,
-                                biggestValue = biggestValue.value,
-                                hideFromTalkBack = talkBackEnabled,
-                            )
-                        }
-
-                        ChartAccessibilityOverlay(
+                        ChartTimeStamps(
+                            currentTimeChart = viewModel.selectedTimeFrame,
                             timeStamps = viewModel.timeStamps,
-                            prices = viewModel.prices,
-                            timeChart = viewModel.selectedTimeFrame,
-                            currency = viewModel.selectedCurrency,
-                            trailingPadding = biggestValue.value.width,
+                            modifier = Modifier
+                                .offset(y = -biggestValue.value.height / 2)
+                                .padding(
+                                    start = 16.dp,
+                                    end = 16.dp + biggestValue.value.width,
+                                    bottom = 16.dp - biggestValue.value.height / 2,
+                                )
+                                .hideFromTalkBackWhenEnabled(),
                         )
 
-                        MultiTouchView(
-                            modifier = Modifier.matchParentSize(),
-                            onTouchesChanged = { touchXs ->
-                                viewModel.updateHoverStats(
-                                    touchXs = touchXs.map { touchX ->
-                                        max(
-                                            0.dp,
-                                            min(
-                                                touchX,
-                                                viewModel.chartSize.value.width - 0.001.dp,
-                                            ),
-                                        )
-                                    },
-                                    is24HourClock = context.is24HourClock,
-                                )
-                            },
-                        )
-                    }
-                }
-
-                item {
-                    ChartTimeStamps(
-                        currentTimeChart = viewModel.selectedTimeFrame,
-                        timeStamps = viewModel.timeStamps,
-                        modifier = Modifier
-                            .offset(y = -biggestValue.value.height / 2)
-                            .padding(
-                                start = 16.dp,
-                                end = 16.dp + biggestValue.value.width,
-                                bottom = 16.dp - biggestValue.value.height / 2,
-                            )
-                            .hideFromTalkBackWhenEnabled(),
-                    )
-                }
-
-                item {
-                    ChartTimeframeButtonsView(
-                        buttons = TimeCharts.treasuryDetailButtons(),
-                        selectedTimeCharts = viewModel.selectedTimeFrame,
-                        fromScreen = ScreenLabel.TreasuryDetail,
-                    ) { button ->
-                        if (!viewModel.isDragging) {
-                            coroutineScope.launch {
-                                viewModel.refresh(
-                                    newDays = button.days,
-                                    newTimeChart = button.timeChart,
-                                )
+                        ChartTimeframeButtonsView(
+                            buttons = TimeCharts.treasuryDetailButtons(),
+                            selectedTimeCharts = viewModel.selectedTimeFrame,
+                            fromScreen = ScreenLabel.TreasuryDetail,
+                        ) { button ->
+                            if (!viewModel.isDragging) {
+                                coroutineScope.launch {
+                                    viewModel.refresh(
+                                        newDays = button.days,
+                                        newTimeChart = button.timeChart,
+                                    )
+                                }
                             }
                         }
                     }
@@ -292,21 +292,23 @@ fun TreasuryDetailScreen(
                 }
 
                 item {
-                    TreasuryTransactionHistoryView(
-                        holdings = viewModel.availableHoldingCoins,
-                        selectedHoldingCoinId = viewModel.selectedTransactionHoldingCoinId,
-                        transactions = viewModel.transactionHistory?.transactions,
-                        showHoldingFilter = {
-                            AnalyticsManager.log(
-                                SheetOpened(
-                                    fromScreen = ScreenLabel.TreasuryDetail,
-                                    sheet = SheetLabel.TreasuryHoldingFilter,
-                                ),
-                            )
-                            isHoldingFilterShowing = true
-                        },
-                        filterButtonTitle = viewModel.transactionFilterButtonTitle,
-                    )
+                    Box(modifier = Modifier.deferTalkBackAfterChartAccessibility()) {
+                        TreasuryTransactionHistoryView(
+                            holdings = viewModel.availableHoldingCoins,
+                            selectedHoldingCoinId = viewModel.selectedTransactionHoldingCoinId,
+                            transactions = viewModel.transactionHistory?.transactions,
+                            showHoldingFilter = {
+                                AnalyticsManager.log(
+                                    SheetOpened(
+                                        fromScreen = ScreenLabel.TreasuryDetail,
+                                        sheet = SheetLabel.TreasuryHoldingFilter,
+                                    ),
+                                )
+                                isHoldingFilterShowing = true
+                            },
+                            filterButtonTitle = viewModel.transactionFilterButtonTitle,
+                        )
+                    }
                 }
             }
         }

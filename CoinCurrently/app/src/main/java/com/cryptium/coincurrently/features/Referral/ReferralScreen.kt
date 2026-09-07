@@ -103,7 +103,7 @@ fun ReferralScreen(
                 swipeScope.launch {
                     coroutineScope {
                         async { viewModel.loadReferralCode() }
-                        async { viewModel.getUser() }
+                        async { viewModel.getUser(ignoreCache = true) }
                     }
                 }
             }
@@ -129,7 +129,7 @@ fun ReferralScreen(
                     try {
                         coroutineScope {
                             async { viewModel.loadReferralCode() }
-                            async { viewModel.getUser() }
+                            async { viewModel.getUser(ignoreCache = true) }
                         }
                     } finally {
                         isRefreshing = false
