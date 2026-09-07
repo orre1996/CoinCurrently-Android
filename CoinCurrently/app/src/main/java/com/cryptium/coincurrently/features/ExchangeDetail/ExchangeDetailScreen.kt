@@ -51,7 +51,7 @@ import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.sharedui.components.Point
-import com.cryptium.coincurrently.sharedui.sheets.WebView
+import com.cryptium.coincurrently.sharedui.sheets.WebViewSheet
 import com.cryptium.coincurrently.features.CoinDetail.Views.About.CryptoDetailAboutView
 import com.cryptium.coincurrently.features.CoinDetail.Views.About.toDetailAboutData
 import com.cryptium.coincurrently.features.CoinDetail.Views.Markets.CryptoDetailMarketsView

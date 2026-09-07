@@ -25,7 +25,7 @@ import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.core.analytics.BuyProAction
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
-import com.cryptium.coincurrently.sharedui.sheets.WebView
+import com.cryptium.coincurrently.sharedui.sheets.WebViewSheet
 import com.cryptium.coincurrently.features.News.NewsViewModel
 import com.cryptium.coincurrently.features.Home.Carousel.ToplistFilterCarouselView
 import com.cryptium.coincurrently.core.models.CarouselFilter

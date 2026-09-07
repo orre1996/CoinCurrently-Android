@@ -67,7 +67,7 @@ import com.cryptium.coincurrently.core.analytics.TabChanged
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.sharedui.components.Point
-import com.cryptium.coincurrently.sharedui.sheets.WebView
+import com.cryptium.coincurrently.sharedui.sheets.WebViewSheet
 import com.cryptium.coincurrently.features.CoinDetail.Views.General.ChartTypeButtonsView
 import com.cryptium.coincurrently.features.CoinDetail.Views.General.ScrollableTabSelector
 import com.cryptium.coincurrently.features.CoinDetail.Views.General.CryptoDetailSummaryView

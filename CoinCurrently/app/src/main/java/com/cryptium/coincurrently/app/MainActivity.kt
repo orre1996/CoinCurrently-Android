@@ -67,7 +67,7 @@ import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.features.Settings.Sheets.WhatsNewSheet
-import com.cryptium.coincurrently.sharedui.sheets.WebView
+import com.cryptium.coincurrently.sharedui.sheets.WebViewSheet
 import com.cryptium.coincurrently.core.models.SelectedStartTab
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.persistence.StorageKeys

@@ -93,7 +93,7 @@ import com.cryptium.coincurrently.sharedui.charts.delayTouches
 import com.cryptium.coincurrently.sharedui.charts.hideFromTalkBackWhenEnabled
 import com.cryptium.coincurrently.sharedui.charts.LineChart
 import com.cryptium.coincurrently.sharedui.components.Point
-import com.cryptium.coincurrently.sharedui.sheets.WebView
+import com.cryptium.coincurrently.sharedui.sheets.WebViewSheet
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertCreateResult
 import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel

@@ -66,7 +66,7 @@ import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.core.extensions.satoshiRegular
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
-import com.cryptium.coincurrently.sharedui.sheets.WebView
+import com.cryptium.coincurrently.sharedui.sheets.WebViewSheet
 import com.cryptium.coincurrently.sharedui.components.SnackBarType
 import com.cryptium.coincurrently.sharedui.components.SnackbarView
 import com.cryptium.coincurrently.features.Paywall.TierButton
