@@ -19,8 +19,8 @@ import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketRepository
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
-import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
-import com.cryptium.coincurrently.features.Treasuries.TreasuryDetailRepository
+import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
+import com.cryptium.coincurrently.features.Treasuries.Repositories.TreasuryDetailRepository
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.ChartFiatNativeModeChanged
 import com.cryptium.coincurrently.core.analytics.ScreenLabel

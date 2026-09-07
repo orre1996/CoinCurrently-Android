@@ -1,4 +1,4 @@
-package com.cryptium.coincurrently.features.Treasuries
+package com.cryptium.coincurrently.features.Market.Treasuries.Models
 
 enum class TreasuryEntityFilter {
     All,

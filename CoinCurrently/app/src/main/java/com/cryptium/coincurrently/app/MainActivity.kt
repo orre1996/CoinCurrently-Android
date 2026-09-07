@@ -79,7 +79,7 @@ import com.cryptium.coincurrently.sharedui.sheets.ForceUpdateScreen
 import com.cryptium.coincurrently.sharedui.loading.LoadingScreen
 import com.cryptium.coincurrently.sharedui.components.SnackBarType
 import com.cryptium.coincurrently.sharedui.components.SnackbarView
-import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
+import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
 import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.analytics.BuyProAction

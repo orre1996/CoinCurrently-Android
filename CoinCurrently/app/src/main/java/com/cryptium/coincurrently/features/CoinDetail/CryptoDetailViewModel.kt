@@ -40,7 +40,7 @@ import com.cryptium.coincurrently.core.extensions.getDifferenceInPercent
 import com.cryptium.coincurrently.core.extensions.groupedTransactions
 import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.sharedui.models.SortOption
-import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
+import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import com.cryptium.coincurrently.features.News.NewsRepository
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository

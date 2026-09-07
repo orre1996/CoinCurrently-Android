@@ -8,7 +8,7 @@ import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
-import com.cryptium.coincurrently.features.Market.Repositories.CategoriesRepository
+import com.cryptium.coincurrently.features.Market.Categories.Repositories.CategoriesRepository
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import kotlinx.coroutines.launch
 import com.cryptium.coincurrently.core.networking.ResponseModels.*

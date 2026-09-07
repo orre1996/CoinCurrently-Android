@@ -1,4 +1,4 @@
-package com.cryptium.coincurrently.features.Market.Repositories
+package com.cryptium.coincurrently.features.Market.Categories.Repositories
 import android.util.Log
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
 import com.cryptium.coincurrently.sharedui.models.SortOption

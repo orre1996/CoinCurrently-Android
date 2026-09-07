@@ -1,4 +1,4 @@
-package com.cryptium.coincurrently.features.Treasuries.Models
+package com.cryptium.coincurrently.features.Market.Exchanges.Models
 object CountryFlagEmojis {
     val flags: Map<String, String> = mapOf(
         "AE" to "🇦🇪",

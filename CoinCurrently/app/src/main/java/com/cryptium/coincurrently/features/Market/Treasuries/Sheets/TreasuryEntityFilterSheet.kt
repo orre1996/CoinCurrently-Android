@@ -1,4 +1,4 @@
-package com.cryptium.coincurrently.features.Treasuries.Sheets
+package com.cryptium.coincurrently.features.Market.Treasuries.Sheets
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -25,21 +25,20 @@ import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
 import com.cryptium.coincurrently.sharedui.components.ImageCase
 import com.cryptium.coincurrently.sharedui.components.SingleSelectView
 import com.cryptium.coincurrently.sharedui.components.DragHandle
+import com.cryptium.coincurrently.features.Market.Treasuries.Models.TreasuryEntityFilter
 import kotlinx.coroutines.launch
-import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun TreasuryCoinSheet(
-    coins: List<Toplist>,
-    selectedCoinId: String,
-    newCoinSelected: (Toplist) -> Unit,
+fun TreasuryEntityFilterSheet(
+    selectedFilter: TreasuryEntityFilter,
+    newFilterSelected: (TreasuryEntityFilter) -> Unit,
     close: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val maxBodyHeight = rememberModalSheetMaxBodyHeight(dragHandleTitle = "Select Coin")
+    val maxBodyHeight = rememberModalSheetMaxBodyHeight(dragHandleTitle = "Filter By Type")
 
     ModalBottomSheet(
         onDismissRequest = {
@@ -55,7 +54,7 @@ fun TreasuryCoinSheet(
         contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
         dragHandle = {
             DragHandle(
-                title = "Select Coin",
+                title = "Filter By Type",
                 closeAction = {
                     coroutineScope.launch {
                         sheetState.hide()
@@ -78,16 +77,16 @@ fun TreasuryCoinSheet(
                 item { Separator() }
                 item { Spacer(modifier = Modifier.height(24.dp)) }
 
-                items(coins, key = { it.id ?: it.name ?: it.hashCode() }) { coin ->
+                items(TreasuryEntityFilter.entries) { filter ->
                     SingleSelectView(
-                        title = coin.name ?: "",
-                        accessibilityTitle = coin.name,
-                        subtitle = coin.symbol?.uppercase(),
-                        imageCase = ImageCase.Image(coin.image),
-                        isSelected = coin.id == selectedCoinId,
+                        title = filter.title,
+                        accessibilityTitle = filter.accessibilityTitle,
+                        subtitle = null,
+                        imageCase = ImageCase.Nothing,
+                        isSelected = filter == selectedFilter,
                         didSelectOption = {
                             coroutineScope.launch {
-                                newCoinSelected(coin)
+                                newFilterSelected(filter)
                                 sheetState.hide()
                                 close()
                             }

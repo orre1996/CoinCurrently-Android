@@ -19,7 +19,7 @@ import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.models.ChartTypes
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import com.cryptium.coincurrently.core.purchases.BillingManager
-import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
+import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

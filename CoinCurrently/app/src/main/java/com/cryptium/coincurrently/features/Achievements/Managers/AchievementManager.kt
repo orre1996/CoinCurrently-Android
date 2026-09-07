@@ -9,7 +9,7 @@ import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
-import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
+import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import com.cryptium.coincurrently.features.Achievements.AchievementCatalog
 import com.cryptium.coincurrently.features.Achievements.Models.AchievementCounterKey
 import com.cryptium.coincurrently.features.Achievements.Models.AchievementMetric

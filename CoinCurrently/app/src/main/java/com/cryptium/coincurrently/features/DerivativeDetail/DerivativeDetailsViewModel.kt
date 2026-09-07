@@ -12,7 +12,7 @@ import com.cryptium.coincurrently.sharedui.models.CachedData
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import com.cryptium.coincurrently.features.DerivativeDetail.DerivativeDetailRepository
-import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
+import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.Derivative
 import com.cryptium.coincurrently.core.networking.ResponseModels.DerivativeDetailModel

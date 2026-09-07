@@ -18,7 +18,7 @@ import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import com.cryptium.coincurrently.features.ExchangeDetail.ExchangeDetailRepository
 import com.cryptium.coincurrently.features.News.NewsRepository
-import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
+import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import com.cryptium.coincurrently.core.networking.NewsCategory

@@ -1,4 +1,4 @@
-package com.cryptium.coincurrently.features.Treasuries.ViewModels
+package com.cryptium.coincurrently.features.Market.Treasuries.ViewModels
 import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -6,12 +6,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.networking.TreasuryEntity
-import com.cryptium.coincurrently.features.Treasuries.TreasuryEntityFilter
+import com.cryptium.coincurrently.features.Market.Treasuries.Models.TreasuryEntityFilter
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
-import com.cryptium.coincurrently.features.Treasuries.PublicTreasuryRepository
-import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
+import com.cryptium.coincurrently.features.Market.Treasuries.Repositories.PublicTreasuryRepository
+import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel

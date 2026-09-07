@@ -1,4 +1,4 @@
-package com.cryptium.coincurrently.features.Treasuries.Views
+package com.cryptium.coincurrently.features.Market.Treasuries.Views
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +24,7 @@ import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
-import com.cryptium.coincurrently.features.Treasuries.Models.CountryFlagEmojis
+import com.cryptium.coincurrently.features.Market.Exchanges.Models.CountryFlagEmojis
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.PublicTreasuryHolder

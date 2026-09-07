@@ -15,7 +15,7 @@ import com.cryptium.coincurrently.core.extensions.numberAccessible
 import com.cryptium.coincurrently.sharedui.charts.ChartHoverController
 import com.cryptium.coincurrently.features.GasFees.GasUnits
 import com.cryptium.coincurrently.features.GasFees.GasFeesRepository
-import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
+import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import com.cryptium.coincurrently.core.networking.ResponseModels.GasFeesModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist

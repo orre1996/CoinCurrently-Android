@@ -46,7 +46,7 @@ import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.sharedui.components.PriceChangeValueView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
-import com.cryptium.coincurrently.features.Treasuries.Models.CountryFlagEmojis
+import com.cryptium.coincurrently.features.Market.Exchanges.Models.CountryFlagEmojis
 import kotlinx.coroutines.delay
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts

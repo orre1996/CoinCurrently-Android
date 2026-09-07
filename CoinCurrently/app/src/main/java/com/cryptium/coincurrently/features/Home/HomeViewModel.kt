@@ -33,7 +33,7 @@ import com.cryptium.coincurrently.features.Home.WinnersLosers.WinnersLosersRepos
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.config.RemoteConfigKeys
 import com.cryptium.coincurrently.core.persistence.allCurrencies
-import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
+import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.analytics.FavoriteAdded
 import com.cryptium.coincurrently.core.analytics.FavoriteRemoved

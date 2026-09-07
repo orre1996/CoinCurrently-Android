@@ -1,4 +1,4 @@
-package com.cryptium.coincurrently.features.Treasuries.Views
+package com.cryptium.coincurrently.features.Market.Treasuries.Views
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,13 +34,13 @@ import com.cryptium.coincurrently.sharedui.buttons.SecondaryButton
 import com.cryptium.coincurrently.core.extensions.isTablet
 import com.cryptium.coincurrently.sharedui.sheets.EmptyContent
 import com.cryptium.coincurrently.app.NavigationScreens
-import com.cryptium.coincurrently.features.Treasuries.TreasuryEntityFilter
+import com.cryptium.coincurrently.features.Market.Treasuries.Models.TreasuryEntityFilter
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.sharedui.components.ObserveCurrencyChanges
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
-import com.cryptium.coincurrently.features.Treasuries.Sheets.TreasuryCoinSheet
-import com.cryptium.coincurrently.features.Treasuries.Sheets.TreasuryEntityFilterSheet
-import com.cryptium.coincurrently.features.Treasuries.ViewModels.TreasuriesViewModel
+import com.cryptium.coincurrently.features.Market.Treasuries.Sheets.TreasuryCoinSheet
+import com.cryptium.coincurrently.features.Market.Treasuries.Sheets.TreasuryEntityFilterSheet
+import com.cryptium.coincurrently.features.Market.Treasuries.ViewModels.TreasuriesViewModel
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.Navigate
 import com.cryptium.coincurrently.core.analytics.ScreenLabel

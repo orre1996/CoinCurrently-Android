@@ -10,7 +10,7 @@ import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketRepository
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
-import com.cryptium.coincurrently.features.Market.Repositories.NFTRepository
+import com.cryptium.coincurrently.features.Market.NFT.Repositories.NFTRepository
 import com.cryptium.coincurrently.features.GlobalMarket.CachedCoinsList
 import com.cryptium.coincurrently.core.networking.ResponseModels.*
 

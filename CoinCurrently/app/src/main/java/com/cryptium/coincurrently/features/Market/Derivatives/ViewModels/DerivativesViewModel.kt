@@ -7,7 +7,7 @@ import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
-import com.cryptium.coincurrently.features.Market.Repositories.DerivativesRepository
+import com.cryptium.coincurrently.features.Market.Derivatives.Repositories.DerivativesRepository
 import kotlinx.coroutines.launch
 import com.cryptium.coincurrently.core.networking.ResponseModels.*
 

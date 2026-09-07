@@ -1,4 +1,4 @@
-package com.cryptium.coincurrently.features.Market.Repositories
+package com.cryptium.coincurrently.features.Market.Toplist.Repositories
 import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.util.Log
 import com.cryptium.coincurrently.core.extensions.isMoreThanDefaultCache

@@ -27,7 +27,7 @@ import com.cryptium.coincurrently.features.Market.Derivatives.Views.DerivativesL
 import com.cryptium.coincurrently.features.Market.Exchanges.Views.ExchangeListScreen
 import com.cryptium.coincurrently.features.Market.NFT.Views.NftToplistScreen
 import com.cryptium.coincurrently.features.Market.Toplist.Views.ToplistScreen
-import com.cryptium.coincurrently.features.Treasuries.Views.TreasuriesListScreen
+import com.cryptium.coincurrently.features.Market.Treasuries.Views.TreasuriesListScreen
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState

@@ -25,7 +25,7 @@ import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketRepository
 import com.cryptium.coincurrently.core.models.ChartTypes
 import com.cryptium.coincurrently.features.NFTDetail.NFTDetailRepository
-import com.cryptium.coincurrently.features.Market.Repositories.NFTRepository
+import com.cryptium.coincurrently.features.Market.NFT.Repositories.NFTRepository
 import com.cryptium.coincurrently.core.analytics.ChartFiatNativeModeChanged
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.ScreenLabel

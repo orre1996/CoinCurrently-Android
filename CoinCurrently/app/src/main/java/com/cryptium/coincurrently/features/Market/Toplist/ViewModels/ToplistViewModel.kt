@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
 import com.cryptium.coincurrently.app.MainActivity
-import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
+import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.core.persistence.StorageKeys

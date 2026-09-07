@@ -44,7 +44,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import com.cryptium.coincurrently.features.Portfolio.PortfolioPiesData
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
-import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
+import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

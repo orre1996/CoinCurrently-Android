@@ -123,7 +123,7 @@ import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
 import com.cryptium.coincurrently.core.purchases.BillingManager
 import java.util.Date
-import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
+import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import com.cryptium.coincurrently.features.Settings.CurrencySelector.CurrencyOptionsSheet
 import com.cryptium.coincurrently.features.Settings.Sheets.SettingsOptionsSheet
 import androidx.core.app.NotificationManagerCompat

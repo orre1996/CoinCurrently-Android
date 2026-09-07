@@ -7,12 +7,12 @@ import com.cryptium.coincurrently.features.Home.Trending.TrendingRepository
 import com.cryptium.coincurrently.features.Home.WinnersLosers.WinnersLosersRepository
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
-import com.cryptium.coincurrently.features.Market.Repositories.CategoriesRepository
-import com.cryptium.coincurrently.features.Market.Repositories.DerivativesRepository
-import com.cryptium.coincurrently.features.Market.Repositories.ExchangesRepository
-import com.cryptium.coincurrently.features.Market.Repositories.NFTRepository
+import com.cryptium.coincurrently.features.Market.Categories.Repositories.CategoriesRepository
+import com.cryptium.coincurrently.features.Market.Derivatives.Repositories.DerivativesRepository
+import com.cryptium.coincurrently.features.Market.Exchanges.Repositories.ExchangesRepository
+import com.cryptium.coincurrently.features.Market.NFT.Repositories.NFTRepository
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
-import com.cryptium.coincurrently.features.Market.Repositories.ToplistRepository
+import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import com.cryptium.coincurrently.core.networking.ResponseModels.NFTPlatform
