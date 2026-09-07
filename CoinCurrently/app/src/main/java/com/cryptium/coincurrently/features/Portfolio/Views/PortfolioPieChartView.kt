@@ -21,8 +21,13 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import kotlin.math.cos
 import kotlin.math.sin
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.invisibleToUser
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import com.cryptium.coincurrently.core.extensions.numberAccessible
+import com.cryptium.coincurrently.core.extensions.roundTo
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.theme.primary20
@@ -113,7 +118,6 @@ private fun InteractivePortfolioPieChart(
     modifier: Modifier = Modifier,
 ) {
     val selectedSlice = slices.firstOrNull { it.id == selectedSliceId }
-    val accessibilityLabel = portfolioPieAccessibilityLabel(selectedSlice)
     val loadingOverlayColor = MaterialTheme.colors.onSurface.copy(alpha = 0.25f)
 
     val drawStates = slices.map { slice ->
@@ -132,8 +136,19 @@ private fun InteractivePortfolioPieChart(
         Box(
             modifier = Modifier
                 .size(chartDimension)
-                .semantics {
-                    contentDescription = accessibilityLabel
+                .pointerInput(slices, selectedSliceId) {
+                    detectTapGestures { location ->
+                        val chartSize = minOf(size.width.toFloat(), size.height.toFloat())
+                        val center = Offset(size.width / 2f, size.height / 2f)
+                        handlePieChartTap(
+                            location = location,
+                            chartSize = chartSize,
+                            center = center,
+                            slices = slices,
+                            selectedSliceId = selectedSliceId,
+                            onSelectedSliceIdChange = onSelectedSliceIdChange,
+                        )
+                    }
                 },
         ) {
             Canvas(
@@ -145,21 +160,7 @@ private fun InteractivePortfolioPieChart(
                         } else {
                             Modifier
                         },
-                    )
-                    .pointerInput(slices, selectedSliceId) {
-                        detectTapGestures { location ->
-                            val chartSize = minOf(size.width.toFloat(), size.height.toFloat())
-                            val center = Offset(size.width / 2f, size.height / 2f)
-                            handlePieChartTap(
-                                location = location,
-                                chartSize = chartSize,
-                                center = center,
-                                slices = slices,
-                                selectedSliceId = selectedSliceId,
-                                onSelectedSliceIdChange = onSelectedSliceIdChange,
-                            )
-                        }
-                    },
+                    ),
             ) {
             val chartSize = minOf(size.width, size.height)
             val center = Offset(size.width / 2f, size.height / 2f)
@@ -216,9 +217,22 @@ private fun InteractivePortfolioPieChart(
             }
             }
 
+            slices.forEach { slice ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .semantics {
+                            contentDescription = portfolioPieAccessibilityLabel(slice)
+                            selected = slice.id == selectedSliceId
+                        },
+                )
+            }
+
             selectedSlice?.let { slice ->
                 Column(
-                    modifier = Modifier.align(Alignment.Center),
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .clearAndSetSemantics { invisibleToUser() },
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
@@ -293,11 +307,10 @@ private fun formattedPiePercent(percentage: Double): String {
     }
 }
 
-private fun portfolioPieAccessibilityLabel(slice: PortfolioPieSlice?): String {
-    if (slice == null) {
-        return "Portfolio allocation chart"
-    }
-    return "${slice.symbol}, ${formattedPiePercent(slice.percentage)} of portfolio"
+private fun portfolioPieAccessibilityLabel(slice: PortfolioPieSlice): String {
+    val percentValue = slice.percentage * 100.0
+    val roundedPercent = if (percentValue >= 99.995) 100.0 else percentValue.roundTo(2)
+    return "${slice.name}, ${roundedPercent.numberAccessible(maxPlaces = 2)} percent of portfolio"
 }
 
 private fun handlePieChartTap(

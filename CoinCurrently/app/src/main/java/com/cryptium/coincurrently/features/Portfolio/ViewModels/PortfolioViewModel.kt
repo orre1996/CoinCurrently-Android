@@ -605,9 +605,11 @@ class PortfolioViewModel : ViewModel() {
         }
 
         val sliceInputs = mainHoldings.map { (pie, value) ->
+            val symbol = pie.data?.symbol?.uppercase(AppLocale.enUsPosix) ?: ""
             SliceInput(
                 id = pie.data?.id ?: UUID.randomUUID().toString(),
-                symbol = pie.data?.symbol?.uppercase(AppLocale.enUsPosix) ?: "",
+                symbol = symbol,
+                name = pie.data?.name ?: symbol,
                 value = value,
                 color = pie.color,
             )
@@ -619,6 +621,7 @@ class PortfolioViewModel : ViewModel() {
                 SliceInput(
                     id = PortfolioPieChartLayout.otherSliceId,
                     symbol = "OTHER",
+                    name = "Other",
                     value = otherValue,
                     color = null,
                 ),
@@ -631,6 +634,7 @@ class PortfolioViewModel : ViewModel() {
                 PortfolioPieSlice(
                     id = slice.id,
                     symbol = slice.symbol,
+                    name = slice.name,
                     percentage = 1.0,
                     color = slice.color,
                     outerStartAngle = -90.0,
@@ -661,6 +665,7 @@ class PortfolioViewModel : ViewModel() {
             PortfolioPieSlice(
                 id = slice.id,
                 symbol = slice.symbol,
+                name = slice.name,
                 percentage = percentage,
                 color = slice.color,
                 outerStartAngle = outerStart,
@@ -674,6 +679,7 @@ class PortfolioViewModel : ViewModel() {
     private data class SliceInput(
         val id: String,
         val symbol: String,
+        val name: String,
         val value: Double,
         val color: String?,
     )
