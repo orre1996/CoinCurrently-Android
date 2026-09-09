@@ -1,29 +1,45 @@
 package com.cryptium.coincurrently.widgets.receivers
-import com.cryptium.coincurrently.core.persistence.UserPreferences
+
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
-import com.cryptium.coincurrently.core.config.AppLocale
+import android.view.View
+import android.widget.RemoteViews
+import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.app.MainActivity
+import com.cryptium.coincurrently.core.extensions.changeWithSymbol
+import com.cryptium.coincurrently.core.extensions.formatCurrency
+import com.cryptium.coincurrently.core.extensions.roundTo
+import com.cryptium.coincurrently.core.extensions.stars
+import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
+import com.cryptium.coincurrently.core.persistence.UserPreferences
+import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
+import com.cryptium.coincurrently.sharedui.charts.getPercentChangeDrawablePortfolio
+import com.cryptium.coincurrently.sharedui.charts.getWidgetPercentChangeColorPortfolio
+import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
+import com.cryptium.coincurrently.widgets.config.WidgetRuntimeInitializer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-/**
- * Implementation of App Widget functionality.
- */
 class small_portfolio_widget : AppWidgetProvider() {
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray
+        appWidgetIds: IntArray,
     ) {
-        // There may be multiple widgets active, so update all of them
+        WidgetRuntimeInitializer.ensureInitialized(context)
         for (appWidgetId in appWidgetIds) {
-            appWidgetManager.getAppWidgetInfo(appWidgetId)?.let { it ->
-                it.provider?.let {
-                    if (it.className.contains("small_portfolio_widget")) {
-                        updateAppWidget(context, appWidgetManager, appWidgetId)
-                    }
-                }
-            }
+            appWidgetManager.updateAppWidget(
+                appWidgetId,
+                buildPlaceholderSmallPortfolioWidget(context),
+            )
+            createSmallPortfolioWidget(context, appWidgetManager, appWidgetId)
         }
     }
 
@@ -31,12 +47,10 @@ class small_portfolio_widget : AppWidgetProvider() {
         context: Context?,
         appWidgetManager: AppWidgetManager?,
         appWidgetId: Int,
-        newOptions: Bundle?
+        newOptions: Bundle?,
     ) {
-        if (appWidgetManager != null) {
-            if (context != null) {
-                onUpdate(context, appWidgetManager, intArrayOf(appWidgetId))
-            }
+        if (appWidgetManager != null && context != null) {
+            onUpdate(context, appWidgetManager, intArrayOf(appWidgetId))
         }
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
@@ -45,395 +59,330 @@ class small_portfolio_widget : AppWidgetProvider() {
 internal fun createSmallPortfolioWidget(
     context: Context,
     appWidgetManager: AppWidgetManager,
-    appWidgetId: Int
+    appWidgetId: Int,
 ) {
+    WidgetRuntimeInitializer.ensureInitialized(context)
 
-    /*if (UserPreferences.getIsHidePortfolioEnabled()) {
+    if (UserPreferences.getIsHidePortfolioEnabled()) {
         val views = RemoteViews(context.packageName, R.layout.small_portfolio_disabled_widget)
         views.setInt(
             R.id.ll_view,
             "setBackgroundResource",
-            if (UserPreferences.getIsWidgetDarkModeEnabled()) R.drawable.widget_background_dark else R.drawable.widget_background_light
+            if (isWidgetDarkMode(context)) R.drawable.widget_background_dark else R.drawable.widget_background_light,
         )
         views.setTextColor(R.id.txt_message, widgetOnSurface(context))
-
-        val random = (0..10000).shuffled().first()
-        val intent = Intent(context, MainActivity::class.java)
-
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(
-            context,
-            random,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        views.setOnClickPendingIntent(R.id.btn_open, pendingIntent)
-
+        setSmallPortfolioClickIntent(views, context)
         appWidgetManager.updateAppWidget(appWidgetId, views)
         return
     }
 
-    val isDark = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) != 0
-    val views = RemoteViews(context.packageName, R.layout.small_portfolio_widget)
-    views.setInt(
-        R.id.ll_view,
-        "setBackgroundResource",
-        if (isDark) R.drawable.widget_background_dark else R.drawable.widget_background_light
-    )
+    val views = buildPlaceholderSmallPortfolioWidget(context)
+    setSmallPortfolioClickIntent(views, context)
+    appWidgetManager.updateAppWidget(appWidgetId, views)
 
-    views.setTextColor(R.id.txt_total_title, widgetOnSurface(context))
-    views.setTextColor(R.id.txt_total_value, widgetOnSurface(context))
-    views.setTextColor(R.id.txt_timeframe, widgetOnSurface(context))
-    views.setTextColor(R.id.txt_change, widgetOnSurfaceDim(context))
-    views.setTextColor(R.id.txt_performer_title, widgetOnSurface(context))
-    views.setTextColor(R.id.txt_symbol, widgetOnSurface(context))
-    views.setTextColor(R.id.txt_performer_value, widgetOnSurface(context))
-    views.setTextColor(R.id.txt_timeframe1, widgetOnSurface(context))
-    views.setTextColor(R.id.txt_change1, widgetOnSurfaceDim(context))
-    views.setImageViewResource(
-        R.id.btn_reload,
-        if (isDark) R.drawable.ic_baseline_sync_24_dark else R.drawable.ic_baseline_sync_24_light
-    )
-    views.setInt(
-        R.id.btn_reload,
-        "setBackgroundResource",
-        if (isDark) R.drawable.widget_reload_button_bg_dark else R.drawable.widget_reload_button_bg_light
-    )
-
-    val handler = Handler()
-
-    val coins: List<PortfolioResponse> = UserPreferences.getPortfolioCurrencies(context)
-
-    val array: ArrayList<Pie> = arrayListOf()
-    var totalValue = 0.0
-
-    var willRedownload = false
-    val hoverHandler = Runnable {
-        createSmallPortfolioWidget(context, appWidgetManager, appWidgetId)
-    }
-
-    PortfolioRepository.portfolioModels = UserPreferences.getPortfolioCurrencies(context)
-
-    GlobalScope.launch {
-        PortfolioRepository.getPortfolioAllCurrencies()?.let { coinPrices ->
-
-            downloadMultipleCurrencies(
-                UserPreferences.getPortfolioCurrencies(context).map { it.id ?: "" }, context
-            ) { currencies, bitmaps ->
-
-                if (currencies?.isEmpty() == true) {
-                    if (!willRedownload) {
-                        willRedownload = true
-                        handler.postDelayed(hoverHandler, 60000L)
-                    }
-                }
-
-                UserPreferences.getPortfolioCurrencies(context).forEachIndexed { index, portfolioItem ->
-
-                        val currentCurrency = currencies?.first { it.id == portfolioItem.id }
-                        val color = if (bitmaps?.get(index)?.isRecycled == false) {
-                            getDominantColor(bitmaps[index], context)
-                        } else {
-                            Color.GRAY
-                        }
-
-                        array.add(
-                            Pie(
-                                currentCurrency,
-                                portfolioItem.amount,
-                                null,
-                                color,
-                                0,
-                                entryPrice = portfolioItem.entryCost,
-                                currency = UserPreferences.getSelectedCurrency(context)?.code ?: "USD",
-                                buyTransactions = portfolioItem.buyTransactions ?: arrayListOf(),
-                                sellTransactions = portfolioItem.sellTransactions ?: arrayListOf(),
-                                inTransactions = portfolioItem.inTransferTransactions ?: arrayListOf(),
-                                outTransactions = portfolioItem.outTransferTransactions ?: arrayListOf(),
-                                importTransactions = portfolioItem.importTransactions ?: arrayListOf()
-                            )
-                        )
-
-                    val prices = coinPrices.get(currentCurrency?.id)
-                    val price = prices?.get(portfolioItem.currency?.lowercase())?.times(portfolioItem.getCurrentAmount()) ?: 0.0
-
-                    totalValue += price
-
-                    if (array.size == coins.size) {
-
-                        array.forEach {
-                            val prices = coinPrices.get(it.currencyInfo?.id)
-                            val price = prices?.get(it.currency?.lowercase())?.times(it.getCurrentAmount()) ?: 0.0
-
-                            it.percent = price.div((totalValue)).times(100)
-                            it.totalValue = price
-
-                            if (UserPreferences.getShowChangesInPercent()) {
-                               // it.getProfitPercent(prices, UserPreferences.getSelectedCurrency(context)?.code?.lowercase() ?: "usd")?.let { value ->
-                                    it.profitLossPercent = it.getProfitPercent(prices, UserPreferences.getSelectedCurrency(context)?.code?.lowercase() ?: "usd") ?: 0.0
-                               // }
-                            } else {
-                               // it.getProfitValue(prices, UserPreferences.getSelectedCurrency(context)?.code?.lowercase() ?: "usd")?.let { value ->
-                                    it.profitLossPercent = it.getProfitValue(prices, UserPreferences.getSelectedCurrency(context)?.code?.lowercase() ?: "usd") ?: 0.0
-                               // }
-                            }
-                        }
-
-                        views.setTextViewText(
-                            R.id.txt_total_value,
-                            totalValue.formatCurrencyFromHundred(true, context)
-                        )
-
-                        val applicablePerformers: ArrayList<Pie> = arrayListOf()
-                        for (pie in array) {
-                            pie.profitLossPercent?.let {
-                                applicablePerformers.add(pie)
-                            }
-                        }
-
-                        val bestPerformer = applicablePerformers.let {
-                            applicablePerformers.sortedBy { it.profitLossPercent }.reversed()
-                        }
-
-                        var currency = CurrencySelectionModel()
-
-                        if (allCurrencies.isNotEmpty()) {
-                            val currencies = allCurrencies.filter { currency -> currency.code == bestPerformer.first().currency?.uppercase() }
-                            if (currencies.isNotEmpty()) {
-                                currency = currencies.first()
-                            }
-                        }
-
-                        if (bestPerformer.isNotEmpty()) {
-                            bestPerformer.first().currencyInfo?.name?.let { it ->
-                                views.setTextViewText(R.id.txt_symbol,
-                                    it.replaceFirstChar {
-                                        if (it.isLowerCase()) it.titlecase(
-                                            AppLocale.enUsPosix
-                                        ) else it.toString()
-                                    })
-                            }
-
-                            val prices = coinPrices.get(bestPerformer.first().currencyInfo?.id)
-                            val price = prices?.get(bestPerformer.first().currency?.lowercase())?.times(bestPerformer.first().getCurrentAmount()) ?: 0.0
-
-                            price.formatCurrencyFromHundred(true, context, currencySelectionModel = currency).let {
-                                views.setTextViewText(R.id.txt_performer_value, "Value: $it")
-                            }
-
-                            val weekChange = bestPerformer.first().getProfitPercent(prices, UserPreferences.getSelectedCurrency(context)?.code?.lowercase() ?: "usd", false) ?: 0.0
-                            val value = bestPerformer.first().getProfitValue(prices, UserPreferences.getSelectedCurrency(context)?.code?.lowercase() ?: "usd") ?: 0.0
-                            val realChange = if (UserPreferences.getShowChangesInPercent()) weekChange.getChangeWithSymbolPortfolio() else value.formatCurrencyFromHundred(
-                                fromPortfolio = true,
-                                fromPriceChange = true,
-                                currencySelectionModel = UserPreferences.getSelectedCurrency(context)
-                            ).replace("-", "").replace("+", "")
-
-                            views.setTextViewText(R.id.txt_change1, realChange)
-
-                            val changePercentColor = weekChange.getWidgetPercentChangeColorPortfolio(context)
-                            val changeValueColor = value.getWidgetPercentChangeColorPortfolio(context)
-                            val realChangeColor = if (UserPreferences.getShowChangesInPercent()) changePercentColor else changeValueColor
-
-                            realChangeColor.let {
-                                views.setTextColor(R.id.txt_change1, it)
-                            }
-
-                            val changePercentIcon = weekChange.getPercentChangeDrawablePortfolio()
-                            val changeValueIcon = value.getPercentChangeDrawablePortfolio()
-                            val realChangeIcon = if (UserPreferences.getShowChangesInPercent()) changePercentIcon else changeValueIcon
-
-                            realChangeIcon.let {
-                                views.setImageViewResource(R.id.view_price_change1, it)
-                                views.setViewVisibility(
-                                    R.id.view_price_change1,
-                                    View.VISIBLE
-                                )
-                            }
-
-                            views.setViewVisibility(R.id.view_price_change1, View.VISIBLE)
-
-                            } else {
-                                views.setTextViewText(R.id.txt_symbol, "-")
-                                views.setTextViewText(
-                                    R.id.txt_performer_value,
-                                    "Value: ${
-                                        0.0.formatCurrencyFromHundred(
-                                            true,
-                                            context,
-                                            currencySelectionModel = currency
-                                        )
-                                    }"
-                                )
-                                views.setTextViewText(R.id.txt_change1, "N/A")
-                                views.setTextColor(R.id.txt_change1, widgetOnSurfaceDim(context))
-                                views.setViewVisibility(R.id.view_price_change1, View.GONE)
-                            }
-
-                            val totalProfitLoss = UserPreferences.getPortfolioProfitLossPercent(
-                                array,
-                                coinPrices,
-                                UserPreferences.getSelectedCurrency(context)?.code ?: "usd"
-                            )
-
-                            val totalProfitLossValue = UserPreferences.getPortfolioProfitLossValue(
-                                array,
-                                coinPrices,
-                                UserPreferences.getSelectedCurrency(context)?.code ?: "usd"
-                            )
-
-                            val realChange = if (UserPreferences.getShowChangesInPercent()) totalProfitLoss.getChangeWithSymbolPortfolio() else totalProfitLossValue.formatCurrencyFromHundred(
-                                fromPortfolio = true,
-                                fromPriceChange = true,
-                                currencySelectionModel = UserPreferences.getSelectedCurrency(context)
-                            ).replace("-", "").replace("+", "")
-
-                            views.setTextViewText(
-                                R.id.txt_change,
-                                realChange
-                            )
-
-                            val changePercentColor = totalProfitLoss.getWidgetPercentChangeColorPortfolio(context)
-                            val changeValueColor = totalProfitLossValue.getWidgetPercentChangeColorPortfolio(context)
-                            val realChangeColor = if (UserPreferences.getShowChangesInPercent()) changePercentColor else changeValueColor
-
-                            val changePercentIcon = totalProfitLoss.getPercentChangeDrawablePortfolio()
-                            val changeValueIcon = totalProfitLossValue.getPercentChangeDrawablePortfolio()
-                            val realChangeIcon = if (UserPreferences.getShowChangesInPercent()) changePercentIcon else changeValueIcon
-
-                            views.setTextColor(
-                                R.id.txt_change,
-                                realChangeColor
-                            )
-
-                            views.setImageViewResource(
-                                R.id.view_price_change,
-                                realChangeIcon
-                            )
-
-                            views.setViewVisibility(R.id.view_price_change, View.VISIBLE)
-
-
-                            val random = (0..10000).shuffled().first()
-                            val intent = Intent(context, MainActivity::class.java)
-                            intent.putExtra("cryptoID", "portfolio")
-
-                            val pendingIntent: PendingIntent = PendingIntent.getActivity(
-                                context,
-                                random,
-                                intent,
-                                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                            )
-
-                            views.setOnClickPendingIntent(R.id.btn_open, pendingIntent)
-
-                            val random1 = (0..10000).shuffled().first()
-                            val ids = appWidgetManager.getAppWidgetIds(
-                                ComponentName(
-                                    context,
-                                    small_portfolio_widget::class.java
-                                )
-                            )
-                            val updateIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-                            updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-
-                            val pendingIntent1: PendingIntent = PendingIntent.getBroadcast(
-                                context,
-                                random1,
-                                updateIntent,
-                                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                            )
-
-                            views.setOnClickPendingIntent(R.id.btn_reload, pendingIntent1)
-
-                            if (bestPerformer.isNotEmpty()) {
-                                Glide.with(context)
-                                    .asBitmap()
-                                    .load(bestPerformer.first().currencyInfo?.image)
-                                    .apply(RequestOptions().override(200, 200))
-                                    .listener(object : RequestListener<Bitmap> {
-                                        override fun onLoadFailed(
-                                            e: GlideException?,
-                                            model: Any?,
-                                            target: Target<Bitmap>?,
-                                            isFirstResource: Boolean
-                                        ): Boolean {
-                                            appWidgetManager.updateAppWidget(appWidgetId, views)
-                                            return false
-                                        }
-
-                                        override fun onResourceReady(
-                                            resource: Bitmap?,
-                                            model: Any?,
-                                            target: Target<Bitmap>?,
-                                            dataSource: DataSource?,
-                                            isFirstResource: Boolean
-                                        ): Boolean {
-                                            return try {
-
-                                                if (resource?.isRecycled == false) {
-                                                    views.setImageViewBitmap(
-                                                        R.id.img_performer,
-                                                        resource
-                                                    )
-                                                }
-
-                                                appWidgetManager.updateAppWidget(appWidgetId, views)
-                                                false
-                                            } catch (e: Exception) {
-                                                appWidgetManager.updateAppWidget(appWidgetId, views)
-                                                false
-                                            }
-                                        }
-
-                                    })
-                                    .preload()
-                            } else {
-                                appWidgetManager.updateAppWidget(appWidgetId, views)
-                            }
-                        }
-                    }
+    GlobalScope.launch(Dispatchers.IO) {
+        try {
+            PortfolioRepository.getPortfolio()
+            PortfolioRepository.getPortfolioAllCurrencies()
+            val portfolio = buildPortfolioList()
+            val selectedCurrency = UserPreferences.getSelectedCurrency(context)
+            val widgetData = buildPortfolioWidgetData(
+                portfolio = portfolio,
+                allPrices = PortfolioRepository.portfolioAllCurrencies,
+                currencyCode = selectedCurrency.code,
+            )
+            if (widgetData.isEmpty) {
+                appWidgetManager.updateAppWidget(
+                    appWidgetId,
+                    createPortfolioWidgetEmptyRemoteViews(context),
+                )
+                return@launch
             }
+            val loadedViews = createSmallPortfolioRemoteViews(
+                context = context,
+                widgetData = widgetData,
+            )
+            appWidgetManager.updateAppWidget(appWidgetId, loadedViews)
+        } catch (_: Exception) {
+            appWidgetManager.updateAppWidget(appWidgetId, buildPlaceholderSmallPortfolioWidget(context))
         }
     }
+}
 
-    if (coins.isEmpty()) {
-        val random1 = (0..10000).shuffled().first()
-        val intent = Intent(context, MainActivity::class.java)
-        intent.putExtra("cryptoID", "portfolio")
+private fun buildPlaceholderSmallPortfolioWidget(context: Context): RemoteViews {
+    return createPortfolioWidgetEmptyRemoteViews(context)
+}
 
-        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(
-            context,
-            random1,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
+internal fun createSmallPortfolioRemoteViews(
+    context: Context,
+    widgetData: PortfolioWidgetData,
+    embeddedInMedium: Boolean = false,
+): RemoteViews {
+    val views = RemoteViews(
+        context.packageName,
+        if (embeddedInMedium) R.layout.small_portfolio_widget_cell else R.layout.small_portfolio_widget,
+    )
+    bindSmallPortfolioRemoteViews(
+        views = views,
+        context = context,
+        widgetData = widgetData,
+        embeddedInMedium = embeddedInMedium,
+    )
+    if (!embeddedInMedium) {
+        setSmallPortfolioClickIntent(views, context)
+    }
+    return views
+}
 
+internal fun bindMediumPortfolioCell(
+    parent: RemoteViews,
+    containerId: Int,
+    widgetData: PortfolioWidgetData,
+    context: Context,
+) {
+    val cellViews = createSmallPortfolioRemoteViews(
+        context = context,
+        widgetData = widgetData,
+        embeddedInMedium = true,
+    )
+    parent.removeAllViews(containerId)
+    parent.addView(containerId, cellViews)
+}
 
-        views.setOnClickPendingIntent(R.id.btn_open, pendingIntent)
+internal fun buildPortfolioList(): List<Pie> {
+    val cachedPortfolio = PortfolioRepository.portfolio ?: return emptyList()
+    val piesData = cachedPortfolio.data
+    piesData.sanitizeGsonNulls()
+    val dataPies = piesData.data
+    val otherPies = piesData.otherCoins
+        .filter { otherCoin -> dataPies.none { it.data?.id == otherCoin.id } }
+        .map { Pie(data = it) }
+    return dataPies + otherPies
+}
 
-        val random = (0..10000).shuffled().first()
-        val ids = appWidgetManager.getAppWidgetIds(
-            ComponentName(
-                context,
-                small_portfolio_widget::class.java
+internal fun bindSmallPortfolioRemoteViews(
+    views: RemoteViews,
+    context: Context,
+    widgetData: PortfolioWidgetData,
+    embeddedInMedium: Boolean = false,
+) {
+    applySmallPortfolioTheme(views, context, embeddedInMedium)
+
+    val hideData = UserPreferences.getHidePortfolioData()
+    val selectedCurrency = UserPreferences.getSelectedCurrency(context)
+
+    views.setTextViewText(
+        R.id.txt_total_value,
+        when {
+            hideData -> stars
+            widgetData.isEmpty || widgetData.totalValue == null -> "—"
+            else -> widgetData.totalValue.formatCurrency(
+                threshold = FormattingThreshold.BILLION,
+                currency = selectedCurrency,
             )
+        },
+    )
+
+    if (hideData) {
+        views.setViewVisibility(R.id.view_price_change, View.VISIBLE)
+        views.setImageViewResource(R.id.view_price_change, R.drawable.trend_still)
+        views.setInt(R.id.view_price_change, "setColorFilter", widgetOnSurfaceDim(context))
+        views.setTextViewText(R.id.txt_pl_change, stars)
+        views.setTextColor(R.id.txt_pl_change, widgetOnSurfaceDim(context))
+        return
+    }
+
+    val changeValue = widgetData.portfolioDailyChangeValue
+    val changePercent = widgetData.portfolioDailyChangePercent
+    val hasValidChange = !widgetData.isEmpty &&
+        changeValue != null &&
+        changePercent != null &&
+        !changePercent.isNaN() &&
+        !changePercent.isInfinite()
+
+    if (!hasValidChange) {
+        views.setViewVisibility(R.id.view_price_change, View.GONE)
+        views.setTextViewText(R.id.txt_pl_change, "—")
+        views.setTextColor(R.id.txt_pl_change, widgetOnSurfaceDim(context))
+        return
+    }
+
+    val changeColor = changeValue.getWidgetPercentChangeColorPortfolio(context)
+    val changeIcon = changeValue.getPercentChangeDrawablePortfolio()
+
+    views.setViewVisibility(R.id.view_price_change, View.VISIBLE)
+    views.setImageViewResource(R.id.view_price_change, changeIcon)
+    views.setInt(R.id.view_price_change, "setColorFilter", changeColor)
+
+    views.setTextViewText(
+        R.id.txt_pl_change,
+        formatChangeValueAndPercent(changeValue, changePercent),
+    )
+    views.setTextColor(R.id.txt_pl_change, changeColor)
+}
+
+private fun applySmallPortfolioTheme(
+    views: RemoteViews,
+    context: Context,
+    embeddedInMedium: Boolean = false,
+) {
+    if (!embeddedInMedium) {
+        views.setInt(
+            R.id.ll_view,
+            "setBackgroundResource",
+            if (isWidgetDarkMode(context)) {
+                R.drawable.widget_background_dark
+            } else {
+                R.drawable.widget_background_light
+            },
         )
-        val updateIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-        updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+    }
+    views.setTextColor(R.id.txt_portfolio_title, widgetOnSurfaceDimmer(context))
+    views.setTextColor(R.id.txt_total_value, widgetOnSurface(context))
+    views.setTextColor(R.id.txt_pl_title, widgetOnSurfaceDimmer(context))
+}
 
-        val pendingIntent1: PendingIntent = PendingIntent.getBroadcast(
-            context,
-            random,
-            updateIntent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
+internal fun formatSignedChangePercent(percent: Double?): String {
+    if (percent == null || percent.isNaN() || percent.isInfinite()) {
+        return ""
+    }
+    val formattedPercent = "%.2f".format(percent.roundTo(2)).changeWithSymbol
+    return "($formattedPercent%)"
+}
 
+internal fun bindPortfolioSignedChange(
+    views: RemoteViews,
+    context: Context,
+    iconId: Int,
+    textId: Int,
+    changeValue: Double?,
+    changePercent: Double?,
+    hideData: Boolean,
+    isEmpty: Boolean,
+) {
+    if (hideData) {
+        views.setViewVisibility(iconId, View.VISIBLE)
+        views.setImageViewResource(iconId, R.drawable.trend_still)
+        views.setInt(iconId, "setColorFilter", widgetOnSurfaceDim(context))
+        views.setTextViewText(textId, stars)
+        views.setTextColor(textId, widgetOnSurfaceDim(context))
+        return
+    }
 
-        views.setOnClickPendingIntent(R.id.btn_reload, pendingIntent1)
+    val hasValidChange = !isEmpty &&
+        changeValue != null &&
+        changePercent != null &&
+        !changePercent.isNaN() &&
+        !changePercent.isInfinite()
 
-        appWidgetManager.updateAppWidget(appWidgetId, views)
-    }*/
+    if (!hasValidChange) {
+        views.setViewVisibility(iconId, View.GONE)
+        views.setTextViewText(textId, "—")
+        views.setTextColor(textId, widgetOnSurfaceDim(context))
+        return
+    }
 
+    val changeColor = changeValue.getWidgetPercentChangeColorPortfolio(context)
+    val changeIcon = changeValue.getPercentChangeDrawablePortfolio()
+    views.setViewVisibility(iconId, View.VISIBLE)
+    views.setImageViewResource(iconId, changeIcon)
+    views.setInt(iconId, "setColorFilter", changeColor)
+    views.setTextViewText(textId, formatChangeValueAndPercent(changeValue, changePercent))
+    views.setTextColor(textId, changeColor)
+}
 
+internal fun formatChangeValueAndPercent(changeValue: Double?, changePercent: Double?): String {
+    if (changeValue == null) {
+        return "—"
+    }
+    val valueText = changeValue.formatCurrency(threshold = FormattingThreshold.THOUSAND)
+        .replace("-", "")
+        .replace("+", "")
+    val percentText = formatSignedChangePercent(changePercent)
+    return if (percentText.isEmpty()) valueText else "$valueText $percentText"
+}
+
+internal fun setSmallPortfolioClickIntent(
+    views: RemoteViews,
+    context: Context,
+) {
+    val intent = Intent(context, MainActivity::class.java).apply {
+        putExtra("cryptoID", "portfolio")
+    }
+    val pendingIntent = PendingIntent.getActivity(
+        context,
+        (0..10000).random(),
+        intent,
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+    )
+    views.setOnClickPendingIntent(R.id.btn_open, pendingIntent)
+}
+
+internal fun bindPortfolioPerformerRemoteViews(
+    views: RemoteViews,
+    context: Context,
+    titleId: Int,
+    symbolId: Int,
+    coinImageId: Int,
+    changeIconId: Int,
+    changeTextId: Int,
+    title: String,
+    coinChange: CoinDailyChange?,
+    coinBitmap: Bitmap?,
+    hideData: Boolean,
+    isEmpty: Boolean,
+) {
+    views.setTextViewText(titleId, title)
+    views.setTextColor(titleId, widgetOnSurfaceDimmer(context))
+
+    if (hideData) {
+        views.setTextViewText(symbolId, stars)
+        views.setTextColor(symbolId, widgetOnSurface(context))
+        views.setImageViewResource(coinImageId, R.drawable.bitcoin)
+        views.setViewVisibility(changeIconId, View.VISIBLE)
+        views.setImageViewResource(changeIconId, R.drawable.trend_still)
+        views.setInt(changeIconId, "setColorFilter", widgetOnSurfaceDim(context))
+        views.setTextViewText(changeTextId, stars)
+        views.setTextColor(changeTextId, widgetOnSurfaceDim(context))
+        return
+    }
+
+    val hasValidData = !isEmpty &&
+        coinChange != null &&
+        coinChange.changePercent != null &&
+        coinChange.changeValue != null &&
+        !coinChange.changePercent.isNaN() &&
+        !coinChange.changePercent.isInfinite()
+
+    if (!hasValidData) {
+        views.setTextViewText(symbolId, "—")
+        views.setTextColor(symbolId, widgetOnSurfaceDim(context))
+        views.setImageViewResource(coinImageId, R.drawable.bitcoin)
+        views.setViewVisibility(changeIconId, View.GONE)
+        views.setTextViewText(changeTextId, "—")
+        views.setTextColor(changeTextId, widgetOnSurfaceDim(context))
+        return
+    }
+
+    views.setTextViewText(symbolId, coinChange.symbol.ifEmpty { "—" })
+    views.setTextColor(symbolId, widgetOnSurface(context))
+
+    if (coinBitmap != null) {
+        views.setImageViewBitmap(coinImageId, coinBitmap)
+    } else {
+        views.setImageViewResource(coinImageId, R.drawable.bitcoin)
+    }
+
+    val changeValue = coinChange.changeValue!!
+    val changeColor = changeValue.getWidgetPercentChangeColorPortfolio(context)
+    val changeIcon = changeValue.getPercentChangeDrawablePortfolio()
+    views.setViewVisibility(changeIconId, View.VISIBLE)
+    views.setImageViewResource(changeIconId, changeIcon)
+    views.setInt(changeIconId, "setColorFilter", changeColor)
+
+    views.setTextViewText(
+        changeTextId,
+        formatChangeValueAndPercent(changeValue, coinChange.changePercent),
+    )
+    views.setTextColor(changeTextId, changeColor)
 }

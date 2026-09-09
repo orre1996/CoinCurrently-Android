@@ -40,6 +40,9 @@ internal fun updateAppWidget(
             provider.className.contains("medium_portfolio_widget") -> {
                 createMediumPortfolioWidget(context, appWidgetManager, appWidgetId)
             }
+            provider.className.contains("large_portfolio_widget") -> {
+                createLargePortfolioWidget(context, appWidgetManager, appWidgetId)
+            }
             provider.className.contains("SmallNewsWidgetReceiver") -> {
                 createSmallNewsWidget(context, appWidgetManager, appWidgetId)
             }

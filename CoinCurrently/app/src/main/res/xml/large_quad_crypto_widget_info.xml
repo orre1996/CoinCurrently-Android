@@ -4,9 +4,10 @@
     android:initialKeyguardLayout="@layout/large_quad_crypto_widget"
     android:initialLayout="@layout/large_quad_crypto_widget"
     android:minWidth="310dp"
-    android:previewImage="@drawable/large_quad_widget_preview"
+    android:minHeight="180dp"
     android:previewLayout="@layout/large_quad_crypto_widget_preview"
-    android:minHeight="310dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="3"
     android:updatePeriodMillis="1800000"
     android:widgetCategory="home_screen"
     android:widgetFeatures="reconfigurable" />

@@ -36,6 +36,8 @@ fun widgetOnSurfaceDim(context: Context): Int = widgetColor(context, "#C9C6C5", 
 
 fun widgetOnSurfaceDimmer(context: Context): Int = widgetColor(context, "#929090", "#6C6A6A")
 
+fun widgetOnPrimary(context: Context): Int = widgetColor(context, "#1B0E00", "#FFFFFF")
+
 fun widgetTrendUp(context: Context): Int = widgetSemanticColor(
     context,
     standardDarkHex = "#42E099",

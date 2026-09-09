@@ -118,7 +118,6 @@ fun Double.getChangeWithoutSymbol(): String {
     }
 }
 
-@Composable
 fun Double.getPercentChangeDrawablePortfolio(): Int {
     if (kotlin.math.abs(this) < 0.0000001) {
         return R.drawable.trend_still

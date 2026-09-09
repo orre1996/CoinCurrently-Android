@@ -15,6 +15,7 @@ import com.cryptium.coincurrently.widgets.glance.MediumDuoCryptoWidgetReceiver
 import com.cryptium.coincurrently.widgets.glance.SmallCryptoWidgetReceiver
 import com.cryptium.coincurrently.widgets.receivers.MediumNewsWidgetReceiver
 import com.cryptium.coincurrently.widgets.receivers.SmallNewsWidgetReceiver
+import com.cryptium.coincurrently.widgets.receivers.large_portfolio_widget
 import com.cryptium.coincurrently.widgets.receivers.medium_portfolio_widget
 import com.cryptium.coincurrently.widgets.receivers.small_fear_greed_widget
 import com.cryptium.coincurrently.widgets.receivers.small_portfolio_widget
@@ -39,15 +40,14 @@ private fun Context.notifyWidgetUpdate(receiver: Class<*>) {
     )
 }
 
-fun MainActivity.updatePortfolioWidgets() {
-    val man = AppWidgetManager.getInstance(baseContext)
-    val updateIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+fun Context.updatePortfolioWidgets() {
+    notifyWidgetUpdate(small_portfolio_widget::class.java)
+    notifyWidgetUpdate(medium_portfolio_widget::class.java)
+    notifyWidgetUpdate(large_portfolio_widget::class.java)
+}
 
-    val ids = man.getAppWidgetIds(ComponentName(baseContext, small_portfolio_widget::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-
-    val ids1 = man.getAppWidgetIds(ComponentName(baseContext, medium_portfolio_widget::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids1)
+fun reloadPortfolioWidgets() {
+    MainActivity.current()?.updatePortfolioWidgets()
 }
 
 fun MainActivity.updateAllWidgets() {
@@ -57,6 +57,7 @@ fun MainActivity.updateAllWidgets() {
     notifyWidgetUpdate(LargeMultiCryptoWidgetReceiver::class.java)
     notifyWidgetUpdate(small_portfolio_widget::class.java)
     notifyWidgetUpdate(medium_portfolio_widget::class.java)
+    notifyWidgetUpdate(large_portfolio_widget::class.java)
     notifyWidgetUpdate(small_fear_greed_widget::class.java)
     notifyWidgetUpdate(SmallNewsWidgetReceiver::class.java)
     notifyWidgetUpdate(MediumNewsWidgetReceiver::class.java)

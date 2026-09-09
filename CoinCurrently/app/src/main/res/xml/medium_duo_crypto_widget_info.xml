@@ -4,7 +4,6 @@
     android:initialKeyguardLayout="@layout/medium_duo_crypto_widget"
     android:initialLayout="@layout/medium_duo_crypto_widget"
     android:minWidth="310dp"
-    android:previewImage="@drawable/medium_duo_widget_preview"
     android:previewLayout="@layout/medium_duo_crypto_widget_preview"
     android:minHeight="130dp"
     android:updatePeriodMillis="1900000"

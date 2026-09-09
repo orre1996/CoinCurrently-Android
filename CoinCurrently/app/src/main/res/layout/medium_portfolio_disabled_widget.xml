@@ -5,8 +5,8 @@
 
     <LinearLayout
         android:id="@+id/ll_view"
-        android:layout_width="350dp"
-        android:layout_height="165dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@drawable/widget_background_dark"
         android:orientation="horizontal"
         android:weightSum="2">
@@ -24,8 +24,8 @@
 
     <RelativeLayout
         android:id="@+id/btn_open"
-        android:layout_width="350dp"
-        android:layout_height="165dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     </RelativeLayout>
 
 </RelativeLayout>

@@ -27,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import kotlinx.coroutines.launch
@@ -63,7 +62,6 @@ fun AchievementSnackbarView(
     achievementTitle: String,
     levelName: String,
     isTabbarHidden: Boolean,
-    standardSnackbarIsVisible: Boolean,
     navBarHeight: Dp,
     systemNavbarHeight: Dp,
     onVisibilityChanged: (Boolean) -> Unit,
@@ -73,7 +71,6 @@ fun AchievementSnackbarView(
     val offsetY = remember { Animatable(200f) }
     val animatedProgress = remember { Animatable(0f) }
     val density = LocalDensity.current
-    val standardSnackbarVisible by rememberUpdatedState(standardSnackbarIsVisible)
     val scope = rememberCoroutineScope()
 
     val targetBottomInsetY = if (isTabbarHidden) {
@@ -89,7 +86,6 @@ fun AchievementSnackbarView(
 
     var interactionLocked by remember { mutableStateOf(false) }
     var isSnackbarVisible by remember { mutableStateOf(false) }
-    var previousStandardSnackbarVisible by remember { mutableStateOf(standardSnackbarIsVisible) }
 
     suspend fun dismissAnimated() {
         if (!isSnackbarVisible) return
@@ -125,34 +121,11 @@ fun AchievementSnackbarView(
             animationSpec = tween(durationMillis = 900, easing = FastOutSlowInEasing),
         )
 
-        var elapsed = 0L
-        while (elapsed < SnackbarConstants.DISPLAY_DURATION_MS && isSnackbarVisible) {
-            if (standardSnackbarVisible) {
-                while (standardSnackbarVisible && isSnackbarVisible) {
-                    delay(100)
-                }
-                return@LaunchedEffect
-            }
-            delay(100)
-            elapsed += 100
-        }
+        delay(SnackbarConstants.DISPLAY_DURATION_MS)
 
-        if (isSnackbarVisible && !standardSnackbarVisible) {
+        if (isSnackbarVisible) {
             dismissAnimated()
         }
-    }
-
-    LaunchedEffect(standardSnackbarIsVisible) {
-        if (!isSnackbarVisible) {
-            previousStandardSnackbarVisible = standardSnackbarIsVisible
-            return@LaunchedEffect
-        }
-
-        if (previousStandardSnackbarVisible && !standardSnackbarIsVisible) {
-            dismissAnimated()
-        }
-
-        previousStandardSnackbarVisible = standardSnackbarIsVisible
     }
 
     if (!isSnackbarVisible && offsetY.value >= 199f) return
@@ -163,8 +136,13 @@ fun AchievementSnackbarView(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
-            .padding(16.dp)
-            .offset(y = offsetY.value.dp - bottomInsetY)
+            .padding(
+                start = 16.dp,
+                end = 16.dp,
+                top = 16.dp,
+                bottom = 16.dp + bottomInsetY,
+            )
+            .offset(y = offsetY.value.dp)
             .fillMaxWidth()
             .onSizeChanged { size ->
                 onHeightChanged(with(density) { size.height.toDp().value })

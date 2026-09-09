@@ -784,7 +784,6 @@ private fun AchievementSnackBarView(
         achievementTitle = navigationViewModel.achievementTitle,
         levelName = navigationViewModel.achievementLevelName,
         isTabbarHidden = !isNavBarVisible,
-        standardSnackbarIsVisible = navigationViewModel.showSnackbar.value,
         navBarHeight = navBarHeight,
         systemNavbarHeight = systemNavbarHeight,
         onVisibilityChanged = { navigationViewModel.achievementSnackbarIsVisible = it },

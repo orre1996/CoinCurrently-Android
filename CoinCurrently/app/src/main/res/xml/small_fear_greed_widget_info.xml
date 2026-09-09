@@ -3,7 +3,6 @@
     android:initialKeyguardLayout="@layout/small_fear_greed_widget"
     android:initialLayout="@layout/small_fear_greed_widget"
     android:minWidth="150dp"
-    android:previewImage="@drawable/small_fear_widget_preview"
     android:previewLayout="@layout/small_fear_greed_widget"
     android:minHeight="130dp"
     android:updatePeriodMillis="1850000"

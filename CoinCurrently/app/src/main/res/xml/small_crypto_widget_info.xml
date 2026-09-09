@@ -4,7 +4,6 @@
     android:initialLayout="@layout/small_crypto_widget"
     android:minWidth="150dp"
     android:minHeight="130dp"
-    android:previewImage="@drawable/small_crypto_widget_preview"
     android:previewLayout="@layout/small_crypto_widget"
     android:updatePeriodMillis="1850000"
     android:widgetCategory="home_screen"

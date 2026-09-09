@@ -3,7 +3,6 @@
     android:configure="com.cryptium.coincurrently.widgets.config.SingleCoinConfigActivity"
     android:initialLayout="@layout/small_crypto_widget"
     android:minWidth="150dp"
-    android:previewImage="@drawable/small_crypto_widget_preview"
     android:previewLayout="@layout/small_crypto_widget"
     android:minHeight="130dp"
     android:updatePeriodMillis="1850000"

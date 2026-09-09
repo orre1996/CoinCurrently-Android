@@ -126,8 +126,13 @@ fun SnackbarView(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
-            .padding(16.dp)
-            .offset(y = offsetY.value.dp - bottomInsetY - animatedStackedOffset)
+            .padding(
+                start = 16.dp,
+                end = 16.dp,
+                top = 16.dp,
+                bottom = 16.dp + bottomInsetY + animatedStackedOffset,
+            )
+            .offset(y = offsetY.value.dp)
             .clip(RoundedCornerShape(100))
             .background(MaterialTheme.colors.surfaceContainerHighest)
             .pointerInput(showSnackBar, snackbarTrigger) {

@@ -87,7 +87,6 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/cardBackground" />
 
-        <!--
         <receiver
             android:name=".widgets.receivers.medium_portfolio_widget"
             android:exported="true">
@@ -110,7 +109,17 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/small_portfolio_widget_info" />
         </receiver>
-        -->
+        <receiver
+            android:name=".widgets.receivers.large_portfolio_widget"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/large_portfolio_widget_info" />
+        </receiver>
         <receiver
             android:name=".widgets.glance.LargeQuadCryptoWidgetReceiver"
             android:exported="true">

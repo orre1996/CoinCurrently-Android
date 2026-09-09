@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/ll_large_portfolio"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/widget_background_dark"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/txt_portfolio_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/satoshi_bold"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="Portfolio Value"
+            android:textColor="#929090"
+            android:textFontWeight="700"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txt_total_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:autoSizeMaxTextSize="22sp"
+            android:autoSizeMinTextSize="14sp"
+            android:autoSizeTextType="uniform"
+            android:ellipsize="end"
+            android:fontFamily="@font/satoshi_bold"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="$84,528.15"
+            android:textColor="#FCF8F8"
+            android:textFontWeight="700"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingEnd="8dp">
+
+                <TextView
+                    android:id="@+id/txt_today_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:text="Today's Change"
+                    android:textColor="#929090"
+                    android:textFontWeight="700"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical|start"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/view_today_change"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/trend_down"
+                        android:tint="#F95A56"
+                        android:tintMode="src_in" />
+
+                    <TextView
+                        android:id="@+id/txt_today_change"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:gravity="start"
+                        android:includeFontPadding="false"
+                        android:maxLines="2"
+                        android:text="$576.92 (-0.62%)"
+                        android:textColor="#F95A56"
+                        android:textFontWeight="700"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingStart="8dp">
+
+                <TextView
+                    android:id="@+id/txt_pl_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:text="Profit/Loss"
+                    android:textColor="#929090"
+                    android:textFontWeight="700"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical|start"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/view_pl_change"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/trend_up"
+                        android:tint="#42E099"
+                        android:tintMode="src_in" />
+
+                    <TextView
+                        android:id="@+id/txt_pl_change"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:gravity="start"
+                        android:includeFontPadding="false"
+                        android:maxLines="2"
+                        android:text="$14,228.15 (+20.23%)"
+                        android:textColor="#42E099"
+                        android:textFontWeight="700"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/separator_horizontal"
+            layout="@layout/widget_separator_vertical_dark"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_coin_header"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/satoshi_bold"
+                android:includeFontPadding="false"
+                android:text="Coin"
+                android:textColor="#929090"
+                android:textFontWeight="700"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_pl_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_bold"
+                android:includeFontPadding="false"
+                android:text="Profit/Loss"
+                android:textColor="#929090"
+                android:textFontWeight="700"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_coins"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/btn_open"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

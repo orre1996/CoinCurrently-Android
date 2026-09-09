@@ -6,6 +6,7 @@ import android.content.Context
 import android.util.Log
 import com.cryptium.coincurrently.sharedui.components.CustomImageView
 import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
+import com.cryptium.coincurrently.core.extensions.reloadPortfolioWidgets
 import com.cryptium.coincurrently.core.extensions.allIds
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
 import com.cryptium.coincurrently.core.extensions.allWallets
@@ -457,6 +458,7 @@ object PortfolioRepository {
         updatePortfolioCache(portfolio)
         portfolioModels = this.portfolio?.data?.data?.mapNotNull { it.toPortfolioCurrencyModel() }
         StorageManager.set(StorageKeys.NEW_PORTFOLIO, portfolioModels)
+        reloadPortfolioWidgets()
     }
 
     suspend fun importWallet(
