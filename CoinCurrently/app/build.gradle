@@ -37,7 +37,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
@@ -184,17 +183,12 @@ dependencies {
     }
     implementation 'com.google.firebase:firebase-config'
     implementation 'com.google.firebase:firebase-crashlytics'
-    implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.google.firebase:firebase-messaging'
-    implementation 'com.google.firebase:firebase-perf'
 
     // Billing & reviews
     implementation 'com.android.billingclient:billing:8.3.0'
     implementation 'com.google.android.play:review:2.0.1'
     implementation 'com.revenuecat.purchases:purchases:10.5.0'
-
-    // Widgets
-    implementation 'androidx.glance:glance-appwidget:1.1.1'
 
     // Third-party UI
     implementation 'com.google.accompanist:accompanist-pager:0.21.2-beta'

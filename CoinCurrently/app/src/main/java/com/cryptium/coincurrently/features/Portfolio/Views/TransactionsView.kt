@@ -27,9 +27,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.glance.action.actionParametersOf
-import androidx.glance.action.clickable
-import androidx.glance.appwidget.action.actionRunCallback
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.tabPageTalkBackTraversal
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
@@ -46,8 +43,6 @@ import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
 import com.cryptium.coincurrently.features.Portfolio.Enums.DateOption
 import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import com.cryptium.coincurrently.features.Portfolio.Enums.rangeTitle
-import com.cryptium.coincurrently.widgets.NewsIdKey
-import com.cryptium.coincurrently.widgets.OpenAppAction
 import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 import java.util.Date

@@ -21,8 +21,18 @@ internal fun updateAppWidget(
             provider.className.contains("small_fear_greed_widget") -> {
                 createSmallFearWidget(context, appWidgetManager, appWidgetId)
             }
-            provider.className.contains("small_crypto_widget") -> {
+            provider.className.contains("SmallCryptoWidgetReceiver") ||
+                provider.className.contains("small_crypto_widget") -> {
                 createSmallWidget(context, appWidgetManager, appWidgetId)
+            }
+            provider.className.contains("MediumDuoCryptoWidgetReceiver") -> {
+                createMediumDuoWidget(context, appWidgetManager, appWidgetId)
+            }
+            provider.className.contains("LargeQuadCryptoWidgetReceiver") -> {
+                createLargeQuadWidget(context, appWidgetManager, appWidgetId)
+            }
+            provider.className.contains("LargeMultiCryptoWidgetReceiver") -> {
+                createLargeMultiWidget(context, appWidgetManager, appWidgetId)
             }
             provider.className.contains("small_portfolio_widget") -> {
                 createSmallPortfolioWidget(context, appWidgetManager, appWidgetId)
@@ -30,9 +40,13 @@ internal fun updateAppWidget(
             provider.className.contains("medium_portfolio_widget") -> {
                 createMediumPortfolioWidget(context, appWidgetManager, appWidgetId)
             }
-            else -> {
-                // Glance widgets handle their own updates.
+            provider.className.contains("SmallNewsWidgetReceiver") -> {
+                createSmallNewsWidget(context, appWidgetManager, appWidgetId)
             }
+            provider.className.contains("MediumNewsWidgetReceiver") -> {
+                createMediumNewsWidget(context, appWidgetManager, appWidgetId)
+            }
+            else -> { }
         }
     }
 }

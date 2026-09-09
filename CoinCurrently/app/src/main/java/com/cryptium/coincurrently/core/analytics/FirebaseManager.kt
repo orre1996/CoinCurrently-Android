@@ -19,7 +19,6 @@ import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
@@ -352,8 +351,6 @@ class FirebaseManager {
         }
 
         fun resetApp(callback: () -> Unit) {
-            val db = FirebaseFirestore.getInstance()
-
             UserPreferences.setPortfolioCurrency(arrayListOf())
             UserPreferences.setWidgetCurrency(listOf())
             UserPreferences.setSelectedCurrency(CurrencySelectionModel())
@@ -365,26 +362,6 @@ class FirebaseManager {
             UserPreferences.setShowChangesInPercent(true)
             UserPreferences.setPreferredTimeframe(PreferredTimeframe.WEEKLY)
             StorageManager.clearCache()
-
-            db.collection(uid.toString())
-                .get()
-                .addOnSuccessListener {
-                    for (document in it.documents) {
-                        document.reference.delete()
-                    }
-                }
-
-
-            val collection = UserPreferences.getLastLoginCollection()
-
-            db.collection("last_login${collection}")
-                .whereEqualTo("uid", uid)
-                .get()
-                .addOnSuccessListener {
-                    for (document in it.documents) {
-                        document.reference.delete()
-                    }
-                }
 
             FirebaseAuth.getInstance().currentUser?.delete()?.addOnCompleteListener {
                 callback.invoke()

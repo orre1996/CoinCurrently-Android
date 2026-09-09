@@ -3,6 +3,7 @@
     android:initialKeyguardLayout="@layout/small_portfolio_widget"
     android:initialLayout="@layout/small_portfolio_widget"
     android:minWidth="150dp"
+    android:previewImage="@drawable/small_portfolio_widget_preview"
     android:previewLayout="@layout/small_portfolio_widget"
     android:minHeight="130dp"
     android:updatePeriodMillis="3700000"

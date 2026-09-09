@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:configure="com.cryptium.coincurrently.widgets.config.NewsCategoryConfigActivity"
     android:initialKeyguardLayout="@layout/small_news_widget"
     android:initialLayout="@layout/small_news_widget"
     android:minWidth="150dp"
-    android:previewLayout="@layout/small_news_widget"
     android:minHeight="130dp"
+    android:previewLayout="@layout/small_news_widget"
     android:updatePeriodMillis="1800000"
-    android:widgetCategory="home_screen" />
+    android:widgetCategory="home_screen"
+    android:widgetFeatures="reconfigurable" />

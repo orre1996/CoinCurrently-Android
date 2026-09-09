@@ -1,110 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:layout_weight="1">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/ll_view"
-        android:layout_width="165dp"
-        android:layout_height="165dp"
-        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@drawable/widget_background_dark"
-        android:weightSum="1">
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/txt_questionmark"
-        android:layout_width="165dp"
-        android:layout_height="165dp"
-        android:fontFamily="@font/poppins_semibold"
-        android:includeFontPadding="false"
-        android:gravity="center"
-        android:text="\?"
-        android:textColor="#B3C9C6C5"
-        android:textSize="22sp" />
-
-    <ImageView
-        android:id="@+id/img_small_news_image"
-        android:layout_width="165dp"
-        android:layout_height="165dp"
-        android:scaleType="centerCrop"
-        android:visibility="visible" />
-
-    <LinearLayout
-        android:layout_width="165dp"
-        android:layout_height="165dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:layout_width="165dp"
-            android:layout_height="130dp"
-            android:background="@drawable/large_news_card_fade_widget"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="165dp"
-        android:layout_height="165dp"
         android:orientation="vertical"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="12dp">
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/sentiment_badge_background"
-            android:padding="4dp">
-            <ImageView
-                android:id="@+id/img_sentiment"
-                android:layout_width="10dp"
-                android:layout_height="6dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/trend_still"
-                app:tint="#C9C6C5"/>
-        </FrameLayout>
-
-        <TextView
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+        android:padding="16dp"
+        android:weightSum="1">
 
         <TextView
             android:id="@+id/txt_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="4"
-            android:fontFamily="@font/poppins_semibold"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="top|start"
             android:includeFontPadding="false"
-            android:gravity="start"
-            android:lineSpacingMultiplier="1.2"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:text="Crypto News"/>
+            android:maxLines="6"
+            android:text="Bitcoin Bears Eye $60,700 Target As BTC Rejects Key Resistance"
+            android:textColor="#FCF8F8"
+            android:textFontWeight="700"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/ll_ticker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/widget_ticker_badge_background_dark"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="4dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="4dp">
+
+            <ImageView
+                android:id="@+id/img_sentiment"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/trend_down"
+                android:tint="#F95A56" />
+
+            <TextView
+                android:id="@+id/txt_tickers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:ellipsize="end"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:text="BTC · ETH"
+                android:textColor="#FCF8F8"
+                android:textFontWeight="700"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="BTC · ETH" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/txt_published"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="start"
-            android:fontFamily="@font/poppins_light"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
             android:includeFontPadding="false"
-            android:textColor="@color/white"
-            android:layout_marginTop="4dp"
+            android:maxLines="2"
+            android:text="Bitcoinist · 34 minutes ago"
+            android:textColor="#929090"
+            android:textFontWeight="700"
             android:textSize="12sp"
-            android:text="CoinCurrently"/>
+            android:textStyle="bold" />
 
     </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/btn_open"
-        android:layout_width="165dp"
-        android:layout_height="165dp">
-    </RelativeLayout>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <include
+        android:id="@+id/buy_pro"
+        layout="@layout/buy_pro_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/buy_pro_light"
+        layout="@layout/buy_pro_overlay_light"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 </RelativeLayout>

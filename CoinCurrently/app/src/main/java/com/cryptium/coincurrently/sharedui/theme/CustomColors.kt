@@ -1,9 +1,7 @@
 package com.cryptium.coincurrently.sharedui.theme
-import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.material.Colors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.glance.unit.ColorProvider
 
 @Composable
 private fun Colors.semanticColor(
@@ -244,86 +242,3 @@ val Colors.transparent: Color
 @get:Composable
 val Colors.skeletonBackground: Color
     get() = if (isLight) Color(0x403A3A43) else Color(0x40E6E9FF)
-
-/**
- * Same color values as the Compose extensions above, as ARGB Int for use outside Compose
- * (e.g. Glance widgets). Pass isDark = true when the system is in dark mode.
- */
-object WidgetColorValues {
-    private fun semanticColorProvider(
-        standardDay: Long,
-        standardNight: Long,
-        accessibleDay: Long,
-        accessibleNight: Long,
-    ): ColorProvider {
-        val accessible = UserPreferences.getColorBlind()
-        return if (accessible) {
-            androidx.glance.color.ColorProvider(
-                day = Color(accessibleDay),
-                night = Color(accessibleNight),
-            )
-        } else {
-            androidx.glance.color.ColorProvider(
-                day = Color(standardDay),
-                night = Color(standardNight),
-            )
-        }
-    }
-
-    /** Glance ColorProvider for surface (day/night). Matches Colors.surface. */
-    fun surface(): ColorProvider = androidx.glance.color.ColorProvider(
-        day = Color(0xFFE5E2E1),
-        night = Color(0xFFF6FEFF),
-    )
-
-    fun onSurface(): ColorProvider = androidx.glance.color.ColorProvider(
-        day = Color(0xFF1C1B1B),
-        night = Color(0xFFFCF8F8),
-    )
-
-    fun onSurfaceDim(): ColorProvider = androidx.glance.color.ColorProvider(
-        day = Color(0xFF484646),
-        night = Color(0xFFC9C6C5)
-    )
-
-    /** onSurfaceDim with 0.5 opacity. */
-    fun onSurfaceDimTransparent(): ColorProvider = androidx.glance.color.ColorProvider(
-        day = Color(0x80484646),
-        night = Color(0x80C9C6C5)
-    )
-
-    /** Semi-transparent overlay (e.g. for buy pro overlay). Matches Colors.overlayColor. */
-    fun overlayScrim(): ColorProvider = androidx.glance.color.ColorProvider(
-        day = Color(0x66000000),
-        night = Color(0x99000000),
-    )
-
-    /** Sentiment badge background (tertiary-style, ~80% opacity). */
-    fun sentimentBadgeBackground(): ColorProvider = androidx.glance.color.ColorProvider(
-        day = Color(0xCC525252),
-        night = Color(0xCC525252),
-    )
-
-    fun trendUp(): ColorProvider = semanticColorProvider(
-        standardDay = 0xFF007F52,
-        standardNight = 0xFF42E099,
-        accessibleDay = 0xFF0072B2,
-        accessibleNight = 0xFF56B4E9,
-    )
-
-    fun trendDown(): ColorProvider = semanticColorProvider(
-        standardDay = 0xFFB3272A,
-        standardNight = 0xFFF95A56,
-        accessibleDay = 0xFFD55E00,
-        accessibleNight = 0xFFE69F00,
-    )
-
-    /** Gas fee widget: Standard/Neutral (yellow). */
-    fun gasNeutral(): ColorProvider = semanticColorProvider(
-        standardDay = 0xFF9A8200,
-        standardNight = 0xFFFFDF2E,
-        accessibleDay = 0xFF757575,
-        accessibleNight = 0xFFB8B8B8,
-    )
-
-}

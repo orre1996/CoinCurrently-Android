@@ -290,14 +290,6 @@ object UserPreferences {
         prefs()?.edit()?.putString("moreHintDate", dateStringAddingDays(inDays))?.apply()
     }
 
-    fun getLastLoginCollection(): Int? {
-        return prefs()?.getInt("lastLoginCollection", -1)
-    }
-
-    fun setLastLoginCollection(collection: Int) {
-        prefs()?.edit()?.putInt("lastLoginCollection", collection)?.apply()
-    }
-
     fun getIsWidgetDarkModeEnabled(): Boolean {
         return prefs()?.getBoolean("isWidgetDarkModeEnabled", true) ?: true
     }

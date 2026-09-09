@@ -1,81 +1,12 @@
 package com.cryptium.coincurrently.widgets.receivers
-import com.cryptium.coincurrently.core.persistence.UserPreferences
-import android.app.PendingIntent
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.res.Configuration
-import android.content.Intent
 import android.graphics.*
-import android.os.Handler
-import android.os.Looper
-import android.widget.RemoteViews
-import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.core.extensions.normalise
-import com.cryptium.coincurrently.sharedui.charts.getWidgetChangeColor
 import com.cryptium.coincurrently.core.extensions.roundTo
-import com.cryptium.coincurrently.widgets.glance.SmallCryptoWidgetReceiver
 import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
 import kotlin.math.pow
 import kotlin.math.roundToInt
-
-/**
- * Small crypto app widget UI is now implemented with Jetpack Glance in SmallCryptoGlanceWidget.kt.
- * This file keeps createSmallWidget(context,...) for RemoteViews updates, plus shared
- * helpers (colors, drawPieChart, lifecycle) used by other widgets.
- */
-
-/** Builds the small widget content for RemoteViews updates. */
-internal fun createSmallWidget(
-    context: Context,
-    appWidgetManager: AppWidgetManager,
-    appWidgetId: Int
-) {
-    val isDark = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) != 0
-    val views = RemoteViews(context.packageName, R.layout.small_crypto_widget)
-    views.setInt(R.id.ll_view, "setBackgroundResource", if (isDark) R.drawable.widget_background_dark else R.drawable.widget_background_light)
-
-    if (UserPreferences.getWidgetCurrency(context).isEmpty()) {
-        val widget = createSmallWidget(null, context, appWidgetManager, appWidgetId)
-        views.removeAllViews(R.id.ll_view)
-        views.removeAllViews(R.id.btn_open)
-        views.addView(R.id.ll_view, widget)
-        return
-    }
-
-    downloadCryptoDetail(UserPreferences.getWidgetCurrency(context).first().id ?: "", context) { data, bitmap ->
-        views.removeAllViews(R.id.ll_view)
-        views.removeAllViews(R.id.btn_open)
-
-        if (data == null) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                createSmallWidget(context, appWidgetManager, appWidgetId)
-            }, 60000L)
-        }
-
-        val newView = createSmallWidget(data, context, appWidgetManager, appWidgetId)
-
-        if (bitmap != null && !bitmap.isRecycled) {
-            newView.setImageViewBitmap(R.id.img_currency, bitmap)
-        }
-
-        val random = (0..10000).shuffled().first()
-        val ids = appWidgetManager.getAppWidgetIds(ComponentName(context, SmallCryptoWidgetReceiver::class.java))
-        val updateIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE).apply {
-            putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-        }
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            random,
-            updateIntent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        newView.setOnClickPendingIntent(R.id.btn_reload, pendingIntent)
-
-        views.addView(R.id.ll_view, newView)
-        appWidgetManager.updateAppWidget(appWidgetId, views)
-    }
-}
 
 fun drawPieChart(currencies: List<Pie>, context: Context, mediumWidget: Boolean): Bitmap? { //canvas to draw on it
     return null
@@ -144,55 +75,6 @@ fun drawPieChart(currencies: List<Pie>, context: Context, mediumWidget: Boolean)
 
 
     return bitmap*/
-}
-
-fun widgetOnSurface(context: Context): Int {
-    val isDark = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) != 0
-    return if (isDark) {
-        Color.parseColor("#FCF8F8")
-    } else {
-        Color.parseColor("#FCF8F8")
-    }
-}
-
-fun widgetTrendUp(context: Context): Int {
-    val isDark = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) != 0
-    val accessible = UserPreferences.getColorBlind()
-    return when {
-        accessible && isDark -> Color.parseColor("#56B4E9")
-        accessible && !isDark -> Color.parseColor("#0072B2")
-        isDark -> Color.parseColor("#42E099")
-        else -> Color.parseColor("#007F52")
-    }
-}
-
-fun widgetTrendDown(context: Context): Int {
-    val isDark = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) != 0
-    val accessible = UserPreferences.getColorBlind()
-    return when {
-        accessible && isDark -> Color.parseColor("#E69F00")
-        accessible && !isDark -> Color.parseColor("#D55E00")
-        isDark -> Color.parseColor("#F95A56")
-        else -> Color.parseColor("#B3272A")
-    }
-}
-
-fun widgetOnSurfaceDim(context: Context): Int {
-    val isDark = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) != 0
-    return if (isDark) {
-        Color.parseColor("#C9C6C5")
-    } else {
-        Color.parseColor("#C9C6C5")
-    }
-}
-
-fun widgetOutline(context: Context): Int {
-    val isDark = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) != 0
-    return if (isDark) {
-        Color.parseColor("#797776")
-    } else {
-        Color.parseColor("#797776")
-    }
 }
 
 /** Draws the 7d sparkline graph as a bitmap for use in Glance. */

@@ -1,14 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:layout_weight="1"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:id="@+id/ll_view"
-        android:layout_width="165dp"
-        android:layout_height="165dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@drawable/widget_background_dark"
         android:weightSum="1">
@@ -24,247 +22,113 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/img_currency"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:gravity="center|end"
+                    android:src="@drawable/bitcoin"
+                    android:scaleType="fitCenter"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintDimensionRatio="H,1:1"
+                    android:adjustViewBounds="true"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/txt_currency_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:autoSizeMaxTextSize="20sp"
-                    android:autoSizeMinTextSize="10sp"
+                    android:layout_height="wrap_content"
                     android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/poppins_regular"
+                    android:textStyle="bold"
+                    android:textFontWeight="700"
                     android:includeFontPadding="false"
                     android:gravity="center|start"
                     android:ellipsize="end"
-                    android:text="Coin\nCurrently"
+                    android:text="Bitcoin"
                     android:maxLines="2"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    android:layout_weight="1"/>
+                    android:textColor="#FCF8F8"
+                    android:textSize="10sp"/>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:gravity="center|end"
-                    android:src="@drawable/logo_dark"
-                    android:layout_marginStart="10dp"
-                    android:scaleType="fitCenter"
-                    app:layout_constraintDimensionRatio="H,1:1"
-                    android:adjustViewBounds="true"/>
+                    <TextView
+                        android:id="@+id/txt_currency_symbol"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textFontWeight="700"
+                        android:includeFontPadding="false"
+                        android:gravity="center|start"
+                        android:ellipsize="end"
+                        android:text="BTC"
+                        android:maxLines="2"
+                        android:textColor="#C9C6C5"
+                        android:textSize="12sp"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
             <TextView
+                android:id="@+id/txt_currency_price"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:textSize="22sp"
-                android:autoSizeMaxTextSize="22sp"
-                android:autoSizeMinTextSize="12sp"
-                android:autoSizeTextType="uniform"
-                android:fontFamily="@font/poppins_regular"
+                android:textStyle="bold"
+                android:textFontWeight="700"
                 android:includeFontPadding="false"
                 android:gravity="start|center"
                 android:maxLines="1"
-                android:text="$0.00"
+                android:text="$63,695.00"
                 android:layout_weight="1"
-                android:layout_marginBottom="5dp"
                 android:textColor="#FFFFFF" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="start"
+                android:gravity="start|center"
                 android:orientation="horizontal"
                 android:baselineAligned="false">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
                     <TextView
+                        android:id="@+id/txt_24h_title"
                         android:layout_width="wrap_content"
-                        android:layout_height="17dp"
-                        android:fontFamily="@font/poppins_regular"
-                        android:includeFontPadding="false"
-                        android:gravity="start|center"
-                        android:maxLines="1"
-                        android:text="24h:"
-                        android:autoSizeMaxTextSize="12sp"
-                        android:autoSizeMinTextSize="4sp"
-                        android:autoSizeTextType="uniform"
-                        android:textColor="#FFFFFF"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="17dp"
-                        android:fontFamily="@font/poppins_regular"
-                        android:includeFontPadding="false"
-                        android:gravity="start|center"
-                        android:maxLines="1"
-                        android:text="7d:"
-                        android:autoSizeMaxTextSize="12sp"
-                        android:autoSizeMinTextSize="4sp"
-                        android:autoSizeTextType="uniform"
-                        android:textColor="#FFFFFF"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="17dp"
-                        android:fontFamily="@font/poppins_regular"
-                        android:includeFontPadding="false"
-                        android:gravity="start|center"
-                        android:maxLines="1"
-                        android:autoSizeMaxTextSize="12sp"
-                        android:autoSizeMinTextSize="4sp"
-                        android:autoSizeTextType="uniform"
-                        android:text="30d:"
-                        android:textColor="#FFFFFF"
-                        android:textSize="12sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="17dp"
-                        android:layout_marginHorizontal="10dp"
-                        android:fontFamily="@font/poppins_regular"
-                        android:includeFontPadding="false"
-                        android:gravity="center"
-                        android:text="0.00%"
-                        android:autoSizeMaxTextSize="12sp"
-                        android:autoSizeMinTextSize="4sp"
-                        android:autoSizeTextType="uniform"
-                        android:textColor="#C9C6C5"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="17dp"
-                        android:layout_marginHorizontal="10dp"
-                        android:fontFamily="@font/poppins_regular"
-                        android:includeFontPadding="false"
-                        android:gravity="center"
-                        android:text="0.00%"
-                        android:autoSizeMaxTextSize="12sp"
-                        android:autoSizeMinTextSize="4sp"
-                        android:autoSizeTextType="uniform"
-                        android:textColor="#C9C6C5"
-                        android:textSize="12sp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="17dp"
-                        android:layout_marginHorizontal="10dp"
-                        android:fontFamily="@font/poppins_regular"
-                        android:includeFontPadding="false"
-                        android:gravity="center"
-                        android:autoSizeMaxTextSize="12sp"
-                        android:autoSizeMinTextSize="4sp"
-                        android:autoSizeTextType="uniform"
-                        android:textColor="#C9C6C5"
-                        android:textSize="12sp"
-                        android:text="0.00%" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:weightSum="3">
-
-                    <FrameLayout
-                        android:layout_width="10dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:gravity="center">
-
-                        <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="6dp"
-                            android:layout_gravity="center"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/trend_still"
-                            app:tint="#C9C6C5" />
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:layout_width="10dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:gravity="center">
-
-                        <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="6dp"
-                            android:layout_gravity="center"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/trend_still"
-                            app:tint="#C9C6C5" />
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:layout_width="10dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:gravity="center">
-
-                        <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="6dp"
-                            android:layout_gravity="center"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/trend_still"
-                            app:tint="#C9C6C5" />
-                    </FrameLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:weightSum="1"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:weightSum="2"
-                        android:orientation="horizontal">
+                        android:textStyle="bold"
+                        android:textFontWeight="700"
+                        android:includeFontPadding="false"
+                        android:gravity="start|center"
+                        android:maxLines="1"
+                        android:text="24h"
+                        android:layout_marginEnd="4dp"
+                        android:textColor="#929090"
+                        android:textSize="12sp" />
 
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"/>
+                <ImageView
+                    android:id="@+id/img_24h_change_symbol"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_gravity="center"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/trend_up"
+                    android:tint="#42E099"
+                    android:tintMode="src_in" />
 
-                        <ImageButton
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:background="@null"
-                            android:paddingTop="20dp"
-                            android:foregroundGravity="bottom"
-                            android:visibility="invisible"
-                            android:src="@drawable/refresh_icon"
-                            android:layout_weight="1"
-                            android:scaleType="fitEnd">
-                        </ImageButton>
-
-                    </LinearLayout>
-
-                </LinearLayout>
+                    <TextView
+                        android:id="@+id/txt_24h_percentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textFontWeight="700"
+                        android:includeFontPadding="false"
+                        android:text="2.36%"
+                        android:autoSizeTextType="uniform"
+                        android:textColor="#42E099"
+                        android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -274,22 +138,7 @@
 
     <RelativeLayout
         android:id="@+id/btn_open"
-        android:layout_width="165dp"
-        android:layout_height="165dp">
-
-        <ImageButton
-            android:id="@+id/btn_reload"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/widget_reload_button_bg_bottom_dark"
-            android:foregroundGravity="bottom"
-            android:scaleType="centerInside"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="14dp"
-            android:src="@drawable/ic_baseline_sync_24_dark"/>
-
-    </RelativeLayout>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

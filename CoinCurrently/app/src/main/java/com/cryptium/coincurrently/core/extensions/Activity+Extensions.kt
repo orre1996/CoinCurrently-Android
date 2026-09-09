@@ -12,31 +12,31 @@ import com.cryptium.coincurrently.app.MainActivity
 import com.cryptium.coincurrently.widgets.glance.LargeMultiCryptoWidgetReceiver
 import com.cryptium.coincurrently.widgets.glance.LargeQuadCryptoWidgetReceiver
 import com.cryptium.coincurrently.widgets.glance.MediumDuoCryptoWidgetReceiver
-import com.cryptium.coincurrently.widgets.glance.MediumNewsWidgetReceiver
 import com.cryptium.coincurrently.widgets.glance.SmallCryptoWidgetReceiver
-import com.cryptium.coincurrently.widgets.glance.SmallNewsWidgetReceiver
+import com.cryptium.coincurrently.widgets.receivers.MediumNewsWidgetReceiver
+import com.cryptium.coincurrently.widgets.receivers.SmallNewsWidgetReceiver
 import com.cryptium.coincurrently.widgets.receivers.medium_portfolio_widget
 import com.cryptium.coincurrently.widgets.receivers.small_fear_greed_widget
 import com.cryptium.coincurrently.widgets.receivers.small_portfolio_widget
 
 @SuppressLint("SimpleDateFormat")
 fun MainActivity.updateCurrecyWidgets() {
-    val man = AppWidgetManager.getInstance(baseContext)
-    val updateIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+    notifyWidgetUpdate(SmallCryptoWidgetReceiver::class.java)
+    notifyWidgetUpdate(MediumDuoCryptoWidgetReceiver::class.java)
+    notifyWidgetUpdate(LargeQuadCryptoWidgetReceiver::class.java)
+    notifyWidgetUpdate(LargeMultiCryptoWidgetReceiver::class.java)
+}
 
-    val ids = man.getAppWidgetIds(ComponentName(baseContext, SmallCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-
-    val ids3 = man.getAppWidgetIds(ComponentName(baseContext, MediumDuoCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids3)
-
-    val ids5 = man.getAppWidgetIds(ComponentName(baseContext, LargeQuadCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids5)
-
-    val ids8 = man.getAppWidgetIds(ComponentName(baseContext, LargeMultiCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids8)
-
-    sendBroadcast(updateIntent)
+private fun Context.notifyWidgetUpdate(receiver: Class<*>) {
+    val manager = AppWidgetManager.getInstance(this)
+    val ids = manager.getAppWidgetIds(ComponentName(this, receiver))
+    if (ids.isEmpty()) return
+    sendBroadcast(
+        Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE).apply {
+            component = ComponentName(this@notifyWidgetUpdate, receiver)
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+        },
+    )
 }
 
 fun MainActivity.updatePortfolioWidgets() {
@@ -51,37 +51,15 @@ fun MainActivity.updatePortfolioWidgets() {
 }
 
 fun MainActivity.updateAllWidgets() {
-    val man = AppWidgetManager.getInstance(baseContext)
-    val updateIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-
-    val ids = man.getAppWidgetIds(ComponentName(baseContext, SmallCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-
-    val ids3 = man.getAppWidgetIds(ComponentName(baseContext, MediumDuoCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids3)
-
-    val ids5 = man.getAppWidgetIds(ComponentName(baseContext, LargeQuadCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids5)
-
-    val ids6 = man.getAppWidgetIds(ComponentName(baseContext, small_portfolio_widget::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids6)
-
-    val ids7 = man.getAppWidgetIds(ComponentName(baseContext, medium_portfolio_widget::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids7)
-
-    val ids12 = man.getAppWidgetIds(ComponentName(baseContext, LargeMultiCryptoWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids12)
-
-    val ids13 = man.getAppWidgetIds(ComponentName(baseContext, SmallNewsWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids13)
-
-    val ids14 = man.getAppWidgetIds(ComponentName(baseContext, MediumNewsWidgetReceiver::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids14)
-
-    val ids16 = man.getAppWidgetIds(ComponentName(baseContext, small_fear_greed_widget::class.java))
-    updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids16)
-
-    sendBroadcast(updateIntent)
+    notifyWidgetUpdate(SmallCryptoWidgetReceiver::class.java)
+    notifyWidgetUpdate(MediumDuoCryptoWidgetReceiver::class.java)
+    notifyWidgetUpdate(LargeQuadCryptoWidgetReceiver::class.java)
+    notifyWidgetUpdate(LargeMultiCryptoWidgetReceiver::class.java)
+    notifyWidgetUpdate(small_portfolio_widget::class.java)
+    notifyWidgetUpdate(medium_portfolio_widget::class.java)
+    notifyWidgetUpdate(small_fear_greed_widget::class.java)
+    notifyWidgetUpdate(SmallNewsWidgetReceiver::class.java)
+    notifyWidgetUpdate(MediumNewsWidgetReceiver::class.java)
 }
 
 

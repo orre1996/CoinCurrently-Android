@@ -7,10 +7,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.glance.unit.ColorProvider
 import com.cryptium.coincurrently.core.config.AppLocale
 import com.cryptium.coincurrently.R
-import com.cryptium.coincurrently.sharedui.theme.WidgetColorValues
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceContainerDim
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.trendDown
@@ -59,24 +57,6 @@ fun Double.changeColor(): Color {
         this > 0 -> MaterialTheme.colors.trendUp
         this < 0 -> MaterialTheme.colors.trendDown
         else -> MaterialTheme.colors.onSurfaceDim
-    }
-}
-
-@Composable
-fun Double.changeColorWidget(): ColorProvider {
-    return when {
-        this < 0 -> WidgetColorValues.trendDown()
-        this > 0 -> WidgetColorValues.trendUp()
-        else -> WidgetColorValues.onSurfaceDim()
-    }
-}
-
-@Composable
-fun Double.changeSymbolWidget(): Int {
-    return when {
-        this > 0 -> return R.drawable.trend_up
-        this < 0 -> return R.drawable.trend_down
-        else -> R.drawable.trend_still
     }
 }
 
