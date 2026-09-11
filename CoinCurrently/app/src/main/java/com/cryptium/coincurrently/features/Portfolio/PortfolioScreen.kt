@@ -23,12 +23,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -72,13 +68,9 @@ import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
-import androidx.compose.ui.unit.DpOffset
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.cryptium.coincurrently.BuildConfig
-import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.core.config.AppLocale
-import com.cryptium.coincurrently.sharedui.theme.surfaceContainerHigh
 import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.core.extensions.*
 import com.cryptium.coincurrently.sharedui.charts.ChartBackground
@@ -98,10 +90,8 @@ import com.cryptium.coincurrently.sharedui.charts.chartTalkBackSection
 import com.cryptium.coincurrently.sharedui.charts.deferTalkBackAfterTabContent
 import com.cryptium.coincurrently.sharedui.charts.hideFromTalkBackWhenEnabled
 import com.cryptium.coincurrently.sharedui.loading.ActivityIndicator
-import com.cryptium.coincurrently.sharedui.components.PriceChangeValueView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
-import com.cryptium.coincurrently.sharedui.loading.PriceChangeDirectionView
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.sharedui.components.ObserveCurrencyChanges
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
@@ -234,7 +224,6 @@ fun PortfolioScreen(
     var isDatePickerShowing: Boolean by remember { mutableStateOf(false) }
     var isPieChartShowing by remember { mutableStateOf(false) }
     var didRestorePieChartPreference by remember { mutableStateOf(false) }
-    var animatePieChartToggle by remember { mutableStateOf(false) }
     var selectedPieSliceId by remember { mutableStateOf<String?>(null) }
     var lineChartHeight by remember { mutableStateOf(0.dp) }
     val chartPlotHeight = (screenHeight.dpToPx() * 0.35).pxToDp()
@@ -484,7 +473,6 @@ fun PortfolioScreen(
                         isPieChartShowing = isPieChartShowing,
                         togglePieChart = {
                             selectedPieSliceId = null
-                            animatePieChartToggle = true
                             isPieChartShowing = !isPieChartShowing
                             UserPreferences.setPortfolioPieChartShowing(isPieChartShowing)
                         },
@@ -568,9 +556,7 @@ fun PortfolioScreen(
                             AnimatedContent(
                                 targetState = isPieChartShowing,
                                 transitionSpec = {
-                                    if (!animatePieChartToggle) {
-                                        EnterTransition.None togetherWith ExitTransition.None using SizeTransform { _, _ -> snap() }
-                                    } else if (targetState) {
+                                    if (targetState) {
                                         slideInHorizontally(
                                             initialOffsetX = { fullWidth -> fullWidth },
                                             animationSpec = tween(400),
@@ -805,8 +791,7 @@ fun PortfolioScreen(
                                                 .padding(
                                                     start = 16.dp,
                                                     end = 16.dp + biggestValue.value.width,
-                                                    bottom = (if (viewModel.benchmarkCoin == null) 32 else 16).dp +
-                                                        biggestValue.value.height / 2,
+                                                    bottom = (if (viewModel.benchmarkCoin == null) 32 else 16).dp + biggestValue.value.height / 2,
                                                 )
                                                 .hideFromTalkBackWhenEnabled()
                                         )
