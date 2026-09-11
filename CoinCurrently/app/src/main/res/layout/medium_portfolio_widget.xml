@@ -19,9 +19,134 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:gravity="top|start"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <include layout="@layout/small_portfolio_widget_cell" />
+            <TextView
+                android:id="@+id/txt_portfolio_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="start"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:text="Portfolio Value"
+                android:textColor="#929090"
+                android:textFontWeight="700"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_total_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:autoSizeMaxTextSize="24sp"
+                android:autoSizeMinTextSize="14sp"
+                android:autoSizeTextType="uniform"
+                android:ellipsize="end"
+                android:gravity="start"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:text="$84,528.15"
+                android:textColor="#FFFFFF"
+                android:textFontWeight="700"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_winner_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:ellipsize="end"
+                android:gravity="start"
+                android:includeFontPadding="false"
+                android:maxLines="2"
+                android:text="Daily Winner"
+                android:textColor="#929090"
+                android:textFontWeight="700"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/img_winner_coin"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="6dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/bitcoin"
+                    app:layout_constraintDimensionRatio="H,1:1" />
+
+                <TextView
+                    android:id="@+id/txt_winner_symbol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:includeFontPadding="false"
+                    android:maxLines="2"
+                    android:text="BTC"
+                    android:textColor="#FCF8F8"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical|start"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/view_winner_change_icon"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/trend_up"
+                    android:tint="#42E099"
+                    android:tintMode="src_in" />
+
+                <TextView
+                    android:id="@+id/txt_winner_change"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="start"
+                    android:includeFontPadding="false"
+                    android:maxLines="3"
+                    android:text="$420.00"
+                    android:textColor="#42E099"
+                    android:textFontWeight="700"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt_winner_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:includeFontPadding="false"
+                    android:text="(+3.12%)"
+                    android:textColor="#BF42E099"
+                    android:textFontWeight="700"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -49,14 +174,14 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/txt_winner_title"
+                    android:id="@+id/txt_pl_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:gravity="start"
                     android:includeFontPadding="false"
-                    android:maxLines="2"
-                    android:text="Daily Winner"
+                    android:maxLines="1"
+                    android:text="24h Change"
                     android:textColor="#929090"
                     android:textFontWeight="700"
                     android:textSize="12sp"
@@ -66,61 +191,41 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/img_winner_coin"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginEnd="6dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/bitcoin"
-                        app:layout_constraintDimensionRatio="H,1:1" />
-
-                    <TextView
-                        android:id="@+id/txt_winner_symbol"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:includeFontPadding="false"
-                        android:maxLines="2"
-                        android:text="BTC"
-                        android:textColor="#FCF8F8"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
                     android:gravity="center_vertical|start"
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/view_winner_change_icon"
+                        android:id="@+id/view_price_change"
                         android:layout_width="14dp"
                         android:layout_height="14dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/trend_up"
-                        android:tint="#42E099"
-                        android:tintMode="src_in" />
+                        android:tint="#42E099" />
 
                     <TextView
-                        android:id="@+id/txt_winner_change"
-                        android:layout_width="0dp"
+                        android:id="@+id/txt_pl_change"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:layout_weight="1"
                         android:fontFamily="@font/satoshi_bold"
                         android:gravity="start"
                         android:includeFontPadding="false"
                         android:maxLines="3"
-                        android:text="$420.00 (+3.12%)"
-                        android:textColor="#42E099"
+                        android:text="$576.92"
+                        android:textColor="#FF42E099"
+                        android:textFontWeight="700"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txt_pl_percent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:includeFontPadding="false"
+                        android:text="(+0.62%)"
+                        android:textColor="#BF42E099"
                         android:textFontWeight="700"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -132,8 +237,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_marginTop="16dp"
+                android:layout_weight="1"
                 android:gravity="bottom|start"
                 android:orientation="vertical">
 
@@ -200,16 +305,28 @@
 
                     <TextView
                         android:id="@+id/txt_loser_change"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:layout_weight="1"
                         android:fontFamily="@font/satoshi_bold"
                         android:gravity="start"
                         android:includeFontPadding="false"
                         android:maxLines="3"
-                        android:text="$180.00 (-1.85%)"
+                        android:text="$180.00"
                         android:textColor="#F95A56"
+                        android:textFontWeight="700"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txt_loser_percent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:includeFontPadding="false"
+                        android:text="(-1.85%)"
+                        android:textColor="#BFF95A56"
                         android:textFontWeight="700"
                         android:textSize="14sp"
                         android:textStyle="bold" />

@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
@@ -22,6 +23,7 @@ import com.cryptium.coincurrently.sharedui.charts.getPercentChangeDrawablePortfo
 import com.cryptium.coincurrently.sharedui.charts.getWidgetPercentChangeColorPortfolio
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.widgets.config.WidgetRuntimeInitializer
+import kotlin.math.roundToInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -183,42 +185,17 @@ internal fun bindSmallPortfolioRemoteViews(
         },
     )
 
-    if (hideData) {
-        views.setViewVisibility(R.id.view_price_change, View.VISIBLE)
-        views.setImageViewResource(R.id.view_price_change, R.drawable.trend_still)
-        views.setInt(R.id.view_price_change, "setColorFilter", widgetOnSurfaceDim(context))
-        views.setTextViewText(R.id.txt_pl_change, stars)
-        views.setTextColor(R.id.txt_pl_change, widgetOnSurfaceDim(context))
-        return
-    }
-
-    val changeValue = widgetData.portfolioDailyChangeValue
-    val changePercent = widgetData.portfolioDailyChangePercent
-    val hasValidChange = !widgetData.isEmpty &&
-        changeValue != null &&
-        changePercent != null &&
-        !changePercent.isNaN() &&
-        !changePercent.isInfinite()
-
-    if (!hasValidChange) {
-        views.setViewVisibility(R.id.view_price_change, View.GONE)
-        views.setTextViewText(R.id.txt_pl_change, "—")
-        views.setTextColor(R.id.txt_pl_change, widgetOnSurfaceDim(context))
-        return
-    }
-
-    val changeColor = changeValue.getWidgetPercentChangeColorPortfolio(context)
-    val changeIcon = changeValue.getPercentChangeDrawablePortfolio()
-
-    views.setViewVisibility(R.id.view_price_change, View.VISIBLE)
-    views.setImageViewResource(R.id.view_price_change, changeIcon)
-    views.setInt(R.id.view_price_change, "setColorFilter", changeColor)
-
-    views.setTextViewText(
-        R.id.txt_pl_change,
-        formatChangeValueAndPercent(changeValue, changePercent),
+    bindPortfolioSignedChange(
+        views = views,
+        context = context,
+        iconId = R.id.view_price_change,
+        textId = R.id.txt_pl_change,
+        percentTextId = R.id.txt_pl_percent,
+        changeValue = widgetData.portfolioDailyChangeValue,
+        changePercent = widgetData.portfolioDailyChangePercent,
+        hideData = hideData,
+        isEmpty = widgetData.isEmpty,
     )
-    views.setTextColor(R.id.txt_pl_change, changeColor)
 }
 
 private fun applySmallPortfolioTheme(
@@ -255,6 +232,7 @@ internal fun bindPortfolioSignedChange(
     context: Context,
     iconId: Int,
     textId: Int,
+    percentTextId: Int,
     changeValue: Double?,
     changePercent: Double?,
     hideData: Boolean,
@@ -266,6 +244,7 @@ internal fun bindPortfolioSignedChange(
         views.setInt(iconId, "setColorFilter", widgetOnSurfaceDim(context))
         views.setTextViewText(textId, stars)
         views.setTextColor(textId, widgetOnSurfaceDim(context))
+        views.setViewVisibility(percentTextId, View.GONE)
         return
     }
 
@@ -279,6 +258,7 @@ internal fun bindPortfolioSignedChange(
         views.setViewVisibility(iconId, View.GONE)
         views.setTextViewText(textId, "—")
         views.setTextColor(textId, widgetOnSurfaceDim(context))
+        views.setViewVisibility(percentTextId, View.GONE)
         return
     }
 
@@ -287,20 +267,38 @@ internal fun bindPortfolioSignedChange(
     views.setViewVisibility(iconId, View.VISIBLE)
     views.setImageViewResource(iconId, changeIcon)
     views.setInt(iconId, "setColorFilter", changeColor)
-    views.setTextViewText(textId, formatChangeValueAndPercent(changeValue, changePercent))
+    views.setTextViewText(textId, formatChangeValue(changeValue))
     views.setTextColor(textId, changeColor)
+
+    val percentText = formatSignedChangePercent(changePercent)
+    if (percentText.isEmpty()) {
+        views.setViewVisibility(percentTextId, View.GONE)
+    } else {
+        views.setViewVisibility(percentTextId, View.VISIBLE)
+        views.setTextViewText(percentTextId, percentText)
+        views.setTextColor(percentTextId, widgetChangePercentColor(changeColor))
+    }
 }
 
-internal fun formatChangeValueAndPercent(changeValue: Double?, changePercent: Double?): String {
+internal fun formatChangeValue(changeValue: Double?): String {
     if (changeValue == null) {
         return "—"
     }
-    val valueText = changeValue.formatCurrency(threshold = FormattingThreshold.THOUSAND)
+    return changeValue.formatCurrency(threshold = FormattingThreshold.THOUSAND)
         .replace("-", "")
         .replace("+", "")
-    val percentText = formatSignedChangePercent(changePercent)
-    return if (percentText.isEmpty()) valueText else "$valueText $percentText"
 }
+
+internal fun widgetChangePercentColor(color: Int): Int {
+    return Color.argb(
+        (Color.alpha(color) * PORTFOLIO_WIDGET_CHANGE_PERCENT_OPACITY).roundToInt().coerceIn(0, 255),
+        Color.red(color),
+        Color.green(color),
+        Color.blue(color),
+    )
+}
+
+private const val PORTFOLIO_WIDGET_CHANGE_PERCENT_OPACITY = 0.75f
 
 internal fun setSmallPortfolioClickIntent(
     views: RemoteViews,
@@ -326,6 +324,7 @@ internal fun bindPortfolioPerformerRemoteViews(
     coinImageId: Int,
     changeIconId: Int,
     changeTextId: Int,
+    percentTextId: Int,
     title: String,
     coinChange: CoinDailyChange?,
     coinBitmap: Bitmap?,
@@ -339,11 +338,17 @@ internal fun bindPortfolioPerformerRemoteViews(
         views.setTextViewText(symbolId, stars)
         views.setTextColor(symbolId, widgetOnSurface(context))
         views.setImageViewResource(coinImageId, R.drawable.bitcoin)
-        views.setViewVisibility(changeIconId, View.VISIBLE)
-        views.setImageViewResource(changeIconId, R.drawable.trend_still)
-        views.setInt(changeIconId, "setColorFilter", widgetOnSurfaceDim(context))
-        views.setTextViewText(changeTextId, stars)
-        views.setTextColor(changeTextId, widgetOnSurfaceDim(context))
+        bindPortfolioSignedChange(
+            views = views,
+            context = context,
+            iconId = changeIconId,
+            textId = changeTextId,
+            percentTextId = percentTextId,
+            changeValue = null,
+            changePercent = null,
+            hideData = true,
+            isEmpty = isEmpty,
+        )
         return
     }
 
@@ -358,9 +363,17 @@ internal fun bindPortfolioPerformerRemoteViews(
         views.setTextViewText(symbolId, "—")
         views.setTextColor(symbolId, widgetOnSurfaceDim(context))
         views.setImageViewResource(coinImageId, R.drawable.bitcoin)
-        views.setViewVisibility(changeIconId, View.GONE)
-        views.setTextViewText(changeTextId, "—")
-        views.setTextColor(changeTextId, widgetOnSurfaceDim(context))
+        bindPortfolioSignedChange(
+            views = views,
+            context = context,
+            iconId = changeIconId,
+            textId = changeTextId,
+            percentTextId = percentTextId,
+            changeValue = null,
+            changePercent = null,
+            hideData = false,
+            isEmpty = true,
+        )
         return
     }
 
@@ -373,16 +386,15 @@ internal fun bindPortfolioPerformerRemoteViews(
         views.setImageViewResource(coinImageId, R.drawable.bitcoin)
     }
 
-    val changeValue = coinChange.changeValue!!
-    val changeColor = changeValue.getWidgetPercentChangeColorPortfolio(context)
-    val changeIcon = changeValue.getPercentChangeDrawablePortfolio()
-    views.setViewVisibility(changeIconId, View.VISIBLE)
-    views.setImageViewResource(changeIconId, changeIcon)
-    views.setInt(changeIconId, "setColorFilter", changeColor)
-
-    views.setTextViewText(
-        changeTextId,
-        formatChangeValueAndPercent(changeValue, coinChange.changePercent),
+    bindPortfolioSignedChange(
+        views = views,
+        context = context,
+        iconId = changeIconId,
+        textId = changeTextId,
+        percentTextId = percentTextId,
+        changeValue = coinChange.changeValue,
+        changePercent = coinChange.changePercent,
+        hideData = false,
+        isEmpty = isEmpty,
     )
-    views.setTextColor(changeTextId, changeColor)
 }

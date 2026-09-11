@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_bold"
                     android:includeFontPadding="false"
-                    android:text="Today's Change"
+                    android:text="24h Change"
                     android:textColor="#929090"
                     android:textFontWeight="700"
                     android:textSize="12sp"
@@ -80,8 +80,20 @@
                         android:layout_marginStart="4dp"
                         android:fontFamily="@font/satoshi_bold"
                         android:includeFontPadding="false"
-                        android:text="$576.92 (-0.62%)"
+                        android:text="$576.92"
                         android:textColor="#F95A56"
+                        android:textFontWeight="700"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:includeFontPadding="false"
+                        android:text="(-0.62%)"
+                        android:textColor="#BFF95A56"
                         android:textFontWeight="700"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -128,8 +140,20 @@
                         android:layout_marginStart="4dp"
                         android:fontFamily="@font/satoshi_bold"
                         android:includeFontPadding="false"
-                        android:text="$1,228.15 (+20.23%)"
+                        android:text="$1,228.15"
                         android:textColor="#42E099"
+                        android:textFontWeight="700"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:includeFontPadding="false"
+                        android:text="(+20.23%)"
+                        android:textColor="#BF42E099"
                         android:textFontWeight="700"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -222,170 +246,20 @@
                     android:layout_marginStart="4dp"
                     android:fontFamily="@font/satoshi_bold"
                     android:includeFontPadding="false"
-                    android:text="$4,961.42 (+39.10%)"
+                    android:text="$4,961.42"
                     android:textColor="#42E099"
                     android:textFontWeight="700"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingTop="12dp">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/usdc" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/satoshi_bold"
-                android:includeFontPadding="false"
-                android:text="USDC"
-                android:textColor="#FCF8F8"
-                android:textFontWeight="700"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end|center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:src="@drawable/trend_up"
-                    android:tint="#42E099"
-                    android:tintMode="src_in" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:fontFamily="@font/satoshi_bold"
                     android:includeFontPadding="false"
-                    android:text="$1.04 (+0.02%)"
-                    android:textColor="#42E099"
-                    android:textFontWeight="700"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingTop="12dp">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/usdt" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/satoshi_bold"
-                android:includeFontPadding="false"
-                android:text="USDT"
-                android:textColor="#FCF8F8"
-                android:textFontWeight="700"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end|center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:src="@drawable/trend_down"
-                    android:tint="#F95A56"
-                    android:tintMode="src_in" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:fontFamily="@font/satoshi_bold"
-                    android:includeFontPadding="false"
-                    android:text="$0.98 (-0.01%)"
-                    android:textColor="#F95A56"
-                    android:textFontWeight="700"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingTop="12dp">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/bnb" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/satoshi_bold"
-                android:includeFontPadding="false"
-                android:text="BNB"
-                android:textColor="#FCF8F8"
-                android:textFontWeight="700"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end|center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:src="@drawable/trend_down"
-                    android:tint="#F95A56"
-                    android:tintMode="src_in" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:fontFamily="@font/satoshi_bold"
-                    android:includeFontPadding="false"
-                    android:text="$550.24 (-26.23%)"
-                    android:textColor="#F95A56"
+                    android:text="(+39.10%)"
+                    android:textColor="#BF42E099"
                     android:textFontWeight="700"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -438,8 +312,218 @@
                     android:layout_marginStart="4dp"
                     android:fontFamily="@font/satoshi_bold"
                     android:includeFontPadding="false"
-                    android:text="$650.24 (-51.64%)"
+                    android:text="$650.24"
                     android:textColor="#F95A56"
+                    android:textFontWeight="700"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:includeFontPadding="false"
+                    android:text="(-51.64%)"
+                    android:textColor="#BFF95A56"
+                    android:textFontWeight="700"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="12dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/bnb" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_bold"
+                android:includeFontPadding="false"
+                android:text="BNB"
+                android:textColor="#FCF8F8"
+                android:textFontWeight="700"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end|center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/trend_down"
+                    android:tint="#F95A56"
+                    android:tintMode="src_in" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:includeFontPadding="false"
+                    android:text="$550.24"
+                    android:textColor="#F95A56"
+                    android:textFontWeight="700"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:includeFontPadding="false"
+                    android:text="(-26.23%)"
+                    android:textColor="#BFF95A56"
+                    android:textFontWeight="700"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="12dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/usdc" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_bold"
+                android:includeFontPadding="false"
+                android:text="USDC"
+                android:textColor="#FCF8F8"
+                android:textFontWeight="700"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end|center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/trend_up"
+                    android:tint="#42E099"
+                    android:tintMode="src_in" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:includeFontPadding="false"
+                    android:text="$1.04"
+                    android:textColor="#42E099"
+                    android:textFontWeight="700"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:includeFontPadding="false"
+                    android:text="(+0.02%)"
+                    android:textColor="#BF42E099"
+                    android:textFontWeight="700"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="12dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/usdt" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_bold"
+                android:includeFontPadding="false"
+                android:text="USDT"
+                android:textColor="#FCF8F8"
+                android:textFontWeight="700"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end|center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/trend_down"
+                    android:tint="#F95A56"
+                    android:tintMode="src_in" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:includeFontPadding="false"
+                    android:text="$0.98"
+                    android:textColor="#F95A56"
+                    android:textFontWeight="700"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:includeFontPadding="false"
+                    android:text="(-0.01%)"
+                    android:textColor="#BFF95A56"
                     android:textFontWeight="700"
                     android:textSize="12sp"
                     android:textStyle="bold" />

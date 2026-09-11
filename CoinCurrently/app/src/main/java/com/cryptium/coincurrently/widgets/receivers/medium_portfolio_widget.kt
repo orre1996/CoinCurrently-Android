@@ -91,11 +91,11 @@ internal fun createMediumPortfolioWidget(
             val loadedViews = RemoteViews(context.packageName, R.layout.medium_portfolio_widget)
             setSmallPortfolioClickIntent(loadedViews, context)
 
-            bindMediumPortfolioCell(
-                parent = loadedViews,
-                containerId = R.id.cell_portfolio,
-                widgetData = widgetData,
+            bindSmallPortfolioRemoteViews(
+                views = loadedViews,
                 context = context,
+                widgetData = widgetData,
+                embeddedInMedium = true,
             )
 
             val hideData = UserPreferences.getHidePortfolioData()
@@ -119,6 +119,7 @@ internal fun createMediumPortfolioWidget(
                 coinImageId = R.id.img_winner_coin,
                 changeIconId = R.id.view_winner_change_icon,
                 changeTextId = R.id.txt_winner_change,
+                percentTextId = R.id.txt_winner_percent,
                 title = "Daily Winner",
                 coinChange = widgetData.dailyWinner,
                 coinBitmap = winnerBitmap,
@@ -133,6 +134,7 @@ internal fun createMediumPortfolioWidget(
                 coinImageId = R.id.img_loser_coin,
                 changeIconId = R.id.view_loser_change_icon,
                 changeTextId = R.id.txt_loser_change,
+                percentTextId = R.id.txt_loser_percent,
                 title = "Daily Loser",
                 coinChange = widgetData.dailyLoser,
                 coinBitmap = loserBitmap,

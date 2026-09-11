@@ -71,16 +71,28 @@
 
         <TextView
             android:id="@+id/txt_pl_change"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:layout_weight="1"
             android:fontFamily="@font/satoshi_bold"
             android:gravity="start"
             android:includeFontPadding="false"
             android:maxLines="3"
-            android:text="$576.92 (+0.62%)"
+            android:text="$576.92"
             android:textColor="#FF42E099"
+            android:textFontWeight="700"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txt_pl_percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:fontFamily="@font/satoshi_bold"
+            android:includeFontPadding="false"
+            android:text="(+0.62%)"
+            android:textColor="#BF42E099"
             android:textFontWeight="700"
             android:textSize="14sp"
             android:textStyle="bold" />

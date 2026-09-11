@@ -54,8 +54,24 @@
             android:gravity="end"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:text="$5,596.61 (+33.64%)"
+            android:text="$5,596.61"
             android:textColor="#42E099"
+            android:textFontWeight="700"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txt_change_percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/satoshi_bold"
+            android:gravity="end"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="(+33.64%)"
+            android:textColor="#BF42E099"
             android:textFontWeight="700"
             android:textSize="12sp"
             android:textStyle="bold" />
