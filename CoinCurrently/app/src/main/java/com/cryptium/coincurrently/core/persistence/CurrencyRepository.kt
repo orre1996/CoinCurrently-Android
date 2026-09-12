@@ -5,8 +5,6 @@ import android.util.Log
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.cryptium.coincurrently.core.extensions.getActivity
-import com.cryptium.coincurrently.core.extensions.updateCurrecyWidgets
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
@@ -225,22 +223,6 @@ object CurrencyRepository {
         }
 
         return bitcoin
-    }
-
-    fun changeWidgetsOrder(currencies: List<Toplist>, context: Context) {
-        if (currencies != widgetCurrencies) {
-            widgetCurrencies = currencies
-            UserPreferences.setWidgetCurrency(currencies)
-            context.getActivity()?.updateCurrecyWidgets()
-        }
-    }
-
-    fun deleteWidget(coin: Toplist, context: Context) {
-        val oldList = widgetCurrencies.toMutableList()
-        oldList.removeIf { it.id == coin.id }
-        widgetCurrencies = oldList
-        UserPreferences.setWidgetCurrency(widgetCurrencies)
-        context.getActivity()?.updateCurrecyWidgets()
     }
 
     suspend fun getMultipleCurrencies(ids: String, currencyCode: String): List<Toplist>? {

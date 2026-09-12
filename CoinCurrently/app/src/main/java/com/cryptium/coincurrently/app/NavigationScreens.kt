@@ -198,9 +198,6 @@ sealed class NavigationScreens() {
     object CurrencySelector: NavigationScreens()
 
     @Serializable
-    object Widgets: NavigationScreens()
-
-    @Serializable
     object Calculator: NavigationScreens()
 
     @Serializable
@@ -238,7 +235,6 @@ fun NavigationScreens.getRouteString(): String {
         is NavigationScreens.DerivativeDetail -> "DerivativeDetail"
         is NavigationScreens.TreasuryDetail -> "TreasuryDetail"
         is NavigationScreens.CurrencySelector -> "CurrencySelector"
-        is NavigationScreens.Widgets -> "Widgets"
         is NavigationScreens.Calculator -> "Calculator"
         is NavigationScreens.PriceAlerts -> "PriceAlerts"
         is NavigationScreens.Achievements -> "Achievements"

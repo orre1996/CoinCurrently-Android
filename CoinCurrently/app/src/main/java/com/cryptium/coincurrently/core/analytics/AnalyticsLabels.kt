@@ -44,8 +44,6 @@ enum class SheetLabel(val wire: String) {
     FearGreedHelp("FearGreedHelp"),
     GasFeesHelp("GasFeesHelp"),
     GasFeesCost("GasFeesCost"),
-    WidgetsHelp("WidgetsHelp"),
-    EditWidgets("EditWidgets"),
     CoinSearch("CoinSearch"),
     CurrencySelector("CurrencySelector"),
     Theme("Theme"),

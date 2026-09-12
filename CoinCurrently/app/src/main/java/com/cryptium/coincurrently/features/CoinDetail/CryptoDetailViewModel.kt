@@ -153,7 +153,6 @@ class CryptoDetailViewModel(
     var selectedTimeFrame by mutableStateOf(
         TimeCharts.getStartTimeFrameBetween(TimeCharts.anHour, TimeCharts.max),
     )
-    var widgetCurrencies: List<Toplist> by mutableStateOf(listOf())
     var isDragging by mutableStateOf(false)
 
     var selectedSortOption by mutableStateOf(SortOption.VolumeDesc)
@@ -167,10 +166,6 @@ class CryptoDetailViewModel(
         this.currencyId = cryptoDetail?.id ?: ""
 
         currencyRepository.loadCachedDataForCoin(currencyId, selectedTimeFrame)
-
-        currencyRepository.widgetCurrencies.let {
-            widgetCurrencies = it
-        }
 
         currencyRepository.cryptoDetail?.get(currencyId)?.let {
             cryptoInfo = it
@@ -412,35 +407,6 @@ class CryptoDetailViewModel(
         if (onlyPrices.isNotEmpty()) {
             onlyPrices = onlyPrices.toMutableList().also { it[it.lastIndex] = livePrice }
         }
-    }
-
-    fun addCurrencyToWidgets(context: Context) {
-        val toplistItem = cryptoInfo?.toToplist() ?: return
-        val previousCount = widgetCurrencies.size.toDouble()
-
-        widgetCurrencies = widgetCurrencies + toplistItem
-        currencyRepository.changeWidgetsOrder(widgetCurrencies, context)
-
-        com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager.checkMetricUnlock(
-            metric = com.cryptium.coincurrently.features.Achievements.Models.AchievementMetric.widgetCoinsCount,
-            previousValue = previousCount,
-            newValue = widgetCurrencies.size.toDouble(),
-        )
-    }
-
-    fun replaceWidgetCurrency(coin: Toplist, with: Toplist? = null, context: Context) {
-        val newItem = with ?: cryptoInfo?.toToplist() ?: return
-        val index = widgetCurrencies.indexOfFirst { it.id == coin.id }
-
-        if (index !in widgetCurrencies.indices) return
-
-        val updatedList = widgetCurrencies.toMutableList().apply {
-            this[index] = newItem
-        }
-
-        widgetCurrencies = updatedList
-
-        currencyRepository.changeWidgetsOrder(updatedList, context)
     }
 
     suspend fun toggleChart() {

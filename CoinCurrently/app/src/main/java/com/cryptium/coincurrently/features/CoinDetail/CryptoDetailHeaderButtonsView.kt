@@ -57,11 +57,6 @@ internal fun FavoriteButton(
 internal fun MoreButton(
     isDropDownExpanded: MutableState<Boolean>,
     coinName: String,
-    isAlreadyAddedToWidgets: Boolean,
-    widgetsCount: Int,
-    addToWidget: () -> Unit,
-    editWidgets: () -> Unit,
-    deepLinkToWidgets: () -> Unit,
     compareCoins: () -> Unit,
     addPriceAlert: () -> Unit,
     shareDetailPage: () -> Unit,
@@ -88,41 +83,6 @@ internal fun MoreButton(
                     isDropDownExpanded.value = false
                 }
             ) {
-                DropdownMenuItem(
-                    content = {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-                        ) {
-                            Image(
-                                painter = painterResource(if (isAlreadyAddedToWidgets) R.drawable.edit else R.drawable.add),
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceDim),
-                                modifier = Modifier
-                                    .imageSize(20.dp)
-                            )
-
-                            Text(
-                                text = if (isAlreadyAddedToWidgets) "Manage Widgets" else "Add to Widgets",
-                                style = satoshiBold(16),
-                                color = MaterialTheme.colors.onSurfaceDim
-                            )
-                        }
-                    },
-                    onClick = {
-                        isDropDownExpanded.value = false
-                        if (isAlreadyAddedToWidgets) {
-                            deepLinkToWidgets.invoke()
-                        } else if (widgetsCount == 8) {
-                            editWidgets.invoke()
-                        } else {
-                            addToWidget.invoke()
-                        }
-                    }
-                )
-
-                Separator()
-
                 DropdownMenuItem(
                     content = {
                         Row(

@@ -48,7 +48,6 @@ import com.cryptium.coincurrently.features.Market.MarketScreen
 import com.cryptium.coincurrently.features.Settings.CurrencySelector.CurrencySelectorScreen
 import com.cryptium.coincurrently.features.Settings.SettingsScreen
 import com.cryptium.coincurrently.features.PriceAlerts.MyPriceAlertsScreen
-import com.cryptium.coincurrently.features.Widgets.MyWidgetsScreen
 import com.cryptium.coincurrently.features.Referral.ReferralScreen
 import com.cryptium.coincurrently.features.Calculator.SettingsCalculatorScreen
 import com.cryptium.coincurrently.features.News.NewsScreen
@@ -376,13 +375,6 @@ fun NavigationEntries(
 
         composable<NavigationScreens.CurrencySelector> {
             CurrencySelectorScreen(
-                navigationViewModel,
-                childScreenBottomOffsetModifier
-            )
-        }
-
-        composable<NavigationScreens.Widgets> {
-            MyWidgetsScreen(
                 navigationViewModel,
                 childScreenBottomOffsetModifier
             )

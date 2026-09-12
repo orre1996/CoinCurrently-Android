@@ -319,17 +319,6 @@ fun SettingsScreen(
                 )
 
                 ToolsSection(
-                    navigateToWidgets = {
-                        AnalyticsManager.log(
-                            Navigate(
-                                fromScreen = ScreenLabel.Settings,
-                                toScreen = ScreenLabel.Widgets,
-                            ),
-                        )
-                        navigationViewModel.navigate(
-                            NavigationScreens.Widgets
-                        )
-                    },
                     navigateToCalculator = {
                         AnalyticsManager.log(
                             Navigate(

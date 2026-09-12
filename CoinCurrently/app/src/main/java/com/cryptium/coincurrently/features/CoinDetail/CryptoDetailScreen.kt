@@ -108,7 +108,6 @@ import com.cryptium.coincurrently.features.CoinDetail.Views.Markets.CryptoDetail
 import com.cryptium.coincurrently.features.CoinDetail.Views.Markets.toDetailMarketsData
 import com.cryptium.coincurrently.features.CoinDetail.Views.Overview.CryptoDetailOverviewView
 import com.cryptium.coincurrently.features.CoinDetail.Views.Portfolio.CryptoDetailPortfolioView
-import com.cryptium.coincurrently.features.CoinDetail.Sheets.EditWidgetSheet
 import com.cryptium.coincurrently.features.CoinDetail.Sheets.SelectCoinSheet
 import com.cryptium.coincurrently.features.Market.Toplist.Sheets.ToplistSortBySheet
 import com.cryptium.coincurrently.sharedui.components.SnackBarType
@@ -129,9 +128,6 @@ import com.cryptium.coincurrently.core.analytics.SheetLabel
 import com.cryptium.coincurrently.core.analytics.SheetOpened
 import com.cryptium.coincurrently.core.analytics.SortOptionSelected
 import com.cryptium.coincurrently.core.analytics.TabChanged
-import com.cryptium.coincurrently.core.analytics.WidgetAdded
-import com.cryptium.coincurrently.core.analytics.WidgetReplaceUndone
-import com.cryptium.coincurrently.core.analytics.WidgetReplaced
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
 import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
@@ -203,8 +199,6 @@ fun CryptoDetailScreen(
 
     var isCoinsViewShowing by remember { mutableStateOf(false) }
     var isSelectingMainCoin by remember { mutableStateOf(false) }
-
-    var isEditWidgetShowing by remember { mutableStateOf(false) }
 
     var selectedUrl: String? by remember { mutableStateOf(null) }
 
@@ -444,51 +438,6 @@ fun CryptoDetailScreen(
                         MoreButton(
                             isDropDownExpanded = isDropDownExpanded,
                             coinName = viewModel.cryptoInfo?.name ?: "coin",
-                            isAlreadyAddedToWidgets = viewModel.widgetCurrencies.firstOrNull { it.id == viewModel.cryptoInfo?.id } != null,
-                            widgetsCount = viewModel.widgetCurrencies.count(),
-                            addToWidget = {
-                                AnalyticsManager.log(
-                                    WidgetAdded(
-                                        fromScreen = ScreenLabel.CryptoDetail,
-                                        coinSymbol = viewModel.cryptoInfo?.symbol?.uppercase(AppLocale.enUsPosix) ?: "",
-                                    ),
-                                )
-                                viewModel.addCurrencyToWidgets(context)
-                                navigationViewModel.showSnackbar(
-                                    context = context,
-                                    type = SnackBarType.SUCCESS,
-                                    message = "${viewModel.cryptoInfo?.symbol?.uppercase() ?: "Coin"} added to widgets.",
-                                    buttonTitle = "Manage",
-                                    callback = {
-                                        val dest = NavigationScreens.Widgets
-                                        AnalyticsManager.log(
-                                            Navigate(
-                                                fromScreen = ScreenLabel.CryptoDetail,
-                                                toScreen = ScreenLabel.Widgets,
-                                                coinName = viewModel.cryptoInfo?.name ?: "",
-                                            ),
-                                        )
-                                        navigationViewModel.deepLink(dest)
-                                    }
-                                )
-                            },
-                            editWidgets = {
-                                AnalyticsManager.log(
-                                    SheetOpened(ScreenLabel.CryptoDetail, SheetLabel.EditWidgets),
-                                )
-                                isEditWidgetShowing = true
-                            },
-                            deepLinkToWidgets = {
-                                val dest = NavigationScreens.Widgets
-                                AnalyticsManager.log(
-                                    Navigate(
-                                        fromScreen = ScreenLabel.CryptoDetail,
-                                        toScreen = ScreenLabel.Widgets,
-                                        coinName = viewModel.cryptoInfo?.name ?: "",
-                                    ),
-                                )
-                                navigationViewModel.deepLink(dest)
-                            },
                             compareCoins = {
                                 AnalyticsManager.log(
                                     SheetOpened(ScreenLabel.CryptoDetail, SheetLabel.CoinSearch),
@@ -912,64 +861,6 @@ fun CryptoDetailScreen(
                     }
                 }
             )
-
-            /*if (isAddToWidgetShowing) {
-                AddToWidgetSheet(
-                    widgetsCount = viewModel.widgetCurrencies.count(),
-                    deepLinkToWidget = {
-                        navigationViewModel.deepLink(NavigationScreens.Widgets)
-                        isAddToWidgetShowing = false
-                    },
-                    close = {
-                        isAddToWidgetShowing = false
-                    }
-                )
-            }*/
-
-            if (isEditWidgetShowing) {
-                EditWidgetSheet(
-                    widgetCoins = viewModel.widgetCurrencies,
-                    currentCoinName = viewModel.cryptoInfo?.name,
-                    replaceCoin = { toplist ->
-                        viewModel.replaceWidgetCurrency(toplist, context = context)
-                        isEditWidgetShowing = false
-
-                        val mainSymbol = viewModel.cryptoInfo?.symbol?.uppercase() ?: ""
-                        val replacedSymbol = toplist.symbol?.uppercase() ?: ""
-
-                        AnalyticsManager.log(
-                            WidgetReplaced(
-                                fromScreen = ScreenLabel.CryptoDetail,
-                                fromSymbol = mainSymbol,
-                                toSymbol = replacedSymbol,
-                            ),
-                        )
-
-                        navigationViewModel.showSnackbar(
-                            context = context,
-                            type = SnackBarType.SUCCESS,
-                            message = "Replaced $mainSymbol with $replacedSymbol in widgets.",
-                            buttonTitle = "Undo",
-                            callback = {
-                                val toplistItem = viewModel.cryptoInfo?.toToplist() ?: return@showSnackbar
-
-                                AnalyticsManager.log(
-                                    WidgetReplaceUndone(
-                                        fromScreen = ScreenLabel.CryptoDetail,
-                                        fromSymbol = replacedSymbol,
-                                        toSymbol = mainSymbol,
-                                    ),
-                                )
-
-                                viewModel.replaceWidgetCurrency(coin = toplistItem, with = toplist, context)
-                            }
-                        )
-                    },
-                    close = {
-                        isEditWidgetShowing = false
-                    }
-                )
-            }
 
             if (isCoinsViewShowing) {
                 SelectCoinSheet(

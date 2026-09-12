@@ -92,7 +92,6 @@ internal fun GlobalSection(
 
 @Composable
 internal fun ToolsSection(
-    navigateToWidgets: () -> Unit,
     navigateToCalculator: () -> Unit,
     navigateToPriceAlerts: () -> Unit,
     navigateToAchievements: () -> Unit,
@@ -109,15 +108,6 @@ internal fun ToolsSection(
             modifier = Modifier
                 .primaryBackgroundNoRipple()
         ) {
-            SettingsSimpleCell(
-                title = "Widgets",
-                accessibilityText = "Navigate to Widgets",
-            ) {
-                navigateToWidgets.invoke()
-            }
-
-            Separator()
-
             SettingsSimpleCell(
                 title = "Converter",
                 accessibilityText = "Navigate to Converter",
