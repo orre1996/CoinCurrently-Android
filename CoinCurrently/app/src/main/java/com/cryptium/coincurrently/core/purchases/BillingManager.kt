@@ -11,9 +11,7 @@ import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.cryptium.coincurrently.BuildConfig
-import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.getIntroductoryOffer
-import com.cryptium.coincurrently.core.extensions.updateAllWidgets
 import com.cryptium.coincurrently.core.analytics.SubscriptionRestoreOutcome
 import com.revenuecat.purchases.CacheFetchPolicy
 import com.revenuecat.purchases.CustomerInfo
@@ -113,15 +111,15 @@ class BillingManager {
             storeProducts.value?.let {
                 if (it.isNotEmpty()) {
                     callback.invoke(it, storeProductsById.values.toList())
-                    syncSubscriptionState(context)
+                    syncSubscriptionState()
                     getUser()
                     return
                 }
             }
 
-            registerCustomerInfoListener(context)
+            registerCustomerInfoListener()
             fetchProducts(context, callback)
-            syncSubscriptionState(context)
+            syncSubscriptionState()
             getUser()
         }
 
@@ -248,19 +246,12 @@ class BillingManager {
             fun handleRestoreResult(customerInfo: CustomerInfo) {
                 GlobalScope.launch {
                     withContext(Dispatchers.Main) {
-                        val hadPro = currentSubscription.value != null
                         val hasPro = applyCustomerInfo(customerInfo)
 
                         if (hasPro) {
-                            if (!hadPro) {
-                                context.getActivity()?.updateAllWidgets()
-                            }
                             restoreAnalytics?.invoke(SubscriptionRestoreOutcome.Restored)
                             success.invoke()
                         } else {
-                            if (hadPro) {
-                                context.getActivity()?.updateAllWidgets()
-                            }
                             restoreAnalytics?.invoke(SubscriptionRestoreOutcome.NothingToRestore)
                             failure.invoke()
                         }
@@ -310,32 +301,24 @@ class BillingManager {
             )
         }
 
-        private fun registerCustomerInfoListener(context: Context) {
+        private fun registerCustomerInfoListener() {
             if (customerInfoListenerRegistered) return
             customerInfoListenerRegistered = true
 
             Purchases.sharedInstance.updatedCustomerInfoListener =
                 UpdatedCustomerInfoListener { customerInfo ->
-                    val previous = currentSubscription.value
                     applyCustomerInfo(customerInfo)
-                    if (previous != currentSubscription.value) {
-                        context.getActivity()?.updateAllWidgets()
-                    }
                 }
         }
 
-        private fun syncSubscriptionState(context: Context) {
+        private fun syncSubscriptionState() {
             Purchases.sharedInstance.getCustomerInfo(
                 CacheFetchPolicy.FETCH_CURRENT,
                 object : ReceiveCustomerInfoCallback {
                     override fun onReceived(customerInfo: CustomerInfo) {
                         GlobalScope.launch {
                             withContext(Dispatchers.Main) {
-                                val previous = currentSubscription.value
                                 applyCustomerInfo(customerInfo)
-                                if (previous != currentSubscription.value) {
-                                    context.getActivity()?.updateAllWidgets()
-                                }
                             }
                         }
                     }

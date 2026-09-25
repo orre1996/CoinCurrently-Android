@@ -53,19 +53,6 @@ internal fun createMediumPortfolioWidget(
 ) {
     WidgetRuntimeInitializer.ensureInitialized(context)
 
-    if (UserPreferences.getIsHidePortfolioEnabled()) {
-        val views = RemoteViews(context.packageName, R.layout.medium_portfolio_disabled_widget)
-        views.setInt(
-            R.id.ll_view,
-            "setBackgroundResource",
-            if (isWidgetDarkMode(context)) R.drawable.widget_background_dark else R.drawable.widget_background_light,
-        )
-        views.setTextColor(R.id.txt_message, widgetOnSurface(context))
-        setSmallPortfolioClickIntent(views, context)
-        appWidgetManager.updateAppWidget(appWidgetId, views)
-        return
-    }
-
     val views = buildPlaceholderMediumPortfolioWidget(context)
     setSmallPortfolioClickIntent(views, context)
     appWidgetManager.updateAppWidget(appWidgetId, views)

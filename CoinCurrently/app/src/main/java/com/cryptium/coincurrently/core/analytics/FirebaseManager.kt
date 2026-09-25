@@ -358,7 +358,6 @@ class FirebaseManager {
             StorageManager.set(StorageKeys.APP_COLOR_SCHEME, AppColorScheme.DARK)
             UserPreferences.setIsWidgetDarkModeEnabled(true)
             UserPreferences.setIsBiometricAuthenticationEnabled(false)
-            UserPreferences.setIsHidePortfolioEnabled(false)
             UserPreferences.setShowChangesInPercent(true)
             UserPreferences.setPreferredTimeframe(PreferredTimeframe.WEEKLY)
             StorageManager.clearCache()

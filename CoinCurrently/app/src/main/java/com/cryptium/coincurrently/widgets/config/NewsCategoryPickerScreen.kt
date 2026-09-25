@@ -1,14 +1,12 @@
 package com.cryptium.coincurrently.widgets.config
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,14 +23,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.core.extensions.poppinsRegular
 import com.cryptium.coincurrently.core.models.CarouselFilter
-import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.sharedui.components.DragHandle
 import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.sharedui.sheets.ModalBottomSheetSystemNavigationBar
@@ -49,15 +43,12 @@ fun NewsCategoryPickerScreen(
     onCategorySelected: (NewsWidgetConfig) -> Unit,
     onCancel: () -> Unit,
 ) {
-    val hasPro = remember { UserPreferences.getHasBoughtPro() != null }
     var showingCoinPicker by remember { mutableStateOf(false) }
-    var showProFallback by remember { mutableStateOf(false) }
 
     if (showingCoinPicker) {
         CoinSearchPickerScreen(
             title = "Select Coin",
             coinCount = 1,
-            requiresPro = true,
             onCoinsSelected = { coins ->
                 val symbol = coins.firstOrNull()?.symbol
                 if (symbol.isNullOrEmpty()) {
@@ -76,17 +67,13 @@ fun NewsCategoryPickerScreen(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val title = if (showProFallback) "Pro Required" else "Select Category"
+    val title = "Select Category"
     val maxBodyHeight = rememberModalSheetMaxBodyHeight(dragHandleTitle = title)
 
     val dismiss = {
         coroutineScope.launch {
             sheetState.hide()
-            if (showProFallback) {
-                showProFallback = false
-            } else {
-                onCancel()
-            }
+            onCancel()
         }
     }
 
@@ -112,36 +99,23 @@ fun NewsCategoryPickerScreen(
             maxBodyHeight = maxBodyHeight,
             wrapContent = false,
         ) {
-            if (showProFallback) {
-                ProRequiredMessage(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 16.dp),
-                    message = "This news category requires CoinCurrently Pro. Continue with General news instead.",
-                    continueText = "Continue with General",
-                    onContinue = { onCategorySelected(NewsWidgetConfig(category = "general")) },
-                )
-            } else {
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(CarouselFilter.newsFilters) { filter ->
-                        val isLocked = filter.requiresPro && !hasPro
-                        val isSelected = selectedConfig?.toCarouselFilter()?.matchesForSelection(filter) == true
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                items(CarouselFilter.newsFilters) { filter ->
+                    val isSelected = selectedConfig?.toCarouselFilter()?.matchesForSelection(filter) == true
 
-                        CategoryMenuItem(
-                            title = filter.rawValue,
-                            isLocked = isLocked,
-                            isSelected = isSelected,
-                            onClick = {
-                                when {
-                                    isLocked -> showProFallback = true
-                                    filter is CarouselFilter.Coins -> showingCoinPicker = true
-                                    else -> onCategorySelected(filter.toNewsWidgetConfig())
-                                }
-                            },
-                        )
+                    CategoryMenuItem(
+                        title = filter.widgetCategoryTitle(),
+                        isSelected = isSelected,
+                        onClick = {
+                            if (filter is CarouselFilter.Coins) {
+                                showingCoinPicker = true
+                            } else {
+                                onCategorySelected(filter.toNewsWidgetConfig())
+                            }
+                        },
+                    )
 
-                        Separator()
-                    }
+                    Separator()
                 }
             }
         }
@@ -151,7 +125,6 @@ fun NewsCategoryPickerScreen(
 @Composable
 private fun CategoryMenuItem(
     title: String,
-    isLocked: Boolean,
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
@@ -176,14 +149,7 @@ private fun CategoryMenuItem(
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.weight(1f),
         )
-
-        if (isLocked) {
-            Image(
-                painter = painterResource(id = R.drawable.baseline_lock_24),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceDim),
-                modifier = Modifier.size(24.dp),
-            )
-        }
     }
 }
+
+private fun CarouselFilter.widgetCategoryTitle(): String = rawValue.removeSuffix(" (Pro)")

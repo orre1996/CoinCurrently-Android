@@ -148,13 +148,6 @@ fun BuyProScreen(close: () -> Unit) {
         ),
 
         Tier(
-            title = "Home screen widgets",
-            freeText = TierType.Text("8"),
-            proText = TierType.Text("14"),
-            accessibilityLabel = "8 home screen widgets are included in the free version and 14 with pro",
-        ),
-
-        Tier(
             title = "Favorite coins",
             freeText = TierType.Text("2"),
             proText = TierType.Image(R.drawable.infinity),

@@ -54,11 +54,9 @@ internal fun createMediumNewsWidget(
     GlobalScope.launch(Dispatchers.IO) {
         try {
             val newsItems = loadWidgetNews(context, appWidgetId, limit = 2)
-            val showProOverlay = widgetNewsNeedsProOverlay(context, appWidgetId)
             applyMediumNewsTheme(views, context)
-            bindMediumNewsCell(views, R.id.cell_1, newsItems.getOrNull(0), context, showProOverlay)
-            bindMediumNewsCell(views, R.id.cell_2, newsItems.getOrNull(1), context, showProOverlay)
-            bindNewsProOverlay(views, context, showProOverlay)
+            bindMediumNewsCell(views, R.id.cell_1, newsItems.getOrNull(0), context)
+            bindMediumNewsCell(views, R.id.cell_2, newsItems.getOrNull(1), context)
             appWidgetManager.updateAppWidget(appWidgetId, views)
         } catch (_: Exception) {
             appWidgetManager.updateAppWidget(
@@ -76,9 +74,8 @@ private fun buildPlaceholderMediumNewsWidget(
     val views = RemoteViews(context.packageName, R.layout.medium_news_widget)
     applyMediumNewsTheme(views, context)
     val cachedNews = getWidgetNewsItems(context, appWidgetId, limit = 2)
-    bindMediumNewsCell(views, R.id.cell_1, cachedNews.getOrNull(0), context, showProOverlay = false)
-    bindMediumNewsCell(views, R.id.cell_2, cachedNews.getOrNull(1), context, showProOverlay = false)
-    bindNewsProOverlay(views, context, showOverlay = false)
+    bindMediumNewsCell(views, R.id.cell_1, cachedNews.getOrNull(0), context)
+    bindMediumNewsCell(views, R.id.cell_2, cachedNews.getOrNull(1), context)
     return views
 }
 
@@ -100,13 +97,10 @@ private fun bindMediumNewsCell(
     containerId: Int,
     newsItem: NewNewsItem?,
     context: Context,
-    showProOverlay: Boolean,
 ) {
     val cellViews = createSmallNewsRemoteViews(context, embeddedInMedium = true)
     bindSmallNewsRemoteViews(cellViews, newsItem, context, embeddedInMedium = true)
-    if (!showProOverlay) {
-        setSmallNewsClickIntent(cellViews, context, newsItem?.news_url)
-    }
+    setSmallNewsClickIntent(cellViews, context, newsItem?.news_url)
     parent.removeAllViews(containerId)
     parent.addView(containerId, cellViews)
 }

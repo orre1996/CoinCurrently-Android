@@ -1,8 +1,6 @@
 package com.cryptium.coincurrently.widgets.config
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,20 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.app.SearchCase
 import com.cryptium.coincurrently.app.SearchScreenCase
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.core.extensions.poppinsRegular
-import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
-import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.features.CoinDetail.Sheets.SelectCoinBaseView
-import com.cryptium.coincurrently.sharedui.buttons.PrimaryButton
 import com.cryptium.coincurrently.sharedui.components.DragHandle
 import com.cryptium.coincurrently.sharedui.sheets.ModalBottomSheetSystemNavigationBar
 import com.cryptium.coincurrently.sharedui.sheets.ModalSheetBody
@@ -42,13 +35,10 @@ import kotlinx.coroutines.launch
 fun CoinSearchPickerScreen(
     title: String = "Select Coin",
     coinCount: Int = 1,
-    requiresPro: Boolean = false,
     initialSelectedIds: List<String> = emptyList(),
     onCoinsSelected: (List<Toplist>) -> Unit,
     onCancel: () -> Unit,
 ) {
-    val hasPro = remember { UserPreferences.getHasBoughtPro() != null }
-    val proBlocked = requiresPro && !hasPro
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -90,14 +80,6 @@ fun CoinSearchPickerScreen(
             wrapContent = false,
         ) {
             when {
-                proBlocked -> {
-                    ProRequiredMessage(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 16.dp),
-                        onContinue = { onCoinsSelected(emptyList()) },
-                    )
-                }
                 coinCount > 1 -> {
                     Text(
                         text = "Select $coinCount coins (${selectedCoins.size}/$coinCount)",
@@ -140,40 +122,5 @@ fun CoinSearchPickerScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-internal fun ProRequiredMessage(
-    modifier: Modifier = Modifier,
-    message: String = "Custom coin selection for this widget requires CoinCurrently Pro. Without Pro, the widget shows top market cap coins.",
-    continueText: String = "Continue with defaults",
-    onContinue: () -> Unit,
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        Text(
-            text = "Pro Required",
-            style = satoshiBold(20),
-            color = MaterialTheme.colors.primary,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
-        )
-        Text(
-            text = message,
-            style = poppinsRegular(14),
-            color = MaterialTheme.colors.onSurfaceDim,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
-        )
-        PrimaryButton(
-            text = continueText,
-            onClick = onContinue,
-            fullWidth = true,
-            modifier = Modifier.fillMaxWidth(),
-        )
     }
 }

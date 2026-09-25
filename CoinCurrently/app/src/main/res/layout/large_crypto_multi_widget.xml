@@ -153,20 +153,4 @@
                 tools:layout="@layout/small_crypto_widget_cell_usdc" />
         </LinearLayout>
     </LinearLayout>
-
-    <include
-        android:id="@+id/buy_pro"
-        layout="@layout/buy_pro_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:visibility="visible" />
-
-    <include
-        android:id="@+id/buy_pro_light"
-        layout="@layout/buy_pro_overlay_light"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:visibility="visible" />
 </RelativeLayout>

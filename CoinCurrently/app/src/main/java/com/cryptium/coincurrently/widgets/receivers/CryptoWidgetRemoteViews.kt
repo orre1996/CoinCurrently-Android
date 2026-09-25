@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.view.View
 import android.widget.RemoteViews
 import androidx.core.graphics.drawable.toBitmap
 import coil.Coil
@@ -322,7 +321,6 @@ private fun buildLargeMultiWidget(
     coins: List<Toplist?>,
     bitmaps: List<Bitmap?>,
 ): RemoteViews {
-    val isDark = isWidgetDarkMode(context)
     val views = RemoteViews(context.packageName, R.layout.large_crypto_multi_widget)
     views.setInt(R.id.ll_main, "setBackgroundResource", widgetBackground(context))
     val separatorColor = widgetOutlineVariant(context)
@@ -338,24 +336,6 @@ private fun buildLargeMultiWidget(
         .forEachIndexed { index, cellId ->
             bindCoinCell(views, cellId, coins.getOrNull(index), bitmaps.getOrNull(index), context)
         }
-
-    val hasPro = UserPreferences.getHasBoughtPro() != null
-    views.setViewVisibility(R.id.buy_pro, if (!hasPro && isDark) View.VISIBLE else View.GONE)
-    views.setViewVisibility(R.id.buy_pro_light, if (!hasPro && !isDark) View.VISIBLE else View.GONE)
-
-    if (!hasPro) {
-        val intent = Intent(context, MainActivity::class.java).apply {
-            putExtra("cryptoID", "buyPro")
-        }
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            (0..10000).random(),
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-        )
-        views.setOnClickPendingIntent(R.id.buy_pro, pendingIntent)
-        views.setOnClickPendingIntent(R.id.buy_pro_light, pendingIntent)
-    }
 
     return views
 }

@@ -18,7 +18,6 @@ import com.cryptium.coincurrently.core.extensions.getDifferenceInPercent
 import com.cryptium.coincurrently.core.extensions.getIntroductoryOffer
 import com.cryptium.coincurrently.core.extensions.getNormalPricePhase
 import com.cryptium.coincurrently.core.extensions.pricingPhaseToDouble
-import com.cryptium.coincurrently.core.extensions.updateAllWidgets
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.config.RemoteConfigKeys
@@ -165,7 +164,6 @@ class BuyProViewModelImp: ViewModel(), BuyProViewModel {
             }
 
             isLoading = false
-            context.getActivity()?.updateAllWidgets()
             dismissScreen.invoke()
             MainActivity.showAppReview(context, force = true)
             MainActivity.showSnackbar(
@@ -209,7 +207,6 @@ class BuyProViewModelImp: ViewModel(), BuyProViewModel {
             success = {
                 isLoading = false
 
-                context.getActivity()?.updateAllWidgets()
                 dismissScreen.invoke()
                 MainActivity.showAppReview(context, force = true)
                 MainActivity.showSnackbar(

@@ -60,27 +60,21 @@ fun WhatsNewSheet(
 
     val sections: List<WhatsNewSection> = listOf(
         WhatsNewSection(
-            title = "Portfolio",
-            icon = R.drawable.portfolio,
+            title = "Widgets",
+            icon = R.drawable.widget,
             bulletPoints = listOf(
-                "Interactive allocation pie chart with a toggle against the line chart",
+                "Widgets have a new, fresh look",
+                "Everything about widgets has moved to the Home Screen, where they are now modified",
             )
         ),
         WhatsNewSection(
-            title = "Market Treasuries",
-            icon = R.drawable.market,
+            title = "Heatmap",
+            icon = R.drawable.heatmap,
             bulletPoints = listOf(
-                "Track company and government crypto holdings",
-                "Filter by entity type and coin, then open detail charts and history",
+                "See the market as a color-coded heatmap",
+                "Browse favorites, your portfolio, or the toplist",
             )
         ),
-        WhatsNewSection(
-            title = "Global Market",
-            icon = R.drawable.lightning,
-            bulletPoints = listOf(
-                "Refreshed global market-cap summary and chart",
-            )
-        )
     )
 
     ModalBottomSheet(

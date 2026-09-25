@@ -63,12 +63,8 @@ internal fun createSmallNewsWidget(
     GlobalScope.launch(Dispatchers.IO) {
         try {
             val items = loadWidgetNews(context, appWidgetId, limit = 1)
-            val showProOverlay = widgetNewsNeedsProOverlay(context, appWidgetId)
             bindSmallNewsRemoteViews(views, items.firstOrNull(), context, embeddedInMedium = false)
-            bindNewsProOverlay(views, context, showProOverlay)
-            if (!showProOverlay) {
-                setSmallNewsClickIntent(views, context, items.firstOrNull()?.news_url)
-            }
+            setSmallNewsClickIntent(views, context, items.firstOrNull()?.news_url)
             appWidgetManager.updateAppWidget(appWidgetId, views)
         } catch (_: Exception) {
             appWidgetManager.updateAppWidget(appWidgetId, buildPlaceholderSmallNewsWidget(context))
@@ -79,7 +75,6 @@ internal fun createSmallNewsWidget(
 private fun buildPlaceholderSmallNewsWidget(context: Context): RemoteViews {
     val views = createSmallNewsRemoteViews(context, embeddedInMedium = false)
     bindSmallNewsRemoteViews(views, null, context, embeddedInMedium = false)
-    bindNewsProOverlay(views, context, showOverlay = false)
     setSmallNewsClickIntent(views, context, null)
     return views
 }
@@ -167,29 +162,6 @@ internal fun setSmallNewsClickIntent(
     views.setOnClickPendingIntent(R.id.btn_open, pendingIntent)
 }
 
-internal fun bindNewsProOverlay(
-    views: RemoteViews,
-    context: Context,
-    showOverlay: Boolean,
-) {
-    val isDark = isWidgetDarkMode(context)
-    views.setViewVisibility(R.id.buy_pro, if (showOverlay && isDark) View.VISIBLE else View.GONE)
-    views.setViewVisibility(R.id.buy_pro_light, if (showOverlay && !isDark) View.VISIBLE else View.GONE)
-    if (!showOverlay) return
-
-    val intent = Intent(context, MainActivity::class.java).apply {
-        putExtra("cryptoID", "buyPro")
-    }
-    val pendingIntent = PendingIntent.getActivity(
-        context,
-        (0..10000).random(),
-        intent,
-        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-    )
-    views.setOnClickPendingIntent(R.id.buy_pro, pendingIntent)
-    views.setOnClickPendingIntent(R.id.buy_pro_light, pendingIntent)
-}
-
 internal fun widgetSentimentColor(context: Context, sentiment: String?): Int {
     return when (sentiment) {
         "Negative" -> widgetTrendDown(context)
@@ -227,7 +199,7 @@ internal suspend fun loadWidgetNews(
     limit: Int,
 ): List<NewNewsItem> {
     val config = WidgetConfigStore.getNewsConfig(context, appWidgetId)
-    val (category, _) = WidgetConfigResolver.resolveNewsCategory(config)
+    val category = WidgetConfigResolver.resolveNewsCategory(config)
     val fetched = NewsRepository.getNewNews(newsCountForCategory(category), category)
         ?.data
         ?.let { filterNewsForCategory(it, category) }
@@ -240,18 +212,13 @@ internal suspend fun loadWidgetNews(
     ).take(limit)
 }
 
-internal fun widgetNewsNeedsProOverlay(context: Context, appWidgetId: Int): Boolean {
-    val config = WidgetConfigStore.getNewsConfig(context, appWidgetId)
-    return WidgetConfigResolver.resolveNewsCategory(config).second
-}
-
 internal fun getWidgetNewsItems(
     context: Context,
     appWidgetId: Int,
     limit: Int = 2,
 ): List<NewNewsItem> {
     val config = WidgetConfigStore.getNewsConfig(context, appWidgetId)
-    val (category, _) = WidgetConfigResolver.resolveNewsCategory(config)
+    val category = WidgetConfigResolver.resolveNewsCategory(config)
     return filterNewsForCategory(
         NewsRepository.getCachedNewsItems(category),
         category,

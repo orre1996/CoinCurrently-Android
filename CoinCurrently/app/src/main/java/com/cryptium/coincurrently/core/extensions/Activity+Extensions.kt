@@ -13,11 +13,8 @@ import com.cryptium.coincurrently.widgets.glance.LargeMultiCryptoWidgetReceiver
 import com.cryptium.coincurrently.widgets.glance.LargeQuadCryptoWidgetReceiver
 import com.cryptium.coincurrently.widgets.glance.MediumDuoCryptoWidgetReceiver
 import com.cryptium.coincurrently.widgets.glance.SmallCryptoWidgetReceiver
-import com.cryptium.coincurrently.widgets.receivers.MediumNewsWidgetReceiver
-import com.cryptium.coincurrently.widgets.receivers.SmallNewsWidgetReceiver
 import com.cryptium.coincurrently.widgets.receivers.large_portfolio_widget
 import com.cryptium.coincurrently.widgets.receivers.medium_portfolio_widget
-import com.cryptium.coincurrently.widgets.receivers.small_fear_greed_widget
 import com.cryptium.coincurrently.widgets.receivers.small_portfolio_widget
 
 @SuppressLint("SimpleDateFormat")
@@ -49,20 +46,6 @@ fun Context.updatePortfolioWidgets() {
 fun reloadPortfolioWidgets() {
     MainActivity.current()?.updatePortfolioWidgets()
 }
-
-fun MainActivity.updateAllWidgets() {
-    notifyWidgetUpdate(SmallCryptoWidgetReceiver::class.java)
-    notifyWidgetUpdate(MediumDuoCryptoWidgetReceiver::class.java)
-    notifyWidgetUpdate(LargeQuadCryptoWidgetReceiver::class.java)
-    notifyWidgetUpdate(LargeMultiCryptoWidgetReceiver::class.java)
-    notifyWidgetUpdate(small_portfolio_widget::class.java)
-    notifyWidgetUpdate(medium_portfolio_widget::class.java)
-    notifyWidgetUpdate(large_portfolio_widget::class.java)
-    notifyWidgetUpdate(small_fear_greed_widget::class.java)
-    notifyWidgetUpdate(SmallNewsWidgetReceiver::class.java)
-    notifyWidgetUpdate(MediumNewsWidgetReceiver::class.java)
-}
-
 
 fun MainActivity.getStatusBarHeight(): Int {
     var result = 0

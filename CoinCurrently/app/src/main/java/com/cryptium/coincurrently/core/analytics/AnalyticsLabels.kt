@@ -88,7 +88,6 @@ enum class BuyProAction(val wire: String) {
     ImportWallet("ImportWallet"),
     AddTransaction("AddTransaction"),
     ExportPortfolio("ExportPortfolio"),
-    Deeplink("Deeplink"),
     HomePromotion("HomePromotion"),
 }
 

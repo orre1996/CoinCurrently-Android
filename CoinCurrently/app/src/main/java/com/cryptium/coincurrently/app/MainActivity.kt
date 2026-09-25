@@ -82,7 +82,6 @@ import com.cryptium.coincurrently.sharedui.components.SnackbarView
 import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
 import com.cryptium.coincurrently.core.purchases.BillingManager
-import com.cryptium.coincurrently.core.analytics.BuyProAction
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.Navigate
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
@@ -675,8 +674,6 @@ class MainActivity: FragmentActivity() {
                     )
                 }
 
-            } else if (it.isNotEmpty() && it == "buyPro") {
-                navigationViewModel.openBuyPro(ScreenLabel.MainFlow, BuyProAction.Deeplink)
             } else if (it.isNotEmpty() && it == "portfolio") {
                 AnalyticsManager.log(
                     Navigate(

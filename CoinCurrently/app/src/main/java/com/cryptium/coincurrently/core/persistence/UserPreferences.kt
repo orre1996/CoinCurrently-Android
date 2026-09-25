@@ -93,14 +93,6 @@ object UserPreferences {
         prefs()?.edit()?.putInt("preferredTimeframe", timeframe.ordinal)?.apply()
     }
 
-    fun setIsHidePortfolioEnabled(enabled: Boolean) {
-        prefs()?.edit()?.putBoolean("hidePortfolioEnabled", enabled)?.apply()
-    }
-
-    fun getIsHidePortfolioEnabled(): Boolean {
-        return prefs()?.getBoolean("hidePortfolioEnabled", false) ?: false
-    }
-
     fun setStartTab(tab: SelectedStartTab) {
         prefs()?.edit()?.putInt("startTab", tab.ordinal)?.apply()
     }

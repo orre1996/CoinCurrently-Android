@@ -48,28 +48,24 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <include
                 android:id="@+id/first_separator"
-                layout="@layout/widget_separator_vertical_dark"
+                layout="@layout/widget_separator_dark"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_weight="1" />
-
 
             <include
                 android:id="@+id/second_separator"
-                layout="@layout/widget_separator_vertical_dark"
+                layout="@layout/widget_separator_dark"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_weight="1" />
-
         </LinearLayout>
 
         <LinearLayout

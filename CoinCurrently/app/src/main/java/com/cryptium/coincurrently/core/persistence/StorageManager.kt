@@ -112,8 +112,8 @@ enum class StorageKeys(private val rawOverride: String? = null) {
     APP_RATING_POPUP_DATE,
     APP_ACTION_RATING_DATE,
 
-    /** What's New sheet content version (e.g. "3.3"); last-seen copy lives in SharedPreferences. */
-    CURRENT_WHATS_NEW_VERSION("3.3"),
+    /** What's New sheet content version (e.g. "3.4"); last-seen copy lives in SharedPreferences. */
+    CURRENT_WHATS_NEW_VERSION("3.4"),
 
     ACHIEVEMENT_LAST_OPEN_DATE,
     ACHIEVEMENT_CURRENT_STREAK,

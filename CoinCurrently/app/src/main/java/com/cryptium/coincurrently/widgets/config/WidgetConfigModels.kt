@@ -21,13 +21,7 @@ data class MultiCoinWidgetConfig(
 data class NewsWidgetConfig(
     val category: String = "general",
     val filterValue: String? = null,
-) {
-    val requiresPro: Boolean
-        get() = when (category.lowercase()) {
-            "exchanges", "nfts", "nft", "technical_analysis", "technical analysis", "coins" -> true
-            else -> false
-        }
-}
+)
 
 fun NewsWidgetConfig.toNewsCategory(): NewsCategory {
     return when (category.lowercase()) {

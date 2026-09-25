@@ -65,19 +65,6 @@ internal fun createSmallPortfolioWidget(
 ) {
     WidgetRuntimeInitializer.ensureInitialized(context)
 
-    if (UserPreferences.getIsHidePortfolioEnabled()) {
-        val views = RemoteViews(context.packageName, R.layout.small_portfolio_disabled_widget)
-        views.setInt(
-            R.id.ll_view,
-            "setBackgroundResource",
-            if (isWidgetDarkMode(context)) R.drawable.widget_background_dark else R.drawable.widget_background_light,
-        )
-        views.setTextColor(R.id.txt_message, widgetOnSurface(context))
-        setSmallPortfolioClickIntent(views, context)
-        appWidgetManager.updateAppWidget(appWidgetId, views)
-        return
-    }
-
     val views = buildPlaceholderSmallPortfolioWidget(context)
     setSmallPortfolioClickIntent(views, context)
     appWidgetManager.updateAppWidget(appWidgetId, views)
@@ -179,7 +166,7 @@ internal fun bindSmallPortfolioRemoteViews(
             hideData -> stars
             widgetData.isEmpty || widgetData.totalValue == null -> "—"
             else -> widgetData.totalValue.formatCurrency(
-                threshold = FormattingThreshold.BILLION,
+                threshold = FormattingThreshold.MILLION,
                 currency = selectedCurrency,
             )
         },
