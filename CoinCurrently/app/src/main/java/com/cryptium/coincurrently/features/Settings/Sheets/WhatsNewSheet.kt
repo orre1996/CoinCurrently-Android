@@ -60,6 +60,13 @@ fun WhatsNewSheet(
 
     val sections: List<WhatsNewSection> = listOf(
         WhatsNewSection(
+            title = "Referral",
+            icon = R.drawable.share,
+            bulletPoints = listOf(
+                "Invite your friends & family and get rewarded",
+            )
+        ),
+        WhatsNewSection(
             title = "Widgets",
             icon = R.drawable.widget,
             bulletPoints = listOf(
@@ -74,7 +81,7 @@ fun WhatsNewSheet(
                 "See the market as a color-coded heatmap",
                 "Browse favorites, your portfolio, or the toplist",
             )
-        ),
+        )
     )
 
     ModalBottomSheet(

@@ -8,7 +8,6 @@ import com.cryptium.coincurrently.sharedui.modifiers.imageSize
 
 import com.cryptium.coincurrently.app.NavigationScreens
 import android.app.Activity
-import com.cryptium.coincurrently.BuildConfig
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.Context
@@ -243,23 +242,21 @@ fun SettingsScreen(
                         }
                     }
 
-                    if (BuildConfig.DEBUG) {
-                        Separator()
+                    Separator()
 
-                        SettingsSimpleCell(
-                            title = "Referral Program",
-                            accessibilityText = "Navigate to Referral Program",
-                        ) {
-                            AnalyticsManager.log(
-                                Navigate(
-                                    fromScreen = ScreenLabel.Settings,
-                                    toScreen = ScreenLabel.Referral,
-                                ),
-                            )
-                            navigationViewModel.navigate(
-                                NavigationScreens.Referral(),
-                            )
-                        }
+                    SettingsSimpleCell(
+                        title = "Referral Program",
+                        accessibilityText = "Navigate to Referral Program",
+                    ) {
+                        AnalyticsManager.log(
+                            Navigate(
+                                fromScreen = ScreenLabel.Settings,
+                                toScreen = ScreenLabel.Referral,
+                            ),
+                        )
+                        navigationViewModel.navigate(
+                            NavigationScreens.Referral(),
+                        )
                     }
                 }
 
