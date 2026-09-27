@@ -66,8 +66,8 @@ android {
         applicationId "com.cryptium.coincurrently"
         minSdkVersion 31
         targetSdkVersion 36
-        versionCode 223
-        versionName "3.3.1"
+        versionCode 224
+        versionName "3.4.0"
         compileSdk 36
         buildToolsVersion = "36.0.0"
 
