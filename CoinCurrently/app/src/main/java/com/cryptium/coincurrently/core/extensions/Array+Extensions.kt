@@ -15,11 +15,6 @@ import java.util.Date
 import kotlin.text.lowercase
 
 
-fun normalise(inValue: Float, min: Float, max: Float): Float {
-    return (inValue - min) / (max - min)
-}
-
-
 fun List<Double>.normalize(): List<Float> {
     if (this.all { it == this.firstOrNull() }) {
         return this.map { 0.5f }

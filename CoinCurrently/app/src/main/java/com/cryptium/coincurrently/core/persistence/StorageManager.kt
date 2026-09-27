@@ -8,26 +8,12 @@ import java.lang.reflect.Type
 import java.security.MessageDigest
 
 enum class StorageKeys(private val rawOverride: String? = null) {
-    SMALL_TOPLIST,
-    LARGE_TOPLIST,
     FAVORITE,
-    NEW_COINS,
-    TRENDING_IDS,
-    TRENDING_COINS,
-    WINNERS_LOSERS_IDS,
-    WINNERS,
-    LOSERS,
 
     SEARCH_HISTORY,
 
-    FEAR_GREED,
-    GAS_FEES,
-    GAS_FEES_PRICES_1,
-
-    NEWS,
     NEWS_CATEGORY,
 
-    GLOBAL_COINS,
     GLOBAL_MARKET_DATA_1,
 
     PORTFOLIO,
@@ -42,52 +28,24 @@ enum class StorageKeys(private val rawOverride: String? = null) {
     HOME_WELCOME_OFFER_DATE,
     HAS_CLOSED_APP,
 
-    CRYPTO_DETAIL,
-    CRYPTO_PRICES,
-    CRYPTO_CANDLES_2,
     IS_CANDLE_CHART_ENABLED,
     SELECTED_CHART_TYPE,
 
     /** Persisted chart period; clamp with TimeCharts.getStartTimeFrameBetween. */
     CHART_SELECTED_TIMEFRAME,
 
-
-    BITCOIN_DATA,
-
-    CALCULATOR_PRICES,
-
-    CATEGORIES,
-    NFT_LIST,
-    DERIVATIVES,
-    EXCHANGES,
-    SEARCH,
-
-    EXCHANGE_DETAIL,
-    EXCHANGE_PRICES,
-
-    ALERT_PRICES,
-    PRICE_ALERTS,
-
     DERIVATIVE_DETAIL,
-
-    NFT_DETAIL,
-    NFT_PRICES,
-    NFT_TICKERS,
-
-    CATEGORY_DETAIL,
 
     APP_COLOR_SCHEME,
 
     HAS_ASKED_FOR_PUSH_NOTIFICATIONS,
     LAST_PUSH_NOTIFICATION_TOKEN,
     SUBSCIBRES_TO_BIG_MOVERS,
-    OTHER_COINS,
-    
+
     TOPLIST_SORT_OPTION,
     TOPLIST_PRICE_CHANGE_OPTION,
     NFTS_SORT_OPTION,
     NFT_PLATFORM,
-    NFT_PLATFORMS,
     EXCHANGES_SORT_OPTION,
     CATEGORIES_SORT_OPTION,
 
@@ -96,8 +54,6 @@ enum class StorageKeys(private val rawOverride: String? = null) {
     TREASURIES_ENTITY_FILTER,
     TREASURIES_COIN_ID,
     IS_TREASURY_CHART_FIAT,
-
-    DERIVATIVE_DETAILS_SORT_OPTION,
 
     LAST_NEW_COINS_URL,
     LAST_TRENDING_COINS_URL,

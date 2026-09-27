@@ -183,22 +183,6 @@ object UserPreferences {
         }
     }
 
-    fun setPortfolioSelectedCurrency(currency: CurrencySelectionModel?) {
-        prefs()?.edit()?.putString("savedCurrencyPortfolio", Gson().toJson(currency))?.apply()
-    }
-
-    fun getPortfolioSelectedCurrency(context: Context? = null): CurrencySelectionModel? {
-        try {
-            val json: String = prefs(context)?.getString("savedCurrencyPortfolio", "") ?: "savedCurrency"
-            if (json.isEmpty()) {
-                return CurrencySelectionModel()
-            }
-            return Gson().fromJson(json, CurrencySelectionModel::class.java)
-        } catch (_: Exception) {
-            return CurrencySelectionModel()
-        }
-    }
-
     fun setWidgetCurrency(ids: List<Toplist>) {
         val newList: ArrayList<Toplist> = arrayListOf()
         for (i in 0 until min(8, ids.size)) {
@@ -256,22 +240,6 @@ object UserPreferences {
         } catch (_: Throwable) {
             emptyList()
         }
-    }
-
-    fun getRatingDate(): String? {
-        return prefs()?.getString("ratingDate", null)
-    }
-
-    fun setRatingDate(inDays: Int) {
-        prefs()?.edit()?.putString("ratingDate", dateStringAddingDays(inDays))?.apply()
-    }
-
-    fun getPortfolioHintDate(): String? {
-        return prefs()?.getString("portfolioHintDate", null)
-    }
-
-    fun setPortfolioHintDate(inDays: Int) {
-        prefs()?.edit()?.putString("portfolioHintDate", dateStringAddingDays(inDays))?.apply()
     }
 
     fun getMoreHintDate(): String? {
