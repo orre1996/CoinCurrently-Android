@@ -8,8 +8,10 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -17,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.sharedui.modifiers.MinimumTextSize
@@ -34,13 +37,37 @@ fun ChartBackground(
     biggestValue: MutableState<DpSize>
 ) {
     val localDensity = LocalDensity.current
-    val widestValue = values.maxByOrNull { it?.count() ?: 0 } ?: "000"
     var widestString by remember { mutableStateOf(0.dp) }
+    var measurePass by remember { mutableStateOf(0) }
+    var hasAppeared by remember { mutableStateOf(false) }
+
+    LaunchedEffect(values) {
+        if (!hasAppeared) {
+            hasAppeared = true
+            return@LaunchedEffect
+        }
+        widestString = 0.dp
+        biggestValue.value = biggestValue.value.copy(width = 0.dp)
+        measurePass += 1
+    }
 
     Column(
         modifier = Modifier.hideFromTalkBackWhenEnabled(),
     ) {
         CappedFontScale(DynamicTypeSizeCap.XxLarge) {
+        val textMeasurer = rememberTextMeasurer()
+        val labelStyle = satoshiBold(12)
+        val widestValue = values
+            .map { it ?: "000" }
+            .maxByOrNull { candidate ->
+                textMeasurer.measure(
+                    text = candidate,
+                    style = labelStyle,
+                    maxLines = 1,
+                ).size.width
+            } ?: "000"
+
+        key(measurePass) {
         values.reversed().forEachIndexed { index, value ->
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -83,6 +110,7 @@ fun ChartBackground(
             if (index != values.count() - 1) {
                 Spacer(modifier = Modifier.weight(1f))
             }
+        }
         }
         }
     }
