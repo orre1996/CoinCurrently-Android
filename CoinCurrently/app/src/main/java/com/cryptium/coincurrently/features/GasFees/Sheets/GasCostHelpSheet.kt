@@ -1,4 +1,6 @@
 package com.cryptium.coincurrently.features.GasFees.Sheets
+
+import com.cryptium.coincurrently.core.localization.Localization
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -116,7 +118,7 @@ fun GasCostHelpSheet(
 @Composable
 private fun OverviewView() {
     Text(
-        text = "These are approximate fees for common Ethereum transactions based on the current network gas price. Actual costs may vary depending on network activity and transaction complexity.",
+        text = Localization.string("These are approximate fees for common Ethereum transactions based on the current network gas price. Actual costs may vary depending on network activity and transaction complexity."),
         style = satoshiRegular(16),
         color = MaterialTheme.colors.onSurfaceDim,
         lineHeight = 24.sp
@@ -129,7 +131,7 @@ private fun CalculationView() {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "How estimates are calculated",
+            text = Localization.string("How estimates are calculated"),
             style = satoshiBold(16),
             color = MaterialTheme.colors.onSurface,
             modifier = Modifier.semantics { heading() },
@@ -157,7 +159,7 @@ private fun MeaningView() {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "What each action means",
+            text = Localization.string("What each action means"),
             style = satoshiBold(16),
             color = MaterialTheme.colors.onSurface,
             modifier = Modifier.semantics { heading() },
@@ -191,6 +193,9 @@ private fun BulletRow(
     accessibilityLabel: String? = null,
     boldPrefix: String? = null,
 ) {
+    val localizedText = Localization.string(text)
+    val localizedPrefix = boldPrefix?.let { Localization.string(it) }
+    val localizedAccessibility = accessibilityLabel?.let { Localization.string(it) }
     Row(
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -213,26 +218,26 @@ private fun BulletRow(
                             color = MaterialTheme.colors.onSurfaceDim
                         )
                     ) {
-                        append(boldPrefix)
+                        append(localizedPrefix.orEmpty())
                     }
 
-                    append(text)
+                    append(localizedText)
                 },
                 style = satoshiRegular(16),
                 color = MaterialTheme.colors.onSurfaceDim,
-                modifier = if (accessibilityLabel != null) {
-                    Modifier.semantics { contentDescription = accessibilityLabel }
+                modifier = if (localizedAccessibility != null) {
+                    Modifier.semantics { contentDescription = localizedAccessibility }
                 } else {
                     Modifier
                 },
             )
         } else {
             Text(
-                text = text,
+                text = localizedText,
                 style = satoshiRegular(16),
                 color = MaterialTheme.colors.onSurfaceDim,
-                modifier = if (accessibilityLabel != null) {
-                    Modifier.semantics { contentDescription = accessibilityLabel }
+                modifier = if (localizedAccessibility != null) {
+                    Modifier.semantics { contentDescription = localizedAccessibility }
                 } else {
                     Modifier
                 },

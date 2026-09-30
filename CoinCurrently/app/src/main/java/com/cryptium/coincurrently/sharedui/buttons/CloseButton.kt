@@ -17,12 +17,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerHigh
 
 @Composable
 fun CloseButton(
-    contentDescription: String = "Close",
+    contentDescription: String = Localization.string("Close sheet"),
     onClick: () -> Unit,
 ) {
     Image(

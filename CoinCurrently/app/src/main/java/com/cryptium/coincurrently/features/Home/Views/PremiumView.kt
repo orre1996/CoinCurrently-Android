@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceContainer
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.primaryBackground
@@ -51,10 +52,12 @@ fun PremiumView(
     viewPressed: () -> Unit,
     closeAction: (String) -> Unit
 ) {
+    val localizedTitle = Localization.string(title)
+    val localizedMessage = Localization.string(message)
     val accessibilityLabelText = when {
         !accessibleMessage.isNullOrEmpty() -> accessibleMessage
-        timeLeft != null && title == "Welcome offer" -> "$title. $message. $timeLeft"
-        else -> "$title. $message"
+        timeLeft != null && title == "Welcome Offer!" -> "$localizedTitle. $localizedMessage. $timeLeft"
+        else -> "$localizedTitle. $localizedMessage"
     }
 
     Box(
@@ -118,7 +121,7 @@ fun PremiumView(
 
             Column {
                 Text(
-                    title,
+                    localizedTitle,
                     style = satoshiBold(22),
                     color = MaterialTheme.colors.onSurfaceContainer,
                     modifier = Modifier
@@ -129,14 +132,14 @@ fun PremiumView(
                 )
 
                 Text(
-                    message,
+                    localizedMessage,
                     style = satoshiRegular(16).copy(lineHeight = 24.sp),
                     color = MaterialTheme.colors.onSurfaceDim,
                     modifier = Modifier
                         .padding(bottom = 4.dp)
                 )
 
-                if (timeLeft != null && title == "Welcome offer")
+                if (timeLeft != null && title == "Welcome Offer!")
                     Text(
                         timeLeft,
                         style = satoshiRegular(14),
@@ -157,7 +160,7 @@ private fun CloseButton(
     callback: () -> Unit
 ) {
     Image(painter = painterResource(id = R.drawable.cross),
-        contentDescription = "Hide offer",
+        contentDescription = Localization.string("Hide offer"),
         colorFilter = ColorFilter.tint(MaterialTheme.colors.primaryTextColor),
         modifier = Modifier
             .padding(4.dp)

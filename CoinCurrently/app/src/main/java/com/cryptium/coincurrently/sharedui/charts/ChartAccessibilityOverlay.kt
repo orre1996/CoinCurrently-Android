@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.sharedui.charts
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -275,7 +276,7 @@ private fun formattedPrice(
     showPercentChangeFromStart: Boolean,
 ): String {
     val price = prices.getOrNull(dataIndex)
-    if (price == null || price == -1.0) return "N/A"
+    if (price == null || price == -1.0) return Localization.string("N/A")
 
     var priceText = priceFormatter?.invoke(price)
         ?: if (currency.readAccessibilityAsSymbol) {

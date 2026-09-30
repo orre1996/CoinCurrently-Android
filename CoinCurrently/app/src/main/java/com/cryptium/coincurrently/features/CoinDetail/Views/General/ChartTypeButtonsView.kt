@@ -58,6 +58,7 @@ import com.cryptium.coincurrently.sharedui.components.ImageCase
 import com.cryptium.coincurrently.core.models.ChartTypes
 import com.cryptium.coincurrently.core.analytics.ChartTypeChanged
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 
 @Composable
@@ -127,17 +128,19 @@ fun ChartTypeButtonsView(
         }
     }
 
-    val candleToggleLabel = when (fromScreen) {
-        ScreenLabel.NftDetail -> {
-            if (isCandleChartEnabled) "Switch to Fiat chart" else "Switch to NFT chart"
-        }
-        ScreenLabel.TreasuryDetail -> {
-            if (isCandleChartEnabled) "Switch to Fiat chart" else "Switch to native chart"
-        }
-        else -> {
-            if (isCandleChartEnabled) "Switch to line chart" else "Switch to candle chart"
-        }
-    }
+    val candleToggleLabel = Localization.string(
+        when (fromScreen) {
+            ScreenLabel.NftDetail -> {
+                if (isCandleChartEnabled) "Switch to Fiat chart" else "Switch to NFT chart"
+            }
+            ScreenLabel.TreasuryDetail -> {
+                if (isCandleChartEnabled) "Switch to Fiat chart" else "Switch to native chart"
+            }
+            else -> {
+                if (isCandleChartEnabled) "Switch to line chart" else "Switch to candle chart"
+            }
+        },
+    )
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -160,10 +163,14 @@ fun ChartTypeButtonsView(
                         if (talkBackEnabled) {
                             Modifier.clearAndSetSemantics {
                                 contentDescription =
-                                    "Chart type selector. Swipe up or down to change chart type."
+                                    Localization.string("Chart type selector. Swipe up or down to change chart type.")
                                 val selectedType = selectableChartTypes.getOrNull(voiceOverChartTypeIndex)?.type
-                                stateDescription =
-                                    "Chart type ${voiceOverChartTypeIndex + 1} of ${selectableChartTypes.size}, ${chartTypeTitles[selectedType] ?: ""}."
+                                stateDescription = Localization.format(
+                                    "Chart type %@ of %@, %@.",
+                                    (voiceOverChartTypeIndex + 1).toString(),
+                                    selectableChartTypes.size.toString(),
+                                    Localization.string(chartTypeTitles[selectedType] ?: ""),
+                                )
                                 progressBarRangeInfo = ProgressBarRangeInfo(
                                     current = voiceOverChartTypeIndex.toFloat(),
                                     range = 0f..selectableChartTypes.lastIndex.toFloat().coerceAtLeast(0f),
@@ -260,7 +267,7 @@ private fun ChartButton(
     val alpha = if (isDisabled) 0.35f else 1f
 
     Text(
-        text = title,
+        text = Localization.string(title),
         style = satoshiMedium(16),
         color = textColor,
         modifier = Modifier

@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Home
+import com.cryptium.coincurrently.core.localization.AppLanguageState
 import android.util.Log
 import android.app.Application
 import android.content.Context
@@ -114,6 +115,11 @@ fun HomeScreen(
 
     SideEffect {
         Log.i("GlobalMarket", "HomeScreen composed (SideEffect)")
+    }
+
+    val appLanguage = AppLanguageState.preference
+    LaunchedEffect(appLanguage) {
+        viewModel.refreshLocalizedCopy()
     }
 
     LaunchedEffect(Unit) {

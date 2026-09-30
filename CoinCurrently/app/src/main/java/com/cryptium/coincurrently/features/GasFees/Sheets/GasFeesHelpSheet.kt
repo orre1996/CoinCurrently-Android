@@ -1,4 +1,6 @@
 package com.cryptium.coincurrently.features.GasFees.Sheets
+
+import com.cryptium.coincurrently.core.localization.Localization
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -179,7 +181,7 @@ private fun LevelSection(
 
             Text(
                 buildAnnotatedString {
-                    append(explanation.title)
+                    append(Localization.string(explanation.title))
 
                     withStyle(
                         style = SpanStyle(
@@ -189,7 +191,7 @@ private fun LevelSection(
                             color = MaterialTheme.colors.onSurfaceDimmer
                         )
                     ) {
-                        append(" ${explanation.percent}")
+                        append(" ${Localization.string(explanation.percent)}")
                     }
                 },
                 style = satoshiBold(16),
@@ -205,7 +207,7 @@ private fun LevelSection(
         }
 
         Text(
-            explanation.body,
+            Localization.string(explanation.body),
             style = satoshiRegular(16),
             color = MaterialTheme.colors.onSurfaceDim,
         )
@@ -213,14 +215,16 @@ private fun LevelSection(
 }
 
 private fun titlePercentAccessibilityLabel(title: String, percent: String): String {
-    return "${title.lowercase()}, ${accessiblePercent(percent)}"
+    return Localization.format("%@, %@", Localization.string(title), accessiblePercent(percent))
 }
 
 private fun accessiblePercent(percent: String): String {
-    return percent
-        .replace("(", "")
-        .replace(")", "")
-        .replace("-", " to ")
-        .replace("+", " or more ")
-        .trim()
+    return when (percent) {
+        " (0-3 Gwei)" -> Localization.string("0 to 3 Gwei")
+        " (3.1-10 Gwei)" -> Localization.string("3.1 to 10 Gwei")
+        " (10.1-30 Gwei)" -> Localization.string("10.1 to 30 Gwei")
+        " (30.1-80 Gwei)" -> Localization.string("30.1 to 80 Gwei")
+        " (80+ Gwei)" -> Localization.string("80 or more Gwei")
+        else -> percent
+    }
 }

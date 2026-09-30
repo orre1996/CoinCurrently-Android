@@ -15,6 +15,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.theme.primaryBackgroundNoRipple
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.features.Home.Views.getFearGreedColorCompose
 
 @Composable
@@ -27,8 +28,8 @@ fun FearGreedHistoricView(
 ) {
     val isHorizontal = AccessibilityLayout.isHorizontal
     val statusSeparator = if (isHorizontal) " " else "\n"
-    val longestStatusPlaceholder = longestStatus?.replace(" ", statusSeparator) ?: ""
-    val statusText = status?.replace(" ", statusSeparator) ?: "000000"
+    val longestStatusPlaceholder = wrappedStatus(longestStatus, statusSeparator)
+    val statusText = if (status == null) "000000" else wrappedStatus(status, statusSeparator)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -44,14 +45,16 @@ fun FearGreedHistoricView(
             ),
     ) {
         MinimumTextSize(
-            text = "Last Month",
+            text = Localization.string("Last month"),
+            maxLines = 2,
             font = satoshiBold(12),
             alignment = Alignment.TopCenter,
             modifier = Modifier
                 .padding(bottom = 4.dp),
         ) {
             Text(
-                text = timeframe,
+                text = Localization.string(timeframe),
+                maxLines = 2,
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceDimmer,
                 textAlign = TextAlign.Center,
@@ -84,4 +87,9 @@ fun FearGreedHistoricView(
             )
         }
     }
+}
+
+private fun wrappedStatus(status: String?, separator: String): String {
+    if (status.isNullOrEmpty()) return ""
+    return Localization.string(status).replace(" ", separator)
 }

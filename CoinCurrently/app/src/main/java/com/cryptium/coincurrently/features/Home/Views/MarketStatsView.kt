@@ -44,6 +44,7 @@ import com.cryptium.coincurrently.sharedui.theme.surfaceContainerHighest
 import com.cryptium.coincurrently.sharedui.charts.getFormattedCurrencyString
 import com.cryptium.coincurrently.core.extensions.changePercentDecimalPoints
 import com.cryptium.coincurrently.core.extensions.directionAccessible
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.numberAccessible
@@ -137,9 +138,13 @@ private fun MarketCapView(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = modifier
             .semantics(mergeDescendants = true) {
-                contentDescription =
-                    "The global market cap is $marketCapAccessible, - 24 hour price change: $changeDirection $accessibleChange percent"
-                onClick(label = "view more global market stats", action = {
+                contentDescription = Localization.format(
+                    "The global market cap is %@, - 24 hour price change: %@ %@ percent",
+                    marketCapAccessible ?: "",
+                    if (changeDirection.isEmpty()) "" else Localization.string(changeDirection),
+                    accessibleChange,
+                )
+                onClick(label = Localization.string("Double tap for more global market stats"), action = {
                     navigateToGlobalMarket.invoke()
                     true
                 })
@@ -150,7 +155,7 @@ private fun MarketCapView(
             .padding(16.dp)
     ) {
         Text(
-            text = "Market Cap",
+            text = Localization.string("Market Cap"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceContainerDim,
             modifier = Modifier.semantics { invisibleToUser() },
@@ -187,9 +192,11 @@ private fun GasFeesView(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = modifier
             .semantics(mergeDescendants = true) {
-                contentDescription =
-                    "The current average ethereum gas fee is $accessibleGasFee Gwei."
-                onClick(label = "view more gas fee stats", action = {
+                contentDescription = Localization.format(
+                    "The current average ethereum gas fee is %@ Gwei.",
+                    accessibleGasFee,
+                )
+                onClick(label = Localization.string("Double tap for more gas fee stats"), action = {
                     navigateToGasFees.invoke()
                     true
                 })
@@ -200,7 +207,7 @@ private fun GasFeesView(
             .padding(16.dp)
     ) {
         Text(
-            text = "ETH Gas Fee",
+            text = Localization.string("ETH Gas Fee"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceContainerDim,
             modifier = Modifier.semantics { invisibleToUser() },
@@ -216,7 +223,7 @@ private fun GasFeesView(
         )
 
         Text(
-            text = "Gwei",
+            text = Localization.string("Gwei"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceContainerDim,
             modifier = Modifier.semantics { invisibleToUser() },
@@ -237,9 +244,12 @@ private fun FearGreedView(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = modifier
             .semantics(mergeDescendants = true) {
-                contentDescription =
-                    "The current fear and greed index is ${firstValue ?: ""}. $classification"
-                onClick(label = "view more fear and greed stats", action = {
+                contentDescription = Localization.format(
+                    "The current fear and greed index is %@. %@",
+                    firstValue ?: "",
+                    if (classification.isEmpty()) "" else Localization.string(classification),
+                )
+                onClick(label = Localization.string("Double tap for more fear and greed stats"), action = {
                     navigateToFearGreed.invoke()
                     true
                 })
@@ -250,7 +260,7 @@ private fun FearGreedView(
             .padding(16.dp)
     ) {
         Text(
-            text = "Fear & Greed",
+            text = Localization.string("Fear & Greed"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceContainerDim,
             modifier = Modifier.semantics { invisibleToUser() },

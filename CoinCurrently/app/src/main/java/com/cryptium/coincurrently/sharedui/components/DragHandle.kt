@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.sharedui.components
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.modifiers.imageSize
 
 import androidx.compose.foundation.Image
@@ -93,9 +94,10 @@ fun DragHandle(
     closeAction: () -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
-    val resolvedAccessibilityTitle = accessibilityTitle ?: title
+    val localizedTitle = Localization.string(title)
+    val resolvedAccessibilityTitle = Localization.string(accessibilityTitle ?: title)
     val accessibilityLabel = if (icon != null) {
-        "$resolvedAccessibilityTitle. info"
+        Localization.format("%@. info", resolvedAccessibilityTitle)
     } else {
         resolvedAccessibilityTitle
     }
@@ -137,7 +139,7 @@ fun DragHandle(
             }
 
             Text(
-                text = title,
+                text = localizedTitle,
                 style = satoshiBold(22),
                 color = MaterialTheme.colors.onSurfaceDim,
                 modifier = Modifier

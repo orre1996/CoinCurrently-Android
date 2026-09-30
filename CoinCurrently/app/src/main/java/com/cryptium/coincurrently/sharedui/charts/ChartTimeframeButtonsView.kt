@@ -44,6 +44,7 @@ import com.cryptium.coincurrently.core.extensions.poppinsSemibold
 import com.cryptium.coincurrently.sharedui.theme.primaryTextColor
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerHigh
 import com.cryptium.coincurrently.sharedui.theme.transparent
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.core.analytics.TimeframeChanged
@@ -98,11 +99,15 @@ fun ChartTimeframeButtonsView(
             .then(
                 if (talkBackEnabled) {
                     Modifier.clearAndSetSemantics {
-                        contentDescription = "Chart timeframe. Swipe up or down to change timeframe."
+                        contentDescription = "${Localization.string("Chart timeframe")}. ${Localization.string("Swipe up or down to change timeframe.")}"
                         traversalIndex = CHART_TIMEFRAME_TALKBACK_TRAVERSAL_INDEX
                         val selectedButton = buttons.getOrNull(voiceOverTimeframeIndex)
-                        stateDescription =
-                            "Timeframe ${voiceOverTimeframeIndex + 1} of ${buttons.size}. ${selectedButton?.timeChart?.accessibilityText ?: ""}."
+                        stateDescription = Localization.format(
+                            "Timeframe %@ of %@, %@.",
+                            (voiceOverTimeframeIndex + 1).toString(),
+                            buttons.size.toString(),
+                            Localization.string(selectedButton?.timeChart?.accessibilityText ?: ""),
+                        )
                         progressBarRangeInfo = ProgressBarRangeInfo(
                             current = voiceOverTimeframeIndex.toFloat(),
                             range = 0f..buttons.lastIndex.toFloat().coerceAtLeast(0f),
@@ -240,7 +245,7 @@ fun TimeChartButton(
             )
     ) {
         Text(
-            text = chartButton.time,
+            text = Localization.string(chartButton.time),
             style = poppinsSemibold(14),
             color = MaterialTheme.colors.primaryTextColor,
             textAlign = TextAlign.Center,

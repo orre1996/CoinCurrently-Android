@@ -51,6 +51,7 @@ import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiRegular
 import com.cryptium.coincurrently.sharedui.components.DragHandle
 import com.cryptium.coincurrently.sharedui.charts.hideFromTalkBackWhenEnabled
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.features.FearGreed.FearGreedLevelExplanation
 import com.cryptium.coincurrently.features.FearGreed.FearGreedPercentExplanation
 import com.cryptium.coincurrently.sharedui.sheets.ModalBottomSheetSystemNavigationBar
@@ -190,7 +191,7 @@ fun FearGreedHelpSheet(
                 )
 
                 Text(
-                    text = "Index Factors",
+                    text = Localization.string("Index Factors"),
                     style = satoshiBold(22),
                     color = MaterialTheme.colors.onSurfaceDim,
                     modifier = Modifier.semantics { heading() },
@@ -218,7 +219,7 @@ private fun LevelSection(
         modifier = Modifier
             .padding(bottom = 8.dp)
             .semantics(mergeDescendants = true) {
-                contentDescription = "$titleLabel. ${explanation.body}"
+                contentDescription = "$titleLabel. ${Localization.string(explanation.body)}"
             },
     ) {
         Row(
@@ -235,7 +236,7 @@ private fun LevelSection(
 
             Text(
                 buildAnnotatedString {
-                    append(explanation.title)
+                    append(Localization.string(explanation.title))
 
                     withStyle(
                         style = SpanStyle(
@@ -245,7 +246,7 @@ private fun LevelSection(
                             color = MaterialTheme.colors.onSurfaceDimmer
                         )
                     ) {
-                        append(explanation.percent)
+                        append(Localization.string(explanation.percent))
                     }
                 },
                 style = satoshiBold(16),
@@ -255,7 +256,7 @@ private fun LevelSection(
         }
 
         Text(
-            explanation.body,
+            Localization.string(explanation.body),
             style = satoshiRegular(16),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() },
@@ -277,12 +278,12 @@ private fun HelpSection(
         modifier = Modifier
             .padding(bottom = 8.dp)
             .semantics(mergeDescendants = true) {
-                contentDescription = "$titleLabel. ${explanation.body}"
+                contentDescription = "$titleLabel. ${Localization.string(explanation.body)}"
             },
     ) {
         Text(
             buildAnnotatedString {
-                append(explanation.title)
+                append(Localization.string(explanation.title))
 
                 withStyle(
                     style = SpanStyle(
@@ -292,7 +293,7 @@ private fun HelpSection(
                         color = MaterialTheme.colors.onSurfaceDimmer
                     )
                 ) {
-                    append(explanation.percent)
+                    append(Localization.string(explanation.percent))
                 }
             },
             style = satoshiBold(16),
@@ -301,7 +302,7 @@ private fun HelpSection(
         )
 
         Text(
-            explanation.body,
+            Localization.string(explanation.body),
             style = satoshiRegular(16),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() },
@@ -310,13 +311,20 @@ private fun HelpSection(
 }
 
 private fun titlePercentAccessibilityLabel(title: String, percent: String): String {
-    return " ${title.lowercase()}, ${accessiblePercent(percent)}"
+    return Localization.format("%@, %@", Localization.string(title), accessiblePercent(percent))
 }
 
 private fun accessiblePercent(percent: String): String {
-    return percent
-        .replace("(", "")
-        .replace(")", "")
-        .replace("-", " to ")
-        .trim()
+    return when (percent) {
+        " (80-100)" -> Localization.string("80 to 100")
+        " (60-79)" -> Localization.string("60 to 79")
+        " (40-59)" -> Localization.string("40 to 59")
+        " (20-39)" -> Localization.string("20 to 39")
+        " (0-19)" -> Localization.string("0 to 19")
+        " (25%)" -> Localization.string("25 percent")
+        " (15%)" -> Localization.string("15 percent")
+        " (15%) - Currently paused" -> Localization.string("15 percent, currently paused")
+        " (10%)" -> Localization.string("10 percent")
+        else -> percent
+    }
 }

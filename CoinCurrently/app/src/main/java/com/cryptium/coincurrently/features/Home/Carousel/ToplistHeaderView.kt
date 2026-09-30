@@ -19,6 +19,7 @@ import com.cryptium.coincurrently.sharedui.modifiers.scaledImageSize
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 
 @Composable
@@ -46,14 +47,14 @@ fun ToplistHeaderView(
             font = satoshiBold(16),
         ) {
             Text(
-                text = "#",
+                text = Localization.string("#"),
                 style = satoshiBold(14),
                 color = MaterialTheme.colors.onSurfaceDim
             )
         }
 
         Text(
-            text = if (isHorizontal) "Market Cap" else "Market Cap / Price",
+            text = Localization.string(if (isHorizontal) "Market Cap" else "Market Cap / Price"),
             style = satoshiBold(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier
@@ -64,7 +65,7 @@ fun ToplistHeaderView(
 
         if (isHorizontal) {
             Text(
-                text = "Price",
+                text = Localization.string("Price"),
                 style = satoshiBold(14),
                 color = MaterialTheme.colors.onSurfaceDim,
                 modifier = Modifier
@@ -81,7 +82,7 @@ fun ToplistHeaderView(
             alignment = Alignment.CenterEnd,
         ) {
             Text(
-                text = "${selectedChangeOption.rawValue} %",
+                text = "${Localization.string(selectedChangeOption.rawValue)} %",
                 style = satoshiBold(14),
                 color = MaterialTheme.colors.onSurfaceDim
             )

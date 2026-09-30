@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.getNavigationBarHeight
 import com.cryptium.coincurrently.core.extensions.poppinsSemibold
@@ -97,7 +98,7 @@ fun LoadingScreen(
                             .alpha(spinnerAlpha)
                     )
                 } else if (isLocked) {
-                    Text("Unlock app",
+                    Text(Localization.string("Unlock app"),
                         style = poppinsSemibold(16),
                         color = MaterialTheme.colors.primary,
                         modifier = Modifier

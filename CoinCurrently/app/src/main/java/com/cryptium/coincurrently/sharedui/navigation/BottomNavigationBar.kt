@@ -61,6 +61,7 @@ import com.cryptium.coincurrently.sharedui.theme.tabbarAccent
 import com.cryptium.coincurrently.core.extensions.ignoreHorizontalParentPadding
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.app.NavigationViewModel
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.app.NavigationScreens
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
@@ -184,9 +185,10 @@ fun BottomNavigationBar(
                                     }
                                 }
                         ) {
+                            val title = Localization.string(item.title)
                             Image(
                                 painter = painterResource(item.icon),
-                                contentDescription = item.title,
+                                contentDescription = title,
                                 colorFilter = ColorFilter.tint(
                                     if (isSelected) {
                                        MaterialTheme.colors.onSurface
@@ -198,7 +200,7 @@ fun BottomNavigationBar(
                             )
 
                             Text(
-                                text = item.title,
+                                text = title,
                                 style = satoshiMedium(14),
                                 color = if (isSelected) {
                                     MaterialTheme.colors.onSurface

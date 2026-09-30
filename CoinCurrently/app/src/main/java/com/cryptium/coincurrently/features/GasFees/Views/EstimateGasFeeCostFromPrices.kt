@@ -12,6 +12,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.AdaptiveStack
 import com.cryptium.coincurrently.sharedui.components.Separator
@@ -111,7 +112,7 @@ private fun GasFeeCostView(
             }
     ) {
         Text(
-            text = title,
+            text = Localization.string(title),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier
@@ -120,7 +121,7 @@ private fun GasFeeCostView(
         )
 
         Text(
-            text = "$formattedValue Gwei",
+            text = "$formattedValue ${Localization.string("Gwei")}",
             style = satoshiBold(16),
             color = MaterialTheme.colors.onSurface,
             modifier = Modifier
@@ -129,7 +130,7 @@ private fun GasFeeCostView(
         )
 
         Text(
-            text = currentStatus,
+            text = Localization.string(currentStatus),
             style = satoshiBold(12),
             color = getGasIndexColor(indexValue = value.toString()),
             modifier = Modifier

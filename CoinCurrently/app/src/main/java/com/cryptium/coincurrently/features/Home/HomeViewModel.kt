@@ -31,6 +31,7 @@ import com.cryptium.coincurrently.features.Home.NewCoins.NewCoinsRepository
 import com.cryptium.coincurrently.features.Home.Trending.TrendingRepository
 import com.cryptium.coincurrently.features.Home.WinnersLosers.WinnersLosersRepository
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.config.RemoteConfigKeys
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
@@ -79,6 +80,7 @@ interface HomeViewModel {
 
     fun initObservers(lifecycleOwner: LifecycleOwner)
     fun loadPremiumOfferProducts(context: Context)
+    fun refreshLocalizedCopy()
     fun getList(filter: CarouselFilter?): List<Toplist>?
     suspend fun downloadData()
     fun seeAllPressed()
@@ -152,6 +154,10 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
     private var storeKitObserversInitialized: Boolean = false
     private var cachedPlayProducts: List<ProductDetails>? = null
     private var cachedStoreProducts: List<StoreProduct>? = null
+
+    override fun refreshLocalizedCopy() {
+        refreshPremiumOffer()
+    }
 
     override fun loadPremiumOfferProducts(context: Context) {
         BillingManager.setUpBillingClient(context) { products, revenueCatProducts ->
@@ -273,7 +279,7 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
             StorageManager.set(StorageKeys.HOME_SHOW_FREE_TRIAL, false)
             StorageManager.set(StorageKeys.HOME_NEXT_FREE_TRIAL_DATE, Date())
             showFreeTrial = false
-        } else if (title == "Limited offer") {
+        } else if (title == "Limited Time Offer!") {
             StorageManager.set(StorageKeys.DID_CLOSE_PROMOTION, true)
             didClosePromotions = true
         } else {
@@ -466,7 +472,7 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
             didCloseWelcome = true
             StorageManager.set(StorageKeys.DID_CLOSE_WELCOME, true)
 
-            if (promotionTitle == "Welcome offer") {
+            if (promotionTitle == "Welcome Offer!") {
                 promotionTitle = null
                 promotionMessage = null
                 promotionMessageAccessible = null
@@ -482,7 +488,13 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
         val minutes = (totalSeconds / 60) % 60
         val seconds = totalSeconds % 60
 
-        offerTimeLeft = "Expires in ${days}d ${hours}h ${minutes}m ${seconds}s"
+        offerTimeLeft = Localization.format(
+            "Expires in %@d %@h %@m %@s",
+            days.toString(),
+            hours.toString(),
+            minutes.toString(),
+            seconds.toString(),
+        )
     }
 
     private suspend fun setPremiumOffer(
@@ -502,23 +514,23 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
             !didClosePromotions && showPromotionalOffer && offerProduct != null -> {
                 val price = offerProduct.getFormattedPrice()
                 val priceAccessible = offerProduct.getAccessiblePrice()
-                promotionTitle = "Limited offer"
-                promotionMessage = "Get 1 year of CoinCurrently Pro for only $price."
-                promotionMessageAccessible = "Get 1 year of CoinCurrently Pro for only $priceAccessible."
+                promotionTitle = "Limited Time Offer!"
+                promotionMessage = proOfferMessage(price)
+                promotionMessageAccessible = proOfferMessage(priceAccessible)
             }
 
             !didCloseWelcome && welcomeProduct != null && welcomeOfferExpiry != null && welcomeOfferExpiry.after(currentDate) -> {
                 val price = welcomeProduct.getFormattedPrice()
                 val priceAccessible = welcomeProduct.getAccessiblePrice()
-                promotionTitle = "Welcome offer"
-                promotionMessage = "Get 1 year of CoinCurrently Pro for only $price."
-                promotionMessageAccessible = "Get 1 year of CoinCurrently Pro for only $priceAccessible."
+                promotionTitle = "Welcome Offer!"
+                promotionMessage = proOfferMessage(price)
+                promotionMessageAccessible = proOfferMessage(priceAccessible)
             }
 
             showFreeTrial -> {
                 promotionTitle = "Free trial"
-                promotionMessage = "Try CoinCurrently Pro for free"
-                promotionMessageAccessible = "Try CoinCurrently Pro for free"
+                promotionMessage = Localization.string("Try CoinCurrently Pro for free")
+                promotionMessageAccessible = Localization.string("Try CoinCurrently Pro for free")
             }
         }
     }
@@ -539,24 +551,33 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
         when {
             !didClosePromotions && showPromotionalOffer && offerProduct != null -> {
                 val (price, priceAccessible) = offerProduct.getPromoPrices()
-                promotionTitle = "Limited offer"
-                promotionMessage = "Get 1 year of CoinCurrently Pro for only $price."
-                promotionMessageAccessible = "Get 1 year of CoinCurrently Pro for only $priceAccessible."
+                promotionTitle = "Limited Time Offer!"
+                promotionMessage = proOfferMessage(price)
+                promotionMessageAccessible = proOfferMessage(priceAccessible)
             }
 
             !didCloseWelcome && welcomeProduct != null && welcomeOfferExpiry != null && welcomeOfferExpiry.after(currentDate) -> {
                 val (price, priceAccessible) = welcomeProduct.getPromoPrices()
-                promotionTitle = "Welcome offer"
-                promotionMessage = "Get 1 year of CoinCurrently Pro for only $price."
-                promotionMessageAccessible = "Get 1 year of CoinCurrently Pro for only $priceAccessible."
+                promotionTitle = "Welcome Offer!"
+                promotionMessage = proOfferMessage(price)
+                promotionMessageAccessible = proOfferMessage(priceAccessible)
             }
 
             showFreeTrial -> {
                 promotionTitle = "Free trial"
-                promotionMessage = "Try CoinCurrently Pro for free"
-                promotionMessageAccessible = "Try CoinCurrently Pro for free"
+                promotionMessage = Localization.string("Try CoinCurrently Pro for free")
+                promotionMessageAccessible = Localization.string("Try CoinCurrently Pro for free")
             }
         }
+    }
+
+    private fun proOfferMessage(price: String): String {
+        return Localization.format(
+            "Get %@ %@ of CoinCurrently Pro for only %@!",
+            "1",
+            Localization.string("year"),
+            price,
+        )
     }
 
     private fun StoreProduct.playProductId(): String? {

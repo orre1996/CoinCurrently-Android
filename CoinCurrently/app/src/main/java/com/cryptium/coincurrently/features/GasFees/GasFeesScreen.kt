@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.GasFees
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.modifiers.imageSize
 
 import androidx.activity.compose.BackHandler
@@ -180,8 +181,8 @@ fun GasFeesScreen(
         modifier = modifier
     ) {
         CustomTopAppBar(
-            title = "ETH Gas Fee",
-            accessibilityTitle = "Ethereum gas fee",
+            title = Localization.string("ETH Gas Fee"),
+            accessibilityTitle = Localization.string("Ethereum gas fee"),
             navigateBack = {
                 navigationViewModel.navigateBack()
             },
@@ -259,7 +260,7 @@ fun GasFeesScreen(
                                 prices = viewModel.prices.value,
                                 timeChart = TimeCharts.aWeek,
                                 trailingPadding = biggestValue.value.width,
-                                priceFormatter = { "${it.numberAccessible(maxPlaces = 2)} Gwei" },
+                                priceFormatter = { "${it.numberAccessible(maxPlaces = 2)} ${Localization.string("Gwei")}" },
                             )
                     ) {
                         Box(modifier = Modifier.hideFromTalkBackWhenEnabled()) {
@@ -318,7 +319,7 @@ fun GasFeesScreen(
                             prices = viewModel.prices.value,
                             timeChart = TimeCharts.aWeek,
                             trailingPadding = biggestValue.value.width,
-                            priceFormatter = { "${it.numberAccessible(maxPlaces = 2)} Gwei" },
+                            priceFormatter = { "${it.numberAccessible(maxPlaces = 2)} ${Localization.string("Gwei")}" },
                         )
 
                         MultiTouchView(
@@ -400,7 +401,7 @@ private fun InfoButton(
     }) {
         Image(
             painter = painterResource(id = R.drawable.info),
-            contentDescription = "Help understand how ethereum gas fees work",
+            contentDescription = Localization.string("Help understand how ethereum gas fees work"),
             colorFilter = ColorFilter.tint(
                 MaterialTheme.colors.onSurface
             ),
@@ -451,7 +452,11 @@ private fun CurrentView(
                             Modifier.widthIn(min = equalCardWidth)
                         }
                     ).semantics(mergeDescendants = true) {
-                        contentDescription = "$currentValueAccessible. $currentStatus"
+                        contentDescription = Localization.format(
+                            "%@. %@",
+                            currentValueAccessible,
+                            Localization.string(currentStatus),
+                        )
                     },
                 )
             }
@@ -518,7 +523,7 @@ private fun GasFeesMeterHeader() {
             .hideFromTalkBackWhenEnabled()
     ) {
         Text(
-            "Low",
+            Localization.string("Low"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceContainerDimmer,
             modifier = Modifier.hideFromTalkBackWhenEnabled(),
@@ -527,7 +532,7 @@ private fun GasFeesMeterHeader() {
         Spacer(modifier = Modifier.weight(1f))
 
         Text(
-            "High",
+            Localization.string("High"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceContainerDimmer,
             modifier = Modifier.hideFromTalkBackWhenEnabled(),
@@ -551,7 +556,7 @@ private fun HistoricData(
             )
     ) {
         Text(
-            text = "Historical Data",
+            text = Localization.string("Historical Data"),
             style = satoshiBold(22),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { heading() },
@@ -591,7 +596,7 @@ private fun EstimateCostsView(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Estimated Cost",
+                text = Localization.string("Estimated Cost"),
                 style = satoshiBold(22),
                 color = MaterialTheme.colors.onSurfaceDim,
                 modifier = Modifier.semantics { heading() },
@@ -601,7 +606,7 @@ private fun EstimateCostsView(
 
             Image(
                 painter = painterResource(id = R.drawable.info),
-                contentDescription = "Estimated Cost info",
+                contentDescription = Localization.string("Estimated Cost info"),
                 colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceDimmer),
                 modifier = Modifier
                     .padding(12.dp)

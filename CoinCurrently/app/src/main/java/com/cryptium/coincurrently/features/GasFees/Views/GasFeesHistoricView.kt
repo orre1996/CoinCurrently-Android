@@ -24,6 +24,7 @@ import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.roundTo
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 
 @Composable
@@ -50,12 +51,12 @@ fun GasFeesHistoricView(
         val roundedChange = indexValue?.toDoubleOrNull()?.roundTo(3) ?: 0.0
 
         MinimumTextSize(
-            text = "Current Average",
+            text = Localization.string("Current Average"),
             font = satoshiBold(12),
             alignment = Alignment.TopCenter
         ) {
             Text(
-                text = timeframe,
+                text = Localization.string(timeframe),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceDimmer,
                 modifier = Modifier
@@ -76,12 +77,12 @@ fun GasFeesHistoricView(
         )
 
         MinimumTextSize(
-            text = "Very High",
+            text = Localization.string("Very High"),
             font = satoshiBold(12),
             alignment = Alignment.TopCenter
         ) {
             Text(
-                text = status ?: "000000",
+                    text = status?.let { Localization.string(it) } ?: "000000",
                 style = satoshiBold(12),
                 color = getGasIndexColor(indexValue ?: "0"),
                 modifier = Modifier

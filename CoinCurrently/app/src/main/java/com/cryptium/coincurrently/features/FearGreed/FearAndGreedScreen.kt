@@ -1,5 +1,6 @@
 package com.cryptium.coincurrently.features.FearGreed
 import androidx.activity.compose.BackHandler
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -130,7 +131,7 @@ fun FearAndGreedScreen(
         modifier = modifier
     ) {
         CustomTopAppBar(
-            "Fear & Greed",
+            Localization.string("Fear & Greed"),
             navigateBack = {
                 navigationViewModel.navigateBack()
             },
@@ -333,7 +334,7 @@ private fun InfoButton(
     }) {
         Image(
             painter = painterResource(id = R.drawable.info),
-            contentDescription = "Help understand the fear and greed index",
+            contentDescription = Localization.string("Help understand the fear and greed index"),
             colorFilter = ColorFilter.tint(
                 MaterialTheme.colors.onSurface
             ),
@@ -395,13 +396,21 @@ private fun HistoricView(
                         Modifier
                             .width(equalCardWidth)
                             .clearAndSetSemantics {
-                                contentDescription = "$currentValueAccessible. $currentStatus"
+                                contentDescription = Localization.format(
+                                    "%@. %@",
+                                    currentValueAccessible,
+                                    Localization.string(currentStatus),
+                                )
                             }
                     } else {
                         Modifier
                             .widthIn(min = equalCardWidth)
                             .clearAndSetSemantics {
-                                contentDescription = "$currentValueAccessible. $currentStatus"
+                                contentDescription = Localization.format(
+                                    "%@. %@",
+                                    currentValueAccessible,
+                                    Localization.string(currentStatus),
+                                )
                             }
                     },
                 )
@@ -459,7 +468,7 @@ private fun FearGreedMeterHeader() {
             .hideFromTalkBackWhenEnabled()
     ) {
         Text(
-            "Fear",
+            Localization.string("Fear"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceContainerDimmer,
             modifier = Modifier.hideFromTalkBackWhenEnabled(),
@@ -468,7 +477,7 @@ private fun FearGreedMeterHeader() {
         Spacer(modifier = Modifier.weight(1f))
 
         Text(
-            "Greed",
+            Localization.string("Greed"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceContainerDimmer,
             modifier = Modifier.hideFromTalkBackWhenEnabled(),
@@ -481,9 +490,13 @@ private fun getHistoricTextAccessible(
     value: String,
     timeframe: String,
 ): String {
-    return if (index == 0) {
-        "The fear and greed index is currently $value out of 100"
-    } else {
-        "The fear and greed index was $value out of 100 $timeframe"
+    if (index == 0) {
+        return Localization.format("The fear and greed index is currently %@ out of 100", value)
     }
+    val localizedTimeframe = if (timeframe.isEmpty()) "" else Localization.string(timeframe)
+    return Localization.format(
+        "The fear and greed index was %@ out of 100 %@",
+        value,
+        localizedTimeframe,
+    )
 }

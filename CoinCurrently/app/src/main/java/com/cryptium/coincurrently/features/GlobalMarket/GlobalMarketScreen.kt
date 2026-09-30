@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.GlobalMarket
+import com.cryptium.coincurrently.core.localization.Localization
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.compose.BackHandler
@@ -128,7 +129,7 @@ fun GlobalMarketScreen(
         modifier = modifier
     ) {
         CustomTopAppBar(
-            title = "Market Cap",
+            title = Localization.string("Market Cap"),
             navigateBack = {
                 navigationViewModel.navigateBack()
             }
@@ -516,7 +517,11 @@ private fun InfoView(
     modifier: Modifier
 ) {
     val accessibleTitle = titleAccessible ?: title
-    val accessibilityLabel = valueAccessible?.let { "$accessibleTitle: $it" }
+    val localizedTitle = Localization.string(title)
+    val localizedAccessibleTitle = Localization.string(accessibleTitle)
+    val accessibilityLabel = valueAccessible?.let {
+        Localization.format("%@: %@", localizedAccessibleTitle, it)
+    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -532,7 +537,7 @@ private fun InfoView(
         )
     ) {
         Text(
-            title,
+            localizedTitle,
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceContainerDim,
             modifier = if (valueAccessible != null) {

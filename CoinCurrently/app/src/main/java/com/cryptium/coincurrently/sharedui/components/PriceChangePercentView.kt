@@ -10,6 +10,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.charts.TAB_PAGE_CONTENT_TALKBACK_TRAVERSAL_INDEX
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceContainerDim
@@ -38,11 +39,17 @@ fun PriceChangePercentView(
     val roundedChange = change?.roundTo(decimals)
     val safeChange = if (change?.isInfinite() == true) 0.0 else change
     val direction = safeChange?.directionAccessible ?: ""
+    val localizedDirection = if (direction.isEmpty()) "" else Localization.string(direction)
     val accessibleChange = safeChange?.changePercentAccessible ?: ""
     val accessibilityLabel = if (accessibleTimeframe.isEmpty()) {
-        "Price change: $direction $accessibleChange percent"
+        Localization.format("Price change: %@ %@ percent", localizedDirection, accessibleChange)
     } else {
-        "$accessibleTimeframe price change. $direction $accessibleChange percent"
+        Localization.format(
+            "%@ price change: %@ %@ percent",
+            Localization.string(accessibleTimeframe),
+            localizedDirection,
+            accessibleChange,
+        )
     }
 
     Row(

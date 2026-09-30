@@ -18,6 +18,7 @@ import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.extensions.changeColor
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.changeWithSymbol
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.getChangeInValue
@@ -44,10 +45,15 @@ fun GlobalmarketSummaryView(
     )
 
     val safeChange = if (changePercent?.isInfinite() == true) 0.0 else changePercent
-    val changeDirection = safeChange?.let { if (it >= 0) "up" else "down" } ?: ""
+    val changeDirection = safeChange?.let { if (it >= 0) "Up" else "Down" } ?: ""
     val accessibleChange = safeChange?.let { "%.2f".format(it) } ?: ""
-    val accessibilityLabel =
-        "Market cap: $marketCapAccessible. 24 hour price change: $changeDirection $accessibleChange percent"
+    val accessibilityLabel = Localization.format(
+        "Market Cap, market cap: %@. %@ market cap change: %@ %@ percent",
+        marketCapAccessible,
+        Localization.string(selectedTimeframe.accessibilityTimeframe),
+        if (changeDirection.isEmpty()) "" else Localization.string(changeDirection),
+        accessibleChange,
+    )
     val childModifier = if (talkBackEnabled) {
         Modifier.semantics { invisibleToUser() }
     } else {
@@ -70,7 +76,7 @@ fun GlobalmarketSummaryView(
             )
     ) {
         Text(
-            text = "Market Cap",
+            text = Localization.string("Market Cap"),
             style = satoshiBold(18),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = childModifier,
@@ -136,7 +142,7 @@ private fun ChangeView(
         )
 
         Text(
-            text = selectedTimeframe.timeAgoText,
+            text = Localization.string(selectedTimeframe.timeAgoText),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = childModifier,

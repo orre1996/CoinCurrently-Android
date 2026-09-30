@@ -18,6 +18,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.primaryBackgroundNoRipple
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 
 @Composable
 fun EstimateGasFeeCost(
@@ -102,11 +103,14 @@ private fun GasFeeCostView(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = modifier
             .clearAndSetSemantics {
-                contentDescription = "Estimated cost $title, ${accessibleValue ?: value ?: ""}"
+                contentDescription = Localization.format(
+                    "Estimated cost %@",
+                    Localization.string(title),
+                ) + ", ${accessibleValue ?: value ?: ""}"
             }
     ) {
         Text(
-            text = title,
+            text = Localization.string(title),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() },

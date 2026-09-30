@@ -29,6 +29,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.primary20
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.numberAccessible
 import com.cryptium.coincurrently.core.extensions.roundTo
 import com.cryptium.coincurrently.core.extensions.satoshiBold
@@ -43,10 +44,20 @@ fun MarketShareView(
 ) {
     val roundedChange = ((percent?.percentage ?: 0.0) * 100.0).roundTo(2)
     val symbol = percent?.symbol ?: ""
-    val accessibleSymbol = if (symbol.uppercase() == "OTHER") symbol else symbol.symbolAccessible
+    val displaySymbol = when {
+        percent == null -> "000"
+        symbol.uppercase() == "OTHER" -> Localization.string("Other")
+        else -> symbol.uppercase()
+    }
+    val accessibleSymbol = if (symbol.uppercase() == "OTHER") Localization.string("Other") else symbol.symbolAccessible
     val accessibleChange = roundedChange.numberAccessible(maxPlaces = 2)
-    val accessibilityLabel =
-        "Currency ${listIndex + 1} of $listCount. $accessibleSymbol. Market share: $accessibleChange percent"
+    val accessibilityLabel = Localization.format(
+        "Currency %@ of %@: %@. Market share: %@ percent",
+        (listIndex + 1).toString(),
+        listCount.toString(),
+        accessibleSymbol,
+        accessibleChange,
+    )
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -79,7 +90,7 @@ fun MarketShareView(
 
         Text(
             buildAnnotatedString {
-                append(percent?.symbol ?: "000")
+                append(displaySymbol)
 
                 withStyle(
                     style = SpanStyle(

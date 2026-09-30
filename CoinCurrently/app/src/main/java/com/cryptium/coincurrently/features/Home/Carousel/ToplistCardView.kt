@@ -47,6 +47,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.extensions.changePercentDecimalPoints
 import com.cryptium.coincurrently.core.extensions.directionAccessible
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.numberAccessible
 import com.cryptium.coincurrently.core.extensions.satoshiBold
@@ -77,12 +78,29 @@ fun ToplistCard(
     val safeChange = if (change?.isInfinite() == true) 0.0 else change
     val decimals = safeChange?.changePercentDecimalPoints ?: 2
     val accessibleChange = safeChange?.numberAccessible(maxPlaces = decimals) ?: ""
-    val accessibilityLabelText = buildString {
-        append("Currency ${listIndex + 1} of $listCount. ${coin?.name ?: ""}. ")
-        append("Price: ${coin?.current_price?.formatCurrency(threshold = FormattingThreshold.NONE, accessible = true) ?: ""}. ")
-        append("${selectedChangeOption.accessibilityTimeframe} price change: ${change?.directionAccessible ?: ""} $accessibleChange percent. ")
-        append("Market cap: ${(coin?.market_cap ?: 0.0).formatCurrency(accessible = true)}")
-    }
+    val direction = change?.directionAccessible ?: ""
+    val accessibilityLabelText = listOf(
+        Localization.format(
+            "Currency %@ of %@, %@",
+            (listIndex + 1).toString(),
+            listCount.toString(),
+            coin?.name ?: "",
+        ),
+        Localization.format(
+            "Price: %@",
+            coin?.current_price?.formatCurrency(threshold = FormattingThreshold.NONE, accessible = true) ?: "",
+        ),
+        Localization.format(
+            "%@ price change: %@ %@ percent",
+            Localization.string(selectedChangeOption.accessibilityTimeframe),
+            if (direction.isEmpty()) "" else Localization.string(direction),
+            accessibleChange,
+        ),
+        Localization.format(
+            "Market cap: %@",
+            (coin?.market_cap ?: 0.0).formatCurrency(accessible = true),
+        ),
+    ).joinToString(separator = " - ")
 
     Box {
         Row(
@@ -91,7 +109,12 @@ fun ToplistCard(
             modifier = Modifier
                 .semantics(mergeDescendants = true) {
                     contentDescription = accessibilityLabelText
-                    onClick(label = "view ${coin?.name ?: ""} details. Long press for more options", action = {
+                    onClick(
+                        label = Localization.format(
+                            "Double tap for %@ details. Long press for more options",
+                            coin?.name ?: "",
+                        ),
+                        action = {
                         navigateToCryptoDetail.invoke()
                         true
                     })
@@ -292,11 +315,13 @@ private fun CoinDropdownMenu(
             },
             text = {
                 Text(
-                    if (isFavorited) {
-                        "Remove from favorites"
-                    } else {
-                        "Add to favorites"
-                    },
+                    Localization.string(
+                        if (isFavorited) {
+                            "Remove from favorites"
+                        } else {
+                            "Add to favorites"
+                        },
+                    ),
                     style = satoshiBold(16)
                 )
             },

@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Home.Carousel
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.modifiers.imageSize
 
 import android.annotation.SuppressLint
@@ -89,9 +90,9 @@ fun ToplistCategoryView(
 
 @Composable
 private fun EmptyView() {
-    val title = "No favorites yet"
-    val subTitle = "Tap the star on any coin to add it here and track it easily."
-    val tip = "Tip. Long press any coin to add it to favorites."
+    val title = Localization.string("No favorites yet")
+    val subTitle = Localization.string("Tap the star on any coin to add it here and track it easily.")
+    val tip = Localization.string("Tip: Long press any coin to add it to favorites.")
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -126,7 +127,7 @@ private fun EmptyView() {
             )
 
             Text(
-                text = "Tip: Long press any coin to add it to favorites.",
+                text = tip,
                 style = satoshiRegular(14),
                 color = MaterialTheme.colors.onSurfaceDim
             )
@@ -189,11 +190,14 @@ private fun ShowAllButton(
     val localDensity = LocalDensity.current
 
     SecondaryButton(
-        text = "View All",
+        text = Localization.string("View All"),
         modifier = Modifier
             .padding(top = 16.dp)
             .semantics {
-                contentDescription = "View all ${carouselFilter.rawValue}"
+                contentDescription = Localization.format(
+                    "View all %@",
+                    Localization.string(carouselFilter.rawValue),
+                )
             }
             .onGloballyPositioned { coordinates ->
                 val height = with(localDensity) { coordinates.size.height.toDp() }

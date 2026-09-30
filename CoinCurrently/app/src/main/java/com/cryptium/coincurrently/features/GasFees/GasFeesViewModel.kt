@@ -12,6 +12,7 @@ import com.cryptium.coincurrently.core.extensions.DateFormat
 import com.cryptium.coincurrently.core.extensions.convertStringToDate
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.numberAccessible
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.charts.ChartHoverController
 import com.cryptium.coincurrently.features.GasFees.GasUnits
 import com.cryptium.coincurrently.features.GasFees.GasFeesRepository
@@ -140,8 +141,13 @@ class GasFeesViewModelImp: ViewModel(), GasFeesViewModel {
 
     override fun getCurrentTextAccessible(index: Int, value: String): String {
         val formattedValue = value.toDoubleOrNull()?.numberAccessible(maxPlaces = 3) ?: "0"
-        val timeframe = currentTimeFrames.getOrNull(index)?.second ?: ""
-        return "The $timeframe ethereum gas fee is $formattedValue Gwei"
+        val unit = Localization.string("Gwei")
+        val key = when (index) {
+            0 -> "The current low Ethereum gas fee is %@ %@"
+            1 -> "The current average Ethereum gas fee is %@ %@"
+            else -> "The current high Ethereum gas fee is %@ %@"
+        }
+        return Localization.format(key, formattedValue, unit)
     }
 
     override val normalizedPosition: Double get() {

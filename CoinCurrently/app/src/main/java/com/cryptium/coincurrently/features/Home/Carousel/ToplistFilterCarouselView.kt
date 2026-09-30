@@ -36,6 +36,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceContainer
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerHigh
 import com.cryptium.coincurrently.core.extensions.dpToPx
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.models.CarouselFilter
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -103,7 +104,7 @@ fun ToplistFilterCarouselView(
                 if (talkBackEnabled) {
                     Modifier.clearAndSetSemantics {
                         contentDescription =
-                            "Category filter. Swipe up or down to change category."
+                            Localization.string("Category filter. Swipe up or down to change category.")
                         stateDescription = selectedAccessibilityValue
                         progressBarRangeInfo = ProgressBarRangeInfo(
                             current = voiceOverFilterIndex.toFloat(),
@@ -130,7 +131,7 @@ fun ToplistFilterCarouselView(
                             },
                         )
                         if (!hasPro) {
-                            onClick(label = "Select this Pro feature", action = {
+                            onClick(label = Localization.string("Double tap to select this Pro feature."), action = {
                                 activateVoiceOverFilter(
                                     filters = filters,
                                     voiceOverFilterIndex = voiceOverFilterIndex,
@@ -154,7 +155,8 @@ fun ToplistFilterCarouselView(
         ) {
             itemsIndexed(filters) { index, filter ->
                 val isSelected = selectedFilter.matchesForSelection(filter)
-                val title = if (isSelected) selectedFilter.rawValue else filter.rawValue
+                val sourceTitle = if (isSelected) selectedFilter.rawValue else filter.rawValue
+                val title = Localization.string(sourceTitle)
                 val backgroundColor = if (isSelected) {
                     MaterialTheme.colors.primary
                 } else {
@@ -192,8 +194,12 @@ fun ToplistFilterCarouselView(
                                 Modifier
                             } else {
                                 Modifier.clearAndSetSemantics {
-                                    contentDescription =
-                                        "Category ${index + 1} of ${filters.size}, ${accessibilityTitle(title)}."
+                                    contentDescription = Localization.format(
+                                        "Category %@ of %@, %@.",
+                                        (index + 1).toString(),
+                                        filters.size.toString(),
+                                        accessibilityTitle(sourceTitle),
+                                    )
                                     if (isSelected) {
                                         selected = true
                                     }
@@ -221,11 +227,15 @@ private fun selectedAccessibilityValue(
     } else {
         filter.rawValue
     }
-    val category =
-        "Category ${voiceOverFilterIndex + 1} of ${filters.size}, ${accessibilityTitle(title)}."
+    val category = Localization.format(
+        "Category %@ of %@, %@.",
+        (voiceOverFilterIndex + 1).toString(),
+        filters.size.toString(),
+        accessibilityTitle(title),
+    )
 
     return if (requiresVoiceOverActivation(filter, hasPro)) {
-        "$category Double tap to select this Pro feature."
+        "$category ${Localization.string("Double tap to select this Pro feature.")}"
     } else {
         category
     }
@@ -244,8 +254,9 @@ private fun activateVoiceOverFilter(
 
 private fun accessibilityTitle(title: String): String {
     return if (title.contains("(Pro)")) {
-        title.replace(" (Pro)", ", Pro feature")
+        val base = title.replace(" (Pro)", "")
+        Localization.format("%@, Pro feature", Localization.string(base))
     } else {
-        title
+        Localization.string(title)
     }
 }
