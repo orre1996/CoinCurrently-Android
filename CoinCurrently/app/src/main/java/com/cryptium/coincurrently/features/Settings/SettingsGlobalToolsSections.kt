@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.BuildConfig
+import com.cryptium.coincurrently.core.localization.AppLanguagePreference
 import com.cryptium.coincurrently.core.models.AppColorScheme
 import com.cryptium.coincurrently.core.models.SelectedStartTab
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
@@ -16,12 +17,14 @@ import com.cryptium.coincurrently.sharedui.theme.primaryBackgroundNoRipple
 @Composable
 internal fun GlobalSection(
     selectedCurrency: CurrencySelectionModel,
+    selectedLanguage: AppLanguagePreference,
     selectedStartTab: SelectedStartTab,
     selectedTheme: AppColorScheme,
     isColorBlindEnabled: Boolean,
     webSocketEnabled: Boolean,
     currentSubscription: String?,
     selectNewCurrency: () -> Unit,
+    selectNewLanguage: () -> Unit,
     selectNewStartTab: () -> Unit,
     selectNewTheme: () -> Unit,
     toggleColorBlind: () -> Unit,
@@ -45,6 +48,16 @@ internal fun GlobalSection(
                 accessibilityText = "Currency. currently selected: ${selectedCurrency.currency}",
             ) {
                 selectNewCurrency.invoke()
+            }
+
+            Separator()
+
+            SettingsSimpleCell(
+                title = "Language",
+                subTitle = selectedLanguage.settingsSubtitle,
+                accessibilityText = "Language, currently selected ${selectedLanguage.settingsSubtitle}",
+            ) {
+                selectNewLanguage.invoke()
             }
 
             Separator()

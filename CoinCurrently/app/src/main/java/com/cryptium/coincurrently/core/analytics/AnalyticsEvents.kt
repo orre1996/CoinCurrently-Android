@@ -512,6 +512,17 @@ data class CurrencySelected(
     )
 }
 
+data class LanguageSelected(
+    val fromScreen: ScreenLabel,
+    val language: String,
+) : AnalyticsEvent {
+    override val eventName: String get() = "language_selected"
+    override fun toBundle(): Bundle = bundleParams(
+        "from_screen" to fromScreen.wire,
+        "language" to language,
+    )
+}
+
 data class SubscriptionOptionSelected(
     val fromScreen: ScreenLabel,
     val subscription: String,

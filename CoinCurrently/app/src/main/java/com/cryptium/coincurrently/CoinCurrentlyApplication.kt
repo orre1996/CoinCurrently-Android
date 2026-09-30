@@ -14,6 +14,7 @@ import java.io.File
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import com.cryptium.coincurrently.core.config.AppLocale
+import com.cryptium.coincurrently.core.localization.AppLanguageState
 import com.cryptium.coincurrently.core.persistence.UserPreferences
 
 /**
@@ -34,6 +35,7 @@ class CoinCurrentlyApplication : Application() {
         ComposePlatformCompat.warmUp(this)
         Locale.setDefault(AppLocale.enUsPosix)
         UserPreferences.init(this)
+        AppLanguageState.loadStored()
         FirebaseApp.initializeApp(this)
         AnalyticsManager.init(this)
 

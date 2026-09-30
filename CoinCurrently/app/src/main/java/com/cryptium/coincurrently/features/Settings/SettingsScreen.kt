@@ -96,6 +96,7 @@ import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.core.analytics.AppShareActivityCompleted
 import com.cryptium.coincurrently.core.analytics.BuyProAction
 import com.cryptium.coincurrently.core.analytics.CurrencySelected
+import com.cryptium.coincurrently.core.analytics.LanguageSelected
 import com.cryptium.coincurrently.core.analytics.DisabledColorBlindnessFilter
 import com.cryptium.coincurrently.core.analytics.DisabledFaceId
 import com.cryptium.coincurrently.core.analytics.DisabledWebSocket
@@ -123,7 +124,10 @@ import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
 import com.cryptium.coincurrently.core.purchases.BillingManager
 import java.util.Date
 import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
+import com.cryptium.coincurrently.core.localization.AppLanguagePreference
+import com.cryptium.coincurrently.core.localization.AppLanguageState
 import com.cryptium.coincurrently.features.Settings.CurrencySelector.CurrencyOptionsSheet
+import com.cryptium.coincurrently.features.Settings.Language.LanguageOptionsSheet
 import com.cryptium.coincurrently.features.Settings.Sheets.SettingsOptionsSheet
 import androidx.core.app.NotificationManagerCompat
 import kotlinx.coroutines.GlobalScope
@@ -155,6 +159,7 @@ fun SettingsScreen(
     val canCloseResetView = remember { mutableStateOf(true) }
 
     var selectedCurrency by remember { mutableStateOf(UserPreferences.getSelectedCurrency()) }
+    var selectedLanguage by remember { mutableStateOf<AppLanguagePreference>(AppLanguageState.preference) }
     var isBiometricEnabled by remember { mutableStateOf(UserPreferences.getIsBiometricAuthenticationEnabled()) }
     var selectedTheme by remember { mutableStateOf(navigationViewModel.appColorScheme) }
     var selectedStartTab by remember { mutableStateOf(UserPreferences.getStartTab()) }
@@ -170,6 +175,7 @@ fun SettingsScreen(
     }
 
     var isSelectingCurrency by remember { mutableStateOf(false) }
+    var isSelectingLanguage by remember { mutableStateOf(false) }
     var isSelectingTheme by remember { mutableStateOf(false) }
     var isSelectingStartTab by remember { mutableStateOf(false) }
 
@@ -262,6 +268,7 @@ fun SettingsScreen(
 
                 GlobalSection(
                     selectedCurrency = selectedCurrency,
+                    selectedLanguage = selectedLanguage,
                     selectedStartTab = selectedStartTab,
                     selectedTheme = selectedTheme,
                     isColorBlindEnabled = isColorBlindEnabled,
@@ -272,6 +279,12 @@ fun SettingsScreen(
                             SheetOpened(ScreenLabel.Settings, SheetLabel.CurrencySelector),
                         )
                         isSelectingCurrency = true
+                    },
+                    selectNewLanguage = {
+                        AnalyticsManager.log(
+                            SheetOpened(ScreenLabel.Settings, SheetLabel.Language),
+                        )
+                        isSelectingLanguage = true
                     },
                     selectNewStartTab = {
                         AnalyticsManager.log(
@@ -451,6 +464,23 @@ fun SettingsScreen(
                         }
                     }
                 }
+            )
+        }
+
+        if (isSelectingLanguage) {
+            LanguageOptionsSheet(
+                selectedOption = selectedLanguage,
+                newOptionSelected = {
+                    selectedLanguage = it
+                    AppLanguageState.select(it)
+                    AnalyticsManager.log(
+                        LanguageSelected(
+                            fromScreen = ScreenLabel.Settings,
+                            language = it.storageValue,
+                        ),
+                    )
+                },
+                close = { isSelectingLanguage = false },
             )
         }
 

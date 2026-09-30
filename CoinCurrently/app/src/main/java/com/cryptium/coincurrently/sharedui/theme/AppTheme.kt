@@ -12,6 +12,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
+import com.cryptium.coincurrently.core.localization.AppLanguageState
 import com.cryptium.coincurrently.sharedui.components.LocalAccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.accessibilityLayoutState
 import com.cryptium.coincurrently.sharedui.modifiers.DynamicTypeSizeCap
@@ -80,10 +83,16 @@ fun AppTheme(
             configuration = configuration,
         )
     }
+    val layoutDirection = if (AppLanguageState.preference.resolve().isRtl) {
+        LayoutDirection.Rtl
+    } else {
+        LayoutDirection.Ltr
+    }
     CompositionLocalProvider(
         LocalDensity provides adjustedDensity,
         LocalAccessibilityLayout provides accessibilityLayout,
         LocalColorBlindFilter provides colorBlindFilter,
+        LocalLayoutDirection provides layoutDirection,
     ) {
         MaterialTheme(
             colors = if (darkTheme) DarkColorPalette else LightColorPalette,

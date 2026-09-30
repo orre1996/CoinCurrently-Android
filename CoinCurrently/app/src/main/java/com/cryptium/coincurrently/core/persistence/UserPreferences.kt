@@ -167,6 +167,13 @@ object UserPreferences {
         prefs()?.edit()?.putBoolean("showChangesInPercent", inPercent)?.apply()
     }
 
+    fun getSelectedLanguage(): String? =
+        prefs()?.getString("selectedLanguage", null)
+
+    fun setSelectedLanguage(language: String) {
+        prefs()?.edit()?.putString("selectedLanguage", language)?.apply()
+    }
+
     fun setSelectedCurrency(currency: CurrencySelectionModel?) {
         prefs()?.edit()?.putString("savedCurrency", Gson().toJson(currency))?.apply()
     }
