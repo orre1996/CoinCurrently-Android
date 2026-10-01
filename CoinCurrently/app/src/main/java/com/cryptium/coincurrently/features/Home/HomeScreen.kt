@@ -146,12 +146,10 @@ fun HomeScreen(
     }
 
     var hasScrolledToDefaultHomeFilter by remember { mutableStateOf(false) }
-    LaunchedEffect(viewModel.hasResolvedDefaultHomeFilter) {
-        if (!viewModel.hasResolvedDefaultHomeFilter) return@LaunchedEffect
-        val index = CarouselFilter.homeFilters.indexOf(viewModel.selectedFilter).coerceAtLeast(0)
-        if (index > 0) {
-            listState.scrollToItem(index)
-            filterListState.scrollToItem(index, filterOffset)
+    LaunchedEffect(Unit) {
+        if (initialHomeFilterIndex > 0) {
+            listState.scrollToItem(initialHomeFilterIndex)
+            filterListState.scrollToItem(initialHomeFilterIndex, filterOffset)
         }
         hasScrolledToDefaultHomeFilter = true
     }
