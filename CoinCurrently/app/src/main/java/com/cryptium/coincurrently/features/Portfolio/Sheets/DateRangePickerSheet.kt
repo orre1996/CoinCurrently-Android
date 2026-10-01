@@ -65,7 +65,7 @@ fun DateRangePickerSheet(
 
     var selectedDate by remember { mutableStateOf(startDate) }
     val context = LocalContext.current
-    val maxBodyHeight = rememberModalSheetMaxBodyHeight(dragHandleTitle = "Select Date")
+    val maxBodyHeight = rememberModalSheetMaxBodyHeight(dragHandleTitle = "Select date")
 
     ModalBottomSheet(
         onDismissRequest = {
@@ -81,7 +81,7 @@ fun DateRangePickerSheet(
         contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
         dragHandle = {
             DragHandle(
-                title = "Select Date",
+                title = "Select date",
                 closeAction = {
                     coroutineScope.launch {
                         sheetState.hide()

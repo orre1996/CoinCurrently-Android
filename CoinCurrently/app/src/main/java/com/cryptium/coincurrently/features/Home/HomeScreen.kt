@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Home
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.localization.AppLanguageState
 import android.util.Log
 import android.app.Application
@@ -259,7 +260,7 @@ fun HomeScreen(
             }
         } else {
             if (!doubleBackToExitPressedOnce) {
-                Toast.makeText(context, "Press back again to exit the app", Toast.LENGTH_SHORT)
+                Toast.makeText(context, Localization.string("Press back again to exit the app"), Toast.LENGTH_SHORT)
                     .show()
                 doubleBackToExitPressedOnce = true
                 Handler(Looper.getMainLooper()).postDelayed({

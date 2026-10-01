@@ -121,11 +121,11 @@ fun ToplistFilterCarouselView(
                             }
                         )
                         customActions = listOf(
-                            CustomAccessibilityAction("Next category") {
+                            CustomAccessibilityAction(Localization.string("Next category")) {
                                 selectAdjacentFilter(1)
                                 true
                             },
-                            CustomAccessibilityAction("Previous category") {
+                            CustomAccessibilityAction(Localization.string("Previous category")) {
                                 selectAdjacentFilter(-1)
                                 true
                             },

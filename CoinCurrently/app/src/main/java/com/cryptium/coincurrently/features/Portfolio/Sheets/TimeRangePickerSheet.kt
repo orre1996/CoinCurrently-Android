@@ -64,7 +64,7 @@ fun TimeRangePickerSheet(
     val coroutineScope = rememberCoroutineScope()
 
     val context = LocalContext.current
-    val maxBodyHeight = rememberModalSheetMaxBodyHeight(dragHandleTitle = "Select Time")
+    val maxBodyHeight = rememberModalSheetMaxBodyHeight(dragHandleTitle = "Select time")
     var selectedDate by remember { mutableStateOf(startDate) }
 
     ModalBottomSheet(
@@ -81,7 +81,7 @@ fun TimeRangePickerSheet(
         contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
         dragHandle = {
             DragHandle(
-                title = "Select Time",
+                title = "Select time",
                 closeAction = {
                     coroutineScope.launch {
                         sheetState.hide()

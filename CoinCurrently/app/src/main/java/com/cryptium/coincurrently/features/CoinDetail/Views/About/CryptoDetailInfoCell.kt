@@ -79,7 +79,7 @@ fun CryptoDetailInfoCell(
                         .then(tabPage)
                         .semantics(mergeDescendants = true) {
                             contentDescription = "${index + 1} of ${visibleLinks.size}, $displayLabel"
-                            onClick(label = "Open link", action = {
+                            onClick(label = Localization.string("Open link"), action = {
                                 link?.let { url -> callback(url) }
                                 true
                             })

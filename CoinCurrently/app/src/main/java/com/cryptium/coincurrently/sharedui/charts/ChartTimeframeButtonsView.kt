@@ -130,11 +130,11 @@ fun ChartTimeframeButtonsView(
                             }
                         )
                         customActions = listOf(
-                            CustomAccessibilityAction("Next timeframe") {
+                            CustomAccessibilityAction(Localization.string("Next timeframe")) {
                                 selectAdjacentTimeframe(1)
                                 true
                             },
-                            CustomAccessibilityAction("Previous timeframe") {
+                            CustomAccessibilityAction(Localization.string("Previous timeframe")) {
                                 selectAdjacentTimeframe(-1)
                                 true
                             },

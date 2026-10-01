@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.core.purchases
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.app.Activity
 import android.content.Context
@@ -78,7 +79,7 @@ class BillingManager {
         private fun isTestStore(): Boolean = BuildConfig.REVENUECAT_API_KEY.startsWith("test_")
 
         private fun notifyPurchaseFailure(
-            message: String = "Something went wrong. Please try again later.",
+            message: String = Localization.string("Something went wrong. Please try again later."),
         ) {
             GlobalScope.launch {
                 withContext(Dispatchers.Main) {
@@ -95,11 +96,11 @@ class BillingManager {
                             "Add matching products under Product catalog in the RevenueCat dashboard, " +
                             "or use a release build to test via Google Play."
                     } else {
-                        "This subscription isn't available right now. Please try again later."
+                        Localization.string("This subscription isn't available right now. Please try again later.")
                     }
                 }
                 PurchasesErrorCode.PurchaseCancelledError ->
-                    "Purchase cancelled."
+                    Localization.string("Purchase cancelled.")
                 else -> error.message
             }
         }

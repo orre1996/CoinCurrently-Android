@@ -204,7 +204,7 @@ internal fun SupportSection(
                 image = R.drawable.feedback,
                 title = "Help us Improve",
                 withArrow = true,
-                accessibilityText = Localization.string("Navigate to Help us Improve"),
+                accessibilityText = Localization.string("Navigate to Help us improve"),
             ) {
                 navigateToFeedback.invoke()
             }

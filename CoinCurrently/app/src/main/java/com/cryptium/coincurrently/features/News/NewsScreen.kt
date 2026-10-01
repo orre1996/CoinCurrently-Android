@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.News
+import com.cryptium.coincurrently.core.localization.Localization
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
@@ -162,7 +163,7 @@ fun NewsScreen(
                         }
                     } else {
                         if (!doubleBackToExitPressedOnce) {
-                            Toast.makeText(context, "Press back again to exit the app", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, Localization.string("Press back again to exit the app"), Toast.LENGTH_SHORT).show()
                             doubleBackToExitPressedOnce = true
                             Handler(Looper.getMainLooper()).postDelayed({
                                 doubleBackToExitPressedOnce = false

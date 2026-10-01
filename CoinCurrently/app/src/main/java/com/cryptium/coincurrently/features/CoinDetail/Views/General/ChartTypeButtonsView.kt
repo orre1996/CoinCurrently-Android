@@ -193,11 +193,11 @@ fun ChartTypeButtonsView(
                                     }
                                 )
                                 customActions = listOf(
-                                    CustomAccessibilityAction("Next chart type") {
+                                    CustomAccessibilityAction(Localization.string("Next chart type")) {
                                         selectAdjacentChartType(1)
                                         true
                                     },
-                                    CustomAccessibilityAction("Previous chart type") {
+                                    CustomAccessibilityAction(Localization.string("Previous chart type")) {
                                         selectAdjacentChartType(-1)
                                         true
                                     },

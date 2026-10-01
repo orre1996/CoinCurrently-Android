@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Market
+import com.cryptium.coincurrently.core.localization.Localization
 import android.annotation.SuppressLint
 import android.os.Handler
 import android.os.Looper
@@ -148,7 +149,7 @@ fun MarketScreen(
                         if (!doubleBackToExitPressedOnce) {
                             Toast.makeText(
                                 context,
-                                "Press back again to exit the app",
+                                Localization.string("Press back again to exit the app"),
                                 Toast.LENGTH_SHORT
                             ).show()
                             doubleBackToExitPressedOnce = true

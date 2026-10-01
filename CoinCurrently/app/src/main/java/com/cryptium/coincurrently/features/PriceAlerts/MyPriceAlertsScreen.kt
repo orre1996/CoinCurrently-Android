@@ -474,10 +474,10 @@ fun LargeMoverView(
             .padding(vertical = 8.dp)
             .primaryBackgroundNoRipple()
             .clearAndSetSemantics {
-                contentDescription = "Big Move Alerts. Get notified when BTC or ETH swing more than 5% in either direction."
+                contentDescription = Localization.string("Big Move Alerts") + ". " + Localization.string("Get notified when BTC or ETH swing more than 5% in either direction.")
                 role = Role.Switch
                 stateDescription = if (enabled) "On" else "Off"
-                onClick(label = "Toggle Big Move Alerts") {
+                onClick(label = Localization.string("Toggle Big Move Alerts")) {
                     toggle()
                     true
                 }

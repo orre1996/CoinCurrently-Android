@@ -198,7 +198,7 @@ fun shareBitmap(
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
 
-    val chooser = Intent.createChooser(shareIntent, "Share image via")
+    val chooser = Intent.createChooser(shareIntent, Localization.string("Share image via"))
     if (chooserLauncher != null) {
         chooserLauncher.launch(chooser)
     } else {

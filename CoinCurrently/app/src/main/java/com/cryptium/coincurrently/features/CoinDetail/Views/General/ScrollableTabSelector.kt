@@ -98,11 +98,11 @@ fun ScrollableTabSelector(
                             }
                         )
                         customActions = listOf(
-                            CustomAccessibilityAction("Next page") {
+                            CustomAccessibilityAction(Localization.string("Next page")) {
                                 selectAdjacentTab(1)
                                 true
                             },
-                            CustomAccessibilityAction("Previous page") {
+                            CustomAccessibilityAction(Localization.string("Previous page")) {
                                 selectAdjacentTab(-1)
                                 true
                             },

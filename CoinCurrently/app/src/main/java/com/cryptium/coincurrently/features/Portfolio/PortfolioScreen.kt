@@ -419,7 +419,7 @@ fun PortfolioScreen(
             }
         } else {
             if (!doubleBackToExitPressedOnce) {
-                Toast.makeText(context, "Press back again to exit the app", Toast.LENGTH_SHORT)
+                Toast.makeText(context, Localization.string("Press back again to exit the app"), Toast.LENGTH_SHORT)
                     .show()
                 doubleBackToExitPressedOnce = true
                 Handler(Looper.getMainLooper()).postDelayed({

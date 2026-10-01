@@ -190,7 +190,7 @@ private fun DateOptionRow(
             .padding(vertical = 8.dp)
             .semantics(mergeDescendants = true) {
                 val localizedTitle = Localization.string(option.title)
-                val selectionState = if (isSelected) "selected" else "not selected"
+                val selectionState = Localization.string(if (isSelected) "selected" else "not selected")
                 contentDescription = if (isCustom) {
                     Localization.string("Custom. Select a custom date range")
                 } else {

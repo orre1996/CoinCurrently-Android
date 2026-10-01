@@ -190,7 +190,7 @@ fun SettingsScreen(
                 scrollState.animateScrollTo(0)
             }
         } else if (!doubleBackToExitPressedOnce) {
-            Toast.makeText(context, "Press back again to exit the app", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, Localization.string("Press back again to exit the app"), Toast.LENGTH_SHORT).show()
             doubleBackToExitPressedOnce = true
             Handler(Looper.getMainLooper()).postDelayed({
                 doubleBackToExitPressedOnce = false
@@ -401,7 +401,7 @@ fun SettingsScreen(
                             MainActivity.showSnackbar(
                                 context,
                                 SnackBarType.FAILURE,
-                                "Something went wrong. Make sure Face ID / Touch ID is enabled and try again."
+                                Localization.string("Something went wrong. Make sure Face ID/Touch ID is enabled and try again.")
                             )
                         }
                     },

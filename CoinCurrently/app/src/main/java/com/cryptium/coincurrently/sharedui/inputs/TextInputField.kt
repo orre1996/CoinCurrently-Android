@@ -50,7 +50,7 @@ import com.cryptium.coincurrently.core.extensions.satoshiBold
 fun TextInputField(
     input: String,
     startIcon: Int? = R.drawable.search,
-    placeholder: String = "Search for coin",
+    placeholder: String = "Search for coins",
     accessibilityLabel: String? = null,
     outlineColor: Color = MaterialTheme.colors.outlineVariant,
     isEnabled: Boolean = true,

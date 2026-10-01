@@ -103,11 +103,11 @@ fun CryptoDetailPageSelector(
                             }
                         )
                         customActions = listOf(
-                            CustomAccessibilityAction("Next page") {
+                            CustomAccessibilityAction(Localization.string("Next page")) {
                                 selectAdjacentPage(1)
                                 true
                             },
-                            CustomAccessibilityAction("Previous page") {
+                            CustomAccessibilityAction(Localization.string("Previous page")) {
                                 selectAdjacentPage(-1)
                                 true
                             },

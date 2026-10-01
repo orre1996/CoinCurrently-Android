@@ -176,7 +176,7 @@ private fun CoinOptionRow(
         modifier = Modifier
             .padding(vertical = 16.dp)
             .semantics(mergeDescendants = true) {
-                val selectionState = if (isSelected) "selected" else "not selected"
+                val selectionState = Localization.string(if (isSelected) "selected" else "not selected")
                 contentDescription = "${coin.name ?: coin.symbol ?: ""}, $selectionState"
                 onClick(label = "Toggle ${coin.name ?: coin.symbol ?: ""} filter", action = {
                     didSelectOption.invoke()

@@ -524,7 +524,7 @@ private fun CurrentPriceView(
 ) {
     Text(
         buildAnnotatedString {
-            append(Localization.string("Current price "))
+            append(Localization.string("current price").replaceFirstChar { it.titlecase() } + " ")
 
             withStyle(style = SpanStyle(color = MaterialTheme.colors.onSurface)) {
                 append(

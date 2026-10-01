@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.sharedui.inputs
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.R
 import androidx.compose.foundation.BorderStroke
@@ -146,7 +147,7 @@ fun NumericInputField(
             decorationBox = { innerTextField ->
                 if (text.isEmpty()) {
                     Text(
-                        text = placeholder,
+                        text = Localization.string(placeholder),
                         style = satoshiBold(16),
                         color = MaterialTheme.colors.onSurfaceDimmer,
                         maxLines = 1

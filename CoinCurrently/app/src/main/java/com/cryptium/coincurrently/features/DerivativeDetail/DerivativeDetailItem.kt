@@ -105,7 +105,7 @@ fun DerivativeDetailItem(
         modifier = Modifier
             .semantics(mergeDescendants = true) {
                 contentDescription = accessibilityLabelText
-                onClick(label = "view details", action = {
+                onClick(label = Localization.string("View Details"), action = {
                     derivativeSelected.invoke()
                     true
                 })

@@ -203,7 +203,7 @@ private fun StartDateField(
             .padding(vertical = 24.dp)
             .semantics(mergeDescendants = true) {
                 contentDescription = Localization.format("Start Date: %@", accessibleStartDate)
-                onClick(label = "Select start date", action = {
+                onClick(label = Localization.string("Select start date"), action = {
                     selectDate.invoke()
                     true
                 })
@@ -259,7 +259,7 @@ private fun EndDateField(
             .padding(bottom = 24.dp)
             .semantics(mergeDescendants = true) {
                 contentDescription = Localization.format("End Date: %@", accessibleEndDate)
-                onClick(label = "Select end date", action = {
+                onClick(label = Localization.string("Select end date"), action = {
                     selectDate.invoke()
                     true
                 })

@@ -41,7 +41,7 @@ import com.cryptium.coincurrently.core.extensions.satoshiRegular
 @Composable
 fun CustomFreeInputField(
     startingValue: String,
-    placeholder: String = "Enter notes (optional)",
+    placeholder: String = "Enter notes (Optional)",
     accessibilityLabel: String? = null,
     maxLines: Int = 1,
     type: KeyboardType = KeyboardType.Decimal,

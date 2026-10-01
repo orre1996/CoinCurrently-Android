@@ -583,7 +583,7 @@ private fun DateField(
                 .semantics(mergeDescendants = true) {
                     role = Role.Button
                     contentDescription = accessibilityLabel
-                    onClick(label = "Change date") {
+                    onClick(label = Localization.string("Change date")) {
                         selectDate()
                         true
                     }
@@ -642,7 +642,7 @@ private fun TimeField(
                 .semantics(mergeDescendants = true) {
                     role = Role.Button
                     contentDescription = accessibilityLabel
-                    onClick(label = "Change time") {
+                    onClick(label = Localization.string("Change time")) {
                         selectDate()
                         true
                     }

@@ -454,7 +454,7 @@ private fun AllTimeHighView(
 
             PriceChangePercentView(
                 change = cryptoDetailInfoModel?.market_data?.ath_change_percentage?.getSelectedCurrency(),
-                accessibleTimeframe = "Change since all time high:",
+                accessibleTimeframe = "Change since all time high: ",
                 size = ChangeSize.MEDIUM,
                 isDownloading = cryptoDetailInfoModel?.market_data?.ath_change_percentage == null,
                 tabPageTalkBack = true,

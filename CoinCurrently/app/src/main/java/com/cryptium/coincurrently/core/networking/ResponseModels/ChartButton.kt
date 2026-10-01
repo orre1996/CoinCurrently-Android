@@ -40,7 +40,7 @@ enum class TimeCharts(val label: String) {
     val timeAgoText: String
         get() {
             return when (this) {
-                anHour-> "This hour"
+                anHour-> "This Hour"
                 aDay -> "Today"
                 aWeek -> "Past Week"
                 aMonth -> "Past Month"

@@ -205,9 +205,9 @@ private fun ExportOption(
 
 private fun freeExportMessage(count: Int): String {
     return if (count == 1) {
-        "You can export it 1 more time for free."
+        Localization.string("You can export it 1 more time for free.")
     } else {
-        "You can export it $count more times for free."
+        Localization.format("You can export it %d more times for free.", count)
     }
 }
 
