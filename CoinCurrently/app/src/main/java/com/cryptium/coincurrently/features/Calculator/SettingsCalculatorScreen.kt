@@ -46,6 +46,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 import kotlin.math.abs
@@ -104,7 +105,7 @@ fun SettingsCalculatorScreen(
             modifier = modifier
         ) {
             CustomTopAppBar(
-                title = "Converter",
+                title = Localization.string("Converter"),
                 navigateBack = {
                     navigationViewModel.navigateBack()
                 },
@@ -332,6 +333,14 @@ private fun calculatorItemAccessibilityLabel(
     val places = if (abs(amount ?: 0.0) < 0.1) 7 else 4
     val amountAccessible = amount?.numberAccessible(maxPlaces = places) ?: ""
 
-    return "Currency ${index + 1} of $totalCount, $name, " +
-        "${input.numberAccessible()} ${selectedCurrency.currency} equals $amountAccessible $name"
+    return Localization.format(
+        "Currency %d of %d, %@, %@ %@ equals %@ %@",
+        index + 1,
+        totalCount,
+        name,
+        input.numberAccessible(),
+        selectedCurrency.localizedName,
+        amountAccessible,
+        name,
+    )
 }

@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.fragment.app.FragmentActivity
 import com.cryptium.coincurrently.app.MainActivity
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.SnackBarType
 import java.util.concurrent.Executor
 
@@ -47,7 +48,7 @@ class BiometricViewModel: ViewModel() {
                     MainActivity.showSnackbar(
                         context,
                         SnackBarType.FAILURE,
-                        "Something went wrong. Make sure Face ID/Touch ID is enabled and try again."
+                        Localization.string("Something went wrong. Make sure Face ID/Touch ID is enabled and try again.")
                     )
 
                     super.onAuthenticationFailed()
@@ -60,7 +61,7 @@ class BiometricViewModel: ViewModel() {
                         MainActivity.showSnackbar(
                             context,
                             SnackBarType.FAILURE,
-                            "Something went wrong. Make sure Face ID/Touch ID is enabled and try again."
+                            Localization.string("Something went wrong. Make sure Face ID/Touch ID is enabled and try again.")
                         )
                     }
 
@@ -82,9 +83,9 @@ class BiometricViewModel: ViewModel() {
 
     fun authenticate(context: Context) {
         promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Biometric authentication")
-            .setSubtitle("You need to authenticate yourself to continue")
-            .setNegativeButtonText("Cancel")
+            .setTitle(Localization.string("Biometric authentication"))
+            .setSubtitle(Localization.string("Unlock to access the app"))
+            .setNegativeButtonText(Localization.string("Cancel"))
             .setAllowedAuthenticators(BIOMETRIC_STRONG or BIOMETRIC_WEAK)
             .build()
 
@@ -94,7 +95,7 @@ class BiometricViewModel: ViewModel() {
             MainActivity.showSnackbar(
                 context,
                 SnackBarType.FAILURE,
-                "Something went wrong. Make sure Face ID/Touch ID is enabled and try again."
+                Localization.string("Something went wrong. Make sure Face ID/Touch ID is enabled and try again.")
             )
         }
     }

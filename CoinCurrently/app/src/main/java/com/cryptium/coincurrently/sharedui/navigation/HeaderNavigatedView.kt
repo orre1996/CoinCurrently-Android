@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.core.extensions.poppinsSemibold
 import com.cryptium.coincurrently.sharedui.theme.primaryTextColor
@@ -81,7 +82,7 @@ fun HeaderNavigatedView(
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.arrow_forward),
-                        contentDescription = null,
+                        contentDescription = Localization.string("Navigate back"),
                         contentScale = ContentScale.Crop,
                         colorFilter = ColorFilter.tint(MaterialTheme.colors.primaryTextColor),
                         modifier = Modifier

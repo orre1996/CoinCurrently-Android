@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -18,6 +18,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.core.extensions.poppinsRegular
@@ -30,6 +32,7 @@ import com.cryptium.coincurrently.app.refreshCachedSectionsAfterCurrencyChange
 import androidx.core.app.NotificationManagerCompat
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
 import kotlinx.coroutines.launch
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.sharedui.navigation.HeaderNavigatedView
@@ -46,7 +49,7 @@ fun CurrencySelectorScreen(
     Column(
         modifier = modifier
     ) {
-        HeaderNavigatedView("Currency") {
+        HeaderNavigatedView(Localization.string("Currency")) {
             navigationViewModel.navigateBack()
         }
 
@@ -54,13 +57,15 @@ fun CurrencySelectorScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(allCurrencies) {
+            itemsIndexed(allCurrencies) { index, currency ->
                 CurrencySelectorView(
-                    currency = it,
+                    currency = currency,
                     selectedCurrency = selectedCurrency,
-                    callback = { currency ->
-                        selectedCurrency = currency
-                        UserPreferences.setSelectedCurrency(currency)
+                    index = index,
+                    totalCount = allCurrencies.size,
+                    callback = { selected ->
+                        selectedCurrency = selected
+                        UserPreferences.setSelectedCurrency(selected)
 
                         coroutineScope.launch {
                             refreshCachedSectionsAfterCurrencyChange()
@@ -82,9 +87,19 @@ fun CurrencySelectorScreen(
 @Composable
 private fun CurrencySelectorView(currency: CurrencySelectionModel,
                          selectedCurrency: CurrencySelectionModel?,
+                         index: Int,
+                         totalCount: Int,
                          callback: (CurrencySelectionModel) -> Unit) {
     Row(
         modifier = Modifier
+            .semantics(mergeDescendants = true) {
+                contentDescription = Localization.format(
+                    "Currency %d of %d. %@.",
+                    index + 1,
+                    totalCount,
+                    currency.localizedName,
+                )
+            }
             .primaryBackground {
                 callback(currency)
             },
@@ -112,7 +127,7 @@ private fun CurrencySelectorView(currency: CurrencySelectionModel,
 
         Column {
             Text(
-                text = currency.currency,
+                text = currency.localizedName,
                 style = poppinsRegular(18),
                 color = MaterialTheme.colors.primaryTextColor,
             )

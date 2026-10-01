@@ -48,6 +48,7 @@ import com.cryptium.coincurrently.sharedui.theme.surfaceContainerHigh
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.sharedui.components.CustomProgressBarView
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.SnackbarConstants
 import kotlinx.coroutines.delay
 
@@ -130,7 +131,11 @@ fun AchievementSnackbarView(
 
     if (!isSnackbarVisible && offsetY.value >= 199f) return
 
-    val accessibilityLabel = "Achievement unlocked, $achievementTitle, $levelName"
+    val accessibilityLabel = Localization.format(
+        "Achievement unlocked, %@, %@",
+        Localization.string(achievementTitle),
+        Localization.string(levelName),
+    )
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -191,14 +196,14 @@ fun AchievementSnackbarView(
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
-                    text = achievementTitle,
+                    text = Localization.string(achievementTitle),
                     color = MaterialTheme.colors.onSurface,
                     style = satoshiBold(15),
                     maxLines = 1,
                 )
 
                 Text(
-                    text = levelName,
+                    text = Localization.string(levelName),
                     color = MaterialTheme.colors.onSurfaceDim,
                     style = satoshiMedium(13),
                     maxLines = 1,

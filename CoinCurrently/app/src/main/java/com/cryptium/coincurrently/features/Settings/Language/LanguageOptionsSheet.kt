@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.core.localization.AppLanguage
 import com.cryptium.coincurrently.core.localization.AppLanguagePreference
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.DragHandle
 import com.cryptium.coincurrently.sharedui.components.ImageCase
 import com.cryptium.coincurrently.sharedui.components.Separator
@@ -117,7 +118,11 @@ fun LanguageOptionsSheet(
                 TextInputField(
                     searchInput,
                     placeholder = "Search for language",
-                    accessibilityLabel = if (searchInput.isEmpty()) "Search for language" else searchInput,
+                    accessibilityLabel = if (searchInput.isEmpty()) {
+                        Localization.string("Search for language")
+                    } else {
+                        searchInput
+                    },
                     onInputChange = { searchInput = it },
                     onDone = { },
                     modifier = Modifier.padding(bottom = 24.dp),
@@ -137,8 +142,11 @@ fun LanguageOptionsSheet(
                     if (showsSystem) {
                         item(key = "system") {
                             SingleSelectView(
-                                title = "System",
-                                subtitle = "Currently ${AppLanguage.matching().nativeName}",
+                                title = Localization.string("System"),
+                                subtitle = Localization.format(
+                                    "Currently %@",
+                                    AppLanguage.matching().nativeName,
+                                ),
                                 imageCase = ImageCase.Nothing,
                                 isSelected = selectedOption is AppLanguagePreference.System,
                                 didSelectOption = {

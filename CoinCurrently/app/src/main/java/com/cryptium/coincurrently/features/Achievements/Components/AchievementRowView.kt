@@ -24,6 +24,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.theme.primaryBackgroundNoRipple
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.features.Achievements.Models.AchievementProgress
 
 @Composable
@@ -58,19 +59,19 @@ fun AchievementRowView(progress: AchievementProgress) {
 
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(
-                        text = progress.definition.title,
+                        text = Localization.string(progress.definition.title),
                         style = satoshiBold(16),
                         color = MaterialTheme.colors.onSurface,
                     )
 
                     Text(
-                        text = progress.definition.description,
+                        text = Localization.string(progress.definition.description),
                         style = satoshiMedium(14),
                         color = MaterialTheme.colors.onSurfaceDim,
                     )
 
                     Text(
-                        text = "$unlockedCount/$totalCount levels unlocked",
+                        text = Localization.format("%d/%d levels unlocked", unlockedCount, totalCount),
                         style = satoshiMedium(12),
                         color = MaterialTheme.colors.onSurfaceDimmer,
                     )

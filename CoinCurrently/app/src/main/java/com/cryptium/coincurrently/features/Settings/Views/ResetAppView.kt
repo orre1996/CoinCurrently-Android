@@ -23,6 +23,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.overlay
 import com.cryptium.coincurrently.sharedui.theme.primaryBackgroundNoRipple
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.satoshiRegular
 
 @Composable
@@ -66,7 +67,7 @@ fun ResetAppView(
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
-                    text = "Reset App?",
+                    text = Localization.string("Reset App?"),
                     style = satoshiBold(22),
                     color = MaterialTheme.colors.onSurface,
                     textAlign = TextAlign.Start,
@@ -76,7 +77,7 @@ fun ResetAppView(
                 )
 
                 Text(
-                    text = "This will delete all app settings and saved data on this device. This action cannot be undone.",
+                    text = Localization.string("This will delete all app settings and saved data on this device. This action cannot be undone."),
                     style = satoshiRegular(16),
                     color = MaterialTheme.colors.onSurfaceDim,
                     textAlign = TextAlign.Start
@@ -96,7 +97,7 @@ fun ResetAppView(
             ) {
                 if (!isLoading) {
                     SecondaryButton(
-                        text = "Cancel",
+                        text = Localization.string("Cancel"),
                         fullWidth = true,
                         modifier = sectionModifier()
                     ) {
@@ -105,7 +106,7 @@ fun ResetAppView(
                 }
 
                 PrimaryButton(
-                    text = "Reset App",
+                    text = Localization.string("Reset App"),
                     isLoading = isLoading,
                     fullWidth = true,
                     modifier = sectionModifier()

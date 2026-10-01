@@ -73,8 +73,6 @@ import com.cryptium.coincurrently.sharedui.sheets.ModalSheetNavigationBarExtensi
 import com.cryptium.coincurrently.sharedui.sheets.isEdgeToEdgeEnabled
 import com.cryptium.coincurrently.sharedui.sheets.modalSheetNavigationBarExtensionHeight
 import com.cryptium.coincurrently.sharedui.sheets.modalSheetNavigationBarsPadding
-import com.cryptium.coincurrently.core.extensions.DateFormat
-import com.cryptium.coincurrently.core.extensions.formatDate
 import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.pxToDp
 import com.cryptium.coincurrently.core.extensions.poppinsRegular
@@ -126,6 +124,7 @@ import java.util.Date
 import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import com.cryptium.coincurrently.core.localization.AppLanguagePreference
 import com.cryptium.coincurrently.core.localization.AppLanguageState
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.features.Settings.CurrencySelector.CurrencyOptionsSheet
 import com.cryptium.coincurrently.features.Settings.Language.LanguageOptionsSheet
 import com.cryptium.coincurrently.features.Settings.Sheets.SettingsOptionsSheet
@@ -572,7 +571,7 @@ fun ModalSheetNavigationBarExtensionSpacer(context: Context) {
 @Composable
 fun SectionHeader(text: String) {
     Text(
-        text = text,
+        text = Localization.string(text),
         textAlign = TextAlign.Start,
         style = poppinsSemibold(22),
         color = MaterialTheme.colors.onSurfaceDim,
@@ -586,24 +585,29 @@ private fun PremiumView(
     expirationDate: Date? = null,
     action: () -> Unit
 ) {
-    val formattedExpiration = expirationDate?.formatDate(DateFormat.MMMdyyyy)
+    val formattedExpiration = expirationDate?.let { date ->
+        java.text.DateFormat.getDateInstance(
+            java.text.DateFormat.MEDIUM,
+            AppLanguageState.preference.resolve().locale,
+        ).format(date)
+    }
     val subscriptionStatus = when {
-        currentSubscription == null -> "Inactive"
-        formattedExpiration != null -> "Active · Expires $formattedExpiration"
-        else -> "Active"
+        currentSubscription == null -> Localization.string("Inactive")
+        formattedExpiration != null -> Localization.format("Active · Expires %@", formattedExpiration)
+        else -> Localization.string("Active")
     }
     val subscriptionStatusText = buildAnnotatedString {
         if (currentSubscription == null) {
             withStyle(SpanStyle(color = MaterialTheme.colors.onSurfaceDimmer)) {
-                append("Inactive")
+                append(Localization.string("Inactive"))
             }
         } else {
             withStyle(SpanStyle(color = MaterialTheme.colors.primary)) {
-                append("Active")
+                append(Localization.string("Active"))
             }
             if (formattedExpiration != null) {
                 withStyle(SpanStyle(color = MaterialTheme.colors.onSurfaceDimmer)) {
-                    append(" · Expires $formattedExpiration")
+                    append(Localization.format(" · Expires %@", formattedExpiration))
                 }
             }
         }
@@ -621,7 +625,7 @@ private fun PremiumView(
                 action()
             }
             .clearAndSetSemantics {
-                contentDescription = "CoinCurrently Pro. $subscriptionStatus"
+                contentDescription = "${Localization.string("CoinCurrently Pro")}. $subscriptionStatus"
                 role = Role.Button
                 onClick {
                     action()
@@ -646,7 +650,7 @@ private fun PremiumView(
                 .weight(1f)
         ) {
             Text(
-                text = "CoinCurrently Pro",
+                text = Localization.string("CoinCurrently Pro"),
                 textAlign = TextAlign.Start,
                 style = satoshiBold(16),
                 color = MaterialTheme.colors.onSurface,
@@ -678,6 +682,8 @@ fun SettingsSimpleCell(
     accessibilityText: String? = null,
     action: () -> Unit
 ) {
+    val localizedTitle = Localization.string(title)
+    val localizedSubtitle = subTitle?.let { Localization.string(it) }
     Row(
         verticalAlignment = CenterVertically,
         modifier = Modifier
@@ -690,8 +696,8 @@ fun SettingsSimpleCell(
             }
             .clearAndSetSemantics {
                 contentDescription = accessibilityText
-                    ?: subTitle?.let { "$title. $it" }
-                    ?: title
+                    ?: localizedSubtitle?.let { "$localizedTitle. $it" }
+                    ?: localizedTitle
                 role = Role.Button
                 onClick {
                     action()
@@ -707,13 +713,13 @@ fun SettingsSimpleCell(
                 .weight(1f)
         ) {
             Text(
-                text = title,
+                text = localizedTitle,
                 textAlign = TextAlign.Start,
                 style = satoshiBold(16),
                 color = MaterialTheme.colors.onSurface
             )
 
-            subTitle?.let {
+            localizedSubtitle?.let {
                 Text(
                     text = it,
                     textAlign = TextAlign.Start,
@@ -755,6 +761,8 @@ fun SettingsImageCell(
     accessibilityText: String? = null,
     action: () -> Unit
 ) {
+    val localizedTitle = Localization.string(title)
+    val localizedSubtitle = subTitle?.let { Localization.string(it) }
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = CenterVertically,
@@ -772,8 +780,8 @@ fun SettingsImageCell(
             }
             .clearAndSetSemantics {
                 contentDescription = accessibilityText
-                    ?: subTitle?.let { "$title. $it" }
-                    ?: title
+                    ?: localizedSubtitle?.let { "$localizedTitle. $it" }
+                    ?: localizedTitle
                 role = Role.Button
                 onClick {
                     action()
@@ -796,13 +804,13 @@ fun SettingsImageCell(
                 .weight(1f)
         ) {
             Text(
-                text = title,
+                text = localizedTitle,
                 textAlign = TextAlign.Start,
                 style = poppinsRegular(16),
                 color = MaterialTheme.colors.onSurface,
             )
 
-            subTitle?.let {
+            localizedSubtitle?.let {
                 Text(
                     text = it,
                     textAlign = TextAlign.Start,
@@ -840,6 +848,9 @@ fun SettingsCellSwitch(
     action: () -> Unit
 ) {
     val isHorizontal = AccessibilityLayout.isHorizontal
+    val localizedTitle = Localization.string(title)
+    val localizedSubtitle = subTitle?.let { Localization.string(it) }
+    val switchLabel = Localization.format("%@, switch button", localizedTitle)
 
     AdaptiveStack(
         isHorizontal = isHorizontal,
@@ -847,9 +858,13 @@ fun SettingsCellSwitch(
         horizontalAlignment = Alignment.Start,
         verticalAlignment = CenterVertically,
         modifier = Modifier.clearAndSetSemantics {
-            contentDescription = subTitle?.let { "$title. $it" } ?: title
+            contentDescription = if (localizedSubtitle != null) {
+                "$switchLabel. $localizedSubtitle"
+            } else {
+                switchLabel
+            }
             role = Role.Switch
-            stateDescription = if (isOn) "On" else "Off"
+            stateDescription = Localization.string(if (isOn) "On" else "Off")
             onClick {
                 action()
                 true
@@ -862,13 +877,13 @@ fun SettingsCellSwitch(
             modifier = sectionModifier(),
         ) {
             Text(
-                text = title,
+                text = localizedTitle,
                 textAlign = TextAlign.Start,
                 style = satoshiBold(16),
                 color = MaterialTheme.colors.onSurface,
             )
 
-            subTitle?.let {
+            localizedSubtitle?.let {
                 Text(
                     text = it,
                     textAlign = TextAlign.Start,

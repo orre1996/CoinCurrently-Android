@@ -40,6 +40,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
@@ -61,6 +62,7 @@ import com.cryptium.coincurrently.sharedui.buttons.SecondaryButton
 import com.cryptium.coincurrently.sharedui.navigation.HeaderView
 import com.cryptium.coincurrently.sharedui.charts.getChangeWithoutSymbol
 import com.cryptium.coincurrently.core.extensions.getActivity
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.poppinsRegular
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
@@ -290,7 +292,7 @@ fun BuyProScreen(close: () -> Unit) {
                     }
 
                     SecondaryButton(
-                        text = if(showAllFeatures) "Show less features" else "Show all features",
+                        text = Localization.string(if (showAllFeatures) "Show less features" else "Show all features"),
                         fullWidth = true,
                         onClick = {
                             showAllFeatures = !showAllFeatures
@@ -301,7 +303,7 @@ fun BuyProScreen(close: () -> Unit) {
 
                     if (viewModel.buttons == null || !viewModel.buttons.isNullOrEmpty()) {
                         Text(
-                            "Select Plan",
+                            Localization.string("Select Plan"),
                             style = satoshiBold(22),
                             color = MaterialTheme.colors.onSurfaceDim,
                             textAlign = TextAlign.Start,
@@ -325,11 +327,13 @@ fun BuyProScreen(close: () -> Unit) {
                         }
                     } else if (viewModel.buttons?.isEmpty() ?: true) {
                         Text(
-                            if (BuildConfig.REVENUECAT_API_KEY.startsWith("test_")) {
-                                "Couldn't find test subscriptions. Add products to your RevenueCat Test Store under Product catalog, using the same product IDs as production."
-                            } else {
-                                "Couldn't find subscriptions. Make sure you are logged in to Google Play, restart app and try again."
-                            },
+                            Localization.string(
+                                if (BuildConfig.REVENUECAT_API_KEY.startsWith("test_")) {
+                                    "Couldn't find test subscriptions. Add products to your RevenueCat Test Store under Product catalog, using the same product IDs as production."
+                                } else {
+                                    "Couldn't find subscriptions. Make sure you are logged in to Google Play, restart app and try again."
+                                }
+                            ),
                             style = satoshiRegular(14),
                             color = MaterialTheme.colors.onSurfaceDimmer,
                             modifier = Modifier
@@ -356,7 +360,7 @@ fun BuyProScreen(close: () -> Unit) {
                         FreeTrialInformation()
                     } else {
                         Text(
-                            text = "Cancel anytime",
+                            text = Localization.string("Cancel anytime"),
                             style = satoshiRegular(14),
                             color = MaterialTheme.colors.onSurfaceDimmer,
                             textAlign = TextAlign.Start,
@@ -434,7 +438,7 @@ private fun CloseButton(
             )
     ) {
         Text(
-            text = "Restore",
+            text = Localization.string("Restore"),
             style = satoshiBold(18),
             color = MaterialTheme.colors.primary,
             modifier = Modifier
@@ -446,7 +450,7 @@ private fun CloseButton(
                 }
                 .semantics {
                     role = Role.Button
-                    contentDescription = "Restore previous purchase"
+                    contentDescription = Localization.string("Restore previous purchase")
                 }
         )
 
@@ -454,7 +458,7 @@ private fun CloseButton(
 
         Image(
             painter = painterResource(R.drawable.cross),
-            contentDescription = "Close window",
+            contentDescription = Localization.string("Close window"),
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
             modifier = Modifier
                 .clip(CircleShape)
@@ -496,13 +500,13 @@ private fun HeaderView() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "CoinCurrently Pro",
+                text = Localization.string("CoinCurrently Pro"),
                 style = satoshiBold(22),
                 color = MaterialTheme.colors.onSurface
             )
 
             Text(
-                text = "Upgrade to CoinCurrently Pro for enhanced features.",
+                text = Localization.string("Upgrade to CoinCurrently Pro for enhanced features."),
                 style = satoshiRegular(16),
                 color = MaterialTheme.colors.onSurfaceDim
             )
@@ -519,12 +523,12 @@ private fun TierHeader() {
         Spacer(modifier = Modifier.weight(1f))
 
         MinimumTextSize(
-            text = "FREE",
+            text = Localization.string("FREE"),
             font = satoshiBold(16),
             extraSize = 16.dp
         ) {
             Text(
-                text = "FREE",
+                text = Localization.string("FREE"),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurface,
                 modifier = Modifier
@@ -540,12 +544,12 @@ private fun TierHeader() {
         }
 
         MinimumTextSize(
-            text = "FREE",
+            text = Localization.string("PRO"),
             font = satoshiBold(16),
             extraSize = 16.dp
         ) {
             Text(
-                text = "PRO",
+                text = Localization.string("PRO"),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.primary,
                 modifier = Modifier
@@ -576,10 +580,10 @@ private fun FeatureRow(
         modifier = Modifier
             .padding(vertical = if (firstRow) 16.dp else 8.dp)
             .heightIn(min = 54.dp)
-            .clearAndSetSemantics { contentDescription = accessibilityLabel }
+            .clearAndSetSemantics { contentDescription = Localization.string(accessibilityLabel) }
     ) {
         Text(
-            title,
+            Localization.string(title),
             style = satoshiBold(16),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier
@@ -587,7 +591,7 @@ private fun FeatureRow(
         )
 
         MinimumTextSize(
-            text = "FREE",
+            text = Localization.string("FREE"),
             font = satoshiBold(16),
             extraSize = 16.dp
         ) {
@@ -612,7 +616,7 @@ private fun FeatureRow(
         }
 
         MinimumTextSize(
-            text = "FREE",
+            text = Localization.string("FREE"),
             font = satoshiBold(16),
             extraSize = 16.dp
         ) {
@@ -691,7 +695,7 @@ private fun TierButtonView(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = button?.title ?: "00000000",
+                    text = button?.title?.let { Localization.string(it) } ?: "00000000",
                     style = satoshiBold(18),
                     color = MaterialTheme.colors.primary90,
                     modifier = Modifier
@@ -700,7 +704,10 @@ private fun TierButtonView(
 
                 button?.saveAmount?.let {
                     Text(
-                        text = "Save ${it.getChangeWithoutSymbol()}",
+                        text = Localization.format(
+                            "Save %@%%",
+                            it.getChangeWithoutSymbol().removeSuffix("%"),
+                        ),
                         style = satoshiBold(12),
                         color = MaterialTheme.colors.primary90,
                         modifier = Modifier
@@ -749,31 +756,51 @@ private fun TierButtonView(
     }
 }
 
+private fun linkedLocalization(
+    key: String,
+    linkColor: Color,
+    linkTag: String = "URL",
+): AnnotatedString {
+    val localized = Localization.string(key)
+    val pattern = Regex("""\[([^\[\]]+)]\(([^)]+)\)""")
+    return buildAnnotatedString {
+        var index = 0
+        for (match in pattern.findAll(localized)) {
+            append(localized.substring(index, match.range.first))
+            pushStringAnnotation(tag = linkTag, annotation = match.groupValues[2])
+            withStyle(
+                SpanStyle(
+                    color = linkColor,
+                    textDecoration = TextDecoration.Underline,
+                )
+            ) {
+                append(match.groupValues[1])
+            }
+            pop()
+            index = match.range.last + 1
+        }
+        if (index < localized.length) {
+            append(localized.substring(index))
+        }
+    }
+}
+
 @Composable
 private fun FreeTrialInformation() {
     val context = LocalContext.current
     val hasNotifications = NotificationManagerCompat.from(context).areNotificationsEnabled()
     val linkColor = MaterialTheme.colors.primary
 
-    val annotatedText = buildAnnotatedString {
-        append("All plans include a 7-day trial, with limited offers excluded. You’ll get a push notification reminder a day before the trial ends.")
-
-        if (!hasNotifications) {
-            append(" Please enable notifications in the app ")
-            pushStringAnnotation(tag = "SETTINGS", annotation = "settings")
-            withStyle(
-                SpanStyle(
-                    color = linkColor,
-                    textDecoration = TextDecoration.Underline
-                )
-            ) {
-                append("settings")
-            }
-            pop()
-            append(" to get reminders.")
+    val annotatedText = if (hasNotifications) {
+        buildAnnotatedString {
+            append(Localization.string("All plans include a 7-day trial, with limited offers excluded. You’ll get a push notification reminder a day before the trial ends. Cancel anytime."))
         }
-
-        append(" Cancel anytime.")
+    } else {
+        linkedLocalization(
+            key = "All plans include a 7-day trial, with limited offers excluded. You’ll get a push notification reminder a day before the trial ends. Please enable notifications in the app [settings](https://www.google.se) to get reminders. Cancel anytime.",
+            linkColor = linkColor,
+            linkTag = "SETTINGS",
+        )
     }
 
     ClickableText(
@@ -823,37 +850,10 @@ private fun TermsAndConditionsView() {
     val context = LocalContext.current
     val linkColor = MaterialTheme.colors.primary
 
-    val annotatedText = buildAnnotatedString {
-        append("By subscribing, you agree to the ")
-        pushStringAnnotation(
-            tag = "URL",
-            annotation = "https://coincurrently.app/terms"
-        )
-        withStyle(
-            SpanStyle(
-                color = linkColor,
-                textDecoration = TextDecoration.Underline
-            )
-        ) {
-            append("Terms & Conditions")
-        }
-        pop()
-        append(" and ")
-        pushStringAnnotation(
-            tag = "URL",
-            annotation = "https://coincurrently.app/privacy"
-        )
-        withStyle(
-            SpanStyle(
-                color = linkColor,
-                textDecoration = TextDecoration.Underline
-            )
-        ) {
-            append("Privacy Policy")
-        }
-        pop()
-        append(".")
-    }
+    val annotatedText = linkedLocalization(
+        key = "By subscribing, you agree to the [Terms & Conditions](https://coincurrently.app/terms) and [Privacy Policy](https://coincurrently.app/privacy).",
+        linkColor = linkColor,
+    )
 
     ClickableText(
         text = annotatedText,

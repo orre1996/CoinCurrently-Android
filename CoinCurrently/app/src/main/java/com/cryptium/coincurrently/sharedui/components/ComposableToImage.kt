@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.ComposeView
 import coil.ImageLoader
+import com.cryptium.coincurrently.core.localization.Localization
 import coil.compose.LocalImageLoader
 import androidx.core.content.FileProvider
 import androidx.core.view.drawToBitmap
@@ -25,10 +26,12 @@ private const val APP_SHARE_IOS_URL = "https://tinyurl.com/ygznuo76"
 private const val APP_SHARE_ANDROID_URL = "https://tinyurl.com/yz5w8ozj"
 
 fun appShareMessage(): String =
-    "Track crypto in real time with CoinCurrently.\n" +
-        "Download the app for free.\n" +
-        "iOS: $APP_SHARE_IOS_URL\n" +
-        "Android: $APP_SHARE_ANDROID_URL"
+    listOf(
+        Localization.string("Track crypto in real time with CoinCurrently."),
+        Localization.string("Download the app for free."),
+        Localization.format("iOS: %@", APP_SHARE_IOS_URL),
+        Localization.format("Android: %@", APP_SHARE_ANDROID_URL),
+    ).joinToString("\n")
 
 fun assetShareMessage(trackedLabel: String, othersWord: String = "coins"): String =
     "Track $trackedLabel and other $othersWord in real time with CoinCurrently.\n" +

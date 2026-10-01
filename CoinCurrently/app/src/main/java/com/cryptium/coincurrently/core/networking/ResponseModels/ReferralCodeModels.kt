@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
+import com.cryptium.coincurrently.core.localization.Localization
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import okhttp3.Headers
@@ -18,10 +19,10 @@ enum class RedeemCodeResult {
     val errorMessage: String?
         get() = when (this) {
             Success -> null
-            InvalidCode -> "Invalid code"
-            AlreadyReferred -> "You've already been referred by someone else."
-            SelfRedeem -> "You can't redeem yourself, silly."
-            Failure -> "Something went wrong. Please try again."
+            InvalidCode -> Localization.string("Invalid code")
+            AlreadyReferred -> Localization.string("You've already been referred by someone else.")
+            SelfRedeem -> Localization.string("You can't redeem yourself, silly.")
+            Failure -> Localization.string("Something went wrong. Please try again.")
         }
 
     companion object {

@@ -1,4 +1,7 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
+import com.cryptium.coincurrently.core.localization.AppLanguage
+import com.cryptium.coincurrently.core.localization.AppLanguageState
+import java.util.Currency
 import java.util.Locale
 
 data class CurrencySelectionModel(
@@ -18,6 +21,21 @@ data class CurrencySelectionModel(
             val name = currency.trim()
             if (name.isEmpty()) return ""
             return name
+        }
+
+    val localizedName: String
+        get() {
+            val language = AppLanguageState.preference.resolve()
+            if (language == AppLanguage.English) return currency
+            if (code.length != 3 || !code.all { it.isLetter() }) return currency
+            return try {
+                val name = Currency.getInstance(code.uppercase(Locale.ROOT))
+                    .getDisplayName(language.locale)
+                    .trim()
+                if (name.isEmpty()) currency else name
+            } catch (_: IllegalArgumentException) {
+                currency
+            }
         }
 
     val formattingLocale: Locale

@@ -15,6 +15,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.modifiers.CappedFontScale
 import com.cryptium.coincurrently.sharedui.modifiers.DynamicTypeSizeCap
 import com.cryptium.coincurrently.core.extensions.satoshiBold
@@ -51,7 +52,7 @@ fun CustomTopAppBar(
             }) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Navigate back"
+                    contentDescription = Localization.string("Navigate back")
                 )
             }
         },

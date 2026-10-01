@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -166,7 +167,7 @@ fun MyPriceAlertsScreen(
             modifier = modifier
         ) {
             CustomTopAppBar(
-                title = "Price Alerts",
+                title = Localization.string("Price Alerts"),
                 navigateBack = {
                     navigationViewModel.navigateBack()
                 },
@@ -286,7 +287,10 @@ fun MyPriceAlertsScreen(
                                                 MainActivity.showSnackbar(
                                                     context = context,
                                                     status = SnackBarType.SUCCESS,
-                                                    message = "${coin?.symbol?.uppercase() ?: "Coin"} alert deleted."
+                                                    message = Localization.format(
+                                                        "%@ alert deleted.",
+                                                        coin?.symbol?.uppercase() ?: Localization.string("Coin"),
+                                                    )
                                                 )
                                             }
                                         }
@@ -373,7 +377,10 @@ fun MyPriceAlertsScreen(
                                 navigationViewModel.showSnackbar(
                                     context = context,
                                     type = SnackBarType.SUCCESS,
-                                    message = "${selectedCoin?.symbol?.uppercase() ?: "Price"} alert added"
+                                    message = Localization.format(
+                                        "%@ alert added.",
+                                        selectedCoin?.symbol?.uppercase() ?: Localization.string("Price"),
+                                    )
                                 )
                                 sheetState.hide()
                                 selectedCoin = null
@@ -382,7 +389,7 @@ fun MyPriceAlertsScreen(
                                 navigationViewModel.showSnackbar(
                                     context = context,
                                     type = SnackBarType.FAILURE,
-                                    message = "Something went wrong, restart app and try again"
+                                    message = Localization.string("Something went wrong. Restart the app and try again.")
                                 )
                             }
                             PriceAlertCreateResult.Failed -> {
@@ -432,7 +439,7 @@ private fun InfoButton(
     }) {
         Image(
             painter = painterResource(id = R.drawable.add),
-            contentDescription = "Add new price alert",
+            contentDescription = Localization.string("Add new price alert"),
             colorFilter = ColorFilter.tint(
                 MaterialTheme.colors.onSurface
             ),
@@ -526,14 +533,14 @@ fun AlertsEmptyView() {
             .semantics(mergeDescendants = true) {}
     ) {
         Text(
-            text = "No price alerts yet",
+            text = Localization.string("No price alerts yet"),
             style = satoshiBold(18),
             color = MaterialTheme.colors.onSurface,
             textAlign = TextAlign.Center
         )
 
         Text(
-            text = "Tap + to create your first alert.",
+            text = Localization.string("Tap + to create your first alert."),
             style = satoshiRegular(14),
             color = MaterialTheme.colors.onSurfaceDim,
             textAlign = TextAlign.Center
@@ -561,14 +568,14 @@ fun PushesOffView(
                 .semantics(mergeDescendants = true) {}
         ) {
             Text(
-                text = "Notifications are off",
+                text = Localization.string("Notifications are off"),
                 style = satoshiBold(18),
                 color = MaterialTheme.colors.onSurface,
                 textAlign = TextAlign.Center
             )
 
             Text(
-                text = "Enable push notifications in your device settings to receive price alerts.",
+                text = Localization.string("Enable push notifications in your device settings to receive price alerts."),
                 style = satoshiRegular(14),
                 color = MaterialTheme.colors.onSurfaceDim,
                 textAlign = TextAlign.Center,
@@ -578,7 +585,7 @@ fun PushesOffView(
         }
 
         SecondaryButton(
-            text = "Open Settings"
+            text = Localization.string("Open Settings")
         ) {
             openSettings()
         }

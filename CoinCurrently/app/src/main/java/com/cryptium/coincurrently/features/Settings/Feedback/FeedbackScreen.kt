@@ -46,6 +46,7 @@ import com.cryptium.coincurrently.sharedui.inputs.CustomFreeInputField
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
 import com.cryptium.coincurrently.app.NavigationViewModel
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.analytics.FeedbackSent
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
@@ -76,7 +77,7 @@ fun FeedbackScreen(
         modifier = modifier
     ) {
         CustomTopAppBar(
-            title = "Help us Improve",
+            title = Localization.string("Help us Improve"),
             navigateBack = {
                 navigationViewModel.navigateBack()
             }
@@ -95,7 +96,7 @@ fun FeedbackScreen(
                 )
         ) {
             Text(
-                text = "How’s your experience with CoinCurrently?",
+                text = Localization.string("How’s your experience with CoinCurrently?"),
                 style = satoshiMedium(14),
                 color = MaterialTheme.colors.onSurfaceDim
             )
@@ -118,11 +119,11 @@ fun FeedbackScreen(
         )
 
         PrimaryButton(
-            text = "Submit Feedback",
+            text = Localization.string("Submit Feedback"),
             accessibilityLabel = if (rating.value != null) {
-                "Submit Feedback"
+                Localization.string("Submit Feedback")
             } else {
-                "Submit Feedback: Disabled because no rating is entered"
+                Localization.string("Submit: Disabled because invalid or no rating is entered")
             },
             isEnabled = rating.value != null,
             fullWidth = true,
@@ -148,7 +149,7 @@ fun FeedbackScreen(
                         MainActivity.showSnackbar(
                             context,
                             SnackBarType.SUCCESS,
-                            "Feedback sent, thank you very much!"
+                            Localization.string("Feedback sent, thank you very much!")
                         )
 
                         if ((rating.value ?: 0) >= 4) {
@@ -188,7 +189,7 @@ private fun RatingView(
                 color = if (isSelected) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSurface,
                 modifier = Modifier
                     .semantics {
-                        contentDescription = "Vote $index of 5."
+                        contentDescription = Localization.format("Vote %d of %d.", index, 5)
                         role = Role.Button
                         selected = isSelected
                         onClick {
@@ -219,11 +220,14 @@ private fun RatingView(
 private fun InputField(
     feedback: MutableState<String>
 ) {
-    val accessibilityLabel = if (feedback.value.isEmpty()) {
-        "Input feedback here. Textfield"
-    } else {
-        "Feedback: ${feedback.value}. Textfield"
-    }
+    val accessibilityLabel = Localization.format(
+        "%@. Textfield",
+        if (feedback.value.isEmpty()) {
+            Localization.string("Input feedback here")
+        } else {
+            Localization.format("feedback: %@", feedback.value)
+        },
+    )
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -232,7 +236,7 @@ private fun InputField(
             .padding(top = 32.dp)
     ) {
         Text(
-            text = "How can we improve? (Optional)",
+            text = Localization.string("How can we improve? (Optional)"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -240,7 +244,7 @@ private fun InputField(
 
         CustomFreeInputField(
             startingValue = feedback.value,
-            placeholder = "Enter your feedback",
+            placeholder = Localization.string("Enter your feedback"),
             type = KeyboardType.Text,
             maxLines = 10,
             showError = feedback.value.count() > 800,
@@ -251,7 +255,7 @@ private fun InputField(
         )
 
         Text(
-            text = "${feedback.value.count()} / 800 characters",
+            text = Localization.format("%d / 800 characters", feedback.value.count()),
             style = satoshiMedium(14),
             color = if (feedback.value.count() > 800) MaterialTheme.colors.trendDown else MaterialTheme.colors.onSurfaceDimmer,
             modifier = Modifier

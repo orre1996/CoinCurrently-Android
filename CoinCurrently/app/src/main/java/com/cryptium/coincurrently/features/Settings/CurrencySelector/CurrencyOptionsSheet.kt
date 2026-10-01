@@ -34,6 +34,8 @@ import com.cryptium.coincurrently.sharedui.components.DragHandle
 import com.cryptium.coincurrently.sharedui.inputs.TextInputField
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import kotlinx.coroutines.launch
+import com.cryptium.coincurrently.core.localization.AppLanguageState
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 
 private val CurrencyRowHeightEstimate = 72.dp
@@ -56,10 +58,12 @@ fun CurrencyOptionsSheet(
     val maxBodyHeight = rememberModalSheetMaxBodyHeight(dragHandleTitle = "Select Currency")
     val extensionHeight = context.modalSheetNavigationBarExtensionHeight(density)
     val contentMaxHeight = (maxBodyHeight - extensionHeight).coerceAtLeast(0.dp)
-    val filteredOptions = remember(searchInput) {
+    val appLanguage = AppLanguageState.preference
+    val filteredOptions = remember(searchInput, appLanguage) {
         allCurrencies.filter {
             searchInput.isEmpty() ||
                 it.currency.contains(searchInput, true) ||
+                it.localizedName.contains(searchInput, true) ||
                 it.code.contains(searchInput, true) ||
                 it.symbol.contains(searchInput, true)
         }.sortedBy { it.currency }
@@ -134,7 +138,7 @@ fun CurrencyOptionsSheet(
                 ) {
                     items(filteredOptions) { option ->
                         SingleSelectView(
-                            title = option.currency,
+                            title = option.localizedName,
                             subtitle = "${option.code} (${option.symbol})",
                             imageCase = ImageCase.Nothing,
                             isSelected = selectedOption == option,
@@ -162,7 +166,11 @@ private fun InputFieldView(
     TextInputField(
         searchInput,
         placeholder = "Search for currency",
-        accessibilityLabel = "Search for currency",
+        accessibilityLabel = if (searchInput.isEmpty()) {
+            Localization.string("Search for currency")
+        } else {
+            searchInput
+        },
         onInputChange = {
             valueChanged.invoke(it)
         },

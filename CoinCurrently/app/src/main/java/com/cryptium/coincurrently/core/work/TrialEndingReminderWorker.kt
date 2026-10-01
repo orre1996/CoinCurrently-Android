@@ -6,6 +6,7 @@ import androidx.core.app.NotificationCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 
 class TrialEndingReminderWorker(appContext: Context, workerParams: WorkerParameters) : Worker(appContext, workerParams) {
     override fun doWork(): Result {
@@ -18,8 +19,8 @@ class TrialEndingReminderWorker(appContext: Context, workerParams: WorkerParamet
 
         val notification = NotificationCompat.Builder(applicationContext, channelId)
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("CoinCurrently reminder")
-            .setContentText("Your free trial is ending in 1 day")
+            .setContentTitle(Localization.string("CoinCurrently reminder"))
+            .setContentText(Localization.string("Your free trial is ending in 1 day"))
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setAutoCancel(true)
             .build()

@@ -35,6 +35,7 @@ import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.core.analytics.WebViewOpened
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.sharedui.components.appShareMessage
@@ -81,7 +82,7 @@ internal fun SecuritySection(
                         showResetApp.invoke()
                     }
                     .clearAndSetSemantics {
-                        contentDescription = "Reset the app"
+                        contentDescription = "${Localization.string("Reset The App")}. ${Localization.string("Delete your settings and data")}"
                         role = Role.Button
                         onClick {
                             showResetApp.invoke()
@@ -90,14 +91,14 @@ internal fun SecuritySection(
                     }
             ) {
                 Text(
-                    text = "Reset the app",
+                    text = Localization.string("Reset The App"),
                     textAlign = TextAlign.Start,
                     style = satoshiBold(16),
                     color = MaterialTheme.colors.trendDown
                 )
 
                 Text(
-                    text = "Delete your settings and data",
+                    text = Localization.string("Delete your settings and data"),
                     textAlign = TextAlign.Start,
                     style = satoshiBold(12),
                     color = MaterialTheme.colors.onSurfaceDimmer
@@ -203,7 +204,7 @@ internal fun SupportSection(
                 image = R.drawable.feedback,
                 title = "Help us Improve",
                 withArrow = true,
-                accessibilityText = "Navigate to Help us Improve",
+                accessibilityText = Localization.string("Navigate to Help us Improve"),
             ) {
                 navigateToFeedback.invoke()
             }
@@ -261,7 +262,7 @@ internal fun PoweredByView() {
                 horizontal = 16.dp
             )
             .clearAndSetSemantics {
-                contentDescription = "Powered by CoinGecko"
+                contentDescription = Localization.string("Powered by coin gecko")
             }
     ) {
         Image(
@@ -273,7 +274,7 @@ internal fun PoweredByView() {
         )
 
         Text(
-            text = "Powered by CoinGecko",
+            text = Localization.string("Powered by CoinGecko"),
             textAlign = TextAlign.Start,
             style = satoshiMedium(16),
             color = MaterialTheme.colors.onSurfaceDimmer

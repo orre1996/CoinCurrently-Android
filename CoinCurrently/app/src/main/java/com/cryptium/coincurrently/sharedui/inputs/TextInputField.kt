@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.theme.outlineVariant
 import com.cryptium.coincurrently.sharedui.modifiers.CappedFontScale
@@ -58,7 +59,11 @@ fun TextInputField(
     onInputChange: (String) -> Unit,
     onDone: () -> Unit
 ) {
-    val fieldLabel = accessibilityLabel ?: placeholder
+    val localizedPlaceholder = Localization.string(placeholder)
+    val fieldLabel = accessibilityLabel ?: localizedPlaceholder
+    val fieldKind = Localization.string(
+        if (startIcon == R.drawable.search) "search field" else "text field",
+    )
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     CappedFontScale(DynamicTypeSizeCap.Accessibility2) {
@@ -118,7 +123,7 @@ fun TextInputField(
             decorationBox = { innerTextField ->
                 if (input.isEmpty()) {
                     Text(
-                        text = placeholder,
+                        text = localizedPlaceholder,
                         style = satoshiBold(16),
                         color = MaterialTheme.colors.onSurfaceDimmer,
                         maxLines = 1,
@@ -132,7 +137,7 @@ fun TextInputField(
             modifier = Modifier
                 .weight(1f)
                 .semantics {
-                    contentDescription = fieldLabel
+                    contentDescription = Localization.format("%@, %@", fieldLabel, fieldKind)
                 }
         )
 

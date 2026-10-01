@@ -30,6 +30,7 @@ import com.cryptium.coincurrently.features.Achievements.Components.AchievementRo
 import com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager
 import com.cryptium.coincurrently.features.Achievements.Models.AchievementCategory
 import com.cryptium.coincurrently.features.Achievements.AchievementsViewModel
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.features.Settings.SectionHeader
 
 @Composable
@@ -53,7 +54,7 @@ fun AchievementsScreen(
             .background(MaterialTheme.colors.surface)
     ) {
         CustomTopAppBar(
-            title = "Achievements",
+            title = Localization.string("Achievements"),
             navigateBack = { navigationViewModel.navigateBack() },
         )
 
@@ -102,31 +103,35 @@ private fun SummarySection(
             .fillMaxWidth()
             .primaryBackgroundNoRipple()
             .semantics {
-                contentDescription =
-                    "Your progress. $unlockedLevels of $totalLevels levels unlocked. " +
-                    "Current streak $currentStreak days. Best streak $longestStreak days."
+                contentDescription = Localization.format(
+                    "Your progress. %d of %d levels unlocked. Current streak %d days. Best streak %d days.",
+                    unlockedLevels,
+                    totalLevels,
+                    currentStreak,
+                    longestStreak,
+                )
             }
     ) {
         Text(
-            text = "Your progress",
+            text = Localization.string("Your progress"),
             style = satoshiBold(22),
             color = MaterialTheme.colors.onSurface,
         )
 
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             SummaryStat(
-                title = "Levels",
+                title = Localization.string("Levels"),
                 value = "$unlockedLevels/$totalLevels",
                 modifier = Modifier.weight(1f),
             )
             SummaryStat(
-                title = "Current streak",
-                value = "$currentStreak days",
+                title = Localization.string("Current streak"),
+                value = Localization.format("%d days", currentStreak),
                 modifier = Modifier.weight(1f),
             )
             SummaryStat(
-                title = "Best streak",
-                value = "$longestStreak days",
+                title = Localization.string("Best streak"),
+                value = Localization.format("%d days", longestStreak),
                 modifier = Modifier.weight(1f),
             )
         }

@@ -17,6 +17,7 @@ import com.cryptium.coincurrently.core.extensions.poppinsRegular
 import com.cryptium.coincurrently.core.extensions.poppinsSemibold
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.features.Settings.isEdgeToEdgeEnabled
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.sharedui.buttons.PrimaryButton
 import com.cryptium.coincurrently.sharedui.components.Separator
@@ -50,7 +51,7 @@ fun CurrencySelectorView(closeView: () -> Unit, currencySelected: (CurrencySelec
                 .primaryBackgroundFullStroke(PaddingValues(0.dp))
         ) {
             Text(
-                text = "Select Currency",
+                text = Localization.string("Select Currency"),
                 style = poppinsSemibold(22),
                 color = MaterialTheme.colors.primaryTextColor,
                 textAlign = TextAlign.Center,
@@ -74,7 +75,7 @@ fun CurrencySelectorView(closeView: () -> Unit, currencySelected: (CurrencySelec
                             }
                     ) {
                         Text(
-                            text = it.currency,
+                            text = it.localizedName,
                             style = poppinsRegular(18),
                             color = MaterialTheme.colors.primaryTextColor
                         )
@@ -91,7 +92,7 @@ fun CurrencySelectorView(closeView: () -> Unit, currencySelected: (CurrencySelec
             Separator()
 
             PrimaryButton(
-                text = "Close",
+                text = Localization.string("Close"),
             ) {
                 closeView()
             }

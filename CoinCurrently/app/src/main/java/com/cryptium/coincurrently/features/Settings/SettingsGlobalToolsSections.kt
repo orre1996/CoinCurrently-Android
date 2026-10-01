@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.BuildConfig
 import com.cryptium.coincurrently.core.localization.AppLanguagePreference
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.models.AppColorScheme
 import com.cryptium.coincurrently.core.models.SelectedStartTab
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
@@ -34,7 +35,7 @@ internal fun GlobalSection(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        SectionHeader("Global settings")
+        SectionHeader("Global Settings")
 
         Column(
             horizontalAlignment = Alignment.Start,
@@ -45,7 +46,10 @@ internal fun GlobalSection(
             SettingsSimpleCell(
                 title = "Currency",
                 subTitle = "${selectedCurrency.code.uppercase()} (${selectedCurrency.symbol})",
-                accessibilityText = "Currency. currently selected: ${selectedCurrency.currency}",
+                accessibilityText = Localization.format(
+                    "Currency, currently selected %@",
+                    selectedCurrency.localizedName,
+                ),
             ) {
                 selectNewCurrency.invoke()
             }
@@ -55,7 +59,10 @@ internal fun GlobalSection(
             SettingsSimpleCell(
                 title = "Language",
                 subTitle = selectedLanguage.settingsSubtitle,
-                accessibilityText = "Language, currently selected ${selectedLanguage.settingsSubtitle}",
+                accessibilityText = Localization.format(
+                    "Language, currently selected %@",
+                    Localization.string(selectedLanguage.settingsSubtitle),
+                ),
             ) {
                 selectNewLanguage.invoke()
             }
@@ -65,7 +72,10 @@ internal fun GlobalSection(
             SettingsSimpleCell(
                 title = "Start Tab",
                 subTitle = selectedStartTab.getName(),
-                accessibilityText = "Start tab. currently selected: ${selectedStartTab.getName()}",
+                accessibilityText = Localization.format(
+                    "Start tab, currently selected %@",
+                    Localization.string(selectedStartTab.getName()),
+                ),
             ) {
                 selectNewStartTab.invoke()
             }
@@ -75,7 +85,10 @@ internal fun GlobalSection(
             SettingsSimpleCell(
                 title = "Theme",
                 subTitle = selectedTheme.displayName,
-                accessibilityText = "Theme. currently selected: ${selectedTheme.displayName}",
+                accessibilityText = Localization.format(
+                    "Theme, currently selected %@",
+                    Localization.string(selectedTheme.displayName),
+                ),
             ) {
                 selectNewTheme.invoke()
             }
@@ -123,7 +136,7 @@ internal fun ToolsSection(
         ) {
             SettingsSimpleCell(
                 title = "Converter",
-                accessibilityText = "Navigate to Converter",
+                accessibilityText = Localization.string("Navigate to Converter"),
             ) {
                 navigateToCalculator.invoke()
             }
@@ -132,7 +145,7 @@ internal fun ToolsSection(
 
             SettingsSimpleCell(
                 title = "Price Alerts",
-                accessibilityText = "Navigate to Price Alerts",
+                accessibilityText = Localization.string("Navigate to Price Alerts"),
             ) {
                 navigateToPriceAlerts.invoke()
             }
@@ -142,7 +155,7 @@ internal fun ToolsSection(
 
                 SettingsSimpleCell(
                     title = "Achievements",
-                    accessibilityText = "Navigate to Achievements",
+                    accessibilityText = Localization.string("Navigate to Achievements"),
                 ) {
                     navigateToAchievements.invoke()
                 }

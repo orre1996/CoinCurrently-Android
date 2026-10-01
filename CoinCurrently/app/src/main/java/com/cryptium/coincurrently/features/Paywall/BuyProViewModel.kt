@@ -13,6 +13,7 @@ import androidx.work.WorkManager
 import com.android.billingclient.api.ProductDetails
 import com.cryptium.coincurrently.app.MainActivity
 import com.cryptium.coincurrently.core.extensions.formatCurrency
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.getDifferenceInPercent
 import com.cryptium.coincurrently.core.extensions.getIntroductoryOffer
@@ -89,11 +90,14 @@ class BuyProViewModelImp: ViewModel(), BuyProViewModel {
     private var timer: Timer? = null
 
     override val subscribeButtonText: String
-        get() = if (
-            selectedButton?.productId != promotionalName &&
-            selectedButton?.productId != welcomeName &&
-            isEligibleForTrial
-        ) "Start Your Free Trial" else "Upgrade Now"
+        get() {
+            val key = if (
+                selectedButton?.productId != promotionalName &&
+                selectedButton?.productId != welcomeName &&
+                isEligibleForTrial
+            ) "Start Your Free Trial" else "Upgrade Now"
+            return Localization.string(key)
+        }
 
     override fun setHasPush(context: Context) {
         val notificationManager = NotificationManagerCompat.from(context)
@@ -169,7 +173,11 @@ class BuyProViewModelImp: ViewModel(), BuyProViewModel {
             MainActivity.showSnackbar(
                 context,
                 SnackBarType.SUCCESS,
-                "Purchase complete. Thank you! ${if (shouldSchedulePush) "Reminder scheduled." else ""}"
+                if (shouldSchedulePush) {
+                    Localization.string("Purchase complete. Thank you so much for your support! A reminder has been scheduled.")
+                } else {
+                    Localization.string("Purchase complete. Thank you so much for your support!")
+                }
             )
         }
 
@@ -212,12 +220,12 @@ class BuyProViewModelImp: ViewModel(), BuyProViewModel {
                 MainActivity.showSnackbar(
                     context,
                     SnackBarType.SUCCESS,
-                    "Purchase restored"
+                    Localization.string("Purchase restored.")
                 )
             },
             failure = {
                 isLoading = false
-                snackbarMessage = "No purchases to restore"
+                snackbarMessage = Localization.string("No purchases to restore")
                 showSnackBar.value = true
             },
         )
@@ -261,7 +269,10 @@ class BuyProViewModelImp: ViewModel(), BuyProViewModel {
                         unit = "year",
                         total = it.getNormalPricePhase()?.pricingPhaseToDouble(),
                         compareTo = monthlyPrice,
-                        subTitle = "Equivalent to ${it.yearlyToMonthly().formatCurrency(threshold = FormattingThreshold.NONE, currency = it.getCurrency())} per month"
+                        subTitle = Localization.format(
+                            "Equivalent to %@ per month.",
+                            it.yearlyToMonthly().formatCurrency(threshold = FormattingThreshold.NONE, currency = it.getCurrency()),
+                        )
                     )
                 )
             }
@@ -273,7 +284,10 @@ class BuyProViewModelImp: ViewModel(), BuyProViewModel {
                     title = "Monthly Plan",
                     unit ="month",
                     total = it.monthlyToYearly(),
-                    subTitle = "For a total of ${monthlyPrice?.formatCurrency(threshold = FormattingThreshold.NONE, currency = monthly.getCurrency())} per year",
+                    subTitle = Localization.format(
+                        "For a total of %@ per year",
+                        monthlyPrice?.formatCurrency(threshold = FormattingThreshold.NONE, currency = monthly.getCurrency()) ?: "",
+                    ),
                 )
             )
         }
@@ -320,7 +334,10 @@ class BuyProViewModelImp: ViewModel(), BuyProViewModel {
                         unit = "year",
                         total = it.normalPriceAmount(),
                         compareTo = monthlyPrice,
-                        subTitle = "Equivalent to ${it.yearlyToMonthly().formatCurrency(threshold = FormattingThreshold.NONE, currency = it.getCurrency())} per month",
+                        subTitle = Localization.format(
+                            "Equivalent to %@ per month.",
+                            it.yearlyToMonthly().formatCurrency(threshold = FormattingThreshold.NONE, currency = it.getCurrency()),
+                        ),
                     ),
                 )
             }
@@ -332,7 +349,10 @@ class BuyProViewModelImp: ViewModel(), BuyProViewModel {
                     title = "Monthly Plan",
                     unit = "month",
                     total = it.monthlyToYearly(),
-                    subTitle = "For a total of ${monthlyPrice?.formatCurrency(threshold = FormattingThreshold.NONE, currency = monthly.getCurrency())} per year",
+                    subTitle = Localization.format(
+                        "For a total of %@ per year",
+                        monthlyPrice?.formatCurrency(threshold = FormattingThreshold.NONE, currency = monthly.getCurrency()) ?: "",
+                    ),
                 ),
             )
         }
@@ -381,7 +401,13 @@ class BuyProViewModelImp: ViewModel(), BuyProViewModel {
             val hours = (diff / (1000 * 60 * 60)) % 24
             val days = diff / (1000 * 60 * 60 * 24)
 
-            val formatted = "Expires in ${days}d ${hours}h ${minutes}m ${seconds}s"
+            val formatted = Localization.format(
+                "Expires in %dd %dh %dm %ds",
+                days,
+                hours,
+                minutes,
+                seconds,
+            )
             buttons = buttons?.map {
                 if (it.title == "Welcome Plan") it.copy(timeLeft = formatted) else it
             }
@@ -392,10 +418,12 @@ class BuyProViewModelImp: ViewModel(), BuyProViewModel {
 
 fun ProductDetails.toTierButton(title: String, unit: String, total: Double?, compareTo: Double? = 0.0, subTitle: String?): TierButton {
     val price = this.getNormalPricePhase()?.pricingPhaseToDouble()?.formatCurrency(threshold = FormattingThreshold.NONE, currency = this.getCurrency())
+    val priceText = price ?: ""
+    val priceKey = if (unit == "month") "%@ / month" else "%@ / year"
     return TierButton(
         title = title,
-        formattedPrice = "$price / $unit",
-        formattedPriceAccessibilityLabel = "$price per $unit",
+        formattedPrice = Localization.format(priceKey, priceText),
+        formattedPriceAccessibilityLabel = Localization.format("%@ per %@", priceText, Localization.string(unit)),
         subTitle = subTitle?.ifEmpty { "" },
         saveAmount = if ((compareTo ?: 0.0) > 0) getDifferenceInPercent(total ?: 0.0, compareTo ?: 0.0) else null,
         timeLeft = null,
@@ -404,12 +432,13 @@ fun ProductDetails.toTierButton(title: String, unit: String, total: Double?, com
 }
 
 fun ProductDetails.toPromoTierButton(title: String, compareTo: Double): TierButton {
-    val price = this.getIntroductoryOffer()?.pricingPhaseToDouble()?.formatCurrency(threshold = FormattingThreshold.NONE, currency = this.getCurrency()) ?: "N/A"
+    val price = this.getIntroductoryOffer()?.pricingPhaseToDouble()?.formatCurrency(threshold = FormattingThreshold.NONE, currency = this.getCurrency()) ?: Localization.string("N/A")
+    val regularPrice = this.getNormalPricePhase()?.pricingPhaseToDouble()?.formatCurrency(threshold = FormattingThreshold.NONE, currency = this.getCurrency()) ?: ""
     return TierButton(
         title = title,
-        formattedPrice = "$price / year",
-        formattedPriceAccessibilityLabel = "$price per year",
-        subTitle = "For the first year, then ${this.getNormalPricePhase()?.pricingPhaseToDouble()?.formatCurrency(threshold = FormattingThreshold.NONE, currency = this.getCurrency())} per year",
+        formattedPrice = Localization.format("%@ / year", price),
+        formattedPriceAccessibilityLabel = Localization.format("%@ per %@", price, Localization.string("year")),
+        subTitle = Localization.format("For the first year, then %@ per year", regularPrice),
         saveAmount = getDifferenceInPercent(0.0, compareTo),
         timeLeft = null,
         product = this
@@ -467,10 +496,11 @@ fun StoreProduct.toTierButton(
         threshold = FormattingThreshold.NONE,
         currency = getCurrency(),
     )
+    val priceKey = if (unit == "month") "%@ / month" else "%@ / year"
     return TierButton(
         title = title,
-        formattedPrice = "$price / $unit",
-        formattedPriceAccessibilityLabel = "$price per $unit",
+        formattedPrice = Localization.format(priceKey, price),
+        formattedPriceAccessibilityLabel = Localization.format("%@ per %@", price, Localization.string(unit)),
         subTitle = subTitle?.ifEmpty { "" },
         saveAmount = if ((compareTo ?: 0.0) > 0) {
             getDifferenceInPercent(total ?: 0.0, compareTo ?: 0.0)
@@ -486,16 +516,16 @@ fun StoreProduct.toPromoTierButton(title: String, compareTo: Double): TierButton
     val introPrice = introductoryPriceAmount()?.formatCurrency(
         threshold = FormattingThreshold.NONE,
         currency = getCurrency(),
-    ) ?: "N/A"
+    ) ?: Localization.string("N/A")
     val normalPrice = normalPriceAmount().formatCurrency(
         threshold = FormattingThreshold.NONE,
         currency = getCurrency(),
     )
     return TierButton(
         title = title,
-        formattedPrice = "$introPrice / year",
-        formattedPriceAccessibilityLabel = "$introPrice per year",
-        subTitle = "For the first year, then $normalPrice per year",
+        formattedPrice = Localization.format("%@ / year", introPrice),
+        formattedPriceAccessibilityLabel = Localization.format("%@ per %@", introPrice, Localization.string("year")),
+        subTitle = Localization.format("For the first year, then %@ per year", normalPrice),
         saveAmount = getDifferenceInPercent(0.0, compareTo),
         timeLeft = null,
         storeProduct = this,

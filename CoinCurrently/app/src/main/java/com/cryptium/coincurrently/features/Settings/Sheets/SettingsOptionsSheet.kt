@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
 import com.cryptium.coincurrently.sharedui.components.ImageCase
@@ -91,7 +92,7 @@ fun SettingsOptionsSheet(
 
             items(options) { option ->
                 SingleSelectView(
-                    title = option,
+                    title = Localization.string(option),
                     subtitle = null,
                     imageCase = ImageCase.Nothing,
                     isSelected = selectedOption == option,

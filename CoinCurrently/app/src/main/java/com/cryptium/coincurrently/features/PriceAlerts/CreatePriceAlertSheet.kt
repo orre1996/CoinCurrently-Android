@@ -71,10 +71,10 @@ import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
 import com.cryptium.coincurrently.sharedui.theme.trendDown
 import com.cryptium.coincurrently.sharedui.theme.trendUp
 import com.cryptium.coincurrently.sharedui.components.CheckboxView
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.changeDecimalPoints
 import com.cryptium.coincurrently.core.extensions.changePercentDecimalPoints
 import com.cryptium.coincurrently.core.extensions.currencyAccessible
-import com.cryptium.coincurrently.core.extensions.directionAccessible
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.getDifferenceInPercent
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
@@ -162,8 +162,11 @@ fun CreatePriceAlertSheet(
         }
     }
 
-    val currentPriceAccessibilityLabel = "Current ${cryptoDetailModel?.name ?: ""} price: " +
-        (currentPrice?.currencyAccessible(currency = selectedCurrency) ?: "")
+    val currentPriceAccessibilityLabel = Localization.format(
+        "Current %@ price: %@",
+        cryptoDetailModel?.name ?: "",
+        currentPrice?.currencyAccessible(currency = selectedCurrency) ?: "",
+    )
 
     val percentColor = if (priceInput.value >= (currentPrice ?: 0.0)) {
             MaterialTheme.colors.trendUp
@@ -284,11 +287,13 @@ fun CreatePriceAlertSheet(
                             )
 
                             Text(
-                                text = if (isAlertByPriceSelected.value) {
-                                    "Target Price"
-                                } else {
-                                    "Target Price Change %"
-                                },
+                                text = Localization.string(
+                                    if (isAlertByPriceSelected.value) {
+                                        "Target Price"
+                                    } else {
+                                        "Target Price Change %"
+                                    }
+                                ),
                                 color = MaterialTheme.colors.onSurfaceDimmer,
                                 style = satoshiMedium(14),
                                 modifier = Modifier
@@ -321,9 +326,11 @@ fun CreatePriceAlertSheet(
                             )
 
                             if (isAlertByPriceSelected.value) {
-                                val targetPercentAccessibilityLabel = "Change from current price: " +
-                                    "${change.directionAccessible.lowercase()} " +
-                                    "${change.numberAccessible(maxPlaces = change.changePercentDecimalPoints)} percent"
+                                val targetPercentAccessibilityLabel = Localization.format(
+                                    "Change from current price: %@ %@ percent",
+                                    Localization.string(if (change >= 0) "Up" else "Down"),
+                                    change.numberAccessible(maxPlaces = change.changePercentDecimalPoints),
+                                )
 
                                 Text(
                                     buildAnnotatedString {
@@ -338,7 +345,7 @@ fun CreatePriceAlertSheet(
                                             append("$targetPercent%")
                                         }
 
-                                        append(" from current Price")
+                                        append(Localization.string(" from current Price"))
                                     },
                                     style = satoshiMedium(14),
                                     color = MaterialTheme.colors.onSurfaceDim,
@@ -356,7 +363,7 @@ fun CreatePriceAlertSheet(
 
                                 Text(
                                     buildAnnotatedString {
-                                        append("Target Price ")
+                                        append("${Localization.string("Target Price")} ")
 
                                         withStyle(
                                             style = SpanStyle(
@@ -378,7 +385,7 @@ fun CreatePriceAlertSheet(
                                     maxLines = 1,
                                     modifier = Modifier
                                         .semantics {
-                                            contentDescription = "Target Price: $formattedTargetPrice"
+                                            contentDescription = Localization.format("Target Price: %@", formattedTargetPrice)
                                         }
                                 )
                             }
@@ -392,7 +399,10 @@ fun CreatePriceAlertSheet(
 
                 SnackbarView(
                     showSnackBar = showSnackbar,
-                    message = "Couldn't add ${cryptoDetailModel?.symbol?.uppercase() ?: "coin"} alert. Please try again later.",
+                    message = Localization.format(
+                        "Couldn’t add %@ alert. Please try again.",
+                        cryptoDetailModel?.symbol?.uppercase() ?: Localization.string("coin"),
+                    ),
                     buttonTitle = "",
                     type = SnackBarType.FAILURE,
                     isTabbarHidden = true,
@@ -412,7 +422,9 @@ private fun AlertTypeView(
     talkBackEnabled: Boolean
 ) {
     val selectedIndex = if (isAlertByPriceSelected.value) 0 else 1
-    val selectedLabel = if (isAlertByPriceSelected.value) "Alert by price" else "Alert by percent"
+    val selectedLabel = Localization.string(
+        if (isAlertByPriceSelected.value) "Alert by price" else "Alert by percent"
+    )
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
@@ -424,8 +436,8 @@ private fun AlertTypeView(
             .then(
                 if (talkBackEnabled) {
                     Modifier.clearAndSetSemantics {
-                        contentDescription = "Alert type. Swipe up or down to change alert type."
-                        stateDescription = "Type ${selectedIndex + 1} of 2, $selectedLabel."
+                        contentDescription = "${Localization.string("Alert type")}. ${Localization.string("Swipe up or down to change alert type.")}"
+                        stateDescription = Localization.format("Type %d of %d, %@.", selectedIndex + 1, 2, selectedLabel)
                         progressBarRangeInfo = ProgressBarRangeInfo(
                             current = selectedIndex.toFloat(),
                             range = 0f..1f,
@@ -451,18 +463,18 @@ private fun AlertTypeView(
     ) {
         CappedFontScale(DynamicTypeSizeCap.Accessibility2) {
         TypeButton(
-            title = "By Price",
+            title = Localization.string("By Price"),
             isSelected = isAlertByPriceSelected.value,
-            accessibilityLabel = "Alert by price",
+            accessibilityLabel = Localization.string("Alert by price"),
             onClick = {
                 isAlertByPriceSelected.value = true
             }
         )
 
         TypeButton(
-            title = "By Δ%",
+            title = Localization.string("By Δ%"),
             isSelected = !isAlertByPriceSelected.value,
-            accessibilityLabel = "Alert by percent",
+            accessibilityLabel = Localization.string("Alert by percent"),
             onClick = {
                 isAlertByPriceSelected.value = false
             }
@@ -512,7 +524,7 @@ private fun CurrentPriceView(
 ) {
     Text(
         buildAnnotatedString {
-            append("Current price ")
+            append(Localization.string("Current price "))
 
             withStyle(style = SpanStyle(color = MaterialTheme.colors.onSurface)) {
                 append(
@@ -559,7 +571,7 @@ private fun InputField(
             threshold = FormattingThreshold.NONE,
             currency = selectedCurrency
         )
-        "Trigger alert at $formattedPrice"
+        Localization.format("Trigger alert at %@", formattedPrice)
     } else {
         val decimals = percentInput.value.changePercentDecimalPoints
         val formattedPercent = NumberFormat.getNumberInstance(AppLocale.enUsPosix).apply {
@@ -567,7 +579,12 @@ private fun InputField(
             minimumFractionDigits = decimals
             isGroupingUsed = true
         }.format(percentInput.value)
-        "Trigger alert when ${coinName ?: ""} is ${selectedDirection.value.value} $formattedPercent percent"
+        Localization.format(
+            "Trigger alert when %@ is %@ %@ percent",
+            coinName ?: "",
+            Localization.string(if (selectedDirection.value == ChangeDirection.Up) "Up" else "Down"),
+            formattedPercent,
+        )
     }
 
     NumericInputField(
@@ -597,7 +614,10 @@ private fun InputField(
                     },
                     modifier = Modifier
                         .semantics {
-                            contentDescription = "Change percent direction. currently selected: ${selectedDirection.value.value}"
+                            contentDescription = Localization.format(
+                                "Change percent direction, currently selected: %@",
+                                Localization.string(if (selectedDirection.value == ChangeDirection.Up) "Up" else "Down"),
+                            )
                             role = Role.Button
                         }
                 )
@@ -613,7 +633,7 @@ private fun RecurringView(
     isChecked: MutableState<Boolean>
 ) {
     CheckboxView(
-        trailingText = "Set as recurring alert",
+        trailingText = Localization.string("Set as recurring alert"),
         isChecked = isChecked.value,
         onToggle = {
             isChecked.value = !isChecked.value
@@ -630,7 +650,7 @@ private fun AddAlertButtonView(
     onClick: () -> Unit
 ) {
     PrimaryButton(
-        text = "Set Price Alert",
+        text = Localization.string("Set Price Alert"),
         isLoading = isLoading,
         fullWidth = true,
         modifier = Modifier

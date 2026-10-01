@@ -46,6 +46,7 @@ import com.cryptium.coincurrently.sharedui.theme.primaryBackgroundNoRipple
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.sharedui.theme.trendDown
 import com.cryptium.coincurrently.sharedui.theme.trendUp
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
@@ -117,7 +118,7 @@ fun ReferralScreen(
         modifier = modifier,
     ) {
         CustomTopAppBar(
-            title = "Referral Program",
+            title = Localization.string("Referral Program"),
             navigateBack = { navigationViewModel.navigateBack() },
         )
 
@@ -153,15 +154,15 @@ fun ReferralScreen(
                         navigationViewModel.showSnackbar(
                             context = context,
                             type = SnackBarType.SUCCESS,
-                            message = "Referral link copied to clipboard.",
+                            message = Localization.string("Referral link copied to clipboard."),
                         )
                     },
                     onShareLink = {
                         viewModel.referralLink?.let { link ->
-                            val text = """
-                            Join me on CoinCurrently and track crypto in real time!
-                            $link
-                        """.trimIndent()
+                            val text = listOf(
+                                Localization.string("Join me on CoinCurrently and track crypto in real time!"),
+                                link,
+                            ).joinToString("\n")
 
                             val sendIntent = Intent(Intent.ACTION_SEND).apply {
                                 action = Intent.ACTION_SEND
@@ -193,13 +194,16 @@ private fun ReferralCodeSection(
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Text(
-            text = "Your referral code",
+            text = Localization.string("Your referral code"),
             style = satoshiBold(22),
             color = MaterialTheme.colors.onSurface,
         )
 
         Text(
-            text = "${viewModel.currentReferrals}/3 towards earnings 6 months of CoinCurrently Pro. Thereafter 1 month per referral.",
+            text = Localization.format(
+                "%d/3 towards earnings 6 months of CoinCurrently Pro. Thereafter 1 month per referral.",
+                viewModel.currentReferrals,
+            ),
             style = satoshiMedium(16),
             color = MaterialTheme.colors.onSurfaceDim,
         )
@@ -209,7 +213,7 @@ private fun ReferralCodeSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
-                .semantics { contentDescription = "Referral QR code" },
+                .semantics { contentDescription = Localization.string("Referral QR code") },
         ) {
             val qrSize = (maxWidth / 3) * 2
 
@@ -254,7 +258,7 @@ private fun ReferralCodeSection(
                     .padding(top = 8.dp),
             ) {
                 SecondaryButton(
-                    text = "Copy link",
+                    text = Localization.string("Copy link"),
                     isEnabled = viewModel.referralLink != null,
                     fullWidth = true,
                     modifier = Modifier.weight(1f),
@@ -262,7 +266,7 @@ private fun ReferralCodeSection(
                 )
 
                 PrimaryButton(
-                    text = "Share",
+                    text = Localization.string("Share"),
                     isEnabled = viewModel.referralLink != null,
                     fullWidth = true,
                     modifier = Modifier.weight(1f),
@@ -283,13 +287,13 @@ private fun RedeemCodeSection(
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Text(
-            text = "Redeem a code",
+            text = Localization.string("Redeem a code"),
             style = satoshiBold(22),
             color = MaterialTheme.colors.onSurface,
         )
 
         Text(
-            text = "Redeem a code and get 7 days of CoinCurrently Pro for free",
+            text = Localization.string("Redeem a code and get 7 days of CoinCurrently Pro for free"),
             style = satoshiMedium(16),
             color = MaterialTheme.colors.onSurfaceDim,
         )
@@ -305,8 +309,10 @@ private fun RedeemCodeSection(
                 input = viewModel.redeemCodeInput,
                 startIcon = null,
                 placeholder = "Enter referral code",
-                accessibilityLabel = viewModel.redeemCodeInput.ifEmpty {
-                    "Enter referral code"
+                accessibilityLabel = if (viewModel.redeemCodeInput.isEmpty()) {
+                    Localization.string("Enter referral code")
+                } else {
+                    viewModel.redeemCodeInput
                 },
                 outlineColor = if (viewModel.showError) {
                     MaterialTheme.colors.trendDown
@@ -320,7 +326,7 @@ private fun RedeemCodeSection(
             when {
                 viewModel.redeemSucceeded -> {
                     Text(
-                        text = "Referral code redeemed successfully.",
+                        text = Localization.string("Referral code redeemed successfully."),
                         style = satoshiMedium(14),
                         color = MaterialTheme.colors.trendUp,
                     )
@@ -336,7 +342,7 @@ private fun RedeemCodeSection(
             }
 
             PrimaryButton(
-                text = "Redeem Code",
+                text = Localization.string("Redeem Code"),
                 isEnabled = viewModel.redeemCodeInput.trim().isNotEmpty() && !viewModel.isRedeemingCode,
                 isLoading = viewModel.isRedeemingCode,
                 onClick = onRedeem,

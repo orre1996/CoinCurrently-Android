@@ -37,6 +37,7 @@ import com.cryptium.coincurrently.sharedui.components.CustomProgressBarView
 import com.cryptium.coincurrently.features.Achievements.Models.AchievementDefinition
 import com.cryptium.coincurrently.features.Achievements.Models.AchievementLevel
 import com.cryptium.coincurrently.features.Achievements.Models.AchievementLevelState
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.features.Achievements.Models.AchievementProgress
 import kotlin.math.roundToInt
 
@@ -82,7 +83,7 @@ fun AchievementLevelCardView(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
-                text = level.name,
+                text = Localization.string(level.name),
                 style = satoshiBold(14),
                 color = if (state == AchievementLevelState.LOCKED) {
                     MaterialTheme.colors.onSurfaceDimmer
@@ -109,7 +110,7 @@ fun AchievementLevelCardView(
         }
 
         Text(
-            text = level.description,
+            text = Localization.string(level.description),
             style = satoshiMedium(12),
             color = MaterialTheme.colors.onSurfaceDim,
             maxLines = 2,
@@ -132,7 +133,7 @@ fun AchievementLevelCardView(
 
             AchievementLevelState.UNLOCKED -> {
                 Text(
-                    text = "Unlocked",
+                    text = Localization.string("Unlocked"),
                     style = satoshiMedium(12),
                     color = MaterialTheme.colors.primary,
                 )
@@ -140,7 +141,7 @@ fun AchievementLevelCardView(
 
             AchievementLevelState.LOCKED -> {
                 Text(
-                    text = "Locked",
+                    text = Localization.string("Locked"),
                     style = satoshiMedium(12),
                     color = MaterialTheme.colors.onSurfaceDimmer,
                 )
@@ -171,10 +172,18 @@ private fun levelAccessibilityLabel(
     valueFormat: AchievementDefinition.AchievementValueFormat,
 ): String {
     val status = when (state) {
-        AchievementLevelState.UNLOCKED -> "unlocked"
+        AchievementLevelState.UNLOCKED -> Localization.string("unlocked")
         AchievementLevelState.IN_PROGRESS ->
-            "in progress, ${progressLabel(progress.currentValue, level.threshold, valueFormat)}"
-        AchievementLevelState.LOCKED -> "locked"
+            Localization.format(
+                "in progress, %@",
+                progressLabel(progress.currentValue, level.threshold, valueFormat),
+            )
+        AchievementLevelState.LOCKED -> Localization.string("locked")
     }
-    return "${level.name} level, ${level.description}, $status"
+    return Localization.format(
+        "%@ level, %@, %@",
+        Localization.string(level.name),
+        Localization.string(level.description),
+        status,
+    )
 }
