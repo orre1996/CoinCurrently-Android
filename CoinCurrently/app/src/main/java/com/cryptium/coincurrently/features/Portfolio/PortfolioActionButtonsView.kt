@@ -38,7 +38,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.cryptium.coincurrently.BuildConfig
 import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.core.config.AppLocale
@@ -139,74 +138,72 @@ internal fun ActionButtons(
                         )
                 )
 
-                if (BuildConfig.DEBUG) {
-                    PrimaryButton(
-                        text = Localization.string("Export Portfolio"),
-                        accessibilityLabel = Localization.string("Export portfolio"),
-                        isEnabled = hasTransactions,
-                        onClick = {
-                            exportPortfolio.invoke()
-                            isActionMenuExpanded.value = false
-                        },
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .then(
-                                if (talkBackEnabled) {
-                                    Modifier.semantics { traversalIndex = 3f }
-                                } else {
-                                    Modifier
-                                }
-                            )
-                    )
-
-                    PrimaryButton(
-                        text = if (benchmarkCoin == null) {
-                            Localization.string("Benchmark")
-                        } else {
-                            Localization.format(
-                                "Benchmark (%@)",
-                                benchmarkCoin.symbol?.uppercase(AppLocale.enUsPosix) ?: "",
-                            )
-                        },
-                        accessibilityLabel = if (benchmarkCoin == null) {
-                            Localization.string("Benchmark portfolio")
-                        } else {
-                            Localization.format("Change benchmark, currently %@", benchmarkCoin.name ?: "")
-                        },
-                        onClick = {
-                            selectBenchmark.invoke()
-                            isActionMenuExpanded.value = false
-                        },
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .then(
-                                if (talkBackEnabled) {
-                                    Modifier.semantics { traversalIndex = 4f }
-                                } else {
-                                    Modifier
-                                }
-                            )
-                    )
-
-                    if (benchmarkCoin != null) {
-                        PrimaryButton(
-                            text = Localization.string("Remove Benchmark"),
-                            accessibilityLabel = Localization.string("Remove benchmark"),
-                            onClick = {
-                                removeBenchmark.invoke()
-                                isActionMenuExpanded.value = false
-                            },
-                            modifier = Modifier
-                                .padding(end = 16.dp)
-                                .then(
-                                    if (talkBackEnabled) {
-                                        Modifier.semantics { traversalIndex = 5f }
-                                    } else {
-                                        Modifier
-                                    }
-                                )
+                PrimaryButton(
+                    text = Localization.string("Export Portfolio"),
+                    accessibilityLabel = Localization.string("Export portfolio"),
+                    isEnabled = hasTransactions,
+                    onClick = {
+                        exportPortfolio.invoke()
+                        isActionMenuExpanded.value = false
+                    },
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .then(
+                            if (talkBackEnabled) {
+                                Modifier.semantics { traversalIndex = 3f }
+                            } else {
+                                Modifier
+                            }
                         )
-                    }
+                )
+
+                PrimaryButton(
+                    text = if (benchmarkCoin == null) {
+                        Localization.string("Benchmark")
+                    } else {
+                        Localization.format(
+                            "Benchmark (%@)",
+                            benchmarkCoin.symbol?.uppercase(AppLocale.enUsPosix) ?: "",
+                        )
+                    },
+                    accessibilityLabel = if (benchmarkCoin == null) {
+                        Localization.string("Benchmark portfolio")
+                    } else {
+                        Localization.format("Change benchmark, currently %@", benchmarkCoin.name ?: "")
+                    },
+                    onClick = {
+                        selectBenchmark.invoke()
+                        isActionMenuExpanded.value = false
+                    },
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .then(
+                            if (talkBackEnabled) {
+                                Modifier.semantics { traversalIndex = 4f }
+                            } else {
+                                Modifier
+                            }
+                        )
+                )
+
+                if (benchmarkCoin != null) {
+                    PrimaryButton(
+                        text = Localization.string("Remove Benchmark"),
+                        accessibilityLabel = Localization.string("Remove benchmark"),
+                        onClick = {
+                            removeBenchmark.invoke()
+                            isActionMenuExpanded.value = false
+                        },
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .then(
+                                if (talkBackEnabled) {
+                                    Modifier.semantics { traversalIndex = 5f }
+                                } else {
+                                    Modifier
+                                }
+                            )
+                    )
                 }
             }
         }
@@ -227,10 +224,8 @@ internal fun ActionButtons(
                 .semantics {
                     contentDescription = if (isExpanded) {
                         Localization.string("Close add menu")
-                    } else if (BuildConfig.DEBUG) {
-                        "${Localization.string("Add portfolio item")}. ${Localization.string("Shows add transaction, import wallet, export portfolio, and benchmark options")}"
                     } else {
-                        "${Localization.string("Add portfolio item")}. ${Localization.string("Shows add transaction, import wallet, and export portfolio options")}"
+                        "${Localization.string("Add portfolio item")}. ${Localization.string("Shows add transaction, import wallet, export portfolio, and benchmark options")}"
                     }
                     if (talkBackEnabled && isExpanded) {
                         traversalIndex = 0f

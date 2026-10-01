@@ -96,6 +96,7 @@ class PortfolioViewModel : ViewModel() {
         private set
     private var benchmarkTimeStamps = listOf<Double>()
     private var rawBenchmarkPrices = listOf<Double>()
+    private var benchmarkSharesScale = false
     var dragPosition = mutableStateOf(0.dp)
     var chartSize = mutableStateOf(DpSize.Zero)
     val hoverPriceTextWidth = mutableStateOf(0.dp)
@@ -142,8 +143,11 @@ class PortfolioViewModel : ViewModel() {
             calculatePortfolioTotal()
         }
     }
+    private val dropsPaddedBenchmarkPoints: Boolean
+        get() = benchmarkSharesScale && benchmarkPrices.size > 2
+
     val chartDropCount: Int
-        get() = if (benchmarkCoin == null) 0 else 2
+        get() = if (dropsPaddedBenchmarkPoints) 2 else 0
 
     fun getPrices(dropLastTwo: Boolean = false): List<Double> {
         if (dropLastTwo && prices.size > 2) return prices.dropLast(2)
@@ -180,8 +184,8 @@ class PortfolioViewModel : ViewModel() {
         chartHover.updateHoverStats(
             touchXs = touchXs,
             chartWidth = chartSize.value.width,
-            prices = if (benchmarkCoin == null) rawPrices else portfolioHoverPrices,
-            dates = getTimeStamps(dropLastTwo = benchmarkCoin != null),
+            prices = if (dropsPaddedBenchmarkPoints) portfolioHoverPrices else rawPrices,
+            dates = getTimeStamps(dropLastTwo = dropsPaddedBenchmarkPoints),
             timeChart = selectedChartTimeFrame,
             is24HourClock = is24HourClock,
             isBlocked = portfolio == null,
@@ -207,14 +211,19 @@ class PortfolioViewModel : ViewModel() {
 
     fun clearBenchmark() {
         benchmarkCoin = null
-        benchmarkPrices = emptyList()
-        benchmarkTimeStamps = emptyList()
-        rawBenchmarkPrices = emptyList()
+        clearBenchmarkSeries()
         prices = rawPrices
         timeStamps = rawTimeStamps
         setChangePercent()
         setChangeValue()
         setGraphStats()
+    }
+
+    private fun clearBenchmarkSeries() {
+        benchmarkPrices = emptyList()
+        benchmarkTimeStamps = emptyList()
+        rawBenchmarkPrices = emptyList()
+        benchmarkSharesScale = false
     }
 
     fun toggleHideData() {
@@ -290,15 +299,7 @@ class PortfolioViewModel : ViewModel() {
     private fun setBenchmarkSeries() {
         val sparkline = benchmarkCoin?.sparkline_in_7d?.price
         if (sparkline.isNullOrEmpty() || rawPrices.isEmpty()) {
-            benchmarkPrices = emptyList()
-            benchmarkTimeStamps = emptyList()
-            return
-        }
-
-        val firstPortfolio = rawPrices.firstOrNull { it != -1.0 }
-        if (firstPortfolio == null || firstPortfolio == 0.0) {
-            benchmarkPrices = emptyList()
-            benchmarkTimeStamps = emptyList()
+            clearBenchmarkSeries()
             return
         }
 
@@ -309,12 +310,9 @@ class PortfolioViewModel : ViewModel() {
             }
         }
 
-        val firstBenchmark = sparklinePrices.firstOrNull()
-        if (firstBenchmark == null || firstBenchmark == 0.0) {
-            benchmarkPrices = emptyList()
-            benchmarkTimeStamps = emptyList()
-            return
-        }
+        val firstBenchmark = sparklinePrices.firstOrNull { it != -1.0 } ?: 0.0
+        val firstPortfolio = rawPrices.firstOrNull { it != -1.0 } ?: 0.0
+        val sharesScale = firstPortfolio != 0.0 && firstBenchmark != 0.0
 
         val offset = rawTimeStamps.size - sparklinePrices.size
         val alignedPrices = MutableList(rawTimeStamps.size) { -1.0 }
@@ -322,10 +320,15 @@ class PortfolioViewModel : ViewModel() {
         sparklinePrices.forEachIndexed { index, value ->
             val globalIndex = index + offset
             if (globalIndex in alignedPrices.indices) {
-                alignedPrices[globalIndex] = firstPortfolio * (value / firstBenchmark)
+                alignedPrices[globalIndex] = if (sharesScale) {
+                    firstPortfolio * (value / firstBenchmark)
+                } else {
+                    value
+                }
             }
         }
 
+        benchmarkSharesScale = sharesScale
         benchmarkPrices = alignedPrices
         benchmarkTimeStamps = rawTimeStamps
         rawBenchmarkPrices = alignedPrices
@@ -338,15 +341,14 @@ class PortfolioViewModel : ViewModel() {
         benchmarkTimeStamps = rawTimeStamps
 
         if (benchmarkCoin == null) {
-            benchmarkPrices = emptyList()
-            benchmarkTimeStamps = emptyList()
-            rawBenchmarkPrices = emptyList()
+            clearBenchmarkSeries()
             return
         }
 
         setBenchmarkSeries()
 
-        if (prices.isEmpty() || benchmarkPrices.isEmpty()) {
+        if (prices.isEmpty() || benchmarkPrices.isEmpty() || !benchmarkSharesScale) {
+            benchmarkSharesScale = false
             return
         }
 
@@ -364,6 +366,7 @@ class PortfolioViewModel : ViewModel() {
             firstCompare == null || compareMax == null || compareMin == null ||
             firstCompare == 0.0
         ) {
+            benchmarkSharesScale = false
             return
         }
 
@@ -408,7 +411,7 @@ class PortfolioViewModel : ViewModel() {
     }
 
     private val portfolioHoverPrices: List<Double>
-        get() = getPrices(dropLastTwo = benchmarkCoin != null).mapIndexed { index, chartPrice ->
+        get() = getPrices(dropLastTwo = dropsPaddedBenchmarkPoints).mapIndexed { index, chartPrice ->
             if (chartPrice == -1.0) {
                 -1.0
             } else {
@@ -737,9 +740,10 @@ class PortfolioViewModel : ViewModel() {
 
     private fun setGraphStats() {
         val chartCurrency = CurrencySelectionModel.empty()
-        val validPrices: List<Double> = when {
-            benchmarkCoin != null -> rawPrices.filter { it != -1.0 } + rawBenchmarkPrices.filter { it != -1.0 }
-            else -> rawPrices.filter { it != -1.0 }
+        val validPrices: List<Double> = if (dropsPaddedBenchmarkPoints) {
+            rawPrices.filter { it != -1.0 } + rawBenchmarkPrices.filter { it != -1.0 }
+        } else {
+            rawPrices.filter { it != -1.0 }
         }
 
         graphStats = when {

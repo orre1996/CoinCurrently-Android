@@ -627,19 +627,19 @@ fun PortfolioScreen(
                                                     timeStamps = if (viewModel.portfolio.isNullOrEmpty()) {
                                                         emptyList()
                                                     } else {
-                                                        viewModel.getTimeStamps(dropLastTwo = viewModel.benchmarkCoin != null)
+                                                        viewModel.getTimeStamps(dropLastTwo = viewModel.chartDropCount > 0)
                                                     },
                                                     prices = if (viewModel.portfolio.isNullOrEmpty()) {
                                                         emptyList()
                                                     } else {
-                                                        viewModel.getPrices(dropLastTwo = viewModel.benchmarkCoin != null)
+                                                        viewModel.getPrices(dropLastTwo = viewModel.chartDropCount > 0)
                                                     },
                                                     timeChart = viewModel.selectedChartTimeFrame,
                                                     trailingPadding = biggestValue.value.width,
                                                     comparePrices = if (viewModel.benchmarkPrices.isEmpty()) {
                                                         null
                                                     } else {
-                                                        viewModel.getBenchmarkPrices(dropLastTwo = true)
+                                                        viewModel.getBenchmarkPrices(dropLastTwo = viewModel.chartDropCount > 0)
                                                     },
                                                     mainSeriesName = if (viewModel.benchmarkCoin == null) {
                                                         null
@@ -733,19 +733,19 @@ fun PortfolioScreen(
                                                 timeStamps = if (viewModel.portfolio.isNullOrEmpty()) {
                                                     emptyList()
                                                 } else {
-                                                    viewModel.getTimeStamps(dropLastTwo = viewModel.benchmarkCoin != null)
+                                                    viewModel.getTimeStamps(dropLastTwo = viewModel.chartDropCount > 0)
                                                 },
                                                 prices = if (viewModel.portfolio.isNullOrEmpty()) {
                                                     emptyList()
                                                 } else {
-                                                    viewModel.getPrices(dropLastTwo = viewModel.benchmarkCoin != null)
+                                                    viewModel.getPrices(dropLastTwo = viewModel.chartDropCount > 0)
                                                 },
                                                 timeChart = viewModel.selectedChartTimeFrame,
                                                 trailingPadding = biggestValue.value.width,
                                                 comparePrices = if (viewModel.benchmarkPrices.isEmpty()) {
                                                     null
                                                 } else {
-                                                    viewModel.getBenchmarkPrices(dropLastTwo = true)
+                                                    viewModel.getBenchmarkPrices(dropLastTwo = viewModel.chartDropCount > 0)
                                                 },
                                                 mainSeriesName = if (viewModel.benchmarkCoin == null) {
                                                     null
@@ -781,7 +781,7 @@ fun PortfolioScreen(
 
                                         ChartTimeStamps(
                                             viewModel.selectedChartTimeFrame,
-                                            viewModel.getTimeStamps(dropLastTwo = viewModel.benchmarkCoin != null),
+                                            viewModel.getTimeStamps(dropLastTwo = viewModel.chartDropCount > 0),
                                             modifier = Modifier
                                                 .layout { measurable, constraints ->
                                                     val placeable = measurable.measure(constraints)
