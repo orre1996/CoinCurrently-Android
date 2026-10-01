@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.outline
@@ -84,8 +85,8 @@ fun SelectTransactionTypeSheet(
                     .padding(vertical = 24.dp)
             ) {
                 TransactionTypeView(
-                    title = "Buy",
-                    subtitle = "Bought coins with cash.",
+                    title = Localization.string("Buy"),
+                    subtitle = Localization.string("Bought coins with cash."),
                     image = R.drawable.plus,
                     viewTapped = {
                         coroutineScope.launch {
@@ -96,8 +97,8 @@ fun SelectTransactionTypeSheet(
                 )
 
                 TransactionTypeView(
-                    title = "Sell",
-                    subtitle = "Sold coins with cash.",
+                    title = Localization.string("Sell"),
+                    subtitle = Localization.string("Sold coins with cash."),
                     image = R.drawable.minus,
                     viewTapped = {
                         coroutineScope.launch {
@@ -108,8 +109,8 @@ fun SelectTransactionTypeSheet(
                 )
 
                 TransactionTypeView(
-                    title = "Swap",
-                    subtitle = "Swapped one coin for another.",
+                    title = Localization.string("Swap"),
+                    subtitle = Localization.string("Swapped one coin for another."),
                     image = R.drawable.trade,
                     viewTapped = {
                         coroutineScope.launch {
@@ -120,8 +121,8 @@ fun SelectTransactionTypeSheet(
                 )
 
                 TransactionTypeView(
-                    title = "Deposit",
-                    subtitle = "Deposited coins into your wallet.",
+                    title = Localization.string("Deposit"),
+                    subtitle = Localization.string("Deposited coins into your wallet."),
                     image = R.drawable.deposit,
                     viewTapped = {
                         coroutineScope.launch {
@@ -132,8 +133,8 @@ fun SelectTransactionTypeSheet(
                 )
 
                 TransactionTypeView(
-                    title = "Withdraw",
-                    subtitle = "Withdrawn coins out of your wallet.",
+                    title = Localization.string("Withdraw"),
+                    subtitle = Localization.string("Withdrawn coins out of your wallet."),
                     image = R.drawable.withdraw,
                     viewTapped = {
                         coroutineScope.launch {

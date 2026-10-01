@@ -1,6 +1,7 @@
 package com.cryptium.coincurrently.features.Search
 import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.app.NavigationScreens
+import com.cryptium.coincurrently.app.title
 import com.cryptium.coincurrently.app.SearchScreenCase
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box

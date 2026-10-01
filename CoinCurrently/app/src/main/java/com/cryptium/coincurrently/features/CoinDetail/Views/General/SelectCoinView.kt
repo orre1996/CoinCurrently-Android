@@ -52,9 +52,9 @@ fun SelectCoinView(
     val accessibilityLabel = if (index != null && totalCount != null) {
         val type = Localization.string(itemType)
         if (name.isNullOrEmpty()) {
-            Localization.format("%1$@ %2$d of %3$d", type, index + 1, totalCount)
+            Localization.format("%1\$@ %2\$d of %3\$d", type, index + 1, totalCount)
         } else {
-            Localization.format("%1$@ %2$d of %3$d, %4$@", type, index + 1, totalCount, name)
+            Localization.format("%1\$@ %2\$d of %3\$d, %4\$@", type, index + 1, totalCount, name)
         }
     } else {
         name.orEmpty()

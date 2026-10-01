@@ -37,6 +37,7 @@ import com.cryptium.coincurrently.sharedui.theme.outlineVariant
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
 import com.cryptium.coincurrently.core.extensions.addedAccessibilityDescription
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.stars
@@ -73,21 +74,24 @@ fun PortfolioImportTransaction(
 
     val accessibilityLabelText = buildString {
         if (index != null && totalCount != null) {
-            append("Transaction ${index + 1} of $totalCount. ")
+            append("${Localization.format("Transaction %1\$d of %2\$d", index + 1, totalCount)}. ")
         }
-        append("Imported $walletName. ".trim())
+        append("${Localization.format("Imported %@", walletName)}. ")
         if (coinName.isNotEmpty() && walletImport != null) {
-            append("$coinName Mainnet, ${accessibilityAddressDescription(walletImport)}. ")
+            append("${Localization.format("%1$@ Mainnet, %2$@", coinName, accessibilityAddressDescription(walletImport))}. ")
         }
         if (hideData) {
-            append("Value hidden. ")
+            append("${Localization.string("Value hidden")}. ")
         } else if (value != null) {
             append(
-                "Value ${
-                    value.formatCurrency(
-                        threshold = FormattingThreshold.MILLION,
-                        currency = currency,
-                        accessible = true,
+                "${
+                    Localization.format(
+                        "Value %@",
+                        value.formatCurrency(
+                            threshold = FormattingThreshold.MILLION,
+                            currency = currency,
+                            accessible = true,
+                        ),
                     )
                 }. "
             )
@@ -201,7 +205,7 @@ private fun ImportInfoView(
         modifier = modifier,
     ) {
         Text(
-            text = "Imported ${walletImport?.walletName ?: ""}",
+            text = Localization.format("Imported %@", walletImport?.walletName ?: ""),
             style = satoshiBold(16),
             color = MaterialTheme.colors.onSurface,
             modifier = Modifier
@@ -209,9 +213,11 @@ private fun ImportInfoView(
         )
 
         Text(
-            text = "${coin?.symbol?.uppercase() ?: ""} Mainnet · ${
-                walletImport?.address?.uppercase()?.take(4)
-            }...${walletImport?.address?.uppercase()?.takeLast(4)}",
+            text = Localization.format(
+                "%1$@ Mainnet · %2$@",
+                coin?.symbol?.uppercase() ?: "",
+                "${walletImport?.address?.uppercase()?.take(4)}...${walletImport?.address?.uppercase()?.takeLast(4)}",
+            ),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDimmer,
             modifier = Modifier

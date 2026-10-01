@@ -56,6 +56,7 @@ import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.core.extensions.changePercentDecimalPoints
 import com.cryptium.coincurrently.core.extensions.directionAccessible
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.sheets.EmptyContent
 import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
 import com.cryptium.coincurrently.sharedui.components.PriceChangeValueView
@@ -125,9 +126,12 @@ fun LazyListScope.CryptoDetailPortfolioView(
                         )
                 ) {
                     EmptyContent(
-                        title = "No transactions yet",
-                        subTitle = "Add your ${viewModel.cryptoInfo?.name ?: ""} transactions to start tracking your portfolio holdings here.",
-                        buttonTitle = "Add Transaction",
+                        title = Localization.string("No transactions yet"),
+                        subTitle = Localization.format(
+                            "Add your %@ transactions to start tracking your portfolio holdings here.",
+                            viewModel.cryptoInfo?.name ?: "",
+                        ),
+                        buttonTitle = Localization.string("Add Transaction"),
                         buttonAction = onAddTransaction,
                     )
                 }
@@ -196,7 +200,7 @@ private fun HeaderView(
             )
     ) {
         Text(
-            text = "Transactions",
+            text = Localization.string("Transactions"),
             style = satoshiBold(22),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier
@@ -206,7 +210,7 @@ private fun HeaderView(
 
         Image(
             painter = painterResource(id = R.drawable.add),
-            contentDescription = "Add new transaction",
+            contentDescription = Localization.string("Add new transaction"),
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceDimmer),
             modifier = Modifier
                 .alpha(if (groupedTransactions?.isEmpty() ?: true) 0f else 1f)
@@ -330,7 +334,7 @@ private fun OverViewHeader(
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "Statistics",
+            text = Localization.string("Statistics"),
             style = satoshiBold(22),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier
@@ -340,11 +344,9 @@ private fun OverViewHeader(
 
         Image(
             painter = painterResource(if (hidePortfolioData) R.drawable.unhide else R.drawable.hide),
-            contentDescription = if (hidePortfolioData) {
-                "Show portfolio data"
-            } else {
-                "Hide portfolio data"
-            },
+            contentDescription = Localization.string(
+                if (hidePortfolioData) "Show portfolio data" else "Hide portfolio data",
+            ),
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceDimmer),
             modifier = Modifier
                 .padding(12.dp)
@@ -375,11 +377,15 @@ private fun HoldingsView(
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = modifier.semantics(mergeDescendants = true) {
-            contentDescription = "Total Holdings. $amountAccessible $coinName"
+            contentDescription = Localization.format(
+                "Total Holdings, %1$@ %2$@",
+                amountAccessible,
+                coinName,
+            )
         },
     ) {
         Text(
-            text = "Total Holdings",
+            text = Localization.string("Total Holdings"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim
         )
@@ -402,15 +408,16 @@ private fun CurrentValueView(
     modifier: Modifier
 ) {
     val currentValue = (currentPrice ?: 0.0) * (totalAmount ?: 0.0)
+    val currentValueTitle = Localization.string("Current Value")
 
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = modifier.semantics(mergeDescendants = true) {
-            contentDescription = currencyStatAccessibilityLabel("Current Value", currentValue)
+            contentDescription = currencyStatAccessibilityLabel(currentValueTitle, currentValue)
         },
     ) {
         Text(
-            text = "Current Value",
+            text = currentValueTitle,
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim
         )
@@ -432,14 +439,15 @@ private fun PurchaseCostView(
     isDownloading: Boolean,
     modifier: Modifier
 ) {
+    val purchaseCostTitle = Localization.string("Purchase Cost")
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = modifier.semantics(mergeDescendants = true) {
-            contentDescription = currencyStatAccessibilityLabel("Purchase Cost", totalCost)
+            contentDescription = currencyStatAccessibilityLabel(purchaseCostTitle, totalCost)
         },
     ) {
         Text(
-            text = "Purchase Cost",
+            text = purchaseCostTitle,
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim
         )
@@ -476,7 +484,7 @@ private fun ProfitLossView(
         },
     ) {
         Text(
-            text = "Profit/Loss",
+            text = Localization.string("Profit/Loss"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim
         )
@@ -688,26 +696,18 @@ private fun profitLossAccessibilityLabel(
     percent: Double?,
     hidePortfolioData: Boolean,
 ): String {
-    val changePercent = percent ?: 0.0
-    val percentText = if (changePercent.isInfinite()) {
-        null
-    } else {
-        val decimals = changePercent.changePercentDecimalPoints
-        val accessiblePercent = kotlin.math.abs(changePercent).numberAccessible(maxPlaces = decimals)
-        val direction = changePercent.directionAccessible.lowercase()
-        "$direction $accessiblePercent percent"
-    }
+    val safeChange = if (percent == null || percent.isInfinite()) 0.0 else percent
+    val decimals = safeChange.changePercentDecimalPoints
+    val accessiblePercent = kotlin.math.abs(safeChange).numberAccessible(maxPlaces = decimals)
+    val direction = Localization.string(safeChange.directionAccessible)
+    val percentText = Localization.format("%1$@ %2$@ percent", direction, accessiblePercent)
 
     if (hidePortfolioData) {
-        return if (percentText != null) "Profit/Loss, $percentText" else "Profit/Loss"
+        return Localization.format("Profit/Loss, %@", percentText)
     }
 
     val changeValue = value ?: 0.0
-    val valueDirection = changeValue.directionAccessible.lowercase()
+    val valueDirection = Localization.string(changeValue.directionAccessible)
     val valueText = kotlin.math.abs(changeValue).formatCurrency(accessible = true)
-    return if (percentText != null) {
-        "Profit/Loss, $valueDirection $valueText, $percentText"
-    } else {
-        "Profit/Loss, $valueDirection $valueText"
-    }
+    return Localization.format("Profit/Loss, %1$@ %2$@, %3$@", valueDirection, valueText, percentText)
 }

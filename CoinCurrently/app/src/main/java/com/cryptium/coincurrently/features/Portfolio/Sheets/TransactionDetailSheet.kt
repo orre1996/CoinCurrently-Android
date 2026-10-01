@@ -25,6 +25,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.AdaptiveStack
 import com.cryptium.coincurrently.sharedui.components.CachedUrlImage
@@ -314,7 +315,11 @@ private fun HeaderView(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .semantics(mergeDescendants = true) {
-                contentDescription = "${transaction.transactionType.transactionText} $coinName"
+                contentDescription = Localization.format(
+                    "%1$@ %2$@",
+                    transaction.transactionType.transactionText,
+                    coinName,
+                )
             }
     ) {
         CachedUrlImage(
@@ -381,7 +386,7 @@ private fun AmountView(
     modifier: Modifier
 ) {
     StatView(
-        title = "Amount",
+        title = Localization.string("Amount"),
         value = if (hideData) {
             stars
         } else {
@@ -392,9 +397,13 @@ private fun AmountView(
             )
         },
         valueAccessible = if (hideData) {
-            "hidden"
+            Localization.string("hidden")
         } else {
-            "${amount.formatCurrency(currency = CurrencySelectionModel.empty(), maxDecimals = 7, accessible = true)} $coinName"
+            Localization.format(
+                "%1$@ %2$@",
+                amount.formatCurrency(currency = CurrencySelectionModel.empty(), maxDecimals = 7, accessible = true),
+                coinName,
+            )
         },
         modifier = modifier,
     )
@@ -408,23 +417,23 @@ private fun UnitPriceView(
     modifier: Modifier
 ) {
     StatView(
-        title = "Unit Price",
+        title = Localization.string("Unit Price"),
         value = if (hideData) {
             stars
         } else {
             unitPrice?.formatCurrency(
                 threshold = FormattingThreshold.MILLION,
                 currency = currency,
-            ) ?: "N/A"
+            ) ?: Localization.string("N/A")
         },
         valueAccessible = if (hideData) {
-            "hidden"
+            Localization.string("hidden")
         } else {
             unitPrice?.formatCurrency(
                 threshold = FormattingThreshold.MILLION,
                 currency = currency,
                 accessible = true,
-            ) ?: "Not available"
+            ) ?: Localization.string("Not available")
         },
         modifier = modifier,
     )
@@ -438,7 +447,7 @@ private fun FeesView(
     modifier: Modifier
 ) {
     StatView(
-        title = "Fee",
+        title = Localization.string("Fee"),
         value = if (hideData) {
             stars
         } else {
@@ -448,7 +457,7 @@ private fun FeesView(
             )
         },
         valueAccessible = if (hideData) {
-            "hidden"
+            Localization.string("hidden")
         } else {
             fees.formatCurrency(
                 threshold = FormattingThreshold.MILLION,
@@ -468,23 +477,23 @@ private fun TotalCostView(
     modifier: Modifier
 ) {
     StatView(
-        title = "Total Cost",
+        title = Localization.string("Total Cost"),
         value = if (hideData) {
             stars
         } else {
             totalCost?.formatCurrency(
                 threshold = FormattingThreshold.MILLION,
                 currency = currency,
-            ) ?: "N/A"
+            ) ?: Localization.string("N/A")
         },
         valueAccessible = if (hideData) {
-            "hidden"
+            Localization.string("hidden")
         } else {
             totalCost?.formatCurrency(
                 threshold = FormattingThreshold.MILLION,
                 currency = currency,
                 accessible = true,
-            ) ?: "Not available"
+            ) ?: Localization.string("Not available")
         },
         modifier = modifier,
     )
@@ -496,7 +505,7 @@ private fun DateView(
     modifier: Modifier
 ) {
     StatView(
-        title = "Date",
+        title = Localization.string("Date"),
         value = date.formatDate(DateFormat.MMMddyyyy) ?: "",
         modifier = modifier,
     )
@@ -510,7 +519,7 @@ private fun TimeView(
     val context = LocalContext.current
 
     StatView(
-        title = "Time",
+        title = Localization.string("Time"),
         value = time.formatDate(if (context.is24HourClock) DateFormat.HHmm else DateFormat.hhmma) ?: "",
         modifier = modifier,
     )
@@ -521,7 +530,7 @@ private fun NotesView(
     note: String?
 ) {
     StatView(
-        title = "Notes",
+        title = Localization.string("Notes"),
         value = note ?: "",
     )
 }
@@ -548,7 +557,7 @@ private fun ActionButtons(
             )
     ) {
         SecondaryButton(
-            text = "Delete",
+            text = Localization.string("Delete"),
             icon = R.drawable.delete,
             fullWidth = true,
             onClick = {
@@ -558,7 +567,7 @@ private fun ActionButtons(
         )
 
         SecondaryButton(
-            text = "Edit",
+            text = Localization.string("Edit"),
             icon = R.drawable.edit,
             fullWidth = true,
             onClick = {

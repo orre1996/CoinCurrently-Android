@@ -25,12 +25,16 @@ import com.cryptium.coincurrently.sharedui.components.CachedUrlImage
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.extensions.DateFormat
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.addedAccessibilityDescription
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.formatDate
 import com.cryptium.coincurrently.core.extensions.is24HourClock
+import com.cryptium.coincurrently.core.extensions.numberAccessible
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.stars
+import com.cryptium.coincurrently.core.extensions.symbolAccessible
+import kotlin.math.abs
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.isAddOrInTransferTransaction
@@ -62,7 +66,7 @@ fun PortfolioTransactionView(
 
     val accessibilityLabelText = buildString {
         if (index != null && totalCount != null) {
-            append("Transaction ${index + 1} of $totalCount. ")
+            append("${Localization.format("Transaction %1\$d of %2\$d", index + 1, totalCount)}. ")
         }
         val typeText = transaction?.transactionType?.transactionText ?: ""
         val coinName = coin?.name ?: coin?.symbol ?: ""
@@ -71,16 +75,25 @@ fun PortfolioTransactionView(
             append("$summary. ")
         }
         if (hideData) {
-            append("Amount hidden. Value hidden. ")
+            append("${Localization.string("Amount hidden")}. ${Localization.string("Value hidden")}. ")
         } else {
-            val prefix = if (transaction?.isAddOrInTransferTransaction == true) "Plus" else "Minus"
-            val amountLabel = accessibleCoinAmountWithSymbol(
-                amount = transaction?.amount ?: 0.0,
-                symbol = coin?.symbol,
+            val prefix = Localization.string(
+                if (transaction?.isAddOrInTransferTransaction == true) "Plus" else "Minus",
             )
-            append("$prefix $amountLabel. ")
+            val amount = abs(transaction?.amount ?: 0.0)
+            val decimals = if (amount < 1) 7 else 2
+            append(
+                "${
+                    Localization.format(
+                        "%1$@ %2$@ %3$@",
+                        prefix,
+                        amount.numberAccessible(maxPlaces = decimals),
+                        coin?.symbol.accessibleSymbol(),
+                    )
+                }. ",
+            )
             val value = (transaction?.amount ?: 0.0) * (currentPrice ?: 0.0)
-            append("Value ${value.formatCurrency(currency = currency, accessible = true)}. ")
+            append("${Localization.format("Value %@", value.formatCurrency(currency = currency, accessible = true))}. ")
         }
         transaction?.date?.let {
             append(it.addedAccessibilityDescription)
@@ -280,4 +293,8 @@ private fun TransactionValuesSubtitleView(
                 .shimmeringModifier(isDownloading)
         )
     }
+}
+
+private fun String?.accessibleSymbol(): String {
+    return this?.trim()?.uppercase()?.symbolAccessible.orEmpty()
 }

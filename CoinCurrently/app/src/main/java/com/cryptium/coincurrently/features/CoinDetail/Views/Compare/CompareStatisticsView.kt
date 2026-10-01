@@ -15,6 +15,7 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.AdaptiveStack
 import com.cryptium.coincurrently.sharedui.components.Separator
@@ -106,7 +107,7 @@ fun CompareStatisticsView(
 @Composable
 private fun HeaderView() {
     Text(
-        text = "Statistics",
+        text = Localization.string("Statistics"),
         style = satoshiBold(22),
         color = MaterialTheme.colors.onSurfaceDim,
         modifier = Modifier.semantics { heading() },
@@ -128,7 +129,7 @@ private fun PriceView(
         modifier = Modifier.semantics(mergeDescendants = true) {},
     ) {
         Text(
-            text = "Price",
+            text = Localization.string("Price"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim
         )
@@ -210,7 +211,7 @@ private fun PriceChangeView(
         modifier = Modifier.semantics(mergeDescendants = true) {},
     ) {
         Text(
-            text = "Price Change",
+            text = Localization.string("Price Change"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim
         )
@@ -289,7 +290,7 @@ private fun MarketCapView(
         modifier = Modifier.semantics(mergeDescendants = true) {},
     ) {
         Text(
-            text = "Market Cap",
+            text = Localization.string("Market Cap"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim
         )
@@ -416,7 +417,7 @@ private fun VolumeView(
         modifier = Modifier.semantics(mergeDescendants = true) {},
     ) {
         Text(
-            text = "24 Hour Volume",
+            text = Localization.string("24 Hour Volume"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim
         )
@@ -515,7 +516,7 @@ private fun SupplyView(
         modifier = Modifier.semantics(mergeDescendants = true) {},
     ) {
         Text(
-            text = "Circulating Supply",
+            text = Localization.string("Circulating Supply"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim
         )

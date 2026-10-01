@@ -38,6 +38,7 @@ import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.contentScreenWidth
 import com.cryptium.coincurrently.sharedui.components.tabPageTalkBackTraversal
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceContainerDim
@@ -94,7 +95,7 @@ private fun HeaderView(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Community Sentiment",
+            text = Localization.string("Community Sentiment"),
             style = satoshiBold(22),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = tabPage.semantics { heading() },
@@ -104,7 +105,7 @@ private fun HeaderView(
 
         Image(
             painter = painterResource(id = R.drawable.info),
-            contentDescription = "Community sentiment info",
+            contentDescription = Localization.string("Community sentiment info"),
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceDimmer),
             modifier = tabPage
                 .padding(12.dp)
@@ -134,11 +135,11 @@ private fun VotesView(
             .semantics(mergeDescendants = true) {
                 val bullish = (sentimentVotesUpPercentage ?: 0.0).roundToInt()
                 val bearish = (sentimentVotesDownPercentage ?: 0.0).roundToInt()
-                contentDescription = "Sentiment Votes. Bullish $bullish percent. Bearish $bearish percent."
+                contentDescription = "${Localization.string("Sentiment Votes")}. ${Localization.string("Bullish")} $bullish percent. ${Localization.string("Bearish")} $bearish percent."
             },
     ) {
         Text(
-            text = "Sentiment Votes",
+            text = Localization.string("Sentiment Votes"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceContainerDim,
             modifier = Modifier.semantics { invisibleToUser() },
@@ -225,7 +226,7 @@ private fun SentimentMeterTitles(
             )
 
             Text(
-                text = "Bullish",
+                text = Localization.string("Bullish"),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceDim,
                 modifier = Modifier.semantics { invisibleToUser() },
@@ -248,7 +249,7 @@ private fun SentimentMeterTitles(
             )
 
             Text(
-                text = "Bearish",
+                text = Localization.string("Bearish"),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceDim,
                 modifier = Modifier.semantics { invisibleToUser() },

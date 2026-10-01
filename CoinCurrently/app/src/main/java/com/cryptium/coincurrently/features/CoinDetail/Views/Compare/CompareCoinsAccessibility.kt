@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.CoinDetail.Views.Compare
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.changePercentDecimalPoints
 import com.cryptium.coincurrently.core.extensions.directionAccessible
 import com.cryptium.coincurrently.core.extensions.formatCurrency
@@ -22,8 +23,8 @@ fun accessibleCompareVolumeLabel(name: String?, value: Double?): String {
 
 fun accessibleCompareMarketCapLabel(name: String?, value: Double?, rank: Int?): String {
     val marketCap = value?.formatCurrency(accessible = true) ?: ""
-    val rankLabel = rank?.let { "rank $it" } ?: "no rank"
-    return "${name ?: ""}: $marketCap, $rankLabel"
+    val rankLabel = rank?.let { Localization.format("rank %d", it) } ?: Localization.string("No rank")
+    return Localization.format("%1$@: %2$@, %3$@", name ?: "", marketCap, rankLabel)
 }
 
 fun accessibleComparePriceChangeLabel(
@@ -31,14 +32,25 @@ fun accessibleComparePriceChangeLabel(
     change: Double?,
     selectedTimeframe: TimeCharts,
 ): String {
+    val timeframe = Localization.string(selectedTimeframe.accessibilityTimeframe)
     if (change == null) {
-        return "${name ?: ""}: ${selectedTimeframe.accessibilityTimeframe} price change: not available"
+        return Localization.format(
+            "%1$@: %2$@ price change: %3$@",
+            name ?: "",
+            timeframe,
+            Localization.string("Not available"),
+        )
     }
 
     val safeChange = if (change.isInfinite()) 0.0 else change
     val accessibleChange = abs(safeChange).numberAccessible(maxPlaces = safeChange.changePercentDecimalPoints)
-    val direction = safeChange.directionAccessible.lowercase()
-    return "${name ?: ""}: ${selectedTimeframe.accessibilityTimeframe} price change: $direction $accessibleChange percent"
+    return Localization.format(
+        "%1$@: %2$@ price change: %3$@ %4$@ percent",
+        name ?: "",
+        timeframe,
+        Localization.string(safeChange.directionAccessible),
+        accessibleChange,
+    )
 }
 
 fun accessibleCompareSupplyLabel(name: String?, value: Double?): String {
@@ -47,11 +59,11 @@ fun accessibleCompareSupplyLabel(name: String?, value: Double?): String {
 }
 
 fun accessibleDaysAgoLabel(name: String?, daysAgo: String?): String {
-    return "${name ?: ""}: ${daysAgo ?: "unknown"}"
+    return Localization.format("%1$@: %2$@", name ?: "", daysAgo ?: Localization.string("Unknown"))
 }
 
 fun accessibleGenesisDateLabel(name: String?, date: String?): String {
-    return "${name ?: ""}: ${date ?: "unknown"}"
+    return Localization.format("%1$@: %2$@", name ?: "", date ?: Localization.string("Unknown"))
 }
 
 fun accessibleBullishLabel(name: String?, percent: Double?): String {
@@ -60,5 +72,5 @@ fun accessibleBullishLabel(name: String?, percent: Double?): String {
 }
 
 fun accessibleAllTimeRangeLabel(name: String?): String {
-    return "${name ?: ""} All-Time Range"
+    return Localization.format("%@ All-Time Range", name ?: "")
 }

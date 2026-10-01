@@ -17,6 +17,8 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.cryptium.coincurrently.core.localization.Localization
+import com.cryptium.coincurrently.core.extensions.localizedAbbreviatedDate
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.AdaptiveStack
 import com.cryptium.coincurrently.sharedui.components.Separator
@@ -31,7 +33,6 @@ import com.cryptium.coincurrently.core.extensions.DateFormat
 import com.cryptium.coincurrently.core.extensions.convertStringToDate
 import com.cryptium.coincurrently.core.extensions.daysAgo
 import com.cryptium.coincurrently.core.extensions.formatCurrency
-import com.cryptium.coincurrently.core.extensions.formatDate
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.sharedui.components.CustomProgressBarView
@@ -103,7 +104,7 @@ fun CompareHistoricDataView(
 @Composable
 private fun HeaderView() {
     Text(
-        text = "Historical Data",
+        text = Localization.string("Historical Data"),
         style = satoshiBold(22),
         color = MaterialTheme.colors.onSurfaceDim,
         modifier = Modifier.semantics { heading() },
@@ -123,12 +124,12 @@ private fun AllTimeRangeView(
 
     val atlDate = cryptoInfo?.market_data?.atl_date?.getSelectedCurrency()
         ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)
-    val formattedAtlDate = atlDate?.formatDate(style = DateFormat.MMMddyyyy)
+    val formattedAtlDate = atlDate?.localizedAbbreviatedDate
     val atlPrice = cryptoInfo?.market_data?.atl?.getSelectedCurrency()
 
     val athDate = cryptoInfo?.market_data?.ath_date?.getSelectedCurrency()
         ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)
-    val formattedAthDate = athDate?.formatDate(style = DateFormat.MMMddyyyy)
+    val formattedAthDate = athDate?.localizedAbbreviatedDate
     val athPrice = cryptoInfo?.market_data?.ath?.getSelectedCurrency()
 
     val atlAccessible = atlPrice?.formatCurrency(
@@ -139,8 +140,11 @@ private fun AllTimeRangeView(
         threshold = FormattingThreshold.NONE,
         accessible = true,
     ) ?: ""
-    val rangeAccessibilityLabel =
-        "${accessibleAllTimeRangeLabel(cryptoInfo?.name)}. From $atlAccessible on ${formattedAtlDate ?: ""}, to $athAccessible on ${formattedAthDate ?: ""}"
+    val atlDateText = formattedAtlDate ?: Localization.string("Unknown date")
+    val athDateText = formattedAthDate ?: Localization.string("Unknown date")
+    val rangeAccessibilityLabel = "${accessibleAllTimeRangeLabel(cryptoInfo?.name)}. ${
+        Localization.format("From %1$@ on %2$@", atlAccessible, atlDateText)
+    }, ${Localization.format("to %1$@ on %2$@", athAccessible, athDateText)}"
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -149,7 +153,7 @@ private fun AllTimeRangeView(
         },
     ) {
         Text(
-            text = "All-Time Range (${cryptoInfo?.symbol?.uppercase() ?: ""})",
+            text = Localization.format("All-Time Range (%@)", cryptoInfo?.symbol?.uppercase() ?: ""),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceContainerDim,
             modifier = Modifier
@@ -239,7 +243,7 @@ private fun AllTimeHighView(
     compareCryptoInfo: CryptoDetailInfoModel?,
 ) {
     CompareDualValueSection(
-        title = "Since All-Time High",
+        title = Localization.string("Since All-Time High"),
         mainAccessibilityLabel = accessibleDaysAgoLabel(
             name = mainCryptoInfo?.name,
             daysAgo = mainCryptoInfo?.market_data?.ath_date?.getSelectedCurrency()
@@ -251,9 +255,9 @@ private fun AllTimeHighView(
                 ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)?.daysAgo,
         ),
         mainValue = mainCryptoInfo?.market_data?.ath_date?.getSelectedCurrency()
-            ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)?.daysAgo ?: "Unknown",
+            ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)?.daysAgo ?: Localization.string("Unknown"),
         compareValue = compareCryptoInfo?.market_data?.ath_date?.getSelectedCurrency()
-            ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)?.daysAgo ?: "Unknown",
+            ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)?.daysAgo ?: Localization.string("Unknown"),
         isMainLoading = mainCryptoInfo?.market_data?.ath_date == null,
         isCompareLoading = compareCryptoInfo?.market_data?.ath_date == null,
     )
@@ -265,7 +269,7 @@ private fun AllTimeLowView(
     compareCryptoInfo: CryptoDetailInfoModel?,
 ) {
     CompareDualValueSection(
-        title = "Since All-Time Low",
+        title = Localization.string("Since All-Time Low"),
         mainAccessibilityLabel = accessibleDaysAgoLabel(
             name = mainCryptoInfo?.name,
             daysAgo = mainCryptoInfo?.market_data?.atl_date?.getSelectedCurrency()
@@ -277,9 +281,9 @@ private fun AllTimeLowView(
                 ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)?.daysAgo,
         ),
         mainValue = mainCryptoInfo?.market_data?.atl_date?.getSelectedCurrency()
-            ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)?.daysAgo ?: "Unknown",
+            ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)?.daysAgo ?: Localization.string("Unknown"),
         compareValue = compareCryptoInfo?.market_data?.atl_date?.getSelectedCurrency()
-            ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)?.daysAgo ?: "Unknown",
+            ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)?.daysAgo ?: Localization.string("Unknown"),
         isMainLoading = mainCryptoInfo?.market_data?.atl_date == null,
         isCompareLoading = compareCryptoInfo?.market_data?.atl_date == null,
     )
@@ -291,13 +295,13 @@ private fun GenesisDateView(
     compareCryptoInfo: CryptoDetailInfoModel?,
 ) {
     val mainGenesisDate = mainCryptoInfo?.genesis_date?.convertStringToDate(DateFormat.yyyyMMdd, gmtTimeZone = false)
-    val mainFormattedGenesisDate = mainGenesisDate?.formatDate(DateFormat.MMMddyyyy)
+    val mainFormattedGenesisDate = mainGenesisDate?.localizedAbbreviatedDate
 
     val compareGenesisDate = compareCryptoInfo?.genesis_date?.convertStringToDate(DateFormat.yyyyMMdd, gmtTimeZone = false)
-    val compareFormattedGenesisDate = compareGenesisDate?.formatDate(DateFormat.MMMddyyyy)
+    val compareFormattedGenesisDate = compareGenesisDate?.localizedAbbreviatedDate
 
     CompareDualValueSection(
-        title = "Genesis Date",
+        title = Localization.string("Genesis Date"),
         mainAccessibilityLabel = accessibleGenesisDateLabel(
             name = mainCryptoInfo?.name,
             date = mainFormattedGenesisDate,
@@ -306,8 +310,8 @@ private fun GenesisDateView(
             name = compareCryptoInfo?.name,
             date = compareFormattedGenesisDate,
         ),
-        mainValue = mainFormattedGenesisDate ?: "Unknown",
-        compareValue = compareFormattedGenesisDate ?: "Unknown",
+        mainValue = mainFormattedGenesisDate ?: Localization.string("Unknown"),
+        compareValue = compareFormattedGenesisDate ?: Localization.string("Unknown"),
         isMainLoading = mainCryptoInfo?.market_data?.atl_date == null,
         isCompareLoading = compareCryptoInfo?.market_data?.atl_date == null,
     )

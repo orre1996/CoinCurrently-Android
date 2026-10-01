@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.AdaptiveStack
 import com.cryptium.coincurrently.sharedui.buttons.CloseButton
@@ -179,7 +180,7 @@ private fun ActionButtons(
             )
     ) {
         SecondaryButton(
-            text = "Cancel",
+            text = Localization.string("Cancel"),
             accessibilityLabel = "Cancel, close window",
             fullWidth = true,
             modifier = sectionModifier()
@@ -189,7 +190,7 @@ private fun ActionButtons(
         }
 
         PrimaryButton(
-            text = "Apply",
+            text = Localization.string("Apply"),
             accessibilityLabel = "Apply filters",
             fullWidth = true,
             modifier = sectionModifier()

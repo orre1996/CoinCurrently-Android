@@ -23,6 +23,7 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.sharedui.components.tabPageTalkBackTraversal
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
@@ -62,8 +63,8 @@ fun CryptoDetailAlertsView(
             alerts?.let {
                 if (it.isEmpty()) {
                     EmptyContent(
-                        title = "No price alerts yet",
-                        subTitle = "Tap + to create your first alert.",
+                        title = Localization.string("No price alerts yet"),
+                        subTitle = Localization.string("Tap + to create your first alert."),
                         tabPageTalkBack = true,
                         modifier = Modifier
                             .padding(16.dp)
@@ -94,7 +95,7 @@ private fun HeaderView(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Alerts",
+            text = Localization.string("Alerts"),
             style = satoshiBold(22),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = tabPage.semantics { heading() },
@@ -104,7 +105,7 @@ private fun HeaderView(
 
         Image(
             painter = painterResource(id = R.drawable.add),
-            contentDescription = "Add new ${coinName ?: "coin"} price alert",
+            contentDescription = Localization.format("Add new %@ price alert", coinName ?: ""),
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceDimmer),
             modifier = tabPage
                 .padding(8.dp)

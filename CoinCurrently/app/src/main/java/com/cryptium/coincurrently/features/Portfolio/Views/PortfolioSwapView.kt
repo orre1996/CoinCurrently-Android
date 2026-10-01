@@ -25,12 +25,16 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.core.extensions.DateFormat
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.addedAccessibilityDescription
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.formatDate
 import com.cryptium.coincurrently.core.extensions.is24HourClock
+import com.cryptium.coincurrently.core.extensions.numberAccessible
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.stars
+import com.cryptium.coincurrently.core.extensions.symbolAccessible
+import kotlin.math.abs
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
@@ -71,22 +75,30 @@ fun PortfolioSwapView(
 
     val accessibilityLabelText = buildString {
         if (index != null && totalCount != null) {
-            append("Transaction ${index + 1} of $totalCount. ")
+            append("${Localization.format("Transaction %1\$d of %2\$d", index + 1, totalCount)}. ")
         }
-        append("Swapped $fromName for $toName. ")
+        append("${Localization.format("Swapped %1$@ for %2$@", fromName, toName)}. ")
         if (hideData) {
-            append("Amount hidden. ")
+            append("${Localization.string("Amount hidden")}. ")
         } else {
-            val receivedLabel = accessibleCoinAmountWithSymbol(
-                amount = transaction?.toAmount ?: 0.0,
-                symbol = transaction?.toCurrencySymbol,
+            append(
+                "${
+                    Localization.format(
+                        "Received %1$@ %2$@",
+                        accessibleSwapAmount(transaction?.toAmount ?: 0.0),
+                        transaction?.toCurrencySymbol.accessibleSymbol(),
+                    )
+                }. ",
             )
-            append("Received $receivedLabel. ")
-            val sentLabel = accessibleCoinAmountWithSymbol(
-                amount = transaction?.fromAmount ?: 0.0,
-                symbol = transaction?.fromCurrencySymbol,
+            append(
+                "${
+                    Localization.format(
+                        "Sent %1$@ %2$@",
+                        accessibleSwapAmount(transaction?.fromAmount ?: 0.0),
+                        transaction?.fromCurrencySymbol.accessibleSymbol(),
+                    )
+                }. ",
             )
-            append("Sent $sentLabel. ")
         }
         transaction?.date?.let {
             append(it.addedAccessibilityDescription)
@@ -171,7 +183,11 @@ private fun SwapInfoView(
         modifier = modifier,
     ) {
         Text(
-            text = "Swapped ${transaction?.fromCurrencySymbol?.uppercase() ?: "0000"} for ${transaction?.toCurrencySymbol?.uppercase() ?: "0000"}",
+            text = Localization.format(
+                "Swapped %1$@ for %2$@",
+                transaction?.fromCurrencySymbol?.uppercase() ?: "0000",
+                transaction?.toCurrencySymbol?.uppercase() ?: "0000",
+            ),
             style = satoshiBold(16),
             color = MaterialTheme.colors.onSurface,
             modifier = Modifier
@@ -250,4 +266,14 @@ private fun SwapValuesSubtitleView(
                 .shimmeringModifier(isDownloading)
         )
     }
+}
+
+private fun accessibleSwapAmount(amount: Double): String {
+    val absAmount = abs(amount)
+    val decimals = if (absAmount < 1) 7 else 2
+    return absAmount.numberAccessible(maxPlaces = decimals)
+}
+
+private fun String?.accessibleSymbol(): String {
+    return this?.trim()?.uppercase()?.symbolAccessible.orEmpty()
 }

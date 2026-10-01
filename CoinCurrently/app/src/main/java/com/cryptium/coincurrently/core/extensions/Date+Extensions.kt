@@ -72,19 +72,34 @@ fun Date.alertTimeAgoDisplay(): String {
     val daysAgo = TimeUnit.MILLISECONDS.toDays(diffInMillis)
 
     return when {
-        minutesAgo < 1 -> "just now"
+        minutesAgo < 1 -> Localization.string("just now")
         hoursAgo < 1 -> {
-            if (minutesAgo == 1L) "$minutesAgo minute ago" else "$minutesAgo minutes ago"
+            if (minutesAgo == 1L) {
+                Localization.format("%d minute ago", minutesAgo)
+            } else {
+                Localization.format("%d minutes ago", minutesAgo)
+            }
         }
         daysAgo < 1 -> {
-            if (hoursAgo == 1L) "$hoursAgo hour ago" else "$hoursAgo hours ago"
+            if (hoursAgo == 1L) {
+                Localization.format("%d hour ago", hoursAgo)
+            } else {
+                Localization.format("%d hours ago", hoursAgo)
+            }
         }
-        else -> {
-            val formatter = SimpleDateFormat("MMMM d, yyyy", AppLocale.enUsPosix)
-            formatter.format(this)
-        }
+        else -> localizedLongDate
     }
 }
+
+val Date.localizedAbbreviatedDate: String
+    get() = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+        .withLocale(AppLanguageState.preference.resolve().locale)
+        .format(toInstant().atZone(ZoneId.systemDefault()))
+
+val Date.localizedLongDate: String
+    get() = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
+        .withLocale(AppLanguageState.preference.resolve().locale)
+        .format(toInstant().atZone(ZoneId.systemDefault()))
 
 
 

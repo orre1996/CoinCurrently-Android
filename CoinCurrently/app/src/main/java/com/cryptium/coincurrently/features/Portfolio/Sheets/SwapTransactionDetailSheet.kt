@@ -46,6 +46,7 @@ import com.cryptium.coincurrently.core.extensions.is24HourClock
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.stars
 import com.cryptium.coincurrently.core.extensions.symbolAccessible
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.features.Portfolio.Views.accessibleCoinAmountWithSymbol
 import kotlinx.coroutines.launch
@@ -406,8 +407,16 @@ private fun HeaderView(
     transaction: PortfolioSwapTransaction,
     modifier: Modifier
 ) {
-    val title = "Swapped ${transaction.fromCurrencySymbol.uppercase()} for ${transaction.toCurrencySymbol.uppercase()}"
-    val accessibleTitle = "Swapped ${transaction.fromCurrencySymbol.symbolAccessible} for ${transaction.toCurrencySymbol.symbolAccessible}"
+    val title = Localization.format(
+        "Swapped %1$@ for %2$@",
+        transaction.fromCurrencySymbol.uppercase(),
+        transaction.toCurrencySymbol.uppercase(),
+    )
+    val accessibleTitle = Localization.format(
+        "Swapped %1$@ for %2$@",
+        transaction.fromCurrencySymbol.symbolAccessible,
+        transaction.toCurrencySymbol.symbolAccessible,
+    )
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -441,7 +450,7 @@ private fun SwappedFromView(
     modifier: Modifier
 ) {
     StatView(
-        title = "Swapped From",
+        title = Localization.string("Swapped From"),
         value = if (hideData) {
             stars
         } else {
@@ -452,7 +461,7 @@ private fun SwappedFromView(
             )}${symbol.uppercase()}"
         },
         valueAccessible = if (hideData) {
-            "hidden"
+            Localization.string("hidden")
         } else {
             accessibleCoinAmountWithSymbol(amount, symbol)
         },
@@ -468,7 +477,7 @@ private fun SwappedToView(
     modifier: Modifier
 ) {
     StatView(
-        title = "Swapped To",
+        title = Localization.string("Swapped To"),
         value = if (hideData) {
             stars
         } else {
@@ -479,7 +488,7 @@ private fun SwappedToView(
             )}${symbol.uppercase()}"
         },
         valueAccessible = if (hideData) {
-            "hidden"
+            Localization.string("hidden")
         } else {
             accessibleCoinAmountWithSymbol(amount, symbol)
         },
@@ -496,24 +505,24 @@ private fun FromUnitPriceView(
     modifier: Modifier
 ) {
     StatView(
-        title = "Unit Price (${symbol.uppercase()})",
-        titleAccessible = "Unit Price ${symbol.symbolAccessible}",
+        title = Localization.format("Unit Price (%@)", symbol.uppercase()),
+        titleAccessible = Localization.format("Unit Price, %@", symbol.symbolAccessible),
         value = if (hideData) {
             stars
         } else {
             unitPrice?.formatCurrency(
                 threshold = FormattingThreshold.MILLION,
                 currency = currency,
-            ) ?: "N/A"
+            ) ?: Localization.string("N/A")
         },
         valueAccessible = if (hideData) {
-            "hidden"
+            Localization.string("hidden")
         } else {
             unitPrice?.formatCurrency(
                 threshold = FormattingThreshold.MILLION,
                 currency = currency,
                 accessible = true,
-            ) ?: "Not available"
+            ) ?: Localization.string("Not available")
         },
         modifier = modifier,
     )
@@ -528,24 +537,24 @@ private fun ToUnitPriceView(
     modifier: Modifier
 ) {
     StatView(
-        title = "Unit Price (${symbol.uppercase()})",
-        titleAccessible = "Unit Price ${symbol.symbolAccessible}",
+        title = Localization.format("Unit Price (%@)", symbol.uppercase()),
+        titleAccessible = Localization.format("Unit Price, %@", symbol.symbolAccessible),
         value = if (hideData) {
             stars
         } else {
             unitPrice?.formatCurrency(
                 threshold = FormattingThreshold.MILLION,
                 currency = currency,
-            ) ?: "N/A"
+            ) ?: Localization.string("N/A")
         },
         valueAccessible = if (hideData) {
-            "hidden"
+            Localization.string("hidden")
         } else {
             unitPrice?.formatCurrency(
                 threshold = FormattingThreshold.MILLION,
                 currency = currency,
                 accessible = true,
-            ) ?: "Not available"
+            ) ?: Localization.string("Not available")
         },
         modifier = modifier,
     )
@@ -560,7 +569,7 @@ private fun RateView(
     modifier: Modifier
 ) {
     StatView(
-        title = "Rate",
+        title = Localization.string("Rate"),
         value = "1 ${fromSymbol.uppercase()} = ${if (hideData) {
             stars
         } else {
@@ -570,15 +579,18 @@ private fun RateView(
             )
         }}${toSymbol.uppercase()}",
         valueAccessible = if (hideData) {
-            "hidden"
+            Localization.string("hidden")
         } else {
-            "1 ${fromSymbol.symbolAccessible} equals ${
+            Localization.format(
+                "%1$@ equals %2$@ %3$@",
+                "1 ${fromSymbol.symbolAccessible}",
                 toRate.formatCurrency(
                     threshold = FormattingThreshold.MILLION,
                     currency = CurrencySelectionModel.empty(),
                     accessible = true,
-                )
-            } ${toSymbol.symbolAccessible}"
+                ),
+                toSymbol.symbolAccessible,
+            )
         },
         modifier = modifier,
     )
@@ -592,7 +604,7 @@ private fun FeesView(
     modifier: Modifier
 ) {
     StatView(
-        title = "Fee",
+        title = Localization.string("Fee"),
         value = if (hideData) {
             stars
         } else {
@@ -602,7 +614,7 @@ private fun FeesView(
             )
         },
         valueAccessible = if (hideData) {
-            "hidden"
+            Localization.string("hidden")
         } else {
             fees.formatCurrency(
                 threshold = FormattingThreshold.MILLION,
@@ -623,7 +635,7 @@ private fun SwappedValueView(
     modifier: Modifier
 ) {
     StatView(
-        title = "Swapped Value",
+        title = Localization.string("Swapped Value"),
         value = if (hideData) {
             stars
         } else {
@@ -633,7 +645,7 @@ private fun SwappedValueView(
             )
         },
         valueAccessible = if (hideData) {
-            "hidden"
+            Localization.string("hidden")
         } else {
             (fromAmount * fromUnitPrice).formatCurrency(
                 threshold = FormattingThreshold.MILLION,
@@ -651,7 +663,7 @@ private fun DateView(
     modifier: Modifier
 ) {
     StatView(
-        title = "Date",
+        title = Localization.string("Date"),
         value = date.formatDate(DateFormat.MMMddyyyy) ?: "",
         modifier = modifier,
     )
@@ -665,7 +677,7 @@ private fun TimeView(
     val context = LocalContext.current
 
     StatView(
-        title = "Time",
+        title = Localization.string("Time"),
         value = time.formatDate(if (context.is24HourClock) DateFormat.HHmm else DateFormat.hhmma) ?: "",
         modifier = modifier,
     )
@@ -676,7 +688,7 @@ private fun NotesView(
     note: String?
 ) {
     StatView(
-        title = "Notes",
+        title = Localization.string("Notes"),
         value = note ?: "",
     )
 }
@@ -703,7 +715,7 @@ private fun ActionButtons(
             )
     ) {
         SecondaryButton(
-            text = "Delete",
+            text = Localization.string("Delete"),
             icon = R.drawable.delete,
             fullWidth = true,
             onClick = {
@@ -713,7 +725,7 @@ private fun ActionButtons(
         )
 
         SecondaryButton(
-            text = "Edit",
+            text = Localization.string("Edit"),
             icon = R.drawable.edit,
             fullWidth = true,
             onClick = {

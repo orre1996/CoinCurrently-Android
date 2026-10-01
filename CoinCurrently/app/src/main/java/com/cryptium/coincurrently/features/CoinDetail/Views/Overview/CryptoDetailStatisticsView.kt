@@ -39,6 +39,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cryptium.coincurrently.core.config.AppLocale
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.tabPageTalkBackTraversal
@@ -139,7 +140,8 @@ private fun RangeView(
     val isHorizontal = AccessibilityLayout.isHorizontal
     val lowAccessible = accessibleRangePrice(prices?.minOrNull())
     val highAccessible = accessibleRangePrice(prices?.maxOrNull())
-    val rangeAccessibilityLabel = "${timeChart.rangeTitle}. From $lowAccessible to $highAccessible"
+    val rangeTitle = Localization.string(timeChart.rangeTitle)
+    val rangeAccessibilityLabel = "$rangeTitle. ${Localization.format("From %@", lowAccessible)} ${Localization.format("to %@", highAccessible)}"
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -148,7 +150,7 @@ private fun RangeView(
         },
     ) {
         Text(
-            text = timeChart.rangeTitle,
+            text = rangeTitle,
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceContainerDim,
             modifier = Modifier.semantics { invisibleToUser() },
@@ -235,7 +237,7 @@ private fun RangeProgressBar(
 @Composable
 private fun HeaderView(tabPage: Modifier) {
     Text(
-        text = "Statistics",
+        text = Localization.string("Statistics"),
         style = satoshiBold(22),
         color = MaterialTheme.colors.onSurfaceDim,
         modifier = tabPage.semantics { heading() },
@@ -262,9 +264,17 @@ private fun MarketCapView(
             value = "#${cryptoDetailInfoModel?.market_cap_rank ?: 0}",
             isLoading = cryptoDetailInfoModel?.market_cap_rank == null,
             accessibilityLabel = if (cryptoDetailInfoModel?.market_cap_rank == null) {
-                "Market Cap Rank, No rank"
+                Localization.format(
+                    "%@, %@",
+                    Localization.string("Market Cap Rank"),
+                    Localization.string("No rank"),
+                )
             } else {
-                "Market Cap Rank, ${cryptoDetailInfoModel.market_cap_rank}"
+                Localization.format(
+                    "%@, %@",
+                    Localization.string("Market Cap Rank"),
+                    "${cryptoDetailInfoModel.market_cap_rank}",
+                )
             },
             modifier = sectionModifier(),
             tabPage = tabPage,
@@ -299,6 +309,7 @@ private fun DominanceView(
     val dominance = ((marketCap / (totalMarketCap ?: 0.0)) * 100)
     val volume = cryptoDetailInfoModel?.market_data?.total_volume?.getSelectedCurrency()
     val isDominanceLoading = cryptoDetailInfoModel?.market_cap_rank == null || totalMarketCap == null
+    val dominanceTitle = Localization.string("Market Dominance")
 
     AdaptiveStack(
         isHorizontal = isHorizontal,
@@ -314,14 +325,14 @@ private fun DominanceView(
                 .then(tabPage)
                 .semantics(mergeDescendants = true) {
                     contentDescription = if (isDominanceLoading) {
-                        "Market Dominance"
+                        dominanceTitle
                     } else {
-                        "Market Dominance, ${dominance.numberAccessible(maxPlaces = 4)} percent"
+                        "$dominanceTitle, ${dominance.numberAccessible(maxPlaces = 4)} percent"
                     }
                 },
         ) {
             Text(
-                text = "Market Dominance",
+                text = dominanceTitle,
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceContainerDim
             )
@@ -438,12 +449,15 @@ private fun SupplyView(
 
     val circulatingSupply =
         (cryptoDetailInfoModel?.market_data?.circulating_supply ?: 0.0).formatGroupedWholeNumber()
+    val maxSupplyText = (cryptoDetailInfoModel?.market_data?.max_supply ?: 0.0).formatGroupedWholeNumber()
     val maxSupplyAccessibility = if (cryptoDetailInfoModel?.market_data?.max_supply == null) {
-        "Max supply: unlimited"
+        Localization.string("Max supply: unlimited")
     } else {
-        "Max Supply: ${(cryptoDetailInfoModel.market_data?.max_supply ?: 0.0).formatGroupedWholeNumber()}"
+        Localization.format("Max supply: %@", maxSupplyText)
     }
-    val supplyAccessibilityLabel = "Supply Circulation. Circulating Supply: $circulatingSupply. $maxSupplyAccessibility"
+    val supplyAccessibilityLabel = "${Localization.string("Supply Circulation")}. ${
+        Localization.format("Circulating Supply: %@", circulatingSupply)
+    }. $maxSupplyAccessibility"
 
     Column(
         modifier = tabPage.semantics(mergeDescendants = true) {
@@ -451,7 +465,7 @@ private fun SupplyView(
         },
     ) {
         Text(
-            text = "Supply Circulation",
+            text = Localization.string("Supply Circulation"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceContainerDim,
             modifier = Modifier.semantics { invisibleToUser() },
@@ -505,7 +519,7 @@ private fun SupplyView(
                 )
 
                 Text(
-                    text = "Circulating Supply",
+                    text = Localization.string("Circulating Supply"),
                     style = satoshiBold(12),
                     color = MaterialTheme.colors.onSurfaceDimmer,
                     modifier = Modifier
@@ -537,7 +551,7 @@ private fun SupplyView(
                 )
 
                 Text(
-                    text = "Max Supply",
+                    text = Localization.string("Max Supply"),
                     style = satoshiBold(12),
                     color = MaterialTheme.colors.onSurfaceDimmer,
                     modifier = Modifier
@@ -569,7 +583,7 @@ private fun SupplyNoMaxView(
             label = "Circulating Supply",
             value = circulatingSupply,
             isLoading = cryptoDetailInfoModel?.market_data?.circulating_supply == null,
-            accessibilityLabel = "Circulating Supply: $circulatingSupply",
+            accessibilityLabel = Localization.format("Circulating Supply: %@", circulatingSupply),
             modifier = sectionModifier(),
             tabPage = tabPage,
         )
@@ -582,7 +596,7 @@ private fun SupplyNoMaxView(
             label = "Max Supply",
             value = "∞",
             isLoading = cryptoDetailInfoModel?.market_data == null,
-            accessibilityLabel = "Max supply: unlimited",
+            accessibilityLabel = Localization.string("Max supply: unlimited"),
             modifier = sectionModifier(),
             tabPage = tabPage,
         )
@@ -598,17 +612,18 @@ private fun StatItem(
     accessibilityLabel: String? = null,
     tabPage: Modifier = Modifier,
 ) {
+    val localizedLabel = Localization.string(label)
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalAlignment = Alignment.Start,
         modifier = modifier
             .then(tabPage)
             .semantics(mergeDescendants = true) {
-                contentDescription = accessibilityLabel ?: "$label: $value"
+                contentDescription = accessibilityLabel ?: "$localizedLabel: $value"
             },
     ) {
         Text(
-            text = label,
+            text = localizedLabel,
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceContainerDim,
             modifier = Modifier.semantics { invisibleToUser() },
@@ -633,7 +648,7 @@ private fun shortCurrencyAccessibilityLabel(
         threshold = FormattingThreshold.NONE,
         accessible = true,
     ) ?: ""
-    return "$title, $formattedValue"
+    return Localization.format("%@, %@", Localization.string(title), formattedValue)
 }
 
 private fun accessibleRangePrice(value: Double?): String {

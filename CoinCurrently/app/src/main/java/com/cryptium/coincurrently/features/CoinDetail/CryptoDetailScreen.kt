@@ -67,6 +67,7 @@ import com.cryptium.coincurrently.features.CoinDetail.Views.News.DetailNews
 import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.dpToPx
 import com.cryptium.coincurrently.core.extensions.is24HourClock
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.isTablet
 import com.cryptium.coincurrently.core.extensions.pieContaining
@@ -320,15 +321,15 @@ fun CryptoDetailScreen(
         }
 
         val (event, coin) = viewModel.findTransaction(idStr)
-        val symbol = coin?.symbol?.uppercase(AppLocale.enUsPosix) ?: "Coin"
+        val symbol = coin?.symbol?.uppercase(AppLocale.enUsPosix) ?: Localization.string("Coin")
 
         when (event) {
             is PortfolioTransaction -> {
                 navigationViewModel.showSnackbar(
                     context = context,
                     type = SnackBarType.SUCCESS,
-                    message = "$symbol transaction added to your portfolio!",
-                    buttonTitle = "View Details",
+                    message = Localization.format("%@ transaction added to your portfolio!", symbol),
+                    buttonTitle = Localization.string("View Details"),
                     callback = {
                         AnalyticsManager.log(
                             SheetOpened(ScreenLabel.CryptoDetail, SheetLabel.PortfolioTransactionDetails),
@@ -342,8 +343,8 @@ fun CryptoDetailScreen(
                 navigationViewModel.showSnackbar(
                     context = context,
                     type = SnackBarType.SUCCESS,
-                    message = "$symbol transaction added to your portfolio!",
-                    buttonTitle = "View Details",
+                    message = Localization.format("%@ transaction added to your portfolio!", symbol),
+                    buttonTitle = Localization.string("View Details"),
                     callback = {
                         AnalyticsManager.log(
                             SheetOpened(ScreenLabel.CryptoDetail, SheetLabel.PortfolioTransactionDetails),
@@ -362,8 +363,12 @@ fun CryptoDetailScreen(
                 navigationViewModel.showSnackbar(
                     context = context,
                     type = SnackBarType.SUCCESS,
-                    message = "$shortAddr ($symbol) imported to your portfolio!",
-                    buttonTitle = "View Details",
+                    message = Localization.format(
+                        "%1$@ (%2$@) imported to your portfolio!",
+                        shortAddr,
+                        symbol,
+                    ),
+                    buttonTitle = Localization.string("View Details"),
                     callback = {
                         val dest = NavigationScreens.WalletDetails(
                             wallet = wallet,
@@ -762,7 +767,7 @@ fun CryptoDetailScreen(
                                         navigationViewModel.showSnackbar(
                                             context = context,
                                             type = SnackBarType.SUCCESS,
-                                            message = "Price alert deleted"
+                                            message = Localization.string("Price alert deleted.")
                                         )
                                         viewModel.deleteAlert(it)
                                         AnalyticsManager.log(
@@ -992,7 +997,7 @@ fun CryptoDetailScreen(
                                     navigationViewModel.showSnackbar(
                                         context = context,
                                         type = SnackBarType.SUCCESS,
-                                        message = "Price alert added"
+                                        message = Localization.string("Price alert added.")
                                     )
                                     sheetState.hide()
                                     showAddAlert = false
@@ -1001,7 +1006,7 @@ fun CryptoDetailScreen(
                                     navigationViewModel.showSnackbar(
                                         context = context,
                                         type = SnackBarType.FAILURE,
-                                        message = "Something went wrong, restart app and try again"
+                                        message = Localization.string("Something went wrong. Restart the app and try again.")
                                     )
                                 }
                                 PriceAlertCreateResult.Failed -> {

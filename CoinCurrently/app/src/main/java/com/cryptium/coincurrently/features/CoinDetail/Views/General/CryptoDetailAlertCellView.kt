@@ -36,6 +36,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainer
@@ -62,24 +63,31 @@ fun CryptoDetailAlertCellView(
     deleteAlert: () -> Unit
 ) {
     val currency = allCurrencies.firstOrNull { it.code.lowercase() == (alert?.preferredCurrency ?: "") } ?: CurrencySelectionModel()
-    val aboveOrBelow = alert?.direction?.value?.replaceFirstChar { it.uppercaseChar() } ?: "Above"
+    val aboveOrBelow = Localization.string(
+        alert?.direction?.value?.replaceFirstChar { it.uppercaseChar() } ?: "Above",
+    )
     val formattedPrice = alert?.targetPrice?.formatCurrency(threshold = FormattingThreshold.NONE, currency = currency) ?: "00000000"
 
     val positionText = if (index != null && alertsCount != null) {
-        "Price alert ${index + 1} of $alertsCount"
+        Localization.format("Price alert %1\$d of %2\$d", index + 1, alertsCount)
     } else {
-        "Price alert"
+        Localization.string("Price alert")
     }
 
     val accessibilityLabel = if (alert == null) {
         positionText
     } else {
-        val recurringText = if (alert.isRecurringAlert) "Recurring" else "One-time"
+        val recurringText = Localization.string(if (alert.isRecurringAlert) "Recurring" else "One-time")
         val createdText = alert.createdDate.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)?.alertTimeAgoDisplay() ?: ""
+        val directionText = Localization.string(alert.direction.value.replaceFirstChar { it.uppercaseChar() })
         val targetText = alert.targetPrice.currencyAccessible(currency = currency)
-        val namePart = name?.takeIf { it.isNotEmpty() }?.let { "$it, " } ?: ""
-
-        "$positionText, ${namePart}trigger when $aboveOrBelow $targetText, $recurringText alert, created $createdText"
+        listOf(
+            positionText,
+            name ?: "",
+            Localization.format("Trigger when %1$@ %2$@", directionText, targetText),
+            Localization.format("%@ alert", recurringText),
+            Localization.format("Created %@", createdText),
+        ).filter { it.isNotEmpty() }.joinToString(", ")
     }
 
     Row(
@@ -90,7 +98,7 @@ fun CryptoDetailAlertCellView(
                 contentDescription = accessibilityLabel
                 if (alert != null) {
                     customActions = listOf(
-                        CustomAccessibilityAction("Delete") {
+                        CustomAccessibilityAction(Localization.string("Delete")) {
                             deleteAlert.invoke()
                             true
                         }
@@ -139,10 +147,11 @@ fun CryptoDetailAlertCellView(
                     .shimmeringModifier(alert == null)
             )
 
-            val isRecurring = if (alert?.isRecurringAlert == true) "Recurring" else "One-time"
+            val isRecurring = Localization.string(if (alert?.isRecurringAlert == true) "Recurring" else "One-time")
+            val createdText = alert?.createdDate?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)?.alertTimeAgoDisplay() ?: ""
 
             Text(
-                text = "$isRecurring · Created ${alert?.createdDate?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)?.alertTimeAgoDisplay()}",
+                text = Localization.format("%1$@ · Created %2$@", isRecurring, createdText),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceDimmer,
                 modifier = Modifier

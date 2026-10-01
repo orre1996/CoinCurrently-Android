@@ -38,6 +38,7 @@ import com.cryptium.coincurrently.sharedui.inputs.CustomFreeInputField
 import com.cryptium.coincurrently.features.Portfolio.ViewModels.AddTransactionViewModel
 import com.cryptium.coincurrently.features.Portfolio.ViewModels.AddTransactionViewModelFactory
 import com.cryptium.coincurrently.core.extensions.*
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
 import com.cryptium.coincurrently.sharedui.inputs.NumericInputField
 import com.cryptium.coincurrently.sharedui.inputs.TextInputField
@@ -310,13 +311,20 @@ private fun AmountField(
     cryptoDetailInfoModel: CryptoDetailInfoModel?
 ) {
     val accessibleAmount = amountInput.value?.numberAccessible() ?: ""
-    val accessibilityValue = "Amount: ${if (amountInput.value == null) "" else accessibleAmount}. Textfield"
+    val accessibilityValue = Localization.format(
+        "%@. Textfield",
+        if (amountInput.value == null) {
+            Localization.string("Amount")
+        } else {
+            Localization.format("Amount: %@", accessibleAmount)
+        },
+    )
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Amount",
+            text = Localization.string("Amount"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -325,7 +333,7 @@ private fun AmountField(
         Row {
             NumericInputField(
                 input = amountInput.value,
-                placeholder = "Enter Amount",
+                placeholder = Localization.string("Enter Amount"),
                 accessibilityValue = accessibilityValue,
                 onInputChange = {
                     amountInput.value = it
@@ -358,13 +366,16 @@ private fun UnitPriceField(
     val accessiblePrice = (unitPriceInput.value ?: currentPrice)?.currencyAccessible(
         currency = selectedCurrency
     ) ?: ""
-    val accessibilityValue = "Unit Price: $accessiblePrice. Textfield"
+    val accessibilityValue = Localization.format(
+        "%@. Textfield",
+        Localization.format("Unit Price: %@", accessiblePrice),
+    )
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Unit Price",
+            text = Localization.string("Unit Price"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -401,13 +412,20 @@ private fun FeesField(
     selectedCurrency: CurrencySelectionModel
 ) {
     val accessibleFees = feesInput.value?.currencyAccessible(currency = selectedCurrency) ?: ""
-    val accessibilityValue = "Transaction fee: $accessibleFees. Textfield"
+    val accessibilityValue = Localization.format(
+        "%@. Textfield",
+        if (feesInput.value == null) {
+            Localization.string("Fees")
+        } else {
+            Localization.format("Transaction fee: %@", accessibleFees)
+        },
+    )
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Fees",
+            text = Localization.string("Fees"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -416,7 +434,7 @@ private fun FeesField(
         Row {
             NumericInputField(
                 input = feesInput.value,
-                placeholder = "Enter Fees",
+                placeholder = Localization.string("Enter Fees"),
                 currency = selectedCurrency,
                 accessibilityValue = accessibilityValue,
                 onInputChange = {
@@ -436,14 +454,17 @@ private fun DateField(
     modifier: Modifier
 ) {
     val formattedDate = selectedDate.value.formatDate(DateFormat.MMMddyyyy) ?: ""
-    val accessibilityLabel = "Date: ${selectedDate.value.accessibleLongDateDescription()}"
+    val accessibilityLabel = Localization.format(
+        "Date: %@",
+        selectedDate.value.accessibleLongDateDescription(),
+    )
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier
     ) {
         Text(
-            text = "Date",
+            text = Localization.string("Date"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -492,14 +513,17 @@ private fun TimeField(
     val formattedTime = selectedDate.value.formatDate(
         if (context.is24HourClock) DateFormat.HHmm else DateFormat.hhmma
     ) ?: ""
-    val accessibilityLabel = "Time: ${selectedDate.value.accessibleTimeDescription(context.is24HourClock)}"
+    val accessibilityLabel = Localization.format(
+        "Time: %@",
+        selectedDate.value.accessibleTimeDescription(context.is24HourClock),
+    )
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier
     ) {
         Text(
-            text = "Time",
+            text = Localization.string("Time"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -540,17 +564,20 @@ private fun TimeField(
 private fun NoteField(
     noteInput: MutableState<String>,
 ) {
-    val accessibilityLabel = if (noteInput.value.isEmpty()) {
-        "Input notes here, optional. Textfield"
-    } else {
-        "Note: ${noteInput.value}. Textfield"
-    }
+    val accessibilityLabel = Localization.format(
+        "%@. Textfield",
+        if (noteInput.value.isEmpty()) {
+            Localization.string("Input notes here, optional")
+        } else {
+            Localization.format("Note: %@", noteInput.value)
+        },
+    )
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Notes",
+            text = Localization.string("Notes"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -558,6 +585,7 @@ private fun NoteField(
 
         CustomFreeInputField(
             startingValue = noteInput.value,
+            placeholder = Localization.string("Enter notes (Optional)"),
             type = KeyboardType.Text,
             maxLines = 10,
             showError = noteInput.value.count() > 200,
@@ -568,7 +596,7 @@ private fun NoteField(
         )
 
         Text(
-            text = "${noteInput.value.count()} / 200 characters",
+            text = Localization.format("%@ / 200 characters", noteInput.value.count().toString()),
             style = satoshiMedium(14),
             color = if (noteInput.value.count() > 200) MaterialTheme.colors.trendDown else MaterialTheme.colors.onSurfaceDimmer,
             modifier = Modifier
@@ -590,7 +618,7 @@ private fun ActionButtonsView(
             .padding(bottom = 24.dp)
     ) {
         SecondaryButton(
-            text = "Cancel",
+            text = Localization.string("Cancel"),
             modifier = Modifier
                 .weight(1f)
                 .widthIn(max = 400.dp)
@@ -599,13 +627,12 @@ private fun ActionButtonsView(
         }
 
         PrimaryButton(
-            text = "Save",
+            text = Localization.string("Save"),
             isEnabled = isInputValid,
-            accessibilityLabel = if (isInputValid) {
-                "Save"
-            } else {
-                "Save: Disabled because invalid or no amount is entered"
-            },
+            accessibilityLabel = Localization.format(
+                "Save: %@",
+                if (isInputValid) "" else Localization.string("Disabled because invalid or no amount is entered"),
+            ),
             modifier = Modifier
                 .weight(1f)
                 .widthIn(max = 400.dp)

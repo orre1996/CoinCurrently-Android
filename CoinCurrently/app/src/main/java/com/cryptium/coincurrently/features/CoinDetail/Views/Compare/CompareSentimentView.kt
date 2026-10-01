@@ -25,6 +25,7 @@ import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.AdaptiveStack
 import com.cryptium.coincurrently.sharedui.theme.blue50
@@ -80,7 +81,7 @@ private fun HeaderView(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Community Sentiment",
+            text = Localization.string("Community Sentiment"),
             style = satoshiBold(22),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { heading() },
@@ -90,7 +91,7 @@ private fun HeaderView(
 
         Image(
             painter = painterResource(id = R.drawable.info),
-            contentDescription = "Community sentiment info",
+            contentDescription = Localization.string("Community sentiment info"),
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceDimmer),
             modifier = Modifier
                 .padding(12.dp)
@@ -123,7 +124,7 @@ private fun VotesView(
             .semantics(mergeDescendants = true) {},
     ) {
         Text(
-            text = "Sentiment Votes",
+            text = Localization.string("Sentiment Votes"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceContainerDim
         )
@@ -194,7 +195,7 @@ private fun SentimentMeterTitles(
             )
 
             Text(
-                text = "Bullish",
+                text = Localization.string("Bullish"),
                 style = satoshiBold(16),
                 color = MaterialTheme.colors.onSurfaceDimmer,
                 modifier = Modifier
@@ -230,7 +231,7 @@ private fun SentimentMeterTitles(
             )
 
             Text(
-                text = "Bullish",
+                text = Localization.string("Bullish"),
                 style = satoshiBold(16),
                 color = MaterialTheme.colors.onSurfaceDimmer,
                 modifier = childModifier,

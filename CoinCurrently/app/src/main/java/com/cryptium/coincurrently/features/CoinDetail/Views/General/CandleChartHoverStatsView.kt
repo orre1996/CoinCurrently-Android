@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.theme.primaryBackgroundNoRipple
 import com.cryptium.coincurrently.sharedui.modifiers.CappedFontScale
@@ -76,7 +77,7 @@ fun CandleChartHoverStatsView(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "Open",
+                        text = Localization.string("Open"),
                         style = satoshiBold(12),
                         color = MaterialTheme.colors.onSurfaceDimmer
                     )
@@ -92,7 +93,7 @@ fun CandleChartHoverStatsView(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "Close",
+                        text = Localization.string("Close price"),
                         style = satoshiBold(12),
                         color = MaterialTheme.colors.onSurfaceDimmer
                     )
@@ -113,7 +114,7 @@ fun CandleChartHoverStatsView(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "High",
+                        text = Localization.string("High"),
                         style = satoshiBold(12),
                         color = MaterialTheme.colors.onSurfaceDimmer
                     )
@@ -129,7 +130,7 @@ fun CandleChartHoverStatsView(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "Low",
+                        text = Localization.string("Low"),
                         style = satoshiBold(12),
                         color = MaterialTheme.colors.onSurfaceDimmer
                     )

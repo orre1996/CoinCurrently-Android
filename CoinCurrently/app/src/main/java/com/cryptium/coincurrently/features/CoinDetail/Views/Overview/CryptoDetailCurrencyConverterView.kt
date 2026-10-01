@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.CoinDetail.Views.Overview
+import com.cryptium.coincurrently.core.localization.Localization
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -97,7 +98,7 @@ fun CryptoDetailCurrencyConverterView(
 @Composable
 private fun HeaderView(tabPage: Modifier) {
     Text(
-        text = "Currency Converter",
+        text = Localization.string("Currency Converter"),
         style = satoshiBold(22),
         color = MaterialTheme.colors.onSurfaceDim,
         modifier = tabPage.semantics { heading() },
@@ -159,9 +160,12 @@ private fun CoinAmountInputField(
             onInputChange = {
                 coinAmountChanged(it ?: 0.0)
             },
-            accessibilityValue = "${formatConverterAmount(coinAmount)} ${cryptoDetailModel?.name ?: ""} equals ${
-                valueAmount.formatCurrency(threshold = FormattingThreshold.NONE, accessible = true)
-            }",
+            accessibilityValue = Localization.format(
+                "%1$@ %2$@ equals %3$@",
+                formatConverterAmount(coinAmount),
+                cryptoDetailModel?.name ?: "",
+                valueAmount.formatCurrency(threshold = FormattingThreshold.NONE, accessible = true),
+            ),
             tabPageTalkBack = true,
             trailingView = {
                 SymbolView(
@@ -231,9 +235,12 @@ private fun ValueAmountInputField(
             onInputChange = {
                 valueAmountChanged(it ?: 0.0)
             },
-            accessibilityValue = "${
-                valueAmount.formatCurrency(threshold = FormattingThreshold.NONE, accessible = true)
-            } equals ${formatConverterAmount(coinAmount)} ${cryptoDetailModel?.name ?: ""}",
+            accessibilityValue = Localization.format(
+                "%1$@ equals %2$@ %3$@",
+                valueAmount.formatCurrency(threshold = FormattingThreshold.NONE, accessible = true),
+                formatConverterAmount(coinAmount),
+                cryptoDetailModel?.name ?: "",
+            ),
             tabPageTalkBack = true,
             trailingView = {
                 CurrentCurrencyButton(

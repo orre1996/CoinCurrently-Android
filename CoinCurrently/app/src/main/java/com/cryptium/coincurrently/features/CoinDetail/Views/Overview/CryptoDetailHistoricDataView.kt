@@ -31,6 +31,8 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.cryptium.coincurrently.core.localization.Localization
+import com.cryptium.coincurrently.core.extensions.localizedAbbreviatedDate
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.tabPageTalkBackTraversal
 import com.cryptium.coincurrently.sharedui.components.contentScreenWidth
@@ -47,7 +49,6 @@ import com.cryptium.coincurrently.core.extensions.convertStringToDate
 import com.cryptium.coincurrently.core.extensions.daysAgo
 import com.cryptium.coincurrently.core.extensions.dpToPx
 import com.cryptium.coincurrently.core.extensions.formatCurrency
-import com.cryptium.coincurrently.core.extensions.formatDate
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.pxToDp
 import com.cryptium.coincurrently.core.extensions.satoshiBold
@@ -147,7 +148,7 @@ private fun HistoricDataSeparator() {
 @Composable
 private fun HeaderView(tabPage: Modifier) {
     Text(
-        text = "Historical Data",
+        text = Localization.string("Historical Data"),
         style = satoshiBold(22),
         color = MaterialTheme.colors.onSurfaceDim,
         modifier = tabPage.semantics { heading() },
@@ -244,11 +245,11 @@ private fun AllTimeRangeView(
 
     val atlDate = cryptoDetailInfoModel?.market_data?.atl_date?.getSelectedCurrency()
         ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)
-    val formattedAtlDate = atlDate?.formatDate(style = DateFormat.MMMddyyyy)
+    val formattedAtlDate = atlDate?.localizedAbbreviatedDate
 
     val athDate = cryptoDetailInfoModel?.market_data?.ath_date?.getSelectedCurrency()
         ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)
-    val formattedAthDate = athDate?.formatDate(style = DateFormat.MMMddyyyy)
+    val formattedAthDate = athDate?.localizedAbbreviatedDate
     val rangeAccessibilityLabel = accessibleAllTimeRangeLabel(
         atl = cryptoDetailInfoModel?.market_data?.atl?.getSelectedCurrency(),
         ath = cryptoDetailInfoModel?.market_data?.ath?.getSelectedCurrency(),
@@ -265,7 +266,7 @@ private fun AllTimeRangeView(
         },
     ) {
         Text(
-            text = "All-Time Range",
+            text = Localization.string("All-Time Range"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceContainerDim,
             modifier = Modifier.semantics { invisibleToUser() },
@@ -379,7 +380,7 @@ private fun AllTimeLowView(
             modifier = sectionModifier(),
         ) {
             Text(
-                text = "All-Time Low %",
+                text = Localization.string("All-Time Low %"),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceContainerDim,
                 modifier = Modifier.semantics { invisibleToUser() },
@@ -403,14 +404,14 @@ private fun AllTimeLowView(
             modifier = sectionModifier()
                 .then(tabPage)
                 .semantics(mergeDescendants = true) {
-                    contentDescription = "Days since all time low: ${
+                    contentDescription = "${Localization.string("Days since all time low: ")}${
                         cryptoDetailInfoModel?.market_data?.atl_date?.getSelectedCurrency()
                             ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)?.daysAgo ?: ""
                     }"
                 },
         ) {
             Text(
-                text = "Since All-Time Low",
+                text = Localization.string("Since All-Time Low"),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceContainerDim,
                 modifier = Modifier.semantics { invisibleToUser() },
@@ -445,7 +446,7 @@ private fun AllTimeHighView(
             modifier = sectionModifier(),
         ) {
             Text(
-                text = "All-Time High %",
+                text = Localization.string("All-Time High %"),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceContainerDim,
                 modifier = Modifier.semantics { invisibleToUser() },
@@ -469,14 +470,14 @@ private fun AllTimeHighView(
             modifier = sectionModifier()
                 .then(tabPage)
                 .semantics(mergeDescendants = true) {
-                    contentDescription = "Days since all time high: ${
+                    contentDescription = "${Localization.string("Days since all time high: ")}${
                         cryptoDetailInfoModel?.market_data?.ath_date?.getSelectedCurrency()
                             ?.convertStringToDate(DateFormat.yyyyMMddTHHmmssSSSZ)?.daysAgo ?: ""
                     }"
                 },
         ) {
             Text(
-                text = "Since All-Time High",
+                text = Localization.string("Since All-Time High"),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceContainerDim,
                 modifier = Modifier.semantics { invisibleToUser() },
@@ -502,23 +503,27 @@ private fun GenesisDateView(
         DateFormat.yyyyMMdd,
         gmtTimeZone = false
     )
-    val formattedGenesisDate = genesisDate?.formatDate(DateFormat.MMMddyyyy)
+    val formattedGenesisDate = genesisDate?.localizedAbbreviatedDate
 
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = tabPage.semantics(mergeDescendants = true) {
-            contentDescription = "Genesis Date, ${formattedGenesisDate ?: "Unknown"}"
+            contentDescription = Localization.format(
+                "%@, %@",
+                Localization.string("Genesis Date"),
+                formattedGenesisDate ?: Localization.string("Unknown"),
+            )
         },
     ) {
         Text(
-            text = "Genesis Date",
+            text = Localization.string("Genesis Date"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceContainerDim,
             modifier = Modifier.semantics { invisibleToUser() },
         )
 
         Text(
-            text = formattedGenesisDate ?: "Unknown",
+            text = formattedGenesisDate ?: Localization.string("Unknown"),
             style = satoshiBold(16),
             color = MaterialTheme.colors.onSurface,
             modifier = Modifier
@@ -543,5 +548,9 @@ private fun accessibleAllTimeRangeLabel(
 ): String {
     val atlAccessible = accessibleAllTimeRangePrice(atl)
     val athAccessible = accessibleAllTimeRangePrice(ath)
-    return "All-Time Range. From $atlAccessible on ${atlDate ?: ""}, to $athAccessible on ${athDate ?: ""}"
+    return "${Localization.string("All-Time Range")}. ${
+        Localization.format("From %@", atlAccessible)
+    } ${Localization.format("on %@", atlDate ?: "")}, ${
+        Localization.format("to %@", athAccessible)
+    } ${Localization.format("on %@", athDate ?: "")}"
 }

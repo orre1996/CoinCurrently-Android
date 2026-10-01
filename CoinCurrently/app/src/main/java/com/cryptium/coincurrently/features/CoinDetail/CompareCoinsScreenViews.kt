@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import kotlin.math.floor
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.features.CoinDetail.Views.Compare.CompareRectangleView
 import com.cryptium.coincurrently.sharedui.charts.LineChart
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
@@ -42,7 +43,7 @@ internal fun ChangeCoinButton(
     IconButton(
         onClick = { callback.invoke() },
         modifier = Modifier.semantics {
-            contentDescription = "Change compare coin"
+            contentDescription = Localization.string("Change compare coin")
         },
     ) {
         Image(

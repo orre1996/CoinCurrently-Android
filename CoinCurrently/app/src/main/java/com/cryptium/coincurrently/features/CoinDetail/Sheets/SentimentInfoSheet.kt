@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
@@ -71,7 +72,7 @@ fun SentimentInfoSheet(
             Separator()
 
             Text(
-                text = "Community Sentiment reflects votes from CoinGecko users on whether they feel bullish or bearish about this asset. It does not represent financial advice or market forecasts.",
+                text = Localization.string("Community Sentiment reflects votes from CoinGecko users on whether they feel bullish or bearish about this asset. It does not represent financial advice or market forecasts."),
                 style = satoshiRegular(18),
                 color = MaterialTheme.colors.onSurfaceDim,
                 modifier = Modifier

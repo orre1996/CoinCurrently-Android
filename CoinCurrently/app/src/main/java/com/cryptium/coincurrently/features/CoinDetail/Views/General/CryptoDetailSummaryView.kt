@@ -152,7 +152,7 @@ fun CryptoDetailSummaryView(
         "${name ?: "coin"}$accessibilityCountryText - $valueAccessibilityLabel: $currentPriceText - ${selectedTimeframe.accessibilityTimeframe} $changeMetricLabel change. $changeDirection $formattedChangePercent percent"
     }
     val fullAccessibilityLabel = if (changeCoinAccessibilityHint != null) {
-        "$accessibilityLabel. $changeCoinAccessibilityHint"
+        "$accessibilityLabel. ${Localization.string(changeCoinAccessibilityHint)}"
     } else {
         accessibilityLabel
     }

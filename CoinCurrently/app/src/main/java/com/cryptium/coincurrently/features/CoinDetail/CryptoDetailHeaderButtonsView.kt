@@ -23,6 +23,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.sharedui.modifiers.imageSize
 import com.cryptium.coincurrently.sharedui.theme.*
@@ -36,11 +37,10 @@ internal fun FavoriteButton(
     Image(
         painter = painterResource(if (isFavorited) R.drawable.favorite_filled else R.drawable.favorite_outline),
         colorFilter = ColorFilter.tint(if (isFavorited) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface),
-        contentDescription = if (isFavorited) {
-            "Remove $coinName from favorites"
-        } else {
-            "Add $coinName to favorites"
-        },
+        contentDescription = Localization.format(
+            if (isFavorited) "Remove %@ from favorites" else "Add %@ to favorites",
+            coinName,
+        ),
         modifier = Modifier
             .padding(8.dp)
             .imageSize(24.dp)
@@ -66,7 +66,7 @@ internal fun MoreButton(
     }) {
         Box(
             modifier = Modifier.semantics {
-                contentDescription = "More options"
+                contentDescription = Localization.string("More options")
             }
         ) {
             Image(
@@ -98,7 +98,7 @@ internal fun MoreButton(
                             )
 
                             Text(
-                                text = "Compare",
+                                text = Localization.string("Compare"),
                                 style = satoshiBold(16),
                                 color = MaterialTheme.colors.onSurfaceDim
                             )
@@ -114,7 +114,7 @@ internal fun MoreButton(
 
                 DropdownMenuItem(
                     modifier = Modifier.semantics(mergeDescendants = true) {
-                        contentDescription = "Add new $coinName price alert"
+                        contentDescription = Localization.format("Add new %@ price alert", coinName)
                     },
                     content = {
                         Row(
@@ -130,7 +130,7 @@ internal fun MoreButton(
                             )
 
                             Text(
-                                text = "Add Alert",
+                                text = Localization.string("Add Alert"),
                                 style = satoshiBold(16),
                                 color = MaterialTheme.colors.onSurfaceDim
                             )
@@ -159,7 +159,7 @@ internal fun MoreButton(
                             )
 
                             Text(
-                                text = "Share",
+                                text = Localization.string("Share"),
                                 style = satoshiBold(16),
                                 color = MaterialTheme.colors.onSurfaceDim
                             )

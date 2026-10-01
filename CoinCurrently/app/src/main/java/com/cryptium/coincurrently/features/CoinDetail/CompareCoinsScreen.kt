@@ -73,6 +73,7 @@ import com.cryptium.coincurrently.sharedui.charts.chartAccessibilityOverlay
 import com.cryptium.coincurrently.sharedui.charts.chartTalkBackSection
 import com.cryptium.coincurrently.sharedui.charts.hideFromTalkBackWhenEnabled
 import com.cryptium.coincurrently.sharedui.charts.rememberCompareChartHoverUi
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
 import com.cryptium.coincurrently.sharedui.components.ImageCase
 import com.cryptium.coincurrently.sharedui.loading.ActivityIndicator
@@ -204,7 +205,7 @@ fun CompareCoinsScreen(
                 modifier = modifier
             ) {
                 CustomTopAppBar(
-                    title = "Compare",
+                    title = Localization.string("Compare"),
                     navigateBack = {
                         navigationViewModel.navigateBack()
                     },
