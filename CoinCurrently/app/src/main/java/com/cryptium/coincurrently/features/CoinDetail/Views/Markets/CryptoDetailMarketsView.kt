@@ -37,6 +37,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.theme.outlineVariant
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.sharedui.sheets.EmptyContent
 import com.cryptium.coincurrently.sharedui.models.SortOption
@@ -80,8 +81,11 @@ fun LazyListScope.CryptoDetailMarketsView(
                 )
             ) {
                 SecondaryButton(
-                    text = selectedSortOption.title,
-                    accessibilityLabel = "Sort. currently selected. ${selectedSortOption.accessibilityTitle}",
+                    text = Localization.string(selectedSortOption.title),
+                    accessibilityLabel = Localization.format(
+                        "Sort, currently selected: %@",
+                        Localization.string(selectedSortOption.accessibilityTitle),
+                    ),
                     icon = R.drawable.sort,
                     onClick = {
                         AnalyticsManager.log(
@@ -126,8 +130,11 @@ fun LazyListScope.CryptoDetailMarketsView(
         items.isEmpty() -> {
             item {
                 EmptyContent(
-                    title = "No markets yet",
-                    subTitle = "When this $errorMessage is added to a market, it'll show up here.",
+                    title = Localization.string("No markets yet"),
+                    subTitle = Localization.format(
+                        "When this %@ is added to a market, it'll show up here.",
+                        Localization.string(errorMessage),
+                    ),
                     modifier = Modifier
                         .tabPageTalkBackTraversal(groupChildren = true)
                         .padding(
@@ -170,7 +177,11 @@ private fun DetailMarketsHeaderView(
         modifier = Modifier.clearAndSetSemantics { invisibleToUser() },
     ) {
         Text(
-            text = if (isHorizontal) headerLabel else "$headerLabel / Price",
+            text = if (isHorizontal) {
+                Localization.string(headerLabel)
+            } else {
+                Localization.format("%@ / %@", Localization.string(headerLabel), Localization.string("Price"))
+            },
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier
@@ -179,7 +190,7 @@ private fun DetailMarketsHeaderView(
 
         if (isHorizontal) {
             Text(
-                text = "Price",
+                text = Localization.string("Price"),
                 style = satoshiMedium(14),
                 color = MaterialTheme.colors.onSurfaceDim,
                 maxLines = 1,
@@ -187,7 +198,7 @@ private fun DetailMarketsHeaderView(
 
             if (showVolume) {
                 Text(
-                    text = "24h Volume",
+                    text = Localization.string("24h Volume"),
                     style = satoshiMedium(14),
                     color = MaterialTheme.colors.onSurfaceDim,
                     maxLines = 1,
@@ -195,7 +206,7 @@ private fun DetailMarketsHeaderView(
             }
         } else if (showVolume) {
             Text(
-                text = "24h Volume",
+                text = Localization.string("24h Volume"),
                 style = satoshiMedium(14),
                 color = MaterialTheme.colors.onSurfaceDim,
                 maxLines = 1,
@@ -217,15 +228,17 @@ private fun DetailMarketsRowView(
 ) {
     val isHorizontal = AccessibilityLayout.isHorizontal
     val headerLabel = config.headers.firstOrNull().orEmpty()
+    val localizedHeader = Localization.string(headerLabel)
     val accessibilityLabel = buildString {
         if (listIndex != null && listCount != null) {
-            append("$headerLabel ${listIndex + 1} of $listCount. ")
+            append("$localizedHeader ${listIndex + 1} of $listCount. ")
         }
-        append(item.name ?: "")
-        item.priceAccessible?.let { append(". Last price: $it") }
+        append(Localization.format("%@ %@", localizedHeader, item.name ?: ""))
+        item.priceAccessible?.let { append(". ${Localization.format("Last price: %@", it)}") }
         if (showVolume) {
-            item.volumeAccessible?.let { append(". 24 hour volume: $it") }
+            item.volumeAccessible?.let { append(". ${Localization.format("24 hour volume: %@", it)}") }
         }
+        append(". ${Localization.string("Double tap for details. Long press for more options")}")
     }
 
     Row(
@@ -319,7 +332,7 @@ private fun VolumeView(
     volume: String?,
 ) {
     MinimumTextSize(
-        text = "24h Volume",
+        text = Localization.string("24h Volume"),
         font = satoshiMedium(14),
         alignment = Alignment.CenterEnd
     ) {

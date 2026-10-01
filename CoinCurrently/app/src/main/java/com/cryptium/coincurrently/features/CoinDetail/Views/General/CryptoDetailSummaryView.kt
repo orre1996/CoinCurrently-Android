@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.CoinDetail.Views.General
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.graphics.Bitmap
 import androidx.compose.foundation.clickable
@@ -94,7 +95,15 @@ fun CryptoDetailSummaryView(
             currency = currency,
             accessible = true,
         ) ?: ""
-        "${name ?: "coin"}$accessibilityCountryText. $valueAccessibilityLabel. $volumeText. $changeDirection $formattedChangePercent percent ${selectedTimeframe.accessibilityChangePeriod}"
+        Localization.format(
+            "%1$@, %2$@: %3$@. %4$@ %5$@ percent %6$@",
+            "${name ?: "coin"}$accessibilityCountryText",
+            Localization.string(valueAccessibilityLabel),
+            volumeText,
+            Localization.string(if (roundedChange >= 0) "Up" else "Down"),
+            formattedChangePercent,
+            Localization.string(selectedTimeframe.accessibilityChangePeriod),
+        )
     } else {
         val currentPriceText = currentPrice?.formatCurrency(
             threshold = accessibilityFormattingThreshold,

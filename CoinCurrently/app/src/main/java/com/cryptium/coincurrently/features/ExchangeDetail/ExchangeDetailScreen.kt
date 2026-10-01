@@ -38,6 +38,7 @@ import com.cryptium.coincurrently.core.extensions.pxToDp
 import com.cryptium.coincurrently.sharedui.charts.ChartBackground
 import com.cryptium.coincurrently.sharedui.charts.ChartTimeStamps
 import com.cryptium.coincurrently.sharedui.charts.ChartTimeframeButtonsView
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.charts.ChartAccessibilityOverlay
 import com.cryptium.coincurrently.sharedui.charts.chartAccessibilityOverlay
 import com.cryptium.coincurrently.sharedui.charts.ChartHoverView
@@ -231,6 +232,7 @@ fun ExchangeDetailScreen(
                                         timeChart = viewModel.selectedTimeFrame,
                                         trailingPadding = biggestValue.value.width,
                                         useExchangeDateFormat = true,
+                                        mainSeriesName = Localization.string("24h Volume"),
                                     )
                             ) {
                                 Box(modifier = Modifier.hideFromTalkBackWhenEnabled()) {
@@ -263,6 +265,7 @@ fun ExchangeDetailScreen(
                                     timeChart = viewModel.selectedTimeFrame,
                                     trailingPadding = biggestValue.value.width,
                                     useExchangeDateFormat = true,
+                                    mainSeriesName = Localization.string("24h Volume"),
                                 )
 
                                 MultiTouchView(

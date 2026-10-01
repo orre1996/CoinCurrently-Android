@@ -22,6 +22,7 @@ import com.cryptium.coincurrently.features.News.SmallNewsItem
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.NewsOpened
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.NewNewsItem
 
 fun LazyListScope.DetailNews(
@@ -35,8 +36,11 @@ fun LazyListScope.DetailNews(
     if (showError) {
         item {
             EmptyContent(
-                title = "No news yet",
-                subTitle = "When news about this $title appears, it’ll show up here.",
+                title = Localization.string("No news yet"),
+                subTitle = Localization.format(
+                    "When news about this %@ appears, it'll show up here.",
+                    Localization.string(title),
+                ),
                 modifier = Modifier
                     .tabPageTalkBackTraversal(groupChildren = true)
                     .padding(
