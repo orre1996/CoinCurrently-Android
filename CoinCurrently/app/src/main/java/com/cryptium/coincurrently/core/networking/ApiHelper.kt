@@ -11,6 +11,7 @@ import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
 import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.ApiService
+import com.cryptium.coincurrently.core.networking.ResponseModels.NewNewsItem
 import com.cryptium.coincurrently.core.networking.ResponseModels.NewNewsModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.PostAlertCoin
 import com.cryptium.coincurrently.core.networking.ResponseModels.RedeemCodeRequest
@@ -18,6 +19,8 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.ReferralCodeRes
 import com.cryptium.coincurrently.core.networking.ResponseModels.SendFeedbackRequest
 import com.cryptium.coincurrently.core.networking.ResponseModels.SubCoinRequest
 import com.cryptium.coincurrently.core.networking.ResponseModels.UserResponse
+import com.cryptium.coincurrently.core.localization.CoinGeckoNewsLanguage
+import com.cryptium.coincurrently.core.networking.ResponseModels.CoinGeckoNewsItem
 import com.cryptium.coincurrently.core.networking.ResponseModels.serverBaseUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -133,6 +136,33 @@ object ApiHelper {
 
     suspend fun getNftDetail(id: String) = apiService.getNFTDetail(baseUrl, id)
     suspend fun getNFTTickers(id: String) = apiService.getNFTTickers(baseUrl, id)
+    suspend fun getCoinGeckoNews(coinId: String?): Result<NewNewsModel> {
+        val items = apiService.getCoinGeckoNews(
+            url = baseUrl,
+            language = CoinGeckoNewsLanguage.code,
+            coinId = coinId?.takeIf { it.isNotEmpty() },
+        ).unwrapOrNull() ?: return Result.failure(IllegalStateException("News request failed"))
+        val namesById = apiService.getCoinsList(baseUrl).unwrapOrNull()
+            .orEmpty()
+            .mapNotNull { coin ->
+                val id = coin.id?.takeIf { it.isNotEmpty() } ?: return@mapNotNull null
+                val name = coin.name?.takeIf { it.isNotEmpty() } ?: return@mapNotNull null
+                id to name
+            }
+            .toMap()
+        val mapped = items.map { item ->
+            NewNewsItem(
+                news_url = item.url,
+                image_url = item.image,
+                title = item.title,
+                source_name = item.source_name ?: item.author,
+                date = item.posted_at,
+                tickers = item.related_coin_ids?.mapNotNull { namesById[it] },
+            )
+        }
+        return Result.success(NewNewsModel(data = mapped))
+    }
+
     suspend fun getNewNews(count: Int, type: NewsCategory): Result<NewNewsModel> {
         return when(type) {
             is NewsCategory.General -> {

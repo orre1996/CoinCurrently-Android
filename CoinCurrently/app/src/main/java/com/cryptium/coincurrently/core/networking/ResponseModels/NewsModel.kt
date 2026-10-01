@@ -52,6 +52,16 @@ data class NewNewsItem(
     var tickers: List<String>? = null,
 )
 
+data class CoinGeckoNewsItem(
+    var title: String? = null,
+    var url: String? = null,
+    var image: String? = null,
+    var author: String? = null,
+    var posted_at: String? = null,
+    var source_name: String? = null,
+    var related_coin_ids: List<String>? = null,
+)
+
 fun String.getSentimentSign(): Int {
     if (this == "Negative") {
         return R.drawable.trend_down

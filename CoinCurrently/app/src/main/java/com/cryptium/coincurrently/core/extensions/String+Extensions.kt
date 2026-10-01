@@ -83,11 +83,20 @@ val String.changeWithSymbol: String
 
 
 fun String.getDate(): Date? {
+    parseIsoInstant()?.let { return it }
     return try {
         val format = SimpleDateFormat("E, d MMM yyyy HH:mm:ss Z", AppLocale.enUsPosix)
         format.parse(this)
     } catch (e: Exception) {
         Date()
+    }
+}
+
+private fun String.parseIsoInstant(): Date? {
+    return try {
+        Date.from(java.time.Instant.parse(this))
+    } catch (_: Exception) {
+        null
     }
 }
 

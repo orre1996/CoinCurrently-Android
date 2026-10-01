@@ -224,6 +224,15 @@ interface ApiService{
         @Query(value = "query") query: String = ""
     ): Result<SearchModel>
 
+    @GET("{url}/api/v3/news")
+    suspend fun getCoinGeckoNews(
+        @Path(value = "url", encoded = true) url: String,
+        @Query("language") language: String,
+        @Query("type") type: String = "all",
+        @Query("per_page") perPage: Int = 20,
+        @Query("coin_id") coinId: String? = null,
+    ): Result<ArrayList<CoinGeckoNewsItem>>
+
     @GET("{url}/news/api/v1/category?section=alltickers&page=1")
     suspend fun getNewNews(
         @Path(value = "url", encoded = true) url: String,

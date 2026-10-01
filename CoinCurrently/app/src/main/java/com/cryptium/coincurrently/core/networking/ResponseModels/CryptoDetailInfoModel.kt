@@ -11,6 +11,8 @@ import com.cryptium.coincurrently.sharedui.theme.trendUp
 import com.cryptium.coincurrently.core.models.PreferredTimeframe
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.networking.ResponseModels.Currency
+import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -101,8 +103,87 @@ data class Market(
 
 @Serializable
 data class Description(
-    var en: String? = null
-)
+    var en: String? = null,
+    var zh: String? = null,
+    @SerialName("zh-tw")
+    @SerializedName("zh-tw")
+    var zhTw: String? = null,
+    var de: String? = null,
+    var fr: String? = null,
+    var es: String? = null,
+    var ja: String? = null,
+    var id: String? = null,
+    var ru: String? = null,
+    var ko: String? = null,
+    var ar: String? = null,
+    var th: String? = null,
+    var vi: String? = null,
+    var it: String? = null,
+    var pl: String? = null,
+    var tr: String? = null,
+    var hu: String? = null,
+    var nl: String? = null,
+    var ro: String? = null,
+    var sv: String? = null,
+    var cs: String? = null,
+    var da: String? = null,
+    var el: String? = null,
+    var hi: String? = null,
+    var no: String? = null,
+    var sk: String? = null,
+    var uk: String? = null,
+    var he: String? = null,
+    var fi: String? = null,
+    var bg: String? = null,
+    var hr: String? = null,
+    var lt: String? = null,
+    var sl: String? = null,
+    var pt: String? = null,
+) {
+    fun text(languageCode: String): String {
+        val localized = value(languageCode)
+        if (!localized.isNullOrEmpty()) return localized
+        return en.orEmpty()
+    }
+
+    private fun value(languageCode: String): String? = when (languageCode) {
+        "en" -> en
+        "zh" -> zh
+        "zh-tw" -> zhTw
+        "de" -> de
+        "fr" -> fr
+        "es" -> es
+        "ja" -> ja
+        "id" -> id
+        "ru" -> ru
+        "ko" -> ko
+        "ar" -> ar
+        "th" -> th
+        "vi" -> vi
+        "it" -> it
+        "pl" -> pl
+        "tr" -> tr
+        "hu" -> hu
+        "nl" -> nl
+        "ro" -> ro
+        "sv" -> sv
+        "cs" -> cs
+        "da" -> da
+        "el" -> el
+        "hi" -> hi
+        "no" -> no
+        "sk" -> sk
+        "uk" -> uk
+        "he" -> he
+        "fi" -> fi
+        "bg" -> bg
+        "hr" -> hr
+        "lt" -> lt
+        "sl" -> sl
+        "pt" -> pt
+        else -> null
+    }
+}
 
 @Serializable
 data class Links(

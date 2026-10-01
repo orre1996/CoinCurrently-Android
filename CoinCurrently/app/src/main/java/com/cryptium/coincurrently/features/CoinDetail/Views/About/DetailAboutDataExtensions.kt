@@ -3,11 +3,12 @@ import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.features.CoinDetail.CryptoDetailViewModel
 import com.cryptium.coincurrently.features.ExchangeDetail.ExchangeDetailViewModel
 import com.cryptium.coincurrently.features.NFTDetail.NFTDetailViewModel
+import com.cryptium.coincurrently.core.localization.AppLanguageState
 import com.cryptium.coincurrently.core.networking.ResponseModels.*
 
 fun CryptoDetailViewModel.toDetailAboutData(): DetailAboutData {
     val links = cryptoInfo?.links
-    val description = cryptoInfo?.description?.en
+    val description = cryptoInfo?.description?.text(AppLanguageState.preference.resolve().code)
     val hasDescription = !description.isNullOrEmpty()
 
     val linkSections = if (links == null) {

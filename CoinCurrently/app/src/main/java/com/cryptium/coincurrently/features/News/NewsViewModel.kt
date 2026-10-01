@@ -32,8 +32,8 @@ class NewsViewModel: ViewModel() {
     init {
         newsCategory = newsRepository.newsCategory
 
-        newsRepository.cachedNews?.get(newsCategory.type)?.let {
-            news = it.data.data
+        newsRepository.getCachedNewsItems(newsCategory).takeIf { it.isNotEmpty() }?.let {
+            news = it
             setNewsFiltered()
         }
 

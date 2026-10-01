@@ -21,6 +21,7 @@ import com.cryptium.coincurrently.sharedui.theme.*
 import com.cryptium.coincurrently.sharedui.modifiers.*
 import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.core.extensions.getActivity
+import com.cryptium.coincurrently.core.localization.AppLanguageState
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.core.analytics.BuyProAction
@@ -99,6 +100,10 @@ fun NewsScreen(
             }
             else -> { }
         }
+    }
+
+    LaunchedEffect(AppLanguageState.preference) {
+        viewModel.getNews(viewModel.newsCategory)
     }
 
     LaunchedEffect(pagerState.currentPage) {
@@ -317,10 +322,10 @@ fun NewsScreen(
                 highlightId = viewModel.newsCategory.selectedId,
                 hideId = null,
                 selectedCoin = { coin ->
-                    val symbol = coin?.symbol ?: return@SelectCoinSheet
+                    val coinId = coin?.id?.takeIf { it.isNotEmpty() } ?: return@SelectCoinSheet
 
                     coroutineScope.launch {
-                        viewModel.getNews(NewsCategory.Coin(symbol.uppercase()))
+                        viewModel.getNews(NewsCategory.Coin(coinId))
                     }
                 },
                 close = {

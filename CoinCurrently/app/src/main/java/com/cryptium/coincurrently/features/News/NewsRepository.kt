@@ -4,6 +4,7 @@ import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.google.gson.reflect.TypeToken
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.sharedui.models.CachedData
+import com.cryptium.coincurrently.core.localization.CoinGeckoNewsLanguage
 import com.cryptium.coincurrently.core.networking.CacheUrls
 import com.cryptium.coincurrently.core.networking.MainRepository
 import com.cryptium.coincurrently.core.networking.NewsCategory
@@ -52,6 +53,17 @@ object NewsRepository {
     }
 
     suspend fun getNewNews(count: Int = 100, category: NewsCategory): NewNewsModel? {
+        if (usesCoinGecko(category)) {
+            val key = cacheKey(category)
+            val coinId = (category as? NewsCategory.Coin)?.id
+            val news = MainRepository.getCoinGeckoNews(coinId).unwrapOrNull()
+            if (news != null && !news.data.isNullOrEmpty()) {
+                cachedNews = (cachedNews + (key to CachedData(news, Date()))).toMutableMap()
+                return news
+            }
+            return cachedNews[key]?.data
+        }
+
         val url = newsUrl(category, count)
         RetrofitBuilder.getCached(url, newNewsModelType)?.let { cached ->
             (cached.data as? NewNewsModel)?.let { data ->
@@ -75,6 +87,18 @@ object NewsRepository {
     }
 
     fun getCachedNewsItems(category: NewsCategory): List<NewNewsItem> {
-        return cachedNews[category.type]?.data?.data.orEmpty()
+        return cachedNews[cacheKey(category)]?.data?.data.orEmpty()
+    }
+
+    private fun usesCoinGecko(category: NewsCategory): Boolean {
+        return category is NewsCategory.General || category is NewsCategory.Coin
+    }
+
+    private fun cacheKey(category: NewsCategory): String {
+        return if (usesCoinGecko(category)) {
+            "${category.type}:${CoinGeckoNewsLanguage.code}"
+        } else {
+            category.type
+        }
     }
 }

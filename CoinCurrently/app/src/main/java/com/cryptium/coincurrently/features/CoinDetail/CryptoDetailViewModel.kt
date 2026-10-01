@@ -278,12 +278,14 @@ class CryptoDetailViewModel(
         return prices
     }
 
-    suspend fun getCryptoNews(forceSymbol: String? = null) {
-        val id: String = forceSymbol?.uppercase() ?: cryptoInfo?.symbol?.uppercase() ?: return
+    suspend fun getCryptoNews() {
+        val id = cryptoInfo?.id?.takeIf { it.isNotEmpty() }
+            ?: currencyId.takeIf { it.isNotEmpty() }
+            ?: return
 
         showNewsError = false
 
-        val news = newsRepository.getNewNews(25, NewsCategory.Coin(id))
+        val news = newsRepository.getNewNews(20, NewsCategory.Coin(id))
         if (news?.data.isNullOrEmpty()) {
             showNewsError = true
         }
@@ -317,7 +319,7 @@ class CryptoDetailViewModel(
             val mainId = forceId ?: currencyId
 
             val cryptoInfo = async { getCryptoInfo(appContext, mainId) }
-            val news = async { if (getNews) getCryptoNews(forceSymbol) }
+            val news = async { if (getNews) getCryptoNews() }
             val candleChart = async {
                 if (isCandleChartEnabled) {
                     getCandleChart(mainId, days)

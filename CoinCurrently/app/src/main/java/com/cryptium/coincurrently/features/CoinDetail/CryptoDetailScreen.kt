@@ -67,6 +67,7 @@ import com.cryptium.coincurrently.features.CoinDetail.Views.News.DetailNews
 import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.dpToPx
 import com.cryptium.coincurrently.core.extensions.is24HourClock
+import com.cryptium.coincurrently.core.localization.AppLanguageState
 import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.isTablet
@@ -286,7 +287,7 @@ fun CryptoDetailScreen(
         }
     }
 
-    LaunchedEffect(viewModel.currentPage) {
+    LaunchedEffect(viewModel.currentPage, AppLanguageState.preference) {
         if (viewModel.currentPage == 2) {
             viewModel.getPortfolio()
         } else if (viewModel.currentPage == 4) {

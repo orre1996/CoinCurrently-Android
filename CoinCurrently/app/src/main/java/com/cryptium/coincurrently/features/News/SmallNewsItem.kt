@@ -180,15 +180,22 @@ private fun newsAccessibilityLabel(
         newsItem?.date?.getDate()?.getDateTimeAgo() ?: "000000",
     )
     val sentimentValue = newsItem?.sentiment.orEmpty()
-    val sentiment = Localization.format(
-        "Sentiment, %@",
-        when (sentimentValue) {
-            "Positive", "Negative", "Neutral" -> Localization.string(sentimentValue)
-            else -> sentimentValue
-        },
-    )
+    val sentiment = if (sentimentValue.isEmpty()) {
+        null
+    } else {
+        Localization.format(
+            "Sentiment, %@",
+            when (sentimentValue) {
+                "Positive", "Negative", "Neutral" -> Localization.string(sentimentValue)
+                else -> sentimentValue
+            },
+        )
+    }
     val tickers = newsItem?.tickers?.take(3)?.filter { it.isNotEmpty() }.orEmpty()
-    val description = "$position. $title. $source. $published. $sentiment"
+    val description = listOfNotNull(
+        "$position. $title. $source. $published",
+        sentiment,
+    ).joinToString(". ")
     return if (tickers.isEmpty()) {
         description
     } else {
@@ -262,6 +269,7 @@ private fun TickersView(
             text = "X",
             font = satoshiBold(12)
         ) {
+        if (news == null || sentiment != null) {
             Image(
                 painter = painterResource(sentiment?.getSentimentSign() ?: R.drawable.trend_still),
                 contentDescription = null,
@@ -272,6 +280,7 @@ private fun TickersView(
                 modifier = Modifier
                     .imageSize(16.dp, 12.dp),
             )
+        }
         }
 
         if (news == null || tickers?.isEmpty() == false) {

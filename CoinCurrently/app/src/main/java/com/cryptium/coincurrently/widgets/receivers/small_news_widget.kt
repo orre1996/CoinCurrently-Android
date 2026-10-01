@@ -198,18 +198,12 @@ internal suspend fun loadWidgetNews(
     appWidgetId: Int,
     limit: Int,
 ): List<NewNewsItem> {
-    val config = WidgetConfigStore.getNewsConfig(context, appWidgetId)
-    val category = WidgetConfigResolver.resolveNewsCategory(config)
-    val fetched = NewsRepository.getNewNews(newsCountForCategory(category), category)
+    val fetched = NewsRepository.getNewNews(20, NewsCategory.General())
         ?.data
-        ?.let { filterNewsForCategory(it, category) }
         .orEmpty()
     if (fetched.isNotEmpty()) return fetched.take(limit)
 
-    return filterNewsForCategory(
-        NewsRepository.getCachedNewsItems(category),
-        category,
-    ).take(limit)
+    return NewsRepository.getCachedNewsItems(NewsCategory.General()).take(limit)
 }
 
 internal fun getWidgetNewsItems(
@@ -217,12 +211,7 @@ internal fun getWidgetNewsItems(
     appWidgetId: Int,
     limit: Int = 2,
 ): List<NewNewsItem> {
-    val config = WidgetConfigStore.getNewsConfig(context, appWidgetId)
-    val category = WidgetConfigResolver.resolveNewsCategory(config)
-    return filterNewsForCategory(
-        NewsRepository.getCachedNewsItems(category),
-        category,
-    ).take(limit)
+    return NewsRepository.getCachedNewsItems(NewsCategory.General()).take(limit)
 }
 
 private fun nonBreaking(value: String): String = value.replace(" ", "\u00A0")
