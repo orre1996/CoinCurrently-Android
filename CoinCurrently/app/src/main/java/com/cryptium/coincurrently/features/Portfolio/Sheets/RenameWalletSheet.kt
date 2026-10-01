@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.Sheets
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.Chain
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -135,7 +136,7 @@ private fun WalletNameField(
     nameInput: MutableState<String>,
 ) {
     val accessibilityValue = if (nameInput.value.isEmpty()) {
-        "Enter wallet name, optional"
+        Localization.string("Enter wallet name, optional")
     } else {
         nameInput.value
     }
@@ -186,7 +187,7 @@ private fun ActionButtons(
             .padding(bottom = 8.dp)
     ) {
         SecondaryButton(
-            text = "Close",
+            text = Localization.string("Close"),
             fullWidth = true,
             onClick = {
                 close()

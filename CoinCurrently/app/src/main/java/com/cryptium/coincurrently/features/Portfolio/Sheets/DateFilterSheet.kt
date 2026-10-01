@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.Sheets
+import com.cryptium.coincurrently.core.localization.Localization
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -193,14 +194,15 @@ private fun StartDateField(
     startDate: MutableState<Date?>,
     selectDate: () -> Unit,
 ) {
-    val accessibleStartDate = startDate.value?.accessibleLongDateDescription() ?: "Enter start date"
+    val accessibleStartDate = startDate.value?.accessibleLongDateDescription()
+        ?: Localization.string("Enter start date")
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
             .padding(vertical = 24.dp)
             .semantics(mergeDescendants = true) {
-                contentDescription = "Start Date: $accessibleStartDate"
+                contentDescription = Localization.format("Start Date: %@", accessibleStartDate)
                 onClick(label = "Select start date", action = {
                     selectDate.invoke()
                     true
@@ -214,7 +216,7 @@ private fun StartDateField(
             }
     ) {
         Text(
-            text = "Start Date",
+            text = Localization.string("Start Date"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -225,7 +227,11 @@ private fun StartDateField(
                 input = startDate.value?.formatDate(DateFormat.MMMddyyyy) ?: "",
                 startIcon = R.drawable.date,
                 placeholder = "Start Date",
-                accessibilityLabel = if (startDate.value == null) "Enter start date" else accessibleStartDate,
+                accessibilityLabel = if (startDate.value == null) {
+                    Localization.string("Enter start date")
+                } else {
+                    accessibleStartDate
+                },
                 isEnabled = false,
                 onInputChange = { },
                 onDone = { },
@@ -244,14 +250,15 @@ private fun EndDateField(
     endDate: MutableState<Date?>,
     selectDate: () -> Unit,
 ) {
-    val accessibleEndDate = endDate.value?.accessibleLongDateDescription() ?: "Enter end date"
+    val accessibleEndDate = endDate.value?.accessibleLongDateDescription()
+        ?: Localization.string("Enter end date")
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
             .padding(bottom = 24.dp)
             .semantics(mergeDescendants = true) {
-                contentDescription = "End Date: $accessibleEndDate"
+                contentDescription = Localization.format("End Date: %@", accessibleEndDate)
                 onClick(label = "Select end date", action = {
                     selectDate.invoke()
                     true
@@ -265,7 +272,7 @@ private fun EndDateField(
             }
     ) {
         Text(
-            text = "End Date",
+            text = Localization.string("End Date"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -276,7 +283,11 @@ private fun EndDateField(
                 input = endDate.value?.formatDate(DateFormat.MMMddyyyy) ?: "",
                 placeholder = "End Date",
                 startIcon = R.drawable.date,
-                accessibilityLabel = if (endDate.value == null) "Enter end date" else accessibleEndDate,
+                accessibilityLabel = if (endDate.value == null) {
+                    Localization.string("Enter end date")
+                } else {
+                    accessibleEndDate
+                },
                 isEnabled = false,
                 onInputChange = { },
                 onDone = { },
@@ -310,8 +321,8 @@ private fun ActionButtons(
             )
     ) {
         SecondaryButton(
-            text = "Clear",
-            accessibilityLabel = "Clear filters",
+            text = Localization.string("Clear"),
+            accessibilityLabel = Localization.string("Clear filters"),
             fullWidth = true,
             modifier = sectionModifier()
                 .widthIn(max = 400.dp)
@@ -320,8 +331,8 @@ private fun ActionButtons(
         }
 
         PrimaryButton(
-            text = "Apply",
-            accessibilityLabel = "Apply filters",
+            text = Localization.string("Apply"),
+            accessibilityLabel = Localization.string("Apply filters"),
             isEnabled = isEnabled,
             fullWidth = true,
             modifier = sectionModifier()

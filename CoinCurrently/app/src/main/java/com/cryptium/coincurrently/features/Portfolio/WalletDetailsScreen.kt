@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.theme.*
 import com.cryptium.coincurrently.sharedui.modifiers.*
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
@@ -330,7 +331,7 @@ private fun MoreButton(
         Box {
             Image(
                 painter = painterResource(id = R.drawable.more),
-                contentDescription = "More options",
+                contentDescription = Localization.string("More options"),
                 colorFilter = ColorFilter.tint(
                     MaterialTheme.colors.onSurface
                 ),
@@ -349,7 +350,7 @@ private fun MoreButton(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Rename Wallet",
+                                text = Localization.string("Rename Wallet"),
                                 style = satoshiBold(16)
                             )
 
@@ -380,7 +381,7 @@ private fun MoreButton(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Remove Wallet",
+                                text = Localization.string("Remove Wallet"),
                                 style = satoshiBold(16)
                             )
 
@@ -414,12 +415,11 @@ private fun WalletTotals(
     showInfo: () -> Unit
 ) {
     val formattedTotalValue = totalValue?.formatCurrency(threshold = FormattingThreshold.MILLION) ?: ""
-    val walletValueLabel = if (hideData) {
-        "Wallet value, hidden"
-    } else {
-        "Wallet value: $formattedTotalValue"
-    }
-    val hideDataLabel = "${if (hideData) "show" else "hide"} wallet data"
+    val walletValueLabel = Localization.format(
+        "Wallet value: %@",
+        if (hideData) stars else formattedTotalValue,
+    )
+    val hideDataLabel = Localization.string(if (hideData) "Show wallet data" else "Hide wallet data")
     val talkBackEnabled = AccessibilityLayout.isTalkBackEnabled
 
     Column(
@@ -432,7 +432,7 @@ private fun WalletTotals(
             )
     ) {
         Text(
-            text = "Wallet Value",
+            text = Localization.string("Wallet Value"),
             style = satoshiBold(18),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -521,12 +521,12 @@ private fun WalletTotals(
                     .then(
                         if (talkBackEnabled) {
                             Modifier.semantics {
-                                contentDescription = "Wallet details"
+                                contentDescription = Localization.string("Wallet details")
                                 traversalIndex = 2f
                             }
                         } else {
                             Modifier.semantics {
-                                contentDescription = "Wallet details"
+                                contentDescription = Localization.string("Wallet details")
                             }
                         }
                     )
@@ -546,13 +546,16 @@ private fun ChangeView(
     val isHorizontal = AccessibilityLayout.isHorizontal
     val synced = syncedDate ?: Date()
     val valueChangeAccessibilityLabel = portfolioChangeAccessibilityLabel(
-        title = "7 days value change",
+        title = Localization.string("7 days value change"),
         value = changeValue,
         percent = changePercent,
         hideData = hideData,
     )
     val lastSyncedAccessibilityLabel =
-        "Last Synced: ${synced.accessibleLongDateDescription()} at ${synced.accessibleTimeDescription(context.is24HourClock)}"
+        Localization.format(
+            "Last Synced: %@",
+            "${synced.accessibleLongDateDescription()} at ${synced.accessibleTimeDescription(context.is24HourClock)}",
+        )
 
     AdaptiveStack(
         isHorizontal = isHorizontal,
@@ -575,7 +578,7 @@ private fun ChangeView(
                 },
         ) {
             Text(
-                text = "Value Change (7d)",
+                text = Localization.string("Value Change (7d)"),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceDim,
                 modifier = Modifier.semantics { invisibleToUser() }
@@ -635,7 +638,7 @@ private fun ChangeView(
                 },
         ) {
             Text(
-                text = "Last Synced",
+                text = Localization.string("Last Synced"),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceDim,
                 modifier = Modifier.semantics { invisibleToUser() }

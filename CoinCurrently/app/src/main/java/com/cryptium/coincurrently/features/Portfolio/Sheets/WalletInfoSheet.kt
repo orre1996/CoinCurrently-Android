@@ -39,6 +39,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.sheets.ModalBottomSheetSystemNavigationBar
 import com.cryptium.coincurrently.sharedui.sheets.ModalSheetBody
@@ -140,7 +141,7 @@ fun WalletInfoSheet(
 
                 SnackbarView(
                     showSnackBar = showSnackbar,
-                    message = "Wallet address copied!",
+                    message = Localization.string("Wallet address copied!"),
                     buttonTitle = "",
                     type = SnackBarType.SUCCESS,
                     isTabbarHidden = true,
@@ -251,7 +252,7 @@ private fun StatView(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = if (valueAccessible != null) {
             modifier.semantics(mergeDescendants = true) {
-                contentDescription = "$title: $valueAccessible"
+                contentDescription = Localization.format("%1\$@: %2\$@", title, valueAccessible)
             }
         } else {
             modifier.semantics(mergeDescendants = true) { }
@@ -287,7 +288,7 @@ private fun ImportDateView(
     modifier: Modifier
 ) {
     StatView(
-        title = "Date Imported",
+        title = Localization.string("Date Imported"),
         value = date.formatDate(DateFormat.MMMddyyyy) ?: "",
         valueAccessible = date.accessibleLongDateDescription(),
         modifier = modifier,
@@ -304,7 +305,7 @@ private fun LastSyncedView(
         "${lastSynced.accessibleLongDateDescription()} at ${lastSynced.accessibleTimeDescription(context.is24HourClock)}"
 
     StatView(
-        title = "Last Synced",
+        title = Localization.string("Last Synced"),
         value = lastSynced.formatDate(if (context.is24HourClock) DateFormat.MMMddyyyyHHmm else DateFormat.MMMddyyyyhhmma) ?: "",
         valueAccessible = accessibleSynced,
         modifier = modifier,
@@ -318,9 +319,9 @@ private fun NetworkView(
     modifier: Modifier
 ) {
     StatView(
-        title = "Network",
-        value = "$network Mainnet",
-        valueAccessible = "$coinName Mainnet",
+        title = Localization.string("Network"),
+        value = Localization.format("%@ Mainnet", network),
+        valueAccessible = Localization.format("%@ Mainnet", coinName),
         modifier = modifier,
     )
 }
@@ -340,7 +341,7 @@ private fun AddressView(
         modifier = modifier,
     ) {
         StatView(
-            title = "Wallet Address",
+            title = Localization.string("Wallet Address"),
             value = "${address.take(5).uppercase()}...${address.takeLast(5).uppercase()}",
             valueAccessible = accessibilityAddressDescription(wallet),
             modifier = Modifier.weight(1f),
@@ -348,7 +349,7 @@ private fun AddressView(
 
         Image(
             painter = painterResource(R.drawable.copy),
-            contentDescription = "Copy wallet address",
+            contentDescription = Localization.string("Copy wallet address"),
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceDimmer),
             modifier = Modifier
                 .clickable(

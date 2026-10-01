@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.Sheets
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.modifiers.imageSize
 
 import androidx.compose.foundation.Image
@@ -89,7 +90,7 @@ fun SelectDateSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val maxBodyHeight = rememberModalSheetMaxBodyHeight(dragHandleTitle = "Filter By Dates")
+    val maxBodyHeight = rememberModalSheetMaxBodyHeight(dragHandleTitle = "Filter By Date")
 
     ModalBottomSheet(
         onDismissRequest = {
@@ -105,7 +106,7 @@ fun SelectDateSheet(
         contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
         dragHandle = {
             DragHandle(
-                title = "Filter By Dates",
+                title = "Filter By Date",
                 closeAction = {
                     coroutineScope.launch {
                         sheetState.hide()
@@ -188,9 +189,14 @@ private fun DateOptionRow(
             )
             .padding(vertical = 8.dp)
             .semantics(mergeDescendants = true) {
+                val localizedTitle = Localization.string(option.title)
                 val selectionState = if (isSelected) "selected" else "not selected"
-                contentDescription = "${option.title}, $selectionState"
-                onClick(label = "Select ${option.title}", action = {
+                contentDescription = if (isCustom) {
+                    Localization.string("Custom. Select a custom date range")
+                } else {
+                    "$localizedTitle, $selectionState"
+                }
+                onClick(label = "Select $localizedTitle", action = {
                     didSelectOption.invoke()
                     true
                 })
@@ -213,7 +219,7 @@ private fun DateOptionRow(
         )
 
         Text(
-            text = option.title,
+            text = Localization.string(option.title),
             style = satoshiBold(16),
             color = MaterialTheme.colors.onSurface,
             textAlign = TextAlign.Start,

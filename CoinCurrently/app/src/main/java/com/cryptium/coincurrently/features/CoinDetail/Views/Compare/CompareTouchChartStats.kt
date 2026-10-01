@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.theme.blue50
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
@@ -107,7 +108,7 @@ fun CompareTouchChartStats(
                 )
 
                 Text(
-                    text = mainHoverPrice,
+                    text = if (mainHoverPrice == "N/A") Localization.string("N/A") else mainHoverPrice,
                     style = satoshiBold(12),
                     color = MaterialTheme.colors.onSurface
                 )
@@ -135,7 +136,7 @@ fun CompareTouchChartStats(
                 )
 
                 Text(
-                    text = compareHoverPrice,
+                    text = if (compareHoverPrice == "N/A") Localization.string("N/A") else compareHoverPrice,
                     style = satoshiBold(12),
                     color = MaterialTheme.colors.onSurface
                 )
@@ -176,7 +177,7 @@ private fun NAView() {
         )
 
         Text(
-            text = "N/A",
+            text = Localization.string("N/A"),
             style = satoshiBold(14),
             color = MaterialTheme.colors.onSurfaceDim
         )

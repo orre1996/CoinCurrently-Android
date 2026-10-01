@@ -39,6 +39,7 @@ import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.BuildConfig
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.core.config.AppLocale
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
@@ -104,7 +105,7 @@ internal fun ActionButtons(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 PrimaryButton(
-                    text = "Add Transaction",
+                    text = Localization.string("Add Transaction"),
                     onClick = {
                         addTransaction.invoke()
                         isActionMenuExpanded.value = false
@@ -121,8 +122,8 @@ internal fun ActionButtons(
                 )
 
                 PrimaryButton(
-                    text = "Import Wallet (Pro)",
-                    accessibilityLabel = "Import wallet, pro feature",
+                    text = Localization.string("Import Wallet (Pro)"),
+                    accessibilityLabel = Localization.string("Import wallet, pro feature"),
                     onClick = {
                         importWallet.invoke()
                         isActionMenuExpanded.value = false
@@ -140,8 +141,8 @@ internal fun ActionButtons(
 
                 if (BuildConfig.DEBUG) {
                     PrimaryButton(
-                        text = "Export Portfolio",
-                        accessibilityLabel = "Export portfolio",
+                        text = Localization.string("Export Portfolio"),
+                        accessibilityLabel = Localization.string("Export portfolio"),
                         isEnabled = hasTransactions,
                         onClick = {
                             exportPortfolio.invoke()
@@ -160,14 +161,17 @@ internal fun ActionButtons(
 
                     PrimaryButton(
                         text = if (benchmarkCoin == null) {
-                            "Benchmark"
+                            Localization.string("Benchmark")
                         } else {
-                            "Benchmark (${benchmarkCoin.symbol?.uppercase(AppLocale.enUsPosix) ?: ""})"
+                            Localization.format(
+                                "Benchmark (%@)",
+                                benchmarkCoin.symbol?.uppercase(AppLocale.enUsPosix) ?: "",
+                            )
                         },
                         accessibilityLabel = if (benchmarkCoin == null) {
-                            "Benchmark portfolio"
+                            Localization.string("Benchmark portfolio")
                         } else {
-                            "Change benchmark, currently ${benchmarkCoin.name ?: ""}"
+                            Localization.format("Change benchmark, currently %@", benchmarkCoin.name ?: "")
                         },
                         onClick = {
                             selectBenchmark.invoke()
@@ -186,8 +190,8 @@ internal fun ActionButtons(
 
                     if (benchmarkCoin != null) {
                         PrimaryButton(
-                            text = "Remove Benchmark",
-                            accessibilityLabel = "Remove benchmark",
+                            text = Localization.string("Remove Benchmark"),
+                            accessibilityLabel = Localization.string("Remove benchmark"),
                             onClick = {
                                 removeBenchmark.invoke()
                                 isActionMenuExpanded.value = false
@@ -222,13 +226,11 @@ internal fun ActionButtons(
             modifier = Modifier
                 .semantics {
                     contentDescription = if (isExpanded) {
-                        "Close add menu"
+                        Localization.string("Close add menu")
+                    } else if (BuildConfig.DEBUG) {
+                        "${Localization.string("Add portfolio item")}. ${Localization.string("Shows add transaction, import wallet, export portfolio, and benchmark options")}"
                     } else {
-                        if (BuildConfig.DEBUG) {
-                            "Add portfolio item. Shows add transaction, import wallet, export portfolio, and benchmark options"
-                        } else {
-                            "Add portfolio item. Shows add transaction and import wallet options"
-                        }
+                        "${Localization.string("Add portfolio item")}. ${Localization.string("Shows add transaction, import wallet, and export portfolio options")}"
                     }
                     if (talkBackEnabled && isExpanded) {
                         traversalIndex = 0f

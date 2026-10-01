@@ -26,6 +26,7 @@ import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.sharedui.buttons.CurrencyButton
 import com.cryptium.coincurrently.sharedui.buttons.PrimaryButton
 import com.cryptium.coincurrently.sharedui.buttons.SecondaryButton
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.*
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
 import com.cryptium.coincurrently.sharedui.inputs.TextInputField
@@ -97,7 +98,7 @@ fun ImportWalletTransactionScreen(
             modifier = modifier
         ) {
             CustomTopAppBar(
-                title = "Import Wallet",
+                title = Localization.string("Import Wallet"),
                 navigateBack = {
                     navigationViewModel.navigateBack()
                 }
@@ -177,7 +178,7 @@ fun ImportWalletTransactionScreen(
                         Toplist(
                             id = "token",
                             symbol = "token",
-                            name = "Ethereum Token",
+                            name = Localization.string("Ethereum Tokens"),
                             image = ethereumImage
                         )
                     ),
@@ -212,7 +213,7 @@ private fun AddressField(
     changeChain: () -> Unit
 ) {
     val accessibilityValue = if (addressInput.value.isEmpty()) {
-        "Enter wallet address"
+        Localization.string("Enter wallet address")
     } else {
         addressInput.value
     }
@@ -221,7 +222,7 @@ private fun AddressField(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Address Name",
+            text = Localization.string("Wallet Address"),
             style = satoshiMedium(14),
             color = if(showError) MaterialTheme.colors.trendDown else MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -252,7 +253,9 @@ private fun AddressField(
         }
 
         Text(
-            text = if(showError) "Invalid address or chain" else "Select the chain that matches your wallet.",
+            text = Localization.string(
+                if (showError) "Invalid address or chain" else "Select the chain that matches your wallet.",
+            ),
             style = satoshiMedium(14),
             color = if(showError) MaterialTheme.colors.trendDown else MaterialTheme.colors.onSurfaceDimmer,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -265,7 +268,7 @@ private fun WalletNameField(
     nameInput: MutableState<String>,
 ) {
     val accessibilityValue = if (nameInput.value.isEmpty()) {
-        "Enter wallet name, optional"
+        Localization.string("Enter wallet name, optional")
     } else {
         nameInput.value
     }
@@ -274,7 +277,7 @@ private fun WalletNameField(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
-            text = "Wallet Name",
+            text = Localization.string("Wallet Name"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -297,7 +300,7 @@ private fun WalletNameField(
         }
 
         Text(
-            text = "${nameInput.value.count()} / 40 characters",
+            text = Localization.format("%@ / 40 characters", nameInput.value.count().toString()),
             style = satoshiMedium(14),
             color = if (nameInput.value.count() > 40) MaterialTheme.colors.trendDown else MaterialTheme.colors.onSurfaceDimmer,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -319,7 +322,7 @@ private fun ActionButtons(
             .padding(bottom = 24.dp)
     ) {
         SecondaryButton(
-            text = "Close",
+            text = Localization.string("Close"),
             onClick = {
                 close()
             },
@@ -328,11 +331,11 @@ private fun ActionButtons(
         )
 
         PrimaryButton(
-            text = "Import",
+            text = Localization.string("Import"),
             isEnabled = isEnabled,
             isLoading = isLoading,
             accessibilityLabel = if (isEnabled) {
-                "Import"
+                Localization.string("Import")
             } else {
                 "Import: Disabled because address is empty or wallet name is too long"
             },

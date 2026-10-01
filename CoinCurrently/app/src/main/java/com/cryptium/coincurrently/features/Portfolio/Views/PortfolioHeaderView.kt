@@ -13,6 +13,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.modifiers.MinimumTextSize
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
@@ -36,7 +37,7 @@ fun PortfolioHeaderView(
             .padding(bottom = 16.dp)
     ) {
         Text(
-            text = if (isHorizontal) "Coin" else "Coin / Holdings",
+            text = Localization.string(if (isHorizontal) "Coin" else "Coin / Holdings"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier
@@ -47,7 +48,7 @@ fun PortfolioHeaderView(
 
         if (isHorizontal) {
             Text(
-                text = "Holdings",
+                text = Localization.string("Holdings"),
                 style = satoshiMedium(14),
                 color = MaterialTheme.colors.onSurfaceDim,
                 textAlign = TextAlign.End,
@@ -59,12 +60,12 @@ fun PortfolioHeaderView(
         }
 
         MinimumTextSize(
-            text = "Profit/Loss",
+            text = Localization.string("Profit/Loss"),
             font = satoshiBold(16),
             alignment = Alignment.CenterEnd,
         ) {
             Text(
-                text = "Profit/Loss",
+                text = Localization.string("Profit/Loss"),
                 style = satoshiMedium(14),
                 color = MaterialTheme.colors.onSurfaceDim,
             )

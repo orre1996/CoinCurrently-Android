@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.Views
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.TokenInfo
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -54,16 +55,17 @@ fun WalletCoinView(
 
     val accessibilityLabelText = buildString {
         if (index != null && totalCount != null) {
-            append("Asset ${index + 1} of $totalCount. ")
+            append("${Localization.format("Asset %1\$d of %2\$d", index + 1, totalCount)}. ")
         }
         if (hideData) {
-            append("$coinName, holdings hidden. ")
+            append("${Localization.format("%1\$@, holdings hidden", coinName)}. ")
         } else {
             val amountLabel = accessibleCoinAmountLabel(
                 amount = currentAmount ?: 0.0,
                 coinName = toplist?.name ?: toplist?.symbol ?: token?.tokenSymbol ?: "",
             )
-            append("$coinName, holdings $amountLabel, ${holdingsValue.formatCurrency(accessible = true)}. ")
+            val holdingsText = holdingsValue.formatCurrency(accessible = true)
+            append("${Localization.format("%1\$@, holdings %2\$@, %3\$@", coinName, amountLabel, holdingsText)}. ")
         }
         append(walletPriceChangeAccessibilityLabel(toplist?.price_change_percentage_7d_in_currency))
     }
@@ -294,7 +296,7 @@ private fun formattedAmount(
         return stars
     }
 
-    return currentAmount?.formatCurrency(currency = CurrencySelectionModel.empty()) ?: "Missing Data"
+    return currentAmount?.formatCurrency(currency = CurrencySelectionModel.empty()) ?: Localization.string("Missing Data")
 }
 
 private fun formattedValue(
@@ -308,7 +310,7 @@ private fun formattedValue(
     }
 
     if (currentPrice == null) {
-        return "Missing Data"
+        return Localization.string("Missing Data")
     }
 
     return ((currentAmount ?: 0.0) * currentPrice).formatCurrency(threshold = FormattingThreshold.MILLION)

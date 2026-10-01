@@ -181,7 +181,7 @@ private fun ActionButtons(
     ) {
         SecondaryButton(
             text = Localization.string("Cancel"),
-            accessibilityLabel = "Cancel, close window",
+            accessibilityLabel = Localization.string("Cancel, close window"),
             fullWidth = true,
             modifier = sectionModifier()
                 .widthIn(max = 400.dp)
@@ -191,7 +191,7 @@ private fun ActionButtons(
 
         PrimaryButton(
             text = Localization.string("Apply"),
-            accessibilityLabel = "Apply filters",
+            accessibilityLabel = Localization.string("Apply filters"),
             fullWidth = true,
             modifier = sectionModifier()
                 .widthIn(max = 400.dp)

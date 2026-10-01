@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.Views
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
 import com.cryptium.coincurrently.core.extensions.changePercentDecimalPoints
 import com.cryptium.coincurrently.core.extensions.directionAccessible
@@ -23,28 +24,20 @@ fun portfolioChangeAccessibilityLabel(
     isEmpty: Boolean = false,
 ): String {
     val changePercent = if (isEmpty) 0.0 else (percent ?: 0.0)
-    val percentText = if (changePercent.isInfinite()) {
-        null
-    } else {
-        val decimals = changePercent.changePercentDecimalPoints
-        val accessiblePercent = abs(changePercent).numberAccessible(maxPlaces = decimals)
-        val direction = changePercent.directionAccessible.lowercase()
-        "$direction $accessiblePercent percent"
-    }
+    val safeChange = if (changePercent.isInfinite()) 0.0 else changePercent
+    val decimals = safeChange.changePercentDecimalPoints
+    val accessiblePercent = abs(safeChange).numberAccessible(maxPlaces = decimals)
+    val direction = Localization.string(safeChange.directionAccessible)
+    val percentText = Localization.format("%1\$@ %2\$@ percent", direction, accessiblePercent)
 
     if (hideData) {
-        return if (percentText != null) "$title, data hidden, $percentText" else "$title, data hidden"
+        return Localization.format("%1\$@, %2\$@", title, percentText)
     }
 
     val changeValue = if (isEmpty) 0.0 else (value ?: 0.0)
-    val valueDirection = changeValue.directionAccessible.lowercase()
+    val valueDirection = Localization.string(changeValue.directionAccessible)
     val valueText = abs(changeValue).formatCurrency(accessible = true)
-
-    return if (percentText != null) {
-        "$title. $valueDirection $valueText, $percentText"
-    } else {
-        "$title. $valueDirection $valueText"
-    }
+    return Localization.format("%1\$@, %2\$@ %3\$@, %4\$@", title, valueDirection, valueText, percentText)
 }
 
 fun accessibleCoinAmountLabel(amount: Double, coinName: String): String {
@@ -68,11 +61,26 @@ fun profitLossAccessibilityLabel(
     profitPercent: Double?,
     hideData: Boolean,
 ): String {
-    return portfolioChangeAccessibilityLabel(
-        title = "Profit loss",
-        value = profitValue,
-        percent = profitPercent,
-        hideData = hideData,
+    val safeChange = if (profitPercent == null || profitPercent.isInfinite()) 0.0 else profitPercent
+    val decimals = safeChange.changePercentDecimalPoints
+    val accessiblePercent = abs(safeChange).numberAccessible(maxPlaces = decimals)
+    val percentText = Localization.format(
+        "%1\$@ %2\$@ percent",
+        Localization.string(safeChange.directionAccessible),
+        accessiblePercent,
+    )
+
+    if (hideData) {
+        return Localization.format("Profit/Loss, %@", percentText)
+    }
+
+    val changeValue = profitValue ?: 0.0
+    val valueText = abs(changeValue).formatCurrency(accessible = true)
+    return Localization.format(
+        "Profit/Loss, %1\$@ %2\$@, %3\$@",
+        Localization.string(changeValue.directionAccessible),
+        valueText,
+        percentText,
     )
 }
 
@@ -80,6 +88,10 @@ fun walletPriceChangeAccessibilityLabel(change: Double?): String {
     val safeChange = if (change?.isInfinite() == true) 0.0 else (change ?: 0.0)
     val decimals = safeChange.changePercentDecimalPoints
     val accessiblePercent = abs(safeChange).numberAccessible(maxPlaces = decimals)
-    val direction = safeChange.directionAccessible.lowercase()
-    return "7 days price change: $direction $accessiblePercent percent"
+    return Localization.format(
+        "%@ price change: %@ %@ percent",
+        Localization.string("7 days"),
+        Localization.string(safeChange.directionAccessible),
+        accessiblePercent,
+    )
 }

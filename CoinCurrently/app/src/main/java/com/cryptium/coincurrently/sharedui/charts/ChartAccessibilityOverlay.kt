@@ -239,15 +239,15 @@ private fun accessibilityLabel(
         )
         val mainLabel = labeledPrice(mainSeriesName, priceText)
         val compareLabel = labeledPrice(compareSeriesName, comparePriceText)
-        return "$date, $mainLabel, $compareLabel"
+        return Localization.format("%1\$@, %2\$@, %3\$@", date, mainLabel, compareLabel)
     }
 
-    return "$date, $priceText"
+    return Localization.format("%1\$@, %2\$@", date, priceText)
 }
 
 private fun labeledPrice(name: String?, price: String): String {
     if (name.isNullOrEmpty()) return price
-    return "$name: $price"
+    return Localization.format("%1\$@: %2\$@", name, price)
 }
 
 private fun formattedDate(
@@ -291,8 +291,12 @@ private fun formattedPrice(
             val change = ((price - firstPrice) / firstPrice) * 100
             val safeChange = if (change.isInfinite()) 0.0 else change
             val accessibleChange = safeChange.numberAccessible(maxPlaces = 2)
-            val direction = safeChange.directionAccessible.lowercase()
-            priceText += ", $direction $accessibleChange percent"
+            val percentText = Localization.format(
+                "%1\$@ %2\$@ percent",
+                Localization.string(safeChange.directionAccessible),
+                accessibleChange,
+            )
+            priceText += ", $percentText"
         }
     }
 

@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.Views
+import com.cryptium.coincurrently.core.localization.Localization
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -98,7 +99,7 @@ private fun EmptyPortfolioPieChart(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .size(chartDimension)
                 .semantics {
-                    contentDescription = "Empty portfolio allocation chart"
+                    contentDescription = Localization.string("Empty portfolio allocation chart")
                 },
         ) {
             val chartSize = minOf(size.width, size.height)
@@ -240,7 +241,7 @@ private fun InteractivePortfolioPieChart(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = slice.symbol,
+                        text = if (slice.symbol == "OTHER") Localization.string("Other") else slice.symbol,
                         style = satoshiBold(18),
                         color = MaterialTheme.colors.onSurfaceDim,
                     )
@@ -428,7 +429,12 @@ private fun formattedPiePercent(percentage: Double): String {
 private fun portfolioPieAccessibilityLabel(slice: PortfolioPieSlice): String {
     val percentValue = slice.percentage * 100.0
     val roundedPercent = if (percentValue >= 99.995) 100.0 else percentValue.roundTo(2)
-    return "${slice.name}, ${roundedPercent.numberAccessible(maxPlaces = 2)} percent of portfolio"
+    val name = if (slice.symbol == "OTHER") Localization.string("Other") else slice.name
+    return Localization.format(
+        "%1\$@, %2\$@ percent of portfolio",
+        name,
+        roundedPercent.numberAccessible(maxPlaces = 2),
+    )
 }
 
 private fun handlePieChartTap(

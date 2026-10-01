@@ -27,6 +27,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import com.cryptium.coincurrently.core.localization.Localization
+import com.cryptium.coincurrently.core.extensions.accessibleLongDateDescription
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.tabPageTalkBackTraversal
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
@@ -43,6 +45,7 @@ import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
 import com.cryptium.coincurrently.features.Portfolio.Enums.DateOption
 import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import com.cryptium.coincurrently.features.Portfolio.Enums.rangeTitle
+import com.cryptium.coincurrently.features.Portfolio.Enums.title
 import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 import java.util.Date
@@ -74,8 +77,8 @@ fun LazyListScope.TransactionsView(
         item {
             Box(modifier = Modifier.tabPageTalkBackTraversal().padding(top = 72.dp, start = 32.dp, end = 32.dp, bottom = 40.dp)) {
                 EmptyContent(
-                    title = "No assets yet",
-                    subTitle = "Tap the + button to begin building your portfolio."
+                    title = Localization.string("No assets yet"),
+                    subTitle = Localization.string("Tap the + button to begin building your portfolio.")
                 )
             }
         }
@@ -113,11 +116,11 @@ fun LazyListScope.TransactionsView(
                                     bottom = 10.dp
                                 )
                                 .semantics(mergeDescendants = true) {
-                                    contentDescription = "Clear filters"
+                                    contentDescription = Localization.string("Clear filters")
                                     if (talkBackEnabled) {
                                         traversalIndex = 1f
                                     }
-                                    onClick(label = "Clear filters", action = {
+                                    onClick(label = Localization.string("Clear filters"), action = {
                                         clearFilters.invoke()
                                         true
                                     })
@@ -130,7 +133,7 @@ fun LazyListScope.TransactionsView(
                                 }
                         ) {
                             Text(
-                                text = "Clear filters",
+                                text = Localization.string("Clear filters"),
                                 style = satoshiMedium(16).copy(textDecoration = TextDecoration.Underline),
                                 color = MaterialTheme.colors.onSurfaceDim,
                                 modifier = Modifier.semantics { invisibleToUser() },
@@ -168,9 +171,13 @@ private fun FiltersView(
     ) {
         item {
             FilterButton(
-                title = if (typeFilters.isEmpty()) "Type" else "Type (${typeFilters.count()})",
+                title = if (typeFilters.isEmpty()) {
+                    Localization.string("Type")
+                } else {
+                    Localization.format("Type (%d)", typeFilters.count())
+                },
                 filterName = "type",
-                selectedCount = typeFilters.count(),
+                accessibilityLabel = typeFilterAccessibilityLabel(typeFilters),
                 isActive = typeFilters.isNotEmpty(),
                 action = {
                     typeFilterPressed.invoke()
@@ -180,9 +187,9 @@ private fun FiltersView(
 
         item {
             FilterButton(
-                title = dateFilter.rangeTitle,
+                title = dateFilterDisplayTitle(dateFilter),
                 filterName = "date",
-                selectedTitle = if (dateFilter == DateOption.All) null else dateFilter.rangeTitle,
+                accessibilityLabel = dateFilterAccessibilityLabel(dateFilter),
                 isActive = dateFilter != DateOption.All,
                 action = {
                     dateFilterPressed.invoke()
@@ -192,9 +199,13 @@ private fun FiltersView(
 
         item {
             FilterButton(
-                title = if (coinFilters.isEmpty()) "Coin" else "Coin (${coinFilters.count()})",
+                title = if (coinFilters.isEmpty()) {
+                    Localization.string("Coin")
+                } else {
+                    Localization.format("Coin (%d)", coinFilters.count())
+                },
                 filterName = "coin",
-                selectedCount = coinFilters.count(),
+                accessibilityLabel = coinFilterAccessibilityLabel(coinFilters),
                 isActive = coinFilters.isNotEmpty(),
                 action = {
                     coinFilterPressed.invoke()
@@ -203,6 +214,67 @@ private fun FiltersView(
         }
     }
 }
+
+private fun dateFilterDisplayTitle(dateFilter: DateOption): String {
+    return when (dateFilter) {
+        is DateOption.Custom -> dateFilter.rangeTitle
+        DateOption.All -> Localization.string("Date")
+        else -> Localization.string(dateFilter.title)
+    }
+}
+
+private fun typeFilterAccessibilityLabel(typeFilters: List<PortfolioTransactionType>): String {
+    val selectedValues = if (typeFilters.isEmpty()) {
+        null
+    } else {
+        typeFilters.joinToString(", ") { Localization.string(it.filterRawValue) }
+    }
+    return filterAccessibilityLabel(Localization.string("Type filter"), selectedValues)
+}
+
+private fun dateFilterAccessibilityLabel(dateFilter: DateOption): String {
+    val selectedValues = if (dateFilter == DateOption.All) null else dateFilterAccessibilityValue(dateFilter)
+    return filterAccessibilityLabel(Localization.string("Date filter"), selectedValues)
+}
+
+private fun dateFilterAccessibilityValue(dateFilter: DateOption): String {
+    return when (dateFilter) {
+        is DateOption.Custom -> {
+            val start = dateFilter.startDate?.accessibleLongDateDescription().orEmpty()
+            val end = dateFilter.endDate?.accessibleLongDateDescription().orEmpty()
+            if (start.isEmpty() || end.isEmpty()) {
+                Localization.string("Custom")
+            } else {
+                Localization.format("%1\$@ to %2\$@", start, end)
+            }
+        }
+        else -> Localization.string(dateFilter.title)
+    }
+}
+
+private fun coinFilterAccessibilityLabel(coinFilters: List<Toplist>): String {
+    val selectedValues = if (coinFilters.isEmpty()) {
+        null
+    } else {
+        coinFilters.joinToString(", ") { it.name ?: it.symbol ?: "" }
+    }
+    return filterAccessibilityLabel(Localization.string("Coin filter"), selectedValues)
+}
+
+private fun filterAccessibilityLabel(name: String, selectedValues: String?): String {
+    if (selectedValues.isNullOrEmpty()) return name
+    return Localization.format("%1\$@, currently selected: %2\$@", name, selectedValues)
+}
+
+private val PortfolioTransactionType.filterRawValue: String
+    get() = when (this) {
+        PortfolioTransactionType.Buy -> "Bought"
+        PortfolioTransactionType.Sell -> "Sold"
+        PortfolioTransactionType.Swap -> "Swapped"
+        PortfolioTransactionType.TransferIn -> "Deposited"
+        PortfolioTransactionType.TransferOut -> "Withdrew"
+        PortfolioTransactionType.ImportAddress -> "Imported"
+    }
 
 private fun LazyListScope.TransactionsView(
     portfolio: List<Pie>?,

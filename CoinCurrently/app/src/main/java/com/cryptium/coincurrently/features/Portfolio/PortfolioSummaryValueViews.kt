@@ -26,6 +26,7 @@ import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.*
 import com.cryptium.coincurrently.features.Portfolio.Views.portfolioChangeAccessibilityLabel
 import com.cryptium.coincurrently.sharedui.components.*
@@ -45,20 +46,21 @@ internal fun TotalValueView(
 ) {
     val formattedTotalValue =
         totalValue?.formatCurrency(threshold = FormattingThreshold.BILLION) ?: "000000000"
-    val portfolioValueLabel = if (hideData) {
-        "Portfolio value, hidden"
-    } else {
-        "Portfolio value: $formattedTotalValue"
-    }
-    val hideDataLabel = "${if (hideData) "show" else "hide"} portfolio data"
-    val pieChartToggleLabel = "Switch to ${if (isPieChartShowing) "line chart" else "pie chart"}"
+    val portfolioValueLabel = Localization.format(
+        "Portfolio value: %@",
+        if (hideData) stars else formattedTotalValue,
+    )
+    val hideDataLabel = Localization.string(if (hideData) "Show portfolio data" else "Hide portfolio data")
+    val pieChartToggleLabel = Localization.string(
+        if (isPieChartShowing) "Switch to line chart" else "Switch to pie chart",
+    )
 
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier.padding(horizontal = 16.dp)
     ) {
         Text(
-            text = "Portfolio Value",
+            text = Localization.string("Portfolio Value"),
             style = satoshiBold(18),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -128,7 +130,7 @@ internal fun ValueChangeView(
     val roundedPercent = changePercent?.roundTo(2)
     val formattedPercent = "%.2f".format(roundedPercent ?: 0.0).changeWithSymbol
     val accessibilityLabel = portfolioChangeAccessibilityLabel(
-        title = "7 days value change",
+        title = Localization.string("7 days value change"),
         value = changeValue,
         percent = changePercent,
         hideData = hideData,
@@ -142,7 +144,7 @@ internal fun ValueChangeView(
         }
     ) {
         Text(
-            text = "Value Change (7d)",
+            text = Localization.string("Value Change (7d)"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -203,7 +205,7 @@ internal fun ProfitLossView(
     val roundedPercent = changePercent?.roundTo(2)
     val formattedPercent = "%.2f".format(roundedPercent ?: 0.0).changeWithSymbol
     val accessibilityLabel = portfolioChangeAccessibilityLabel(
-        title = "Profit/Loss",
+        title = Localization.string("Profit/Loss"),
         value = changeValue,
         percent = changePercent,
         hideData = hideData,
@@ -217,7 +219,7 @@ internal fun ProfitLossView(
         }
     ) {
         Text(
-            text = "Profit/Loss",
+            text = Localization.string("Profit/Loss"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }

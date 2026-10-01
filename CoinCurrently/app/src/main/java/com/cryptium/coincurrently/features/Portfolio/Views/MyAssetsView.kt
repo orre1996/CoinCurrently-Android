@@ -18,6 +18,7 @@ import com.cryptium.coincurrently.core.extensions.getAllTransactions
 import com.cryptium.coincurrently.core.extensions.isTablet
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiRegular
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.sheets.EmptyContent
 import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
@@ -41,8 +42,8 @@ fun LazyListScope.MyAssetsView(
             item {
                 Box(modifier = Modifier.tabPageTalkBackTraversal().padding(top = 72.dp, start = 32.dp, end = 32.dp, bottom = 40.dp)) {
                     EmptyContent(
-                        title = "No assets yet",
-                        subTitle = "Tap the + button to begin building your portfolio."
+                        title = Localization.string("No assets yet"),
+                        subTitle = Localization.string("Tap the + button to begin building your portfolio.")
                     )
                 }
             }

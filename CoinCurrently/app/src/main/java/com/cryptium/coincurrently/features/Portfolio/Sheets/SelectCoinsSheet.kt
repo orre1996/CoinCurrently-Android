@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.Sheets
+import com.cryptium.coincurrently.core.localization.Localization
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -66,7 +67,7 @@ fun SelectCoinsSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val maxBodyHeight = rememberModalSheetMaxBodyHeight(dragHandleTitle = "Filter By Coin")
+    val maxBodyHeight = rememberModalSheetMaxBodyHeight(dragHandleTitle = "Filter By Coins")
 
     ModalBottomSheet(
         onDismissRequest = {
@@ -82,7 +83,7 @@ fun SelectCoinsSheet(
         contentWindowInsets = { WindowInsets(0,0 ,0 ,0) },
         dragHandle = {
             DragHandle(
-                title = "Filter By Coin",
+                title = "Filter By Coins",
                 closeAction = {
                     coroutineScope.launch {
                         sheetState.hide()
@@ -243,8 +244,8 @@ private fun ActionButtons(
             )
     ) {
         SecondaryButton(
-            text = "Clear",
-            accessibilityLabel = "Clear filters",
+            text = Localization.string("Clear"),
+            accessibilityLabel = Localization.string("Clear filters"),
             fullWidth = true,
             modifier = sectionModifier()
                 .widthIn(max = 400.dp)
@@ -253,8 +254,8 @@ private fun ActionButtons(
         }
 
         PrimaryButton(
-            text = "Apply",
-            accessibilityLabel = "Apply filters",
+            text = Localization.string("Apply"),
+            accessibilityLabel = Localization.string("Apply filters"),
             fullWidth = true,
             modifier = sectionModifier()
                 .widthIn(max = 400.dp)

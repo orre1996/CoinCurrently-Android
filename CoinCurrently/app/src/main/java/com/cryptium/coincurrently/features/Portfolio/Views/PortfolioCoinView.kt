@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.Views
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.persistence.UserPreferences
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -63,16 +64,17 @@ fun PortfolioCoinView(
 
     val accessibilityLabelText = buildString {
         if (index != null && totalCount != null) {
-            append("Asset ${index + 1} of $totalCount. ")
+            append("${Localization.format("Asset %1\$d of %2\$d", index + 1, totalCount)}. ")
         }
         if (hideData) {
-            append("$coinName, holdings hidden. ")
+            append("${Localization.format("%1\$@, holdings hidden", coinName)}. ")
         } else {
             val amountLabel = accessibleCoinAmountLabel(
                 amount = currentAmount ?: 0.0,
                 coinName = coinName,
             )
-            append("$coinName. holdings: $amountLabel. ${holdingsValue.formatCurrency(accessible = true)}. ")
+            val holdingsText = holdingsValue.formatCurrency(accessible = true)
+            append("${Localization.format("%1\$@, holdings %2\$@, %3\$@", coinName, amountLabel, holdingsText)}. ")
         }
         append(profitLossAccessibilityLabel(profitValue, profitPercent, hideData))
     }
@@ -260,7 +262,7 @@ private fun ProfitLossView(
     modifier: Modifier = Modifier,
 ) {
     MinimumTextSize(
-        text = "Profit/Loss",
+        text = Localization.string("Profit/Loss"),
         font = satoshiBold(12),
         extraSize = 16.dp,
         alignment = Alignment.CenterEnd,

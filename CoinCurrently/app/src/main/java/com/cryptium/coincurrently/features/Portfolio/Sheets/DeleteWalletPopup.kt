@@ -19,6 +19,7 @@ import androidx.compose.ui.semantics.dialog
 import androidx.compose.ui.semantics.paneTitle
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.AdaptiveStack
 import com.cryptium.coincurrently.sharedui.buttons.PrimaryButton
@@ -41,7 +42,7 @@ fun DeleteWalletPopup(
             .background(MaterialTheme.colors.overlayColor)
             .semantics {
                 dialog()
-                paneTitle = "Remove Wallet"
+                paneTitle = Localization.string("Remove Wallet")
             }
             .pointerInput(Unit) {
                 detectTapGestures { }
@@ -69,7 +70,7 @@ fun DeleteWalletPopup(
 @Composable
 private fun Header() {
     Text(
-        text = "Remove Wallet",
+        text = Localization.string("Remove Wallet"),
         color = MaterialTheme.colors.onSurface,
         style = satoshiBold(18)
     )
@@ -78,7 +79,10 @@ private fun Header() {
 @Composable
 private fun BodyText(walletName: String) {
     Text(
-        text = "Remove “$walletName” from your portfolio?\nYou can re-import it at any time.",
+        text = Localization.format(
+            "Remove “%@” from your portfolio?\nYou can re-import it at any time.",
+            walletName,
+        ),
         color = MaterialTheme.colors.onSurfaceDim,
         style = satoshiRegular(16)
     )
@@ -100,7 +104,7 @@ private fun ActionButtons(
             .padding(top = 8.dp)
     ) {
         SecondaryButton(
-            text = "Cancel",
+            text = Localization.string("Cancel"),
             fullWidth = true,
             onClick = {
                 onClose(false)
@@ -110,7 +114,7 @@ private fun ActionButtons(
         )
 
         PrimaryButton(
-            text = "Remove",
+            text = Localization.string("Remove"),
             fullWidth = true,
             onClick = {
                 onClose(true)

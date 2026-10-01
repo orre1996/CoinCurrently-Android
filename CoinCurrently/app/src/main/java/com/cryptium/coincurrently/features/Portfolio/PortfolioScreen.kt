@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.sharedui.theme.*
 import com.cryptium.coincurrently.sharedui.modifiers.*
@@ -328,15 +329,15 @@ fun PortfolioScreen(
             coin = retry.second
         }
 
-        val symbol = coin?.symbol?.uppercase(AppLocale.enUsPosix) ?: "Coin"
+        val symbol = coin?.symbol?.uppercase(AppLocale.enUsPosix) ?: Localization.string("Coin")
 
         when (event) {
             is PortfolioTransaction -> {
                 navigationViewModel.showSnackbar(
                     context = context,
                     type = SnackBarType.SUCCESS,
-                    message = "$symbol transaction added to your portfolio!",
-                    buttonTitle = "View Details",
+                    message = Localization.format("%@ transaction added to your portfolio!", symbol),
+                    buttonTitle = Localization.string("View Details"),
                     callback = {
                         AnalyticsManager.log(
                             SheetOpened(ScreenLabel.Portfolio, SheetLabel.PortfolioTransactionDetails),
@@ -350,8 +351,8 @@ fun PortfolioScreen(
                 navigationViewModel.showSnackbar(
                     context = context,
                     type = SnackBarType.SUCCESS,
-                    message = "$symbol transaction added to your portfolio!",
-                    buttonTitle = "View Details",
+                    message = Localization.format("%@ transaction added to your portfolio!", symbol),
+                    buttonTitle = Localization.string("View Details"),
                     callback = {
                         AnalyticsManager.log(
                             SheetOpened(ScreenLabel.Portfolio, SheetLabel.PortfolioTransactionDetails),
@@ -370,8 +371,12 @@ fun PortfolioScreen(
                 navigationViewModel.showSnackbar(
                     context = context,
                     type = SnackBarType.SUCCESS,
-                    message = "$shortAddr ($symbol) imported to your portfolio!",
-                    buttonTitle = "View Details",
+                    message = Localization.format(
+                        "%1\$@ (%2\$@) imported to your portfolio!",
+                        shortAddr,
+                        symbol,
+                    ),
+                    buttonTitle = Localization.string("View Details"),
                     callback = {
                         val dest = NavigationScreens.WalletDetails(
                             wallet = wallet,
@@ -393,7 +398,7 @@ fun PortfolioScreen(
                 navigationViewModel.showSnackbar(
                     context = context,
                     type = SnackBarType.SUCCESS,
-                    message = "$symbol transaction added to your portfolio!",
+                    message = Localization.format("%@ transaction added to your portfolio!", symbol),
                 )
             }
         }
@@ -639,7 +644,7 @@ fun PortfolioScreen(
                                                     mainSeriesName = if (viewModel.benchmarkCoin == null) {
                                                         null
                                                     } else {
-                                                        "Portfolio"
+                                                        Localization.string("Portfolio")
                                                     },
                                                     compareSeriesName = viewModel.benchmarkCoin?.name,
                                                     priceFormatter = { price ->
@@ -745,7 +750,7 @@ fun PortfolioScreen(
                                                 mainSeriesName = if (viewModel.benchmarkCoin == null) {
                                                     null
                                                 } else {
-                                                    "Portfolio"
+                                                    Localization.string("Portfolio")
                                                 },
                                                 compareSeriesName = viewModel.benchmarkCoin?.name,
                                                 priceFormatter = { price ->
@@ -807,7 +812,7 @@ fun PortfolioScreen(
                                                 CompareRectangleView(color = hoverUi.chartColor)
 
                                                 Text(
-                                                    text = "Portfolio",
+                                                    text = Localization.string("Portfolio"),
                                                     style = satoshiBold(16),
                                                     color = MaterialTheme.colors.onSurfaceDimmer,
                                                     modifier = Modifier.padding(end = 24.dp),

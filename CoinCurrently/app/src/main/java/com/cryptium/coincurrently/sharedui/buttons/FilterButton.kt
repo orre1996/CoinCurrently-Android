@@ -36,9 +36,10 @@ fun FilterButton(
     isActive: Boolean,
     selectedCount: Int = 0,
     selectedTitle: String? = null,
+    accessibilityLabel: String? = null,
     action: () -> Unit
 ) {
-    val accessibilityLabel = when {
+    val resolvedAccessibilityLabel = accessibilityLabel ?: when {
         selectedTitle != null -> {
             val label = filterName.replaceFirstChar { char ->
                 if (char.isLowerCase()) char.titlecase() else char.toString()
@@ -54,7 +55,7 @@ fun FilterButton(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .semantics(mergeDescendants = true) {
-                contentDescription = accessibilityLabel
+                contentDescription = resolvedAccessibilityLabel
             }
             .border(
                 width = 1.dp,

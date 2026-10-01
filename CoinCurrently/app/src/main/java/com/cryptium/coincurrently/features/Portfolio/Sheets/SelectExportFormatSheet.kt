@@ -19,6 +19,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.sheets.ModalBottomSheetSystemNavigationBar
 import com.cryptium.coincurrently.sharedui.sheets.ModalSheetBody
 import com.cryptium.coincurrently.sharedui.components.Separator
@@ -95,11 +96,11 @@ fun SelectExportFormatSheet(
                         )
                     }
 
-                    SectionHeader("General")
+                    SectionHeader(Localization.string("General"))
 
                     ExportOption(
                         title = "CSV",
-                        subtitle = "Spreadsheet-friendly format.",
+                        subtitle = Localization.string("Spreadsheet-friendly format."),
                         image = R.drawable.list,
                         format = PortfolioExportFormat.CSV,
                         sheetState = sheetState,
@@ -108,7 +109,7 @@ fun SelectExportFormatSheet(
 
                     ExportOption(
                         title = "JSON",
-                        subtitle = "Structured data format.",
+                        subtitle = Localization.string("Structured data format."),
                         image = R.drawable.converter,
                         format = PortfolioExportFormat.JSON,
                         sheetState = sheetState,
@@ -116,19 +117,19 @@ fun SelectExportFormatSheet(
                     )
 
                     ExportOption(
-                        title = "Plain Text",
-                        subtitle = "Human-readable format.",
+                        title = Localization.string("Plain Text"),
+                        subtitle = Localization.string("Human-readable format."),
                         image = R.drawable.feedback,
                         format = PortfolioExportFormat.PlainText,
                         sheetState = sheetState,
                         formatSelected = formatSelected,
                     )
 
-                    SectionHeader("Tax Software", modifier = Modifier.padding(top = 12.dp))
+                    SectionHeader(Localization.string("Tax Software (Pro)"), modifier = Modifier.padding(top = 12.dp))
 
                     ExportOption(
                         title = "Koinly",
-                        subtitle = "Koinly CSV template.",
+                        subtitle = Localization.string("Koinly CSV template."),
                         image = R.drawable.share,
                         format = PortfolioExportFormat.Koinly,
                         sheetState = sheetState,
@@ -137,7 +138,7 @@ fun SelectExportFormatSheet(
 
                     ExportOption(
                         title = "CoinTracker",
-                        subtitle = "CoinTracker CSV template.",
+                        subtitle = Localization.string("CoinTracker CSV template."),
                         image = R.drawable.share,
                         format = PortfolioExportFormat.CoinTracker,
                         sheetState = sheetState,
@@ -146,7 +147,7 @@ fun SelectExportFormatSheet(
 
                     ExportOption(
                         title = "TokenTax",
-                        subtitle = "TokenTax manual CSV format.",
+                        subtitle = Localization.string("TokenTax manual CSV format."),
                         image = R.drawable.share,
                         format = PortfolioExportFormat.TokenTax,
                         sheetState = sheetState,
@@ -155,7 +156,7 @@ fun SelectExportFormatSheet(
 
                     ExportOption(
                         title = "ZenLedger",
-                        subtitle = "ZenLedger custom CSV template.",
+                        subtitle = Localization.string("ZenLedger custom CSV template."),
                         image = R.drawable.share,
                         format = PortfolioExportFormat.ZenLedger,
                         sheetState = sheetState,

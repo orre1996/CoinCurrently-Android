@@ -13,12 +13,12 @@ import kotlin.math.roundToInt
 
 fun accessibleComparePriceLabel(name: String?, value: Double?): String {
     val priceText = value?.formatCurrency(threshold = FormattingThreshold.NONE, accessible = true) ?: ""
-    return "${name ?: ""}: $priceText"
+    return Localization.format("%1\$@: %2\$@", name ?: "", priceText)
 }
 
 fun accessibleCompareVolumeLabel(name: String?, value: Double?): String {
     val volumeText = value?.formatCurrency(accessible = true) ?: ""
-    return "${name ?: ""}: $volumeText"
+    return Localization.format("%1\$@: %2\$@", name ?: "", volumeText)
 }
 
 fun accessibleCompareMarketCapLabel(name: String?, value: Double?, rank: Int?): String {
@@ -55,7 +55,7 @@ fun accessibleComparePriceChangeLabel(
 
 fun accessibleCompareSupplyLabel(name: String?, value: Double?): String {
     val supplyText = value?.formatGroupedWholeNumber() ?: ""
-    return "${name ?: ""}: $supplyText"
+    return Localization.format("%1\$@: %2\$@", name ?: "", supplyText)
 }
 
 fun accessibleDaysAgoLabel(name: String?, daysAgo: String?): String {
@@ -67,8 +67,8 @@ fun accessibleGenesisDateLabel(name: String?, date: String?): String {
 }
 
 fun accessibleBullishLabel(name: String?, percent: Double?): String {
-    val formattedPercent = (percent ?: 0.0).roundToInt()
-    return "${name ?: ""}: $formattedPercent percent bullish"
+    val formattedPercent = (percent ?: 0.0).roundToInt().toString()
+    return Localization.format("%1\$@: %2\$@ percent bullish", name ?: "", formattedPercent)
 }
 
 fun accessibleAllTimeRangeLabel(name: String?): String {

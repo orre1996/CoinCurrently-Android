@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import com.cryptium.coincurrently.sharedui.components.tabPageTalkBackTraversal
 import com.cryptium.coincurrently.core.extensions.allWallets
 import com.cryptium.coincurrently.core.extensions.pieContaining
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.sheets.EmptyContent
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
 import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
@@ -29,8 +30,8 @@ fun LazyListScope.WalletsView(
                     .padding(top = 72.dp, start = 32.dp, end = 32.dp, bottom = 40.dp)
             ) {
                 EmptyContent(
-                    title = "No wallets yet",
-                    subTitle = "Tap the + button to import a wallet into your portfolio."
+                    title = Localization.string("No wallets yet"),
+                    subTitle = Localization.string("Tap the + button to import a wallet into your portfolio.")
                 )
             }
         }

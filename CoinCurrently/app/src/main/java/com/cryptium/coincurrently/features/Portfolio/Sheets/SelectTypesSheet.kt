@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Portfolio.Sheets
+import com.cryptium.coincurrently.core.localization.Localization
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -151,8 +152,8 @@ fun SelectTypesSheet(
                             .padding(vertical = 24.dp),
                     ) {
                 TransactionTypeView(
-                    title = "Import Wallet",
-                    subtitle = "Imported a crypto wallet.",
+                    title = Localization.string("Import Wallet"),
+                    subtitle = Localization.string("Imported a crypto wallet."),
                     image = R.drawable.walletimport,
                     isMultiSelectEnabled = true,
                     isSelected = transactionTypes.value.contains(PortfolioTransactionType.ImportAddress),
@@ -162,8 +163,8 @@ fun SelectTypesSheet(
                 )
 
                 TransactionTypeView(
-                    title = "Buy",
-                    subtitle = "Bought coins with cash.",
+                    title = Localization.string("Buy"),
+                    subtitle = Localization.string("Bought coins with cash."),
                     image = R.drawable.plus,
                     isMultiSelectEnabled = true,
                     isSelected = transactionTypes.value.contains(PortfolioTransactionType.Buy),
@@ -173,8 +174,8 @@ fun SelectTypesSheet(
                 )
 
                 TransactionTypeView(
-                    title = "Sell",
-                    subtitle = "Sold coins with cash.",
+                    title = Localization.string("Sell"),
+                    subtitle = Localization.string("Sold coins with cash."),
                     image = R.drawable.minus,
                     isMultiSelectEnabled = true,
                     isSelected = transactionTypes.value.contains(PortfolioTransactionType.Sell),
@@ -184,8 +185,8 @@ fun SelectTypesSheet(
                 )
 
                 TransactionTypeView(
-                    title = "Swap",
-                    subtitle = "Swapped one coin for another.",
+                    title = Localization.string("Swap"),
+                    subtitle = Localization.string("Swapped one coin for another."),
                     image = R.drawable.trade,
                     isMultiSelectEnabled = true,
                     isSelected = transactionTypes.value.contains(PortfolioTransactionType.Swap),
@@ -195,8 +196,8 @@ fun SelectTypesSheet(
                 )
 
                 TransactionTypeView(
-                    title = "Deposit",
-                    subtitle = "Deposited coins into your wallet.",
+                    title = Localization.string("Deposit"),
+                    subtitle = Localization.string("Deposited coins into your wallet."),
                     image = R.drawable.deposit,
                     isMultiSelectEnabled = true,
                     isSelected = transactionTypes.value.contains(PortfolioTransactionType.TransferIn),
@@ -206,8 +207,8 @@ fun SelectTypesSheet(
                 )
 
                 TransactionTypeView(
-                    title = "Withdraw",
-                    subtitle = "Withdrawn coins out of your wallet.",
+                    title = Localization.string("Withdraw"),
+                    subtitle = Localization.string("Withdrawn coins out of your wallet."),
                     image = R.drawable.withdraw,
                     isMultiSelectEnabled = true,
                     isSelected = transactionTypes.value.contains(PortfolioTransactionType.TransferOut),
@@ -241,8 +242,8 @@ private fun ActionButtons(
             )
     ) {
         SecondaryButton(
-            text = "Clear",
-            accessibilityLabel = "Clear filters",
+            text = Localization.string("Clear"),
+            accessibilityLabel = Localization.string("Clear filters"),
             fullWidth = true,
             modifier = sectionModifier()
                 .widthIn(max = 400.dp),
@@ -252,8 +253,8 @@ private fun ActionButtons(
         )
 
         PrimaryButton(
-            text = "Apply",
-            accessibilityLabel = "Apply filters",
+            text = Localization.string("Apply"),
+            accessibilityLabel = Localization.string("Apply filters"),
             fullWidth = true,
             modifier = sectionModifier()
                 .widthIn(max = 400.dp),
