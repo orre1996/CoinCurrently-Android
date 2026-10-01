@@ -225,9 +225,9 @@ class PortfolioViewModel : ViewModel() {
         val now = Date()
         val hourInterval = 60 * 60 * 1000.0
 
-        val elements = portfolio?.maxByOrNull {
-            it.data?.sparkline_in_7d?.price?.size ?: 0
-        }?.data?.sparkline_in_7d?.price?.size ?: 169
+        val elements = portfolio
+            ?.maxOfOrNull { it.data?.sparkline_in_7d?.price?.size ?: 0 }
+            ?: 169
 
         timeStamps = (0 until elements).map { i ->
             val timestamp = now.time - ((elements - 1 - i) * hourInterval)
