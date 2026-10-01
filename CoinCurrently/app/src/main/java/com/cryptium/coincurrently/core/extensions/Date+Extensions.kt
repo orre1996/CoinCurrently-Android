@@ -1,5 +1,7 @@
 package com.cryptium.coincurrently.core.extensions
 import com.cryptium.coincurrently.core.config.AppLocale
+import com.cryptium.coincurrently.core.localization.AppLanguageState
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
 import java.text.NumberFormat
@@ -177,18 +179,14 @@ fun Date.accessibleChartHoverDate(
     return when (timeChart) {
         TimeCharts.aWeek -> {
             if (dontShowTime) {
-                formatDate(DateFormat.MMMMddyyyy) ?: ""
+                chartHoverDate(DateFormat.MMMMddyyyy)
             } else {
-                val day = formatDate(DateFormat.MMMMdd) ?: ""
-                "$day at ${accessibleChartHoverTime(is24HourClock)}"
+                chartHoverDateAtTime(DateFormat.MMMMdd, is24HourClock)
             }
         }
         TimeCharts.aMonth, TimeCharts.threeMonths, TimeCharts.aYear, TimeCharts.max ->
-            formatDate(DateFormat.MMMMddyyyy) ?: ""
-        else -> {
-            val day = formatDate(DateFormat.MMMMdd) ?: ""
-            "$day at ${accessibleChartHoverTime(is24HourClock)}"
-        }
+            chartHoverDate(DateFormat.MMMMddyyyy)
+        else -> chartHoverDateAtTime(DateFormat.MMMMdd, is24HourClock)
     }
 }
 
@@ -197,17 +195,28 @@ private fun Date.accessibleChartExchangeHoverDate(
     is24HourClock: Boolean,
 ): String {
     return when (timeChart) {
-        TimeCharts.aDay, TimeCharts.aWeek -> {
-            val day = formatDate(DateFormat.MMMMdd) ?: ""
-            "$day at ${accessibleChartHoverTime(is24HourClock)}"
-        }
+        TimeCharts.aDay, TimeCharts.aWeek ->
+            chartHoverDateAtTime(DateFormat.MMMMdd, is24HourClock)
         TimeCharts.aMonth, TimeCharts.aYear, TimeCharts.max ->
-            formatDate(DateFormat.MMMMddyyyy) ?: ""
-        else -> {
-            val day = formatDate(DateFormat.MMMdd) ?: ""
-            "$day at ${accessibleChartHoverTime(is24HourClock)}"
-        }
+            chartHoverDate(DateFormat.MMMMddyyyy)
+        else -> chartHoverDateAtTime(DateFormat.MMMdd, is24HourClock)
     }
+}
+
+private fun Date.chartHoverDate(style: DateFormat): String {
+    return try {
+        SimpleDateFormat(style.pattern, AppLanguageState.preference.resolve().locale).format(this)
+    } catch (_: Exception) {
+        ""
+    }
+}
+
+private fun Date.chartHoverDateAtTime(style: DateFormat, is24HourClock: Boolean): String {
+    return Localization.format(
+        "%1$@ at %2$@",
+        chartHoverDate(style),
+        accessibleChartHoverTime(is24HourClock),
+    )
 }
 
 private fun Date.accessibleChartHoverTime(is24HourClock: Boolean): String {

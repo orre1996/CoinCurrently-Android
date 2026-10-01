@@ -6,7 +6,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
-import com.cryptium.coincurrently.core.config.AppLocale
 import com.cryptium.coincurrently.core.extensions.is24HourClock
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
 import com.cryptium.coincurrently.sharedui.components.Point
@@ -167,13 +166,14 @@ fun formatHoverTimestamp(
     style: HoverTimeFallback,
 ): String {
     if (timestamp == null || timestamp == 0.0) return ""
+    val at = localizedChartAtLiteral()
     val pattern = when (style) {
         HoverTimeFallback.FromTimeChart -> hoverDatePattern(timeChart, is24HourClock)
         HoverTimeFallback.DateOnly -> "dd MMM yyyy"
         HoverTimeFallback.MonthYearOrDate -> if (timeChart == TimeCharts.max) "MMM yyyy" else "dd MMM yyyy"
-        HoverTimeFallback.LocalClock -> if (is24HourClock) "dd MMM 'at' HH:mm" else "dd MMM 'at' hh:mm a"
+        HoverTimeFallback.LocalClock -> if (is24HourClock) "dd MMM $at HH:mm" else "dd MMM $at hh:mm a"
     }
-    val dateFormat = SimpleDateFormat(pattern, AppLocale.enUsPosix)
+    val dateFormat = SimpleDateFormat(pattern, chartDisplayLocale())
     if (style == HoverTimeFallback.LocalClock) {
         dateFormat.timeZone = TimeZone.getDefault()
     }

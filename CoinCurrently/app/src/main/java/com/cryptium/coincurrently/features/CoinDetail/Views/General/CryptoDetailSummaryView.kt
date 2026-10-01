@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.CoinDetail.Views.General
+import com.cryptium.coincurrently.core.localization.AppLanguageState
 import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.graphics.Bitmap
@@ -89,39 +90,62 @@ fun CryptoDetailSummaryView(
         ?.takeIf { it.isNotEmpty() }
         ?.let { ". Country: $it" }
         ?: ""
-    val accessibilityLabel = if (changeMetricLabel == "volume") {
-        val volumeText = currentPrice?.formatCurrency(
+    val accessibilityLabel = if (changeMetricLabel == "volume" || changeMetricLabel == "holdings") {
+        val valueText = currentPrice?.formatCurrency(
             threshold = accessibilityFormattingThreshold,
             currency = currency,
             accessible = true,
         ) ?: ""
-        Localization.format(
-            "%1$@, %2$@: %3$@. %4$@ %5$@ percent %6$@",
-            "${name ?: "coin"}$accessibilityCountryText",
-            Localization.string(valueAccessibilityLabel),
-            volumeText,
-            Localization.string(if (roundedChange >= 0) "Up" else "Down"),
-            formattedChangePercent,
-            Localization.string(selectedTimeframe.accessibilityChangePeriod),
-        )
+        val direction = Localization.string(if (roundedChange >= 0) "Up" else "Down")
+        val period = Localization.string(selectedTimeframe.accessibilityChangePeriod)
+        val valueLabel = Localization.string(valueAccessibilityLabel)
+        val holdingsCountryName = if (changeMetricLabel == "holdings") {
+            countryCode
+                ?.takeIf { it.isNotEmpty() }
+                ?.let { code ->
+                    Locale.Builder()
+                        .setRegion(code)
+                        .build()
+                        .getDisplayCountry(AppLanguageState.preference.resolve().locale)
+                }
+                ?.takeIf { it.isNotEmpty() }
+        } else {
+            null
+        }
+
+        if (holdingsCountryName != null) {
+            Localization.format(
+                "%1$@. %2$@. %3$@: %4$@. %5$@ %6$@ percent %7$@",
+                name ?: "coin",
+                Localization.format("Country: %@", holdingsCountryName),
+                valueLabel,
+                valueText,
+                direction,
+                formattedChangePercent,
+                period,
+            )
+        } else {
+            Localization.format(
+                "%1$@, %2$@: %3$@. %4$@ %5$@ percent %6$@",
+                if (changeMetricLabel == "volume") {
+                    "${name ?: "coin"}$accessibilityCountryText"
+                } else {
+                    name ?: "coin"
+                },
+                valueLabel,
+                valueText,
+                direction,
+                formattedChangePercent,
+                period,
+            )
+        }
     } else {
         val currentPriceText = currentPrice?.formatCurrency(
             threshold = accessibilityFormattingThreshold,
             currency = currency,
             accessible = true,
         ) ?: ""
-        val changeValueText = if (changeMetricLabel == "holdings") {
-            val changeValue = roundedChange.getChangeInValue(currentValue = currentPrice ?: 0.0)
-            val formattedChangeValue = kotlin.math.abs(changeValue).formatCurrency(
-                threshold = accessibilityFormattingThreshold,
-                currency = currency,
-                accessible = true,
-            )
-            "$formattedChangeValue. "
-        } else {
-            ""
-        }
-        "${name ?: "coin"}$accessibilityCountryText - $valueAccessibilityLabel: $currentPriceText - ${selectedTimeframe.accessibilityTimeframe} $changeMetricLabel change. $changeDirection $changeValueText$formattedChangePercent percent"
+        "${name ?: "coin"}$accessibilityCountryText - $valueAccessibilityLabel: $currentPriceText - ${selectedTimeframe.accessibilityTimeframe} $changeMetricLabel change. $changeDirection $formattedChangePercent percent"
     }
     val fullAccessibilityLabel = if (changeCoinAccessibilityHint != null) {
         "$accessibilityLabel. $changeCoinAccessibilityHint"
@@ -344,7 +368,7 @@ private fun ChangeView(
         )
 
         Text(
-            text = selectedTimeframe.timeAgoText,
+            text = Localization.string(selectedTimeframe.timeAgoText),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = childModifier,

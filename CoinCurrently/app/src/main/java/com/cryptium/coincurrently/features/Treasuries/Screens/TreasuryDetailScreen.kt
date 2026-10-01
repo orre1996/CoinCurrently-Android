@@ -45,6 +45,7 @@ import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.sharedui.charts.ChartTimeStamps
 import com.cryptium.coincurrently.sharedui.charts.ChartTimeframeButtonsView
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.charts.ChartAccessibilityOverlay
 import com.cryptium.coincurrently.sharedui.charts.ChartHoverView
 import com.cryptium.coincurrently.sharedui.charts.LineChart
@@ -204,6 +205,7 @@ fun TreasuryDetailScreen(
                                     timeChart = viewModel.selectedTimeFrame,
                                     currency = viewModel.selectedCurrency,
                                     trailingPadding = biggestValue.value.width,
+                                    mainSeriesName = Localization.string("Holdings chart"),
                                 ),
                         ) {
                             Box(modifier = Modifier.hideFromTalkBackWhenEnabled()) {
@@ -236,6 +238,7 @@ fun TreasuryDetailScreen(
                                 timeChart = viewModel.selectedTimeFrame,
                                 currency = viewModel.selectedCurrency,
                                 trailingPadding = biggestValue.value.width,
+                                mainSeriesName = Localization.string("Holdings chart"),
                             )
 
                             MultiTouchView(

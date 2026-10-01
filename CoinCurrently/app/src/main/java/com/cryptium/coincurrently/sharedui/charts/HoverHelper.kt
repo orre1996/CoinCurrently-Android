@@ -6,11 +6,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.min
-import com.cryptium.coincurrently.core.config.AppLocale
+import com.cryptium.coincurrently.core.localization.AppLanguageState
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.Candle
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import com.cryptium.coincurrently.sharedui.components.candleChartIndexFromPlotX
 import com.cryptium.coincurrently.sharedui.components.lineChartIndexFromPlotX
 
@@ -56,15 +58,19 @@ class HoverHelper {
         }
 
         val localPrices = indices.map { prices.getOrNull(it) ?: 0.0 }
-        val dateFormat = SimpleDateFormat(getHoverDateFormat(timeChart, is24HourClock, dontShowTime), AppLocale.enUsPosix)
+        val dateFormat = SimpleDateFormat(
+            getHoverDateFormat(timeChart, is24HourClock, dontShowTime),
+            chartDisplayLocale(),
+        )
         val localTimes = indices.map { index ->
             val timestamp = dates.getOrNull(index) ?: 0.0
             dateFormat.format(Date(timestamp.toLong()))
         }
 
+        val at = localizedChartAtLiteral()
         val tempTimeFormat = SimpleDateFormat(
-            if (is24HourClock) "dd MMM 'at' HH:mm" else "dd MMM 'at' hh:mm a",
-            AppLocale.enUsPosix,
+            if (is24HourClock) "dd MMM $at HH:mm" else "dd MMM $at hh:mm a",
+            chartDisplayLocale(),
         )
         val temporaryTimes = indices.map { index ->
             val timestamp = dates.getOrNull(index) ?: 0.0
@@ -94,7 +100,7 @@ class HoverHelper {
 
         val position = candleChartIndexFromPlotX(touchX, chartWidth, candles.size)
         val candle = candles.getOrNull(position)
-        val dateFormat = SimpleDateFormat(getHoverDateFormat(timeChart, is24HourClock), AppLocale.enUsPosix)
+        val dateFormat = SimpleDateFormat(getHoverDateFormat(timeChart, is24HourClock), chartDisplayLocale())
         val timestamp = candle?.timestamp ?: 0.0
         val date = dateFormat.format(Date(timestamp.toLong()))
 
@@ -140,14 +146,19 @@ fun hoverDatePattern(
     is24HourClock: Boolean,
     dontShowTime: Boolean = false,
 ): String {
+    val at = localizedChartAtLiteral()
+    val withTime = if (is24HourClock) "dd MMM $at HH:mm" else "dd MMM $at hh:mm a"
     return when (timeChart) {
-        TimeCharts.aWeek -> {
-            if (dontShowTime) "dd MMM yyyy" else {
-                if (is24HourClock) "dd MMM 'at' HH:mm" else "dd MMM 'at' hh:mm a"
-            }
-        }
+        TimeCharts.aWeek -> if (dontShowTime) "dd MMM yyyy" else withTime
         TimeCharts.aMonth, TimeCharts.threeMonths, TimeCharts.aYear -> "dd MMM yyyy"
         TimeCharts.max -> "MMM yyyy"
-        else -> if (is24HourClock) "dd MMM 'at' HH:mm" else "dd MMM 'at' hh:mm a"
+        else -> withTime
     }
+}
+
+internal fun chartDisplayLocale(): Locale = AppLanguageState.preference.resolve().locale
+
+internal fun localizedChartAtLiteral(): String {
+    val word = Localization.string("at").replace("'", "''")
+    return "'$word'"
 }

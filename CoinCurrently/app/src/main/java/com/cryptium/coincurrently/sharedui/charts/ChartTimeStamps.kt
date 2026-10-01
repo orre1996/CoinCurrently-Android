@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.cryptium.coincurrently.core.config.AppLocale
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmest
 import com.cryptium.coincurrently.sharedui.modifiers.CappedFontScale
 import com.cryptium.coincurrently.sharedui.modifiers.DynamicTypeSizeCap
@@ -98,7 +97,7 @@ private fun getTimeChartDates(
     val currentIndex = floor(maxIndex * fraction).toInt().coerceIn(0, maxIndex)
     val currentValue: Long = localTimeStamps.getOrNull(currentIndex)?.toLong() ?: return null
 
-    val dateFormat = SimpleDateFormat(format, AppLocale.enUsPosix)
+    val dateFormat = SimpleDateFormat(format, chartDisplayLocale())
     dateFormat.timeZone = TimeZone.getDefault()
     return dateFormat.format(Date(currentValue))
 }
