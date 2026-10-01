@@ -157,13 +157,6 @@ fun BuyProScreen(close: () -> Unit) {
         ),
 
         Tier(
-            title = "News categories",
-            freeText = TierType.Text("4"),
-            proText = TierType.Text("8"),
-            accessibilityLabel = "4 news categories are included in the free version and 8 with pro",
-        ),
-
-        Tier(
             title = "Price alerts",
             freeText = TierType.Text("2"),
             proText = TierType.Image(R.drawable.infinity),
