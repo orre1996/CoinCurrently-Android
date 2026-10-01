@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.sharedui.buttons
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.modifiers.imageSize
 
 import androidx.compose.foundation.Image
@@ -47,7 +48,10 @@ fun CurrencyButton(
     selectNewCurrency: () -> Unit
 ) {
     val currencyName = allCurrencies.firstOrNull { it.code.equals(title, ignoreCase = true) }?.currency ?: title ?: ""
-    val accessibilityLabel = "Change currency. currently selected: $currencyName"
+    val accessibilityLabel = Localization.format(
+        "Change currency, currently selected: %@",
+        currencyName,
+    )
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
