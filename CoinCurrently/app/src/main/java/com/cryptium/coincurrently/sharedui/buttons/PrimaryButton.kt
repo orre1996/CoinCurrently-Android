@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.loading.ActivityIndicator
 import com.cryptium.coincurrently.sharedui.modifiers.CappedFontScale
 import com.cryptium.coincurrently.sharedui.modifiers.DynamicTypeSizeCap
@@ -41,7 +42,11 @@ fun PrimaryButton(
         font = satoshiBold(18),
         modifier = modifier
             .semantics(mergeDescendants = true) {
-                contentDescription = accessibilityLabel ?: text
+                contentDescription = if (isLoading) {
+                    Localization.string("Loading")
+                } else {
+                    accessibilityLabel ?: text
+                }
                 role = Role.Button
             }
             .alpha(if(isEnabled) 1f else 0.4f)

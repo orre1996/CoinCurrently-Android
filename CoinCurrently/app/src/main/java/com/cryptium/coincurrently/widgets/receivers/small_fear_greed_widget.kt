@@ -14,6 +14,7 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.app.MainActivity
 import com.cryptium.coincurrently.core.networking.ResponseModels.FearGreedItem
 import com.cryptium.coincurrently.features.FearGreed.FearGreedRepository
@@ -121,7 +122,7 @@ internal fun bindSmallFearGreedRemoteViews(
     views.setTextViewText(R.id.txt_index, indexValue?.toString() ?: "0")
     views.setTextViewText(
         R.id.txt_classification,
-        item?.value_classification ?: fearGreedClassification(indexValue ?: 0),
+        Localization.string(item?.value_classification ?: fearGreedClassification(indexValue ?: 0)),
     )
 
     bindFearGreedMeter(

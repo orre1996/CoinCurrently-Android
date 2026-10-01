@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
 import com.cryptium.coincurrently.widgets.config.WidgetRuntimeInitializer
@@ -107,7 +108,7 @@ internal fun createMediumPortfolioWidget(
                 changeIconId = R.id.view_winner_change_icon,
                 changeTextId = R.id.txt_winner_change,
                 percentTextId = R.id.txt_winner_percent,
-                title = "Daily Winner",
+                title = Localization.string("Daily Winner"),
                 coinChange = widgetData.dailyWinner,
                 coinBitmap = winnerBitmap,
                 hideData = hideData,
@@ -122,7 +123,7 @@ internal fun createMediumPortfolioWidget(
                 changeIconId = R.id.view_loser_change_icon,
                 changeTextId = R.id.txt_loser_change,
                 percentTextId = R.id.txt_loser_percent,
-                title = "Daily Loser",
+                title = Localization.string("Daily Loser"),
                 coinChange = widgetData.dailyLoser,
                 coinBitmap = loserBitmap,
                 hideData = hideData,

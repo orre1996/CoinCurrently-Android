@@ -3,6 +3,7 @@ package com.cryptium.coincurrently.widgets.receivers
 import android.content.Context
 import android.widget.RemoteViews
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 
 internal fun createPortfolioWidgetEmptyRemoteViews(context: Context): RemoteViews {
     val views = RemoteViews(context.packageName, R.layout.portfolio_widget_empty)
@@ -31,4 +32,8 @@ internal fun bindPortfolioWidgetEmptyRemoteViews(
         },
     )
     views.setTextColor(R.id.txt_add_transaction, widgetOnPrimary(context))
+    views.setTextViewText(
+        R.id.txt_add_transaction,
+        Localization.string("Add Transaction"),
+    )
 }

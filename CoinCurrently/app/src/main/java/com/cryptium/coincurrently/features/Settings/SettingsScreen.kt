@@ -124,6 +124,7 @@ import java.util.Date
 import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import com.cryptium.coincurrently.core.localization.AppLanguagePreference
 import com.cryptium.coincurrently.core.localization.AppLanguageState
+import com.cryptium.coincurrently.widgets.receivers.reloadAllWidgets
 import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.features.Settings.CurrencySelector.CurrencyOptionsSheet
 import com.cryptium.coincurrently.features.Settings.Language.LanguageOptionsSheet
@@ -472,6 +473,7 @@ fun SettingsScreen(
                 newOptionSelected = {
                     selectedLanguage = it
                     AppLanguageState.select(it)
+                    reloadAllWidgets(context)
                     AnalyticsManager.log(
                         LanguageSelected(
                             fromScreen = ScreenLabel.Settings,

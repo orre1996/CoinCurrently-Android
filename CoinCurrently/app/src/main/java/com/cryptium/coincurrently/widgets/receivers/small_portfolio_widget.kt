@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.app.MainActivity
 import com.cryptium.coincurrently.core.extensions.changeWithSymbol
 import com.cryptium.coincurrently.core.extensions.formatCurrency
@@ -204,6 +205,8 @@ private fun applySmallPortfolioTheme(
     views.setTextColor(R.id.txt_portfolio_title, widgetOnSurfaceDimmer(context))
     views.setTextColor(R.id.txt_total_value, widgetOnSurface(context))
     views.setTextColor(R.id.txt_pl_title, widgetOnSurfaceDimmer(context))
+    views.setTextViewText(R.id.txt_portfolio_title, Localization.string("Portfolio Value"))
+    views.setTextViewText(R.id.txt_pl_title, Localization.string("24h Change"))
 }
 
 internal fun formatSignedChangePercent(percent: Double?): String {

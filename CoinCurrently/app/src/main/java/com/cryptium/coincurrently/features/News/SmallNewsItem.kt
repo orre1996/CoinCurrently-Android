@@ -23,6 +23,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.theme.*
 import com.cryptium.coincurrently.sharedui.modifiers.*
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
@@ -67,7 +68,7 @@ fun SmallNewsItem(
             .height(IntrinsicSize.Min)
             .semantics(mergeDescendants = true) {
                 contentDescription = accessibilityLabelText
-                onClick(label = "read more", action = {
+                onClick(label = Localization.string("Double tap to read more"), action = {
                     newsItem?.news_url?.let { callback(it) }
                     true
                 })
@@ -163,16 +164,35 @@ private fun newsAccessibilityLabel(
     index: Int,
     totalCount: Int,
     newsItem: NewNewsItem?,
-): String = buildString {
-    append("${newsType.rawValue} $index of $totalCount. ")
-    append("${newsItem?.title ?: ""}. ")
-    append("By ${newsItem?.source_name ?: "000000"}. ")
-    append("Published ${newsItem?.date?.getDate()?.getDateTimeAgo() ?: "000000"}. ")
-    append("Sentiment, ${newsItem?.sentiment ?: ""}")
-    val tickers = newsItem?.tickers
-    if (!tickers.isNullOrEmpty()) {
-        append(". Tickers, ")
-        append(tickers.take(3).joinToString(". ") { it })
+): String {
+    val kind = Localization.string(
+        when (newsType) {
+            NewsMediaType.Article -> "Article"
+            NewsMediaType.Video -> "Video"
+            NewsMediaType.Podcast -> "Podcast"
+        },
+    )
+    val position = Localization.format("%1\$@ %2\$d of %3\$d", kind, index, totalCount)
+    val title = newsItem?.title.orEmpty()
+    val source = Localization.format("By %@", newsItem?.source_name ?: "000000")
+    val published = Localization.format(
+        "Published %@",
+        newsItem?.date?.getDate()?.getDateTimeAgo() ?: "000000",
+    )
+    val sentimentValue = newsItem?.sentiment.orEmpty()
+    val sentiment = Localization.format(
+        "Sentiment, %@",
+        when (sentimentValue) {
+            "Positive", "Negative", "Neutral" -> Localization.string(sentimentValue)
+            else -> sentimentValue
+        },
+    )
+    val tickers = newsItem?.tickers?.take(3)?.filter { it.isNotEmpty() }.orEmpty()
+    val description = "$position. $title. $source. $published. $sentiment"
+    return if (tickers.isEmpty()) {
+        description
+    } else {
+        "$description. ${Localization.format("Tickers, %@", tickers.joinToString(", "))}"
     }
 }
 

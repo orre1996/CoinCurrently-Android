@@ -12,6 +12,7 @@ object Localization {
     private var catalog: Map<String, Map<String, String>> = emptyMap()
 
     fun load(context: Context) {
+        if (catalog.isNotEmpty()) return
         val json = context.assets.open("localization.json").bufferedReader().use { it.readText() }
         val root = JSONObject(json)
         val parsed = HashMap<String, Map<String, String>>(root.length())

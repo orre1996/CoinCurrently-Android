@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.widget.RemoteViews
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.stars
 import com.cryptium.coincurrently.core.persistence.UserPreferences
@@ -219,4 +220,9 @@ private fun applyLargePortfolioTheme(views: RemoteViews, context: Context) {
     views.setTextColor(R.id.txt_pl_title, widgetOnSurfaceDimmer(context))
     views.setTextColor(R.id.txt_coin_header, widgetOnSurfaceDimmer(context))
     views.setTextColor(R.id.txt_pl_header, widgetOnSurfaceDimmer(context))
+    views.setTextViewText(R.id.txt_portfolio_title, Localization.string("Portfolio Value"))
+    views.setTextViewText(R.id.txt_today_title, Localization.string("24h Change"))
+    views.setTextViewText(R.id.txt_pl_title, Localization.string("Profit/Loss"))
+    views.setTextViewText(R.id.txt_coin_header, Localization.string("Coin"))
+    views.setTextViewText(R.id.txt_pl_header, Localization.string("Profit/Loss"))
 }

@@ -33,6 +33,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiRegular
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.DragHandle
 import com.cryptium.coincurrently.sharedui.sheets.ModalBottomSheetSystemNavigationBar
 import com.cryptium.coincurrently.sharedui.sheets.rememberModalSheetMaxBodyHeight
@@ -138,7 +139,7 @@ fun WhatsNewSheet(
                 )
 
                 PrimaryButton(
-                    text = "Explore",
+                    text = Localization.string("Explore"),
                     fullWidth = true,
                     modifier = Modifier
                         .padding(
@@ -177,7 +178,7 @@ private fun WhatsNewSectionView(section: WhatsNewSection) {
             )
 
             Text(
-                text = section.title,
+                text = Localization.string(section.title),
                 style = satoshiBold(16),
                 color = MaterialTheme.colors.onSurface
             )
@@ -195,7 +196,7 @@ private fun WhatsNewSectionView(section: WhatsNewSection) {
                 )
 
                 Text(
-                    text = it,
+                    text = Localization.string(it),
                     style = satoshiRegular(16),
                     color = MaterialTheme.colors.onSurfaceDim
                 )

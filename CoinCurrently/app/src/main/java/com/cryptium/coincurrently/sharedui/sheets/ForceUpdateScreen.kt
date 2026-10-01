@@ -27,6 +27,7 @@ import com.cryptium.coincurrently.sharedui.theme.primaryTextColor
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiRegular
+import com.cryptium.coincurrently.core.localization.Localization
 
 @Composable
 fun ForceUpdateScreen(openPlayStore: () -> Unit) {
@@ -49,7 +50,7 @@ fun ForceUpdateScreen(openPlayStore: () -> Unit) {
                 )
         ) {
             Text(
-                text = "There is a new required version",
+                text = Localization.string("There is a new required version"),
                 style = satoshiBold(18),
                 color = MaterialTheme.colors.onSurface,
                 textAlign = TextAlign.Start,
@@ -58,7 +59,7 @@ fun ForceUpdateScreen(openPlayStore: () -> Unit) {
             )
 
             Text(
-                text = "Head over to Google Play and download the latest version to continue using the app.",
+                text = Localization.string("Head over to Google Play and download the latest version to continue using the app."),
                 style = satoshiRegular(16),
                 color = MaterialTheme.colors.onSurfaceDim,
                 textAlign = TextAlign.Start,
@@ -68,7 +69,7 @@ fun ForceUpdateScreen(openPlayStore: () -> Unit) {
 
 
             PrimaryButton(
-                text = "Go to Google Play",
+                text = Localization.string("Go to Google Play"),
                 modifier = Modifier
             ) {
                 openPlayStore()

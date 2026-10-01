@@ -1,7 +1,12 @@
 package com.cryptium.coincurrently.widgets.receivers
 import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import com.cryptium.coincurrently.app.NavigationViewModel
+import com.cryptium.coincurrently.widgets.glance.LargeMultiCryptoWidgetReceiver
+import com.cryptium.coincurrently.widgets.glance.LargeQuadCryptoWidgetReceiver
+import com.cryptium.coincurrently.widgets.glance.MediumDuoCryptoWidgetReceiver
+import com.cryptium.coincurrently.widgets.glance.SmallCryptoWidgetReceiver
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.RetrofitBuilder
@@ -51,5 +56,26 @@ internal fun updateAppWidget(
             }
             else -> { }
         }
+    }
+}
+
+internal fun reloadAllWidgets(context: Context) {
+    val appContext = context.applicationContext
+    val manager = AppWidgetManager.getInstance(appContext)
+    val providers = listOf(
+        small_fear_greed_widget::class.java,
+        SmallNewsWidgetReceiver::class.java,
+        MediumNewsWidgetReceiver::class.java,
+        small_portfolio_widget::class.java,
+        medium_portfolio_widget::class.java,
+        large_portfolio_widget::class.java,
+        SmallCryptoWidgetReceiver::class.java,
+        MediumDuoCryptoWidgetReceiver::class.java,
+        LargeQuadCryptoWidgetReceiver::class.java,
+        LargeMultiCryptoWidgetReceiver::class.java,
+    )
+    providers.forEach { provider ->
+        val ids = manager.getAppWidgetIds(ComponentName(appContext, provider))
+        ids.forEach { id -> updateAppWidget(appContext, manager, id) }
     }
 }
