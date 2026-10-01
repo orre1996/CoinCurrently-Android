@@ -23,6 +23,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerHighest
 
 @Composable
@@ -44,7 +45,7 @@ fun ScrollToTopButton(
             .clip(CircleShape)
             .background(MaterialTheme.colors.surfaceContainerHighest)
             .semantics {
-                contentDescription = "Scroll to top"
+                contentDescription = Localization.string("Scroll to top")
             }
             .clickable(enabled = visible, onClick = onClick)
             .padding(16.dp)

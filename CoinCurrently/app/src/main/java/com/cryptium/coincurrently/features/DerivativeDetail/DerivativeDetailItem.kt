@@ -61,7 +61,7 @@ fun DerivativeDetailItem(
     } else {
         openInterest.formatCurrency()
     }
-    val typeLabel = Localization.string(if (isFutures) "Future" else "Perpetual")
+    val typeLabel = Localization.string(if (isFutures) "Futures" else "Perpetual")
     val symbol = derivativeDetail?.symbol ?: ""
     val expiredAt = derivativeDetail?.expired_at
     val expiresIn = expiredAt?.timeUntilExpired

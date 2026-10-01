@@ -117,7 +117,7 @@ fun DerivativeDetailSheet(
             maxBodyHeight = maxBodyHeight,
         ) {
             val isHorizontal = AccessibilityLayout.isHorizontal
-            val isFuture = derivativeDetail.contract_type == "Future"
+            val isFuture = isFutureContract(derivativeDetail.contract_type)
 
             ModalSheetColumnLayout(
                 maxBodyHeight = maxBodyHeight,
@@ -250,7 +250,7 @@ fun DerivativeDetailSheet(
                     isHorizontal = isHorizontal,
                     first = { modifier ->
                         ContractTypeView(
-                            contractType = derivativeDetail.contract_type?.capitalize(),
+                            contractType = contractTypeText(derivativeDetail.contract_type),
                             modifier = modifier,
                         )
                     },
@@ -639,6 +639,19 @@ private fun LastTradedView(
     )
 }
 
+
+private fun isFutureContract(contractType: String?): Boolean {
+    val type = contractType?.lowercase()
+    return type == "future" || type == "futures"
+}
+
+private fun contractTypeText(contractType: String?): String {
+    return when (contractType?.lowercase()) {
+        "perpetual" -> Localization.string("Perpetual")
+        "future", "futures" -> Localization.string("Futures")
+        else -> contractType?.capitalize() ?: ""
+    }
+}
 
 @Composable
 private fun ContractTypeView(
