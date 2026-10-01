@@ -29,6 +29,7 @@ import com.cryptium.coincurrently.core.extensions.directionAccessible
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.numberAccessible
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
@@ -48,23 +49,35 @@ fun NftToplistCell(
     val safeChange = if (change?.isInfinite() == true) 0.0 else change
     val decimals = safeChange?.changePercentDecimalPoints ?: 2
     val accessibleChange = safeChange?.numberAccessible(maxPlaces = decimals) ?: ""
+    val direction = change?.directionAccessible ?: ""
     val nativeFloorPrice = nft?.floor_price?.native_currency
     val convertedFloorPrice = (nft?.floor_price?.usd ?: 0.0) * (priceMultiplier ?: 0.0)
-    val accessibilityLabelText = buildString {
+    val accessibilityLabelText = buildList {
         if (listIndex != null && listCount != null) {
-            append("NFT ${listIndex + 1} of $listCount. ${nft?.name ?: ""}. ")
+            add(Localization.format("NFT %d of %d, %@", listIndex + 1, listCount, nft?.name ?: ""))
         } else {
-            append("${nft?.name ?: ""}. ")
+            add(nft?.name ?: "")
         }
         nativeFloorPrice?.let {
             val currency = nativeFloorPriceCurrency(nft, chainSymbol)
-            append("Floor price: ${it.formatCurrency(currency = currency, accessible = true)}. ")
+            add(Localization.format("Floor price: %@", it.formatCurrency(currency = currency, accessible = true)))
         }
         if (priceMultiplier != null) {
-            append("Converted floor price: ${convertedFloorPrice.formatCurrency(threshold = FormattingThreshold.NONE, accessible = true)}. ")
+            add(
+                Localization.format(
+                    "Converted floor price: %@",
+                    convertedFloorPrice.formatCurrency(threshold = FormattingThreshold.NONE, accessible = true),
+                )
+            )
         }
-        append("24 hour price change: ${change?.directionAccessible ?: ""} $accessibleChange percent")
-    }
+        add(
+            Localization.format(
+                "24 hour price change: %@ %@ percent",
+                if (direction.isEmpty()) "" else Localization.string(direction),
+                accessibleChange,
+            )
+        )
+    }.joinToString(" - ")
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -72,7 +85,7 @@ fun NftToplistCell(
         modifier = Modifier
             .semantics(mergeDescendants = true) {
                 contentDescription = accessibilityLabelText
-                onClick(label = "view ${nft?.name ?: ""} details", action = {
+                onClick(label = Localization.format("Double tap for %@ details", nft?.name ?: ""), action = {
                     nft?.let { nftPressed(it) }
                     true
                 })

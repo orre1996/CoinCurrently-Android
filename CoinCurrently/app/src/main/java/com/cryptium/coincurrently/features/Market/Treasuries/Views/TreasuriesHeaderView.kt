@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.surface
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
+import com.cryptium.coincurrently.core.localization.Localization
 
 @Composable
 fun TreasuriesHeaderView(
@@ -30,14 +31,14 @@ fun TreasuriesHeaderView(
             )
     ) {
         Text(
-            text = "Treasury",
+            text = Localization.string("Treasury"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.weight(1f),
         )
 
         Text(
-            text = "Holdings",
+            text = Localization.string("Holdings"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
         )

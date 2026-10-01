@@ -65,6 +65,7 @@ import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.features.GlobalMarket.Views.GlobalmarketSummaryView
 import com.cryptium.coincurrently.core.analytics.BuyProAction
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.analytics.Navigate
 import com.cryptium.coincurrently.core.analytics.PriceChangeOptionSelected
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
@@ -367,7 +368,7 @@ private fun FilterButtons(
     ) {
         Image(
             painter = painterResource(R.drawable.search),
-            contentDescription = "Search for coins",
+            contentDescription = Localization.string("Search for coins"),
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceDimmer),
             modifier = Modifier
                 .clip(CircleShape)
@@ -383,8 +384,11 @@ private fun FilterButtons(
         )
 
         SecondaryButton(
-            text = selectedSortOption.title,
-            accessibilityLabel = "Sort. currently selected: ${selectedSortOption.accessibilityTitle}",
+            text = Localization.string(selectedSortOption.title),
+            accessibilityLabel = Localization.format(
+                "Sort, currently selected: %@",
+                Localization.string(selectedSortOption.accessibilityTitle),
+            ),
             icon = R.drawable.sort,
             onClick = {
                 AnalyticsManager.log(
@@ -395,8 +399,11 @@ private fun FilterButtons(
         )
 
         SecondaryButton(
-            text = selectedChangeOption.rawValue,
-            accessibilityLabel = "Timeframe. currently selected: ${selectedChangeOption.accessibilityTimeframe}",
+            text = Localization.string(selectedChangeOption.rawValue),
+            accessibilityLabel = Localization.format(
+                "Timeframe, currently selected: %@",
+                Localization.string(selectedChangeOption.accessibilityTimeframe),
+            ),
             icon = R.drawable.percent,
             onClick = {
                 AnalyticsManager.log(

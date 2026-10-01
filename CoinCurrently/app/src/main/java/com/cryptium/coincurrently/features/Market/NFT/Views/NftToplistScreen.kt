@@ -58,6 +58,7 @@ import com.cryptium.coincurrently.sharedui.components.ObserveCurrencyChanges
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.features.CoinDetail.Sheets.SelectCoinSheet
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.analytics.Navigate
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.core.analytics.ScrollToTopPressed
@@ -322,7 +323,7 @@ private fun FilterButtons(
     ) {
         Image(
             painter = painterResource(R.drawable.search),
-            contentDescription = "Search for NFTs",
+            contentDescription = Localization.string("Search for NFTs"),
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceDimmer),
             modifier = Modifier
                 .clip(CircleShape)
@@ -338,8 +339,11 @@ private fun FilterButtons(
         )
 
         SecondaryButton(
-            text = selectedSortOption.title,
-            accessibilityLabel = "Sort. currently selected: ${selectedSortOption.accessibilityTitle}",
+            text = Localization.string(selectedSortOption.title),
+            accessibilityLabel = Localization.format(
+                "Sort, currently selected: %@",
+                Localization.string(selectedSortOption.accessibilityTitle),
+            ),
             icon = R.drawable.sort,
             onClick = {
                 AnalyticsManager.log(
@@ -351,8 +355,19 @@ private fun FilterButtons(
 
 
         SecondaryButton(
-            text = if (selectedPlatform.id == "all") "Chain" else selectedPlatform.name ?: "All Chains",
-            accessibilityLabel = "Chain. currently selected: ${selectedPlatform.accessibilityTitle}",
+            text = if (selectedPlatform.id == "all") {
+                Localization.string("Chain")
+            } else {
+                selectedPlatform.name ?: Localization.string("All Chains")
+            },
+            accessibilityLabel = Localization.format(
+                "Chain, currently selected: %@",
+                if (selectedPlatform.id == "all") {
+                    Localization.string("All Chains")
+                } else {
+                    selectedPlatform.accessibilityTitle
+                },
+            ),
             icon = R.drawable.chevron_down,
             isEnabled = hasPlatforms,
             onClick = {

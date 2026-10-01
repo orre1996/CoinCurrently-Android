@@ -21,6 +21,7 @@ import com.cryptium.coincurrently.sharedui.components.tabPageTalkBackTraversal
 import com.cryptium.coincurrently.core.extensions.isTablet
 import com.cryptium.coincurrently.core.extensions.poppinsSemibold
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.satoshiRegular
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
@@ -133,6 +134,8 @@ private fun TempList(isTablet: Boolean, tabPage: Modifier) {
 
 @Composable
 private fun EmptyView(emptyMessage: String, tabPage: Modifier) {
+    val localizedTitle = Localization.string("No details yet")
+    val localizedMessage = Localization.string(emptyMessage)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -144,11 +147,11 @@ private fun EmptyView(emptyMessage: String, tabPage: Modifier) {
                 bottom = 40.dp
             )
             .semantics(mergeDescendants = true) {
-                contentDescription = "No details yet. $emptyMessage"
+                contentDescription = "$localizedTitle. $localizedMessage"
             }
     ) {
         Text(
-            text = "No details yet",
+            text = localizedTitle,
             style = satoshiBold(18),
             color = MaterialTheme.colors.onSurface,
             textAlign = TextAlign.Center,
@@ -156,7 +159,7 @@ private fun EmptyView(emptyMessage: String, tabPage: Modifier) {
         )
 
         Text(
-            text = emptyMessage,
+            text = localizedMessage,
             style = satoshiRegular(14),
             color = MaterialTheme.colors.onSurfaceDim,
             textAlign = TextAlign.Center,

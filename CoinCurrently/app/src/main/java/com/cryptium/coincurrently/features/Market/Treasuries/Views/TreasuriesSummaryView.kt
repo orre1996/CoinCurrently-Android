@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.core.extensions.formatCurrency
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.numberAccessible
 import com.cryptium.coincurrently.core.extensions.roundTo
 import com.cryptium.coincurrently.core.extensions.satoshiBold
@@ -39,15 +40,17 @@ fun TreasuriesSummaryView(
     val roundedDominance = (marketCapDominance ?: 0.0).roundTo(2)
     val formattedDominance = "%.2f".format(roundedDominance)
     val summaryAccessibilityLabel = if (totalHoldings == null && marketCapDominance == null) {
-        "Loading total holdings"
+        Localization.string("Loading total holdings")
     } else {
-        "Total Holdings: ${
+        Localization.format(
+            "Total Holdings: %@. Market Cap Dominance: %@ percent",
             (totalHoldings ?: 0.0).formatCurrency(
                 threshold = if (isHorizontal) FormattingThreshold.MILLION else FormattingThreshold.NONE,
                 currency = accessibilityHoldingsCurrency,
                 accessible = true,
-            )
-        }. Market Cap Dominance: ${roundedDominance.numberAccessible(maxPlaces = 2)} percent"
+            ),
+            roundedDominance.numberAccessible(maxPlaces = 2),
+        )
     }
 
     Column(
@@ -60,7 +63,7 @@ fun TreasuriesSummaryView(
             .padding(top = 16.dp)
     ) {
         Text(
-            text = "Total Holdings",
+            text = Localization.string("Total Holdings"),
             style = satoshiBold(18),
             color = MaterialTheme.colors.onSurfaceDim,
         )
@@ -77,7 +80,7 @@ fun TreasuriesSummaryView(
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
-                text = "Market Cap Dominance",
+                text = Localization.string("Market Cap Dominance"),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceDim,
             )

@@ -28,6 +28,7 @@ import com.cryptium.coincurrently.sharedui.sheets.ModalBottomSheetSystemNavigati
 import com.cryptium.coincurrently.sharedui.sheets.rememberModalSheetMaxBodyHeight
 import com.cryptium.coincurrently.sharedui.sheets.ModalSheetBody
 import com.cryptium.coincurrently.core.networking.ResponseModels.NFTPlatform
+import com.cryptium.coincurrently.core.localization.Localization
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,7 +90,16 @@ fun NFTsPlatformsSheet(
 
             items(allPlatforms) { platform ->
                 SingleSelectView(
-                    title = platform.name ?:  "",
+                    title = if (platform.id == "all") {
+                        Localization.string(platform.name ?: "All Chains")
+                    } else {
+                        platform.name ?: ""
+                    },
+                    accessibilityTitle = if (platform.id == "all") {
+                        Localization.string("All Chains")
+                    } else {
+                        platform.accessibilityTitle
+                    },
                     subtitle = null,
                     imageCase = if(platform.image == null) ImageCase.Nothing else ImageCase.Image(platform.image.small ?: platform.image.thumb ?: ""),
                     isSelected = selectedPlatform == platform,

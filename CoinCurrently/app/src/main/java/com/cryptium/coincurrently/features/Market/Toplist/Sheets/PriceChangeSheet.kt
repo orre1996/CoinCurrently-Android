@@ -24,6 +24,7 @@ import com.cryptium.coincurrently.sharedui.components.ImageCase
 import com.cryptium.coincurrently.sharedui.components.SingleSelectView
 import com.cryptium.coincurrently.sharedui.components.DragHandle
 import com.cryptium.coincurrently.sharedui.models.PriceChange
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.sheets.ModalBottomSheetSystemNavigationBar
 import com.cryptium.coincurrently.sharedui.sheets.rememberModalSheetMaxBodyHeight
 import com.cryptium.coincurrently.sharedui.sheets.ModalSheetBody
@@ -88,8 +89,9 @@ fun PriceChangeSheet(
 
             items(PriceChange.entries.toTypedArray()) { option ->
                 SingleSelectView(
-                    title = option.rawValue,
-                    subtitle = option.subtitle,
+                    title = Localization.string(option.rawValue),
+                    accessibilityTitle = Localization.string(option.accessibilityTimeframe),
+                    subtitle = Localization.string(option.subtitle),
                     imageCase = ImageCase.Nothing,
                     isSelected = selectedOption == option,
                     didSelectOption = {

@@ -22,6 +22,8 @@ import com.cryptium.coincurrently.sharedui.components.AdaptiveStack
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.extensions.formatCurrency
+import com.cryptium.coincurrently.core.localization.AppLanguageState
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.features.Market.Exchanges.Models.CountryFlagEmojis
@@ -76,7 +78,7 @@ fun TreasuriesItemView(
         modifier = Modifier
             .semantics(mergeDescendants = true) {
                 contentDescription = accessibilityLabelText
-                onClick(label = "view ${data?.name ?: ""} details", action = {
+                onClick(label = Localization.format("Double tap for %@ details", data?.name ?: ""), action = {
                     onTreasuryClick()
                     true
                 })
@@ -161,39 +163,48 @@ private fun buildAccessibilityLabel(
     listCount: Int?,
     holdingsCurrency: CurrencySelectionModel,
 ): String {
-    if (data == null) return "Loading treasury"
+    if (data == null) return Localization.string("Loading treasury")
 
     val components = mutableListOf<String>()
 
     if (listIndex != null && listCount != null) {
-        components.add("Treasury ${listIndex + 1} of $listCount, ${data.name ?: ""}")
+        components.add(
+            Localization.format("Treasury %d of %d, %@", listIndex + 1, listCount, data.name ?: "")
+        )
     } else {
         components.add(data.name ?: "")
     }
 
-    entity?.displayName?.let { components.add(it) }
+    entity?.displayName?.let { components.add(Localization.string(it)) }
 
-    data?.country?.let { countryCode ->
-        val countryName = Locale.Builder().setRegion(countryCode).build().displayCountry
+    data.country?.let { countryCode ->
+        val countryName = Locale.Builder()
+            .setRegion(countryCode)
+            .build()
+            .getDisplayCountry(AppLanguageState.preference.resolve().locale)
         if (countryName.isNotEmpty()) {
-            components.add("Country: $countryName")
+            components.add(Localization.format("Country: %@", countryName))
         }
     }
 
     components.add(
-        "Holdings: ${
-            (data?.total_holdings ?: 0.0).formatCurrency(
+        Localization.format(
+            "Holdings: %@",
+            (data.total_holdings ?: 0.0).formatCurrency(
                 threshold = FormattingThreshold.NONE,
                 currency = holdingsCurrency,
                 accessible = true,
-            )
-        }"
+            ),
+        )
     )
 
     priceMultiplier?.let { multiplier ->
-        val convertedValue = (data?.total_current_value_usd ?: 0.0) * multiplier
+        val convertedValue = (data.total_current_value_usd ?: 0.0) * multiplier
         components.add(
-            "Current value: ${convertedValue.formatCurrency(threshold = FormattingThreshold.NONE, accessible = true)}"
+            Localization.format(
+                "Current value: %@",
+                convertedValue.formatCurrency(threshold = FormattingThreshold.NONE, accessible = true),
+            )
         )
     }
 

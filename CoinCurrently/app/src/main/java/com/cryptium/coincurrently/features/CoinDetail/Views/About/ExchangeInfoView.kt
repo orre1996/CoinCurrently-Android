@@ -18,6 +18,7 @@ import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.primaryBackgroundNoRipple
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 
 /**
  * Exchange Info section showing Founded, Headquarters, and Exchange Type.
@@ -45,7 +46,7 @@ fun ExchangeInfoView(
         modifier = modifier
     ) {
         Text(
-            text = "Exchange Info",
+            text = Localization.string("Exchange Info"),
             style = satoshiBold(22),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = tabPage.semantics { heading() },
@@ -115,22 +116,30 @@ private fun ExchangeInfoItem(
 ) {
     if (value == null) return
 
+    val localizedLabel = Localization.string(label)
+    val displayedValue = if (label == "Exchange Type") Localization.string(value) else value
+    val labelAccessibility = if (label == "Exchange Type") {
+        Localization.string("Exchange type: ")
+    } else {
+        "$localizedLabel: "
+    }
+
     Column(
         modifier = modifier
             .then(tabPage)
             .semantics(mergeDescendants = true) {
-                contentDescription = "$label: $value"
+                contentDescription = "$labelAccessibility$displayedValue"
             },
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
-            text = label,
+            text = localizedLabel,
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() },
         )
         Text(
-            text = value,
+            text = displayedValue,
             style = satoshiBold(16),
             color = MaterialTheme.colors.onSurface,
             modifier = Modifier.semantics { invisibleToUser() },

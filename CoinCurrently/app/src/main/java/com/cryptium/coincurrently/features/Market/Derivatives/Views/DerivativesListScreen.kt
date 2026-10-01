@@ -26,6 +26,7 @@ import com.cryptium.coincurrently.sharedui.components.ObserveCurrencyChanges
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.features.Market.Derivatives.ViewModels.DerivativesViewModel
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.analytics.Navigate
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.core.analytics.ScrollToTopPressed
@@ -225,8 +226,11 @@ private fun FilterButtons(
             )
     ) {
         SecondaryButton(
-            text = selectedSortOption.title,
-            accessibilityLabel = "Sort. currently selected: ${selectedSortOption.accessibilityTitle}",
+            text = Localization.string(selectedSortOption.title),
+            accessibilityLabel = Localization.format(
+                "Sort, currently selected: %@",
+                Localization.string(selectedSortOption.accessibilityTitle),
+            ),
             icon = R.drawable.sort,
             onClick = {
                 AnalyticsManager.log(

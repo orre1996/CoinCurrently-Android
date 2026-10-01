@@ -48,6 +48,7 @@ import com.cryptium.coincurrently.sharedui.theme.outlineVariant
 
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
 import com.cryptium.coincurrently.core.extensions.currencyAccessible
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.formattedRemovingTrailingZeros
 import com.cryptium.coincurrently.core.extensions.numberAccessible
@@ -361,7 +362,10 @@ private fun StatView(
     modifier: Modifier = Modifier,
 ) {
     val accessibleTitle = titleAccessible ?: title
-    val accessibilityLabel = valueAccessible?.let { "$accessibleTitle: $it" }
+    val localizedTitle = Localization.string(title)
+    val accessibilityLabel = valueAccessible?.let {
+        Localization.format("%@: %@", Localization.string(accessibleTitle), it)
+    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -376,7 +380,7 @@ private fun StatView(
         )
     ) {
         Text(
-            text = title,
+            text = localizedTitle,
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = if (valueAccessible != null) {
@@ -466,7 +470,7 @@ private fun ChangeView(
         modifier = modifier.semantics(mergeDescendants = true) {}
     ) {
         Text(
-            text = "24h Price Change",
+            text = Localization.string("24h Price Change"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -530,7 +534,7 @@ private fun FundingRateView(
     StatView(
         title = "Funding Rate",
         value = "$formattedRate%",
-        valueAccessible = "${rate.numberAccessible(maxPlaces = 7)} percent",
+        valueAccessible = Localization.format("%@ percent", rate.numberAccessible(maxPlaces = 7)),
         modifier = modifier,
     )
 }
@@ -592,7 +596,7 @@ private fun IndexBasisView(
         title = "Index Basis %",
         titleAccessible = "Index basis percent",
         value = "$formattedBasis%",
-        valueAccessible = "${basis.numberAccessible()} percent",
+        valueAccessible = Localization.format("%@ percent", basis.numberAccessible()),
         modifier = modifier,
     )
 }
@@ -613,7 +617,9 @@ private fun BidSpreadView(
     StatView(
         title = "Bid Ask Spread",
         value = "$formattedSpread%",
-        valueAccessible = spread?.let { "${it.numberAccessible(maxPlaces = 7)} percent" } ?: "Not available",
+        valueAccessible = spread?.let {
+            Localization.format("%@ percent", it.numberAccessible(maxPlaces = 7))
+        } ?: Localization.string("Not available"),
         modifier = modifier,
     )
 }
@@ -628,7 +634,7 @@ private fun LastTradedView(
     StatView(
         title = "Last Traded",
         value = lastTradedText,
-        valueAccessible = if (lastTradedText == "-") "Not available" else lastTradedText,
+        valueAccessible = if (lastTradedText == "-") Localization.string("Not available") else lastTradedText,
         modifier = modifier,
     )
 }
@@ -664,10 +670,11 @@ private fun ExpiryView(
     modifier: Modifier
 ) {
     val expiresIn = expiredAt?.timeUntilExpired ?: "-"
-    val accessibleExpiry = when (expiresIn) {
-        "Expired" -> "expired"
-        "-" -> "Not available"
-        else -> "expires in $expiresIn"
+    val accessibleExpiry = when {
+        expiredAt != null && java.time.Instant.ofEpochSecond(expiredAt.toLong()) <= java.time.Instant.now() ->
+            Localization.string("expired")
+        expiresIn == "-" -> Localization.string("Not available")
+        else -> Localization.format("expires in %@", expiresIn)
     }
 
     StatView(
@@ -698,8 +705,8 @@ private fun ActionButtons(
             )
     ) {
         SecondaryButton(
-            text = "View Exchange",
-            accessibilityLabel = "View exchange",
+            text = Localization.string("View Exchange"),
+            accessibilityLabel = Localization.string("View Exchange"),
             icon = R.drawable.external,
             onClick = {
                 tradeUrl?.let { urlString ->

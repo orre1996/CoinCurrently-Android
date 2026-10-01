@@ -24,6 +24,7 @@ import com.cryptium.coincurrently.sharedui.components.ImageCase
 import com.cryptium.coincurrently.sharedui.components.SingleSelectView
 import com.cryptium.coincurrently.sharedui.components.DragHandle
 import com.cryptium.coincurrently.sharedui.models.SortOption
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.sheets.ModalBottomSheetSystemNavigationBar
 import com.cryptium.coincurrently.sharedui.sheets.rememberModalSheetMaxBodyHeight
 import com.cryptium.coincurrently.sharedui.sheets.ModalSheetBody
@@ -92,11 +93,11 @@ fun ToplistSortBySheet(
 
             items(options) { option ->
                 SingleSelectView(
-                    title = option.title,
-                    subtitle = option.subtitle,
+                    title = Localization.string(option.title),
+                    subtitle = Localization.string(option.subtitle),
                     imageCase = ImageCase.Nothing,
                     isSelected = selectedOption == option,
-                    accessibilityTitle = option.accessibilityTitle,
+                    accessibilityTitle = Localization.string(option.accessibilityTitle),
                     didSelectOption = {
                         coroutineScope.launch {
                             newOptionSelected.invoke(option)

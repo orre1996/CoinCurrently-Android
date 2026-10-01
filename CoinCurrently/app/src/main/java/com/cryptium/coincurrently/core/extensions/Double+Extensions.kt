@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.core.extensions
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.persistence.UserPreferences
 import android.content.Context
 import androidx.compose.material.MaterialTheme
@@ -20,7 +21,6 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelecti
 import java.lang.Integer.min
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
@@ -110,17 +110,35 @@ val Double.timeUntilExpired: String
     get() {
         val expirationDate = Instant.ofEpochSecond(this.toLong()).atZone(ZoneId.systemDefault())
         val now = Instant.now().atZone(ZoneId.systemDefault())
-        if (expirationDate <= now) return "-"
+        if (expirationDate <= now) return Localization.string("Expired")
 
         val months = ChronoUnit.MONTHS.between(now, expirationDate)
         val days = ChronoUnit.DAYS.between(now, expirationDate)
-        val hours = Duration.between(now, expirationDate).toHours()
+        val hours = ChronoUnit.HOURS.between(now, expirationDate)
+        val minutes = ChronoUnit.MINUTES.between(now, expirationDate)
 
         return when {
-            months > 0 -> if (months == 1L) "1 month" else "$months months"
-            days > 0 -> if (days == 1L) "1 day" else "$days days"
-            hours >= 0 -> if (hours <= 1) "1 hour" else "$hours hours"
-            else -> "Less than 1 hour"
+            months > 0 -> if (months == 1L) {
+                Localization.string("1 month")
+            } else {
+                Localization.format("%d months", months)
+            }
+            days > 0 -> if (days == 1L) {
+                Localization.string("1 day")
+            } else {
+                Localization.format("%d days", days)
+            }
+            hours > 0 -> if (hours <= 1) {
+                Localization.string("1 hour")
+            } else {
+                Localization.format("%d hours", hours)
+            }
+            minutes > 0 -> if (minutes <= 1) {
+                Localization.string("1 minute")
+            } else {
+                Localization.format("%d minutes", minutes)
+            }
+            else -> Localization.string("Less than 1 minute")
         }
     }
 
@@ -136,23 +154,23 @@ val Double.timeAgoDisplay: String
         return when {
             self.isAfter(minuteAgo) -> {
                 val diff = ChronoUnit.SECONDS.between(self, now)
-                if (diff == 1L) "1 second ago" else "$diff seconds ago"
+                Localization.format(if (diff == 1L) "%d second ago" else "%d seconds ago", diff)
             }
             self.isAfter(hourAgo) -> {
                 val diff = ChronoUnit.MINUTES.between(self, now)
-                if (diff == 1L) "1 minute ago" else "$diff minutes ago"
+                Localization.format(if (diff == 1L) "%d minute ago" else "%d minutes ago", diff)
             }
             self.isAfter(dayAgo) -> {
                 val diff = ChronoUnit.HOURS.between(self, now)
-                if (diff == 1L) "1 hour ago" else "$diff hours ago"
+                Localization.format(if (diff == 1L) "%d hour ago" else "%d hours ago", diff)
             }
             self.isAfter(weekAgo) -> {
                 val diff = ChronoUnit.DAYS.between(self, now)
-                if (diff == 1L) "1 day ago" else "$diff days ago"
+                Localization.format(if (diff == 1L) "%d day ago" else "%d days ago", diff)
             }
             else -> {
                 val diff = ChronoUnit.WEEKS.between(self, now)
-                if (diff == 1L) "1 week ago" else "$diff weeks ago"
+                Localization.format(if (diff == 1L) "%d week ago" else "%d weeks ago", diff)
             }
         }
     }

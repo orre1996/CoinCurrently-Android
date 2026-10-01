@@ -26,6 +26,7 @@ import com.cryptium.coincurrently.sharedui.components.ImageCase
 import com.cryptium.coincurrently.sharedui.components.SingleSelectView
 import com.cryptium.coincurrently.sharedui.components.DragHandle
 import com.cryptium.coincurrently.features.Market.Treasuries.Models.TreasuryEntityFilter
+import com.cryptium.coincurrently.core.localization.Localization
 import kotlinx.coroutines.launch
 
 @Composable
@@ -79,8 +80,8 @@ fun TreasuryEntityFilterSheet(
 
                 items(TreasuryEntityFilter.entries) { filter ->
                     SingleSelectView(
-                        title = filter.title,
-                        accessibilityTitle = filter.accessibilityTitle,
+                        title = Localization.string(filter.title),
+                        accessibilityTitle = Localization.string(filter.accessibilityTitle),
                         subtitle = null,
                         imageCase = ImageCase.Nothing,
                         isSelected = filter == selectedFilter,

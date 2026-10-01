@@ -33,6 +33,7 @@ import com.cryptium.coincurrently.sharedui.charts.DEFERRED_AFTER_CHART_OVERLAY_T
 import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 
 @Composable
 fun ScrollableTabSelector(
@@ -68,9 +69,13 @@ fun ScrollableTabSelector(
                 if (talkBackEnabled) {
                     Modifier.clearAndSetSemantics {
                         traversalIndex = DEFERRED_AFTER_CHART_OVERLAY_TALKBACK_TRAVERSAL_INDEX
-                        contentDescription = "Page selector. Swipe up or down to change page."
-                        stateDescription =
-                            "Page ${voiceOverTabIndex + 1} of ${tabs.size}, ${tabs.getOrNull(voiceOverTabIndex) ?: ""}."
+                        contentDescription = Localization.string("Page selector. Swipe up or down to change page.")
+                        stateDescription = Localization.format(
+                            "Page %d of %d, %@.",
+                            voiceOverTabIndex + 1,
+                            tabs.size,
+                            Localization.string(tabs.getOrNull(voiceOverTabIndex) ?: ""),
+                        )
                         progressBarRangeInfo = ProgressBarRangeInfo(
                             current = voiceOverTabIndex.toFloat(),
                             range = 0f..tabs.lastIndex.toFloat().coerceAtLeast(0f),
@@ -133,7 +138,7 @@ fun ScrollableTabSelector(
                 Tab(
                     text = {
                         Text(
-                            text = title,
+                            text = Localization.string(title),
                             style = satoshiBold(16),
                             color = if (index == selectedTabIndex) {
                                 MaterialTheme.colors.onSurface

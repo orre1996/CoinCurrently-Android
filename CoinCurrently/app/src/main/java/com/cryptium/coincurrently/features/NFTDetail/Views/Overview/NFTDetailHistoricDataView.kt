@@ -18,6 +18,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceContainerDim
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.primaryBackgroundNoRipple
 import com.cryptium.coincurrently.core.extensions.DateFormat
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.convertStringToDate
 import com.cryptium.coincurrently.core.extensions.daysAgo
 import com.cryptium.coincurrently.core.extensions.satoshiBold
@@ -59,7 +60,7 @@ fun NFTDetailHistoricDataView(
 @Composable
 private fun HeaderView() {
     Text(
-        text = "Historical Data",
+        text = Localization.string("Historical Data"),
         style = satoshiBold(22),
         color = MaterialTheme.colors.onSurfaceDim,
         modifier = Modifier.semantics { heading() },
@@ -164,7 +165,7 @@ private fun AllTimeHighView(
             modifier = sectionModifier(),
         ) {
             Text(
-                text = "All-Time High %",
+                text = Localization.string("All-Time High %"),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceContainerDim,
                 modifier = Modifier.semantics { invisibleToUser() },
@@ -172,7 +173,7 @@ private fun AllTimeHighView(
 
             PriceChangePercentView(
                 change = nftDetail?.ath_change_percentage?.usd,
-                accessibleTimeframe = "Change since all time high:",
+                accessibleTimeframe = "Change since all time high: ",
                 size = ChangeSize.MEDIUM,
                 isDownloading = nftDetail == null
             )
@@ -186,11 +187,11 @@ private fun AllTimeHighView(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             modifier = sectionModifier()
                 .semantics(mergeDescendants = true) {
-                    contentDescription = "Days since all time high: $daysSinceAth"
+                    contentDescription = "${Localization.string("Days since all time high: ")}$daysSinceAth"
                 },
         ) {
             Text(
-                text = "Since All-Time High",
+                text = Localization.string("Since All-Time High"),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceContainerDim,
                 modifier = Modifier.semantics { invisibleToUser() },

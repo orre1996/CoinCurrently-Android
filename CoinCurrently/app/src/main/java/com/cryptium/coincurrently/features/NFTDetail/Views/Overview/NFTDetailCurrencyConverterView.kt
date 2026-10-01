@@ -30,6 +30,7 @@ import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.inputs.NumericInputField
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
@@ -98,7 +99,7 @@ fun NFTDetailCurrencyConverterView(
 @Composable
 private fun HeaderView() {
     Text(
-        text = "Currency Converter",
+        text = Localization.string("Currency Converter"),
         style = satoshiBold(22),
         color = MaterialTheme.colors.onSurfaceDim,
         modifier = Modifier.semantics { heading() },

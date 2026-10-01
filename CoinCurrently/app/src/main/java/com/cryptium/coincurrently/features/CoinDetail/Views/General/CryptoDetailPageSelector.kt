@@ -31,6 +31,7 @@ import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import kotlinx.coroutines.launch
@@ -73,9 +74,13 @@ fun CryptoDetailPageSelector(
             .then(
                 if (talkBackEnabled) {
                     Modifier.clearAndSetSemantics {
-                        contentDescription = "Page selector. Swipe up or down to change page."
-                        stateDescription =
-                            "Page ${voiceOverPageIndex + 1} of ${tabs.size}, ${tabs.getOrNull(voiceOverPageIndex) ?: ""}."
+                        contentDescription = Localization.string("Page selector. Swipe up or down to change page.")
+                        stateDescription = Localization.format(
+                            "Page %d of %d, %@.",
+                            voiceOverPageIndex + 1,
+                            tabs.size,
+                            Localization.string(tabs.getOrNull(voiceOverPageIndex) ?: ""),
+                        )
                         progressBarRangeInfo = ProgressBarRangeInfo(
                             current = voiceOverPageIndex.toFloat(),
                             range = 0f..tabs.lastIndex.toFloat().coerceAtLeast(0f),
@@ -140,7 +145,7 @@ fun CryptoDetailPageSelector(
                 Tab(
                     text = {
                         Text(
-                            text = title,
+                            text = Localization.string(title),
                             style = satoshiBold(16),
                             color = if (index == selectedPageIndex) MaterialTheme.colors.onSurface else MaterialTheme.colors.onSurfaceDimmer,
                         )

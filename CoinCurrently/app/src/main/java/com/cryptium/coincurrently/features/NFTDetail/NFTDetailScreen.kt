@@ -1,5 +1,6 @@
 package com.cryptium.coincurrently.features.NFTDetail
 import com.cryptium.coincurrently.core.persistence.UserPreferences
+import com.cryptium.coincurrently.core.localization.Localization
 import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -537,7 +538,7 @@ private fun ShareButton(
     }) {
         Image(
             painter = painterResource(id = R.drawable.share),
-            contentDescription = "Share",
+            contentDescription = Localization.string("Share"),
             colorFilter = ColorFilter.tint(
                 MaterialTheme.colors.onSurface
             ),

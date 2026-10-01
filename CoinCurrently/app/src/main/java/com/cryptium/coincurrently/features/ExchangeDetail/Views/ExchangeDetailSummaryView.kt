@@ -24,6 +24,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.primaryBackgroundNoRipple
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.trustColor
 import com.cryptium.coincurrently.core.networking.ResponseModels.ExchangeResponse
 
@@ -108,16 +109,17 @@ private fun StatItem(
     isLoading: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val localizedLabel = Localization.string(label)
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalAlignment = Alignment.Start,
         modifier = modifier
             .semantics(mergeDescendants = true) {
-                contentDescription = "$label: $value"
+                contentDescription = "$localizedLabel: $value"
             },
     ) {
         Text(
-            text = label,
+            text = localizedLabel,
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() },
@@ -145,11 +147,11 @@ private fun TrustScoreItem(
         horizontalAlignment = Alignment.Start,
         modifier = modifier
             .semantics(mergeDescendants = true) {
-                contentDescription = "Trust score: ${trustScore ?: 0} of 10"
+                contentDescription = "${Localization.string("Trust score: ")}${Localization.format("%d of 10", trustScore ?: 0)}"
             },
     ) {
         Text(
-            text = "Trust Score",
+            text = Localization.string("Trust Score"),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier.semantics { invisibleToUser() },

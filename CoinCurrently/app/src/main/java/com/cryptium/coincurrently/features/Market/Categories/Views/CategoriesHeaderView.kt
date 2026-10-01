@@ -17,6 +17,7 @@ import com.cryptium.coincurrently.sharedui.modifiers.MinimumTextSize
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.surface
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 
 @Composable
@@ -42,7 +43,7 @@ fun CategoriesHeaderView(
             )
     ) {
         Text(
-            text = if (isHorizontal) "Sector" else "Sector / Market Cap",
+            text = Localization.string(if (isHorizontal) "Sector" else "Sector / Market Cap"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier
@@ -51,7 +52,7 @@ fun CategoriesHeaderView(
 
         if (isHorizontal) {
             Text(
-                text = "Market Cap",
+                text = Localization.string("Market Cap"),
                 style = satoshiMedium(14),
                 color = MaterialTheme.colors.onSurfaceDim
             )
@@ -64,7 +65,7 @@ fun CategoriesHeaderView(
             alignment = Alignment.CenterEnd
         ) {
             Text(
-                text = "24h %",
+                text = Localization.string("24h %"),
                 style = satoshiMedium(14),
                 color = MaterialTheme.colors.onSurfaceDim
             )

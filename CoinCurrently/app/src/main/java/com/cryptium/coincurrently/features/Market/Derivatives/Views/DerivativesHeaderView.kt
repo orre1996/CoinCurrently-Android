@@ -17,6 +17,7 @@ import com.cryptium.coincurrently.sharedui.modifiers.MinimumTextSize
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.surface
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 
 @Composable
@@ -40,7 +41,7 @@ fun DerivativesHeaderView(
             )
     ) {
         Text(
-            text = if (isHorizontal) "Exchange" else "Exchange / Open Interest",
+            text = Localization.string(if (isHorizontal) "Exchange" else "Exchange / Open Interest"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier
@@ -49,7 +50,7 @@ fun DerivativesHeaderView(
 
         if (isHorizontal) {
             Text(
-                text = "Open Interest",
+                text = Localization.string("Open Interest"),
                 style = satoshiMedium(14),
                 color = MaterialTheme.colors.onSurfaceDim,
                 maxLines = 1,
@@ -57,7 +58,7 @@ fun DerivativesHeaderView(
         }
 
         Text(
-            text = "24h Volume",
+            text = Localization.string("24h Volume"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             maxLines = if (isHorizontal) 1 else Int.MAX_VALUE,

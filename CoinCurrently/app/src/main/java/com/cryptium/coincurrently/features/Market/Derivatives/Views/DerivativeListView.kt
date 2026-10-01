@@ -24,6 +24,7 @@ import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.Derivative
@@ -44,15 +45,15 @@ fun DerivativeListItem(
     val totalVolume = (derivative?.trade_volume_24h_btc?.toDouble() ?: 0.0) * (bitcoinPrice ?: 0.0)
     val formattedVolume = totalVolume.formatCurrency()
     val isLoadingVolume = derivative == null || bitcoinPrice == null
-    val accessibilityLabelText = buildString {
+    val accessibilityLabelText = buildList {
         if (listIndex != null && listCount != null) {
-            append("Derivative ${listIndex + 1} of $listCount, ${derivative?.name ?: ""}. ")
+            add(Localization.format("Derivative %d of %d, %@", listIndex + 1, listCount, derivative?.name ?: ""))
         } else {
-            append("${derivative?.name ?: ""}. ")
+            add(derivative?.name ?: "")
         }
-        append("Open interest: ${totalInterest.formatCurrency(accessible = true)}. ")
-        append("24 hour volume: ${totalVolume.formatCurrency(accessible = true)}")
-    }
+        add(Localization.format("Open interest: %@", totalInterest.formatCurrency(accessible = true)))
+        add(Localization.format("24 hour volume: %@", totalVolume.formatCurrency(accessible = true)))
+    }.joinToString(" - ")
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -60,7 +61,7 @@ fun DerivativeListItem(
         modifier = Modifier
             .semantics(mergeDescendants = true) {
                 contentDescription = accessibilityLabelText
-                onClick(label = "view ${derivative?.name ?: ""} details", action = {
+                onClick(label = Localization.format("Double tap for %@ details", derivative?.name ?: ""), action = {
                     derivative?.let { openDerivativeDetail(it) }
                     true
                 })
@@ -162,7 +163,7 @@ private fun OpenInterestView(
     isLoading: Boolean,
 ) {
     MinimumTextSize(
-        text = "24h Volume",
+        text = Localization.string("24h Volume"),
         font = satoshiMedium(14),
         alignment = Alignment.CenterEnd
     ) {
@@ -182,7 +183,7 @@ private fun VolumeView(
     isLoading: Boolean,
 ) {
     MinimumTextSize(
-        text = "24h Volume",
+        text = Localization.string("24h Volume"),
         font = satoshiMedium(14),
         alignment = Alignment.CenterEnd
     ) {

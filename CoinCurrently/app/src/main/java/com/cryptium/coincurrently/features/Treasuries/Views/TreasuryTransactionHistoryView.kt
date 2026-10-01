@@ -20,17 +20,16 @@ import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.sharedui.components.CachedUrlImage
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
-import com.cryptium.coincurrently.core.extensions.accessibleLongDateDescription
 import com.cryptium.coincurrently.core.extensions.changeColor
 import com.cryptium.coincurrently.core.extensions.formatCurrency
-import com.cryptium.coincurrently.core.extensions.formatDate
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.buttons.SecondaryButton
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.sharedui.modifiers.MinimumTextSize
-import com.cryptium.coincurrently.core.extensions.DateFormat
+import com.cryptium.coincurrently.core.localization.AppLanguageState
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 import com.cryptium.coincurrently.core.networking.ResponseModels.TreasuryTransaction
@@ -50,9 +49,14 @@ fun TreasuryTransactionHistoryView(
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
     ) {
+        val holdingTitle = if (filterButtonTitle == "All Holdings") {
+            Localization.string(filterButtonTitle)
+        } else {
+            filterButtonTitle
+        }
         SecondaryButton(
-            text = filterButtonTitle,
-            accessibilityLabel = "Holding, currently selected: $filterButtonTitle",
+            text = holdingTitle,
+            accessibilityLabel = Localization.format("Holding, currently selected: %@", holdingTitle),
             icon = R.drawable.chevron_down,
             onClick = showHoldingFilter,
             modifier = Modifier.padding(bottom = 24.dp),
@@ -98,20 +102,20 @@ fun TreasuryTransactionHistoryHeaderView() {
             alignment = Alignment.CenterStart
         ) {
             Text(
-                text = "Date",
+                text = Localization.string("Date"),
                 style = satoshiMedium(14),
                 color = MaterialTheme.colors.onSurfaceDim,
             )
         }
 
         Text(
-            text = "Coin",
+            text = Localization.string("Coin"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
         )
 
         Text(
-            text = "Balance",
+            text = Localization.string("Balance"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             textAlign = TextAlign.End,
@@ -128,11 +132,14 @@ fun TreasuryTransactionItemView(
 ) {
     val holdingsCurrency = holdingsCurrency(coin, transaction)
     val accessibilityHoldingsCurrency = accessibleHoldingsCurrency(coin, transaction)
+    val dateLocale = AppLanguageState.preference.resolve().locale
     val formattedDate = transaction?.date?.let { timestamp ->
-        java.util.Date(timestamp.toLong()).formatDate(DateFormat.MMMdyyyy)
+        java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM, dateLocale)
+            .format(java.util.Date(timestamp.toLong()))
     } ?: "000000"
     val accessibilityDate = transaction?.date?.let { timestamp ->
-        java.util.Date(timestamp.toLong()).accessibleLongDateDescription()
+        java.text.DateFormat.getDateInstance(java.text.DateFormat.FULL, dateLocale)
+            .format(java.util.Date(timestamp.toLong()))
     } ?: formattedDate
     val coinName = coin?.name ?: transaction?.coin_id?.replaceFirstChar { it.uppercase() } ?: "00000"
     val balanceText = (transaction?.holding_balance ?: 843_738.0).formatCurrency(
@@ -153,12 +160,12 @@ fun TreasuryTransactionItemView(
     val netChangeColor = netChange.changeColor()
 
     val accessibilityLabel = if (transaction == null) {
-        "Loading transaction"
+        Localization.string("Loading transaction")
     } else {
         buildList {
             add(accessibilityDate)
             transaction.type?.let { type ->
-                add(if (type == TreasuryTransactionType.buy) "Buy" else "Sell")
+                add(Localization.string(if (type == TreasuryTransactionType.buy) "Buy" else "Sell"))
             }
             add(coinName)
             val change = transaction.holding_net_change ?: 0.0
@@ -169,17 +176,20 @@ fun TreasuryTransactionItemView(
             )
             add(
                 when {
-                    change > 0 -> "Change up $changeAmount"
-                    change < 0 -> "Change down $changeAmount"
-                    else -> "Change $changeAmount"
+                    change > 0 -> Localization.format("Change up %@", changeAmount)
+                    change < 0 -> Localization.format("Change down %@", changeAmount)
+                    else -> Localization.format("Change %@", changeAmount)
                 }
             )
             add(
-                "Balance: ${(transaction.holding_balance ?: 0.0).formatCurrency(
-                    threshold = FormattingThreshold.NONE,
-                    currency = accessibilityHoldingsCurrency,
-                    accessible = true,
-                )}"
+                Localization.format(
+                    "Balance: %@",
+                    (transaction.holding_balance ?: 0.0).formatCurrency(
+                        threshold = FormattingThreshold.NONE,
+                        currency = accessibilityHoldingsCurrency,
+                        accessible = true,
+                    ),
+                )
             )
         }.joinToString(". ")
     }

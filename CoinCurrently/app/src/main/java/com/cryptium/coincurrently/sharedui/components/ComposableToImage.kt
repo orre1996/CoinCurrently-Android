@@ -33,11 +33,23 @@ fun appShareMessage(): String =
         Localization.format("Android: %@", APP_SHARE_ANDROID_URL),
     ).joinToString("\n")
 
-fun assetShareMessage(trackedLabel: String, othersWord: String = "coins"): String =
-    "Track $trackedLabel and other $othersWord in real time with CoinCurrently.\n" +
+fun assetShareMessage(trackedLabel: String, othersWord: String = "coins"): String {
+    if (othersWord == "NFTs") {
+        return listOf(
+            Localization.format(
+                "Track %@ and other NFTs in real time with CoinCurrently.",
+                trackedLabel,
+            ),
+            Localization.string("Download the app for free."),
+            Localization.format("iOS: %@", APP_SHARE_IOS_URL),
+            Localization.format("Android: %@", APP_SHARE_ANDROID_URL),
+        ).joinToString("\n")
+    }
+    return "Track $trackedLabel and other $othersWord in real time with CoinCurrently.\n" +
         "Download the app for free.\n" +
         "iOS: $APP_SHARE_IOS_URL\n" +
         "Android: $APP_SHARE_ANDROID_URL"
+}
 
 private val softwareBitmapCaptureImageLoaderLock = Any()
 private var softwareBitmapCaptureImageLoader: ImageLoader? = null

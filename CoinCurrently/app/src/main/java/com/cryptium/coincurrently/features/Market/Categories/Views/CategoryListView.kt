@@ -27,6 +27,7 @@ import com.cryptium.coincurrently.core.extensions.directionAccessible
 import com.cryptium.coincurrently.core.extensions.formatCurrency
 import com.cryptium.coincurrently.core.extensions.numberAccessible
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoCategory
 
@@ -44,15 +45,22 @@ fun CategoryListItem(
     val safeChange = if (change?.isInfinite() == true) 0.0 else change
     val decimals = safeChange?.changePercentDecimalPoints ?: 2
     val accessibleChange = safeChange?.numberAccessible(maxPlaces = decimals) ?: ""
-    val accessibilityLabelText = buildString {
+    val direction = change?.directionAccessible ?: ""
+    val accessibilityLabelText = buildList {
         if (listIndex != null && listCount != null) {
-            append("Category ${listIndex + 1} of $listCount. ${category?.name ?: ""}. ")
+            add(Localization.format("Category %d of %d, %@", listIndex + 1, listCount, category?.name ?: ""))
         } else {
-            append("${category?.name ?: ""}. ")
+            add(category?.name ?: "")
         }
-        append("Market cap: ${marketCap.formatCurrency(accessible = true)}. ")
-        append("24 hour price change: ${change?.directionAccessible ?: ""} $accessibleChange percent")
-    }
+        add(Localization.format("Market cap: %@", marketCap.formatCurrency(accessible = true)))
+        add(
+            Localization.format(
+                "24 hour price change: %@ %@ percent",
+                if (direction.isEmpty()) "" else Localization.string(direction),
+                accessibleChange,
+            )
+        )
+    }.joinToString(" - ")
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -60,7 +68,7 @@ fun CategoryListItem(
         modifier = Modifier
             .semantics(mergeDescendants = true) {
                 contentDescription = accessibilityLabelText
-                onClick(label = "view ${category?.name ?: ""} details", action = {
+                onClick(label = Localization.format("Double tap for %@ details", category?.name ?: ""), action = {
                     category?.let { openCategoryDetail(it) }
                     true
                 })
@@ -168,7 +176,7 @@ private fun MarketCapView(
     val text = marketCap.formatCurrency()
 
     MinimumTextSize(
-        text = "Market Cap",
+        text = Localization.string("Market Cap"),
         font = satoshiBold(16),
         alignment = Alignment.CenterEnd
     ) {

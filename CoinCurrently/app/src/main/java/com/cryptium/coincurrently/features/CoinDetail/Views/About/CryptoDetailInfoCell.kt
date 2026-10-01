@@ -36,6 +36,7 @@ import com.cryptium.coincurrently.sharedui.theme.outlineVariant
 import com.cryptium.coincurrently.sharedui.theme.primaryBackgroundNoRipple
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 
 
@@ -52,7 +53,7 @@ fun CryptoDetailInfoCell(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
-            text = title ?: "00000000",
+            text = title?.let { Localization.string(it) } ?: "00000000",
             style = satoshiBold(22),
             color = MaterialTheme.colors.onSurface,
             modifier = Modifier

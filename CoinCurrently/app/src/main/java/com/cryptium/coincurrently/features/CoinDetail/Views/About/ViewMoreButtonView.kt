@@ -18,6 +18,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceContainer
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.core.analytics.ViewMoreCollapsed
@@ -34,13 +35,14 @@ fun ViewMoreButtonView(
         modifier = Modifier
             .fillMaxWidth()
     ) {
+        val label = Localization.string(if (isExpanded.value) "View Less" else "View More")
         Text(
-            text = if (isExpanded.value) "View Less" else "View More",
+            text = label,
             style = satoshiBold(18),
             color = MaterialTheme.colors.onSurfaceContainer,
             modifier = Modifier
                 .semantics {
-                    contentDescription = if (isExpanded.value) "View less" else "View more"
+                    contentDescription = label
                     role = Role.Button
                 }
                 .clickable {

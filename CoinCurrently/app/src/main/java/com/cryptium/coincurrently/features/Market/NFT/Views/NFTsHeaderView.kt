@@ -18,6 +18,7 @@ import com.cryptium.coincurrently.sharedui.modifiers.MinimumTextSize
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.surface
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 
 @Composable
@@ -43,7 +44,7 @@ fun NFTHeaderView(
             )
     ) {
         Text(
-            text = if (isHorizontal) "Collection" else "Collection / Floor Price",
+            text = Localization.string(if (isHorizontal) "Collection" else "Collection / Floor Price"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = if (isHorizontal) {
@@ -55,7 +56,7 @@ fun NFTHeaderView(
 
         if (isHorizontal) {
             Text(
-                text = "Floor Price",
+                text = Localization.string("Floor Price"),
                 style = satoshiMedium(14),
                 color = MaterialTheme.colors.onSurfaceDim,
                 textAlign = TextAlign.End,
@@ -72,7 +73,7 @@ fun NFTHeaderView(
             alignment = Alignment.CenterEnd
         ) {
             Text(
-                text = "24h %",
+                text = Localization.string("24h %"),
                 style = satoshiMedium(14),
                 color = MaterialTheme.colors.onSurfaceDim
             )

@@ -23,6 +23,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.extensions.formatCurrency
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.trustColor
@@ -45,17 +46,22 @@ fun ExchangeListView(
     val formattedVolume = totalVolume.formatCurrency(
         threshold = if (isHorizontal) FormattingThreshold.NONE else FormattingThreshold.MILLION
     )
-    val accessibilityLabelText = buildString {
+    val accessibilityLabelText = buildList {
         if (listIndex != null && listCount != null) {
-            append("Exchange ${listIndex + 1} of $listCount, ${exchange?.name ?: ""}. ")
+            add(Localization.format("Exchange %d of %d, %@", listIndex + 1, listCount, exchange?.name ?: ""))
         } else {
-            append("${exchange?.name ?: ""}. ")
+            add(exchange?.name ?: "")
         }
-        append("24 hour volume: ${totalVolume.formatCurrency(threshold = FormattingThreshold.NONE, accessible = true)}. ")
+        add(
+            Localization.format(
+                "24 hour volume: %@",
+                totalVolume.formatCurrency(threshold = FormattingThreshold.NONE, accessible = true),
+            )
+        )
         exchange?.trust_score?.let {
-            append("Trust score: $it of 10")
+            add(Localization.format("Trust score: %d of 10", it))
         }
-    }
+    }.joinToString(". ")
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -63,7 +69,7 @@ fun ExchangeListView(
         modifier = Modifier
             .semantics(mergeDescendants = true) {
                 contentDescription = accessibilityLabelText
-                onClick(label = "view ${exchange?.name ?: ""} details", action = {
+                onClick(label = Localization.format("Double tap for %@ details", exchange?.name ?: ""), action = {
                     exchange?.let { exchangePressed(it) }
                     true
                 })

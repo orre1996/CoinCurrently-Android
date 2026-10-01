@@ -42,6 +42,7 @@ import com.cryptium.coincurrently.features.Market.Treasuries.Sheets.TreasuryCoin
 import com.cryptium.coincurrently.features.Market.Treasuries.Sheets.TreasuryEntityFilterSheet
 import com.cryptium.coincurrently.features.Market.Treasuries.ViewModels.TreasuriesViewModel
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.analytics.Navigate
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.core.analytics.ScrollToTopPressed
@@ -234,15 +235,18 @@ private fun FilterButtons(
             .padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 8.dp),
     ) {
         SecondaryButton(
-            text = selectedEntityFilter.title,
-            accessibilityLabel = "Type, currently selected: ${selectedEntityFilter.accessibilityTitle}",
+            text = Localization.string(selectedEntityFilter.title),
+            accessibilityLabel = Localization.format(
+                "Type, currently selected: %@",
+                Localization.string(selectedEntityFilter.accessibilityTitle),
+            ),
             icon = R.drawable.chevron_down,
             onClick = onEntityFilterClick,
         )
 
         SecondaryButton(
             text = selectedCoinName,
-            accessibilityLabel = "Coin, currently selected: $selectedCoinName",
+            accessibilityLabel = Localization.format("Coin, currently selected: %@", selectedCoinName),
             icon = R.drawable.chevron_down,
             isEnabled = hasCoins,
             onClick = onCoinClick,
@@ -316,9 +320,9 @@ private fun LazyListScope.realList(
 
 private fun emptyTitle(viewModel: TreasuriesViewModel): String {
     return when (viewModel.selectedEntityFilter) {
-        TreasuryEntityFilter.All -> "No treasuries yet"
-        TreasuryEntityFilter.Companies -> "No company treasuries yet"
-        TreasuryEntityFilter.Governments -> "No government treasuries yet"
+        TreasuryEntityFilter.All -> Localization.string("No treasuries yet")
+        TreasuryEntityFilter.Companies -> Localization.string("No company treasuries yet")
+        TreasuryEntityFilter.Governments -> Localization.string("No government treasuries yet")
     }
 }
 
@@ -327,8 +331,8 @@ private fun emptySubTitle(viewModel: TreasuriesViewModel): String {
         ?: viewModel.selectedCoinId.replaceFirstChar { it.uppercase() }
 
     return when (viewModel.selectedEntityFilter) {
-        TreasuryEntityFilter.All -> "No one currently holds $coinName."
-        TreasuryEntityFilter.Companies -> "No companies currently hold $coinName."
-        TreasuryEntityFilter.Governments -> "No governments currently hold $coinName."
+        TreasuryEntityFilter.All -> Localization.format("No one currently holds %@.", coinName)
+        TreasuryEntityFilter.Companies -> Localization.format("No companies currently hold %@.", coinName)
+        TreasuryEntityFilter.Governments -> Localization.format("No governments currently hold %@.", coinName)
     }
 }

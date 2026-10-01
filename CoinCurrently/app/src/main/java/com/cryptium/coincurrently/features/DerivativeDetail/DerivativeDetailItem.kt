@@ -32,6 +32,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.theme.outlineVariant
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.core.extensions.formatCurrency
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import com.cryptium.coincurrently.core.extensions.symbolAccessible
@@ -60,24 +61,42 @@ fun DerivativeDetailItem(
     } else {
         openInterest.formatCurrency()
     }
-    val typeLabel = if (isFutures) "Future" else "Perpetual"
+    val typeLabel = Localization.string(if (isFutures) "Future" else "Perpetual")
     val symbol = derivativeDetail?.symbol ?: ""
-    val expiresIn = derivativeDetail?.expired_at?.timeUntilExpired
+    val expiredAt = derivativeDetail?.expired_at
+    val expiresIn = expiredAt?.timeUntilExpired
+    val isExpired = expiredAt != null &&
+        java.time.Instant.ofEpochSecond(expiredAt.toLong()) <= java.time.Instant.now()
     val accessibilityLabelText = buildString {
         if (listIndex != null && listCount != null) {
-            append("$typeLabel ${listIndex + 1} of $listCount. Pair: ${symbol.symbolAccessible}. ")
+            append(
+                Localization.format(
+                    "%1\$@ %2\$d of %3\$d, Symbol: %4\$@",
+                    typeLabel,
+                    listIndex + 1,
+                    listCount,
+                    symbol.symbolAccessible,
+                )
+            )
         } else {
-            append("Pair: ${symbol.symbolAccessible}. ")
+            append("Pair: ${symbol.symbolAccessible}")
         }
-        if (isFutures && expiresIn != null) {
-            if (expiresIn == "Expired") {
-                append("expired. ")
-            } else {
-                append("expires in $expiresIn. ")
+        if (isFutures && expiredAt != null) {
+            if (isExpired) {
+                append(Localization.string(", expired"))
+            } else if (expiresIn != null) {
+                append(Localization.format(", expires in %@", expiresIn))
             }
         }
-        append("Price: ${lastPrice.formatCurrency(threshold = FormattingThreshold.NONE, accessible = true)}. ")
-        append("Open interest: ${openInterest.formatCurrency(accessible = true)}")
+        append(". ")
+        append(
+            Localization.format(
+                "Price: %@",
+                lastPrice.formatCurrency(threshold = FormattingThreshold.NONE, accessible = true),
+            )
+        )
+        append(". ")
+        append(Localization.format("Open interest: %@", openInterest.formatCurrency(accessible = true)))
     }
 
     Row(
@@ -217,7 +236,7 @@ private fun OpenInterestColumnView(
     isLoading: Boolean,
 ) {
     MinimumTextSize(
-        text = "Open Interest",
+        text = Localization.string("Open Interest"),
         font = satoshiMedium(14),
         alignment = Alignment.CenterEnd,
         modifier = Modifier

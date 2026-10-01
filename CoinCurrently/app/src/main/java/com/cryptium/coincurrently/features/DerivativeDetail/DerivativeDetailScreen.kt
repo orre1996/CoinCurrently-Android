@@ -32,6 +32,7 @@ import com.cryptium.coincurrently.sharedui.components.tabPageTalkBackTraversal
 import com.cryptium.coincurrently.sharedui.buttons.ScrollToTopButton
 import com.cryptium.coincurrently.sharedui.buttons.SecondaryButton
 import com.cryptium.coincurrently.core.extensions.formatCurrency
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.extensions.isTablet
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.extensions.satoshiBold
@@ -210,8 +211,11 @@ fun DerivativeDetailScreen(
 
                     item {
                         SecondaryButton(
-                            text = viewModel.selectedSortOption.title,
-                            accessibilityLabel = "Sort. currently selected: ${viewModel.selectedSortOption.accessibilityTitle}",
+                            text = Localization.string(viewModel.selectedSortOption.title),
+                            accessibilityLabel = Localization.format(
+                                "Sort, currently selected: %@",
+                                Localization.string(viewModel.selectedSortOption.accessibilityTitle),
+                            ),
                             icon = R.drawable.sort,
                             onClick = {
                                 AnalyticsManager.log(
@@ -333,11 +337,11 @@ private fun TradingVolumeView(
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .semantics(mergeDescendants = true) {
-                contentDescription = "24 hour volume: $valueAccessible"
+                contentDescription = Localization.format("24 hour volume: %@", valueAccessible)
             }
     ) {
         Text(
-            text = "24h Volume",
+            text = Localization.string("24h Volume"),
             style = satoshiBold(18),
             color = MaterialTheme.colors.onSurfaceDimmer,
             modifier = Modifier.semantics { invisibleToUser() }
@@ -385,11 +389,11 @@ private fun SummaryView(
             modifier = Modifier
                 .weight(1f)
                 .semantics(mergeDescendants = true) {
-                    contentDescription = "24 hour open interest: $openInterestAccessible"
+                    contentDescription = "${Localization.string("24 hour open interest")}: $openInterestAccessible"
                 }
         ) {
             Text(
-                text = "24h Open Interest",
+                text = Localization.string("24h Open Interest"),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceDim,
                 modifier = Modifier.semantics { invisibleToUser() }
@@ -417,7 +421,7 @@ private fun SummaryView(
                 .semantics(mergeDescendants = true) {}
         ) {
             Text(
-                text = "Pairs",
+                text = Localization.string("Pairs"),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceDim
             )
@@ -452,7 +456,7 @@ private fun SectionHeader(
             )
     ) {
         Text(
-            text = if (currentPage == 0) "Symbol" else "Contract",
+            text = Localization.string(if (currentPage == 0) "Symbol" else "Contract"),
             style = satoshiMedium(14),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = Modifier
@@ -461,14 +465,14 @@ private fun SectionHeader(
 
         if (isHorizontal) {
             Text(
-                text = "Price",
+                text = Localization.string("Price"),
                 style = satoshiMedium(14),
                 color = MaterialTheme.colors.onSurfaceDim,
                 maxLines = 1
             )
 
             Text(
-                text = "Open Interest",
+                text = Localization.string("Open Interest"),
                 style = satoshiMedium(14),
                 color = MaterialTheme.colors.onSurfaceDim,
                 maxLines = 1,
@@ -476,7 +480,7 @@ private fun SectionHeader(
             )
         } else {
             Text(
-                text = "Price / Open Interest",
+                text = Localization.string("Price / Open Interest"),
                 style = satoshiMedium(14),
                 color = MaterialTheme.colors.onSurfaceDim,
                 textAlign = TextAlign.End,

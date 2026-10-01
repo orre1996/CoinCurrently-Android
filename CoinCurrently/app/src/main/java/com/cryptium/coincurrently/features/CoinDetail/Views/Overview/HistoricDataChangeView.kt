@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 
@@ -27,7 +28,7 @@ fun HistoricDataChangeView(
         modifier = modifier
     ) {
         Text(
-            text = "$timeframe %",
+            text = "${Localization.string(timeframe)} %",
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceDim,
             modifier = if (talkBackEnabled) {
@@ -39,7 +40,7 @@ fun HistoricDataChangeView(
 
         PriceChangePercentView(
             change = change,
-            accessibleTimeframe = timeframe.lowercase(),
+            accessibleTimeframe = timeframe,
             size = ChangeSize.MEDIUM,
             isDownloading = change == null,
             tabPageTalkBack = true,

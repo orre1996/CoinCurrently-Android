@@ -50,6 +50,7 @@ import com.cryptium.coincurrently.core.extensions.roundTo
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.sharedui.charts.hideFromTalkBackWhenEnabled
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.NFTDetail
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
@@ -133,7 +134,7 @@ private fun RangeView(
     )
     val lowAccessible = accessibleRangePrice(prices?.minOrNull(), rangeCurrency)
     val highAccessible = accessibleRangePrice(prices?.maxOrNull(), rangeCurrency)
-    val rangeAccessibilityLabel = "${timeChart.rangeTitle}. From $lowAccessible to $highAccessible"
+    val rangeAccessibilityLabel = "${timeChart.rangeTitle}. ${Localization.format("From %@", lowAccessible)} ${Localization.format("to %@", highAccessible)}"
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -235,7 +236,7 @@ private fun RangeProgressBar(
 @Composable
 private fun HeaderView() {
     Text(
-        text = "Statistics",
+        text = Localization.string("Statistics"),
         style = satoshiBold(22),
         color = MaterialTheme.colors.onSurfaceDim,
         modifier = Modifier.semantics { heading() },
@@ -268,9 +269,9 @@ private fun MarketCapView(
             },
             isLoading = nftDetailInfo == null,
             accessibilityLabel = if (nftDetailInfo?.market_cap_rank == null) {
-                "Market Cap Rank. No rank"
+                "${Localization.string("Market Cap Rank")}. No rank"
             } else {
-                "Market Cap Rank. ${nftDetailInfo.market_cap_rank}"
+                "${Localization.string("Market Cap Rank")}. ${nftDetailInfo.market_cap_rank}"
             },
             modifier = sectionModifier(),
         )
@@ -427,11 +428,11 @@ private fun StatItem(
         horizontalAlignment = Alignment.Start,
         modifier = modifier
             .semantics(mergeDescendants = true) {
-                contentDescription = accessibilityLabel ?: "$label. $value"
+                contentDescription = accessibilityLabel ?: "${Localization.string(label)}. $value"
             },
     ) {
         Text(
-            text = label,
+            text = Localization.string(label),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceContainerDim,
             modifier = Modifier.semantics { invisibleToUser() },
@@ -458,7 +459,7 @@ private fun shortCurrencyAccessibilityLabel(
         currency = currency,
         accessible = true,
     ) ?: ""
-    return "$title, $formattedValue"
+    return Localization.format("%@, %@", Localization.string(title), formattedValue)
 }
 
 private fun accessibleRangePrice(

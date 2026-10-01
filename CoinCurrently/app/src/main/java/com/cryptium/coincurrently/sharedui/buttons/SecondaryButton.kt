@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.sharedui.buttons
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.modifiers.imageSize
 
 import androidx.compose.foundation.Image
@@ -81,6 +82,9 @@ fun SecondaryButton(
                 size = 22.dp,
                 fill = false,
                 color = MaterialTheme.colors.onSurface,
+                modifier = Modifier.semantics {
+                    contentDescription = Localization.string("Loading")
+                },
             )
         } else {
             Row(

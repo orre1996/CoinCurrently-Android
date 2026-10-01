@@ -27,6 +27,7 @@ import com.cryptium.coincurrently.sharedui.components.SingleSelectView
 import com.cryptium.coincurrently.sharedui.components.DragHandle
 import kotlinx.coroutines.launch
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
+import com.cryptium.coincurrently.core.localization.Localization
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -80,8 +81,8 @@ fun TreasuryHoldingFilterSheet(
 
                 item {
                     SingleSelectView(
-                        title = "All Holdings",
-                        accessibilityTitle = "All Holdings",
+                        title = Localization.string("All Holdings"),
+                        accessibilityTitle = Localization.string("All Holdings"),
                         subtitle = null,
                         imageCase = ImageCase.Nothing,
                         isSelected = selectedCoinId == null,
