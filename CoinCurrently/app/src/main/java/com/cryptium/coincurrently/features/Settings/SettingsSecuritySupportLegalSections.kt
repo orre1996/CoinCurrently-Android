@@ -61,8 +61,8 @@ internal fun SecuritySection(
                 .primaryBackgroundNoRipple()
         ) {
             SettingsCellSwitch(
-                title = "Face ID / Touch ID",
-                subTitle = "Use Face ID / Touch ID to unlock app",
+                title = "Biometric authentication",
+                subTitle = "Use biometrics to unlock the app",
                 isOn = isBiometricAuthEnabled,
             ) {
                 toggleBiometricAuth.invoke()

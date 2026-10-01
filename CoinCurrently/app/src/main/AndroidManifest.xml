@@ -209,17 +209,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".widgets.config.NewsCategoryConfigActivity"
-            android:exported="true"
-            android:theme="@style/WidgetConfigTheme"
-            android:taskAffinity=""
-            android:excludeFromRecents="true"
-            android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".app.MainActivity"
             android:configChanges="uiMode|orientation|screenSize|screenLayout|smallestScreenSize"
             android:exported="true"

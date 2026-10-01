@@ -30,6 +30,7 @@ import com.cryptium.coincurrently.core.extensions.trustColor
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.ExchangeList
+import com.cryptium.coincurrently.sharedui.modifiers.MinimumTextSize
 
 @Composable
 fun ExchangeListView(
@@ -181,11 +182,17 @@ private fun TrustScoreView(
     isLoading: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Text(
-        text = "${trustScore ?: 0}/10",
-        style = satoshiBold(16),
-        color = trustScore?.trustColor ?: MaterialTheme.colors.onSurfaceDim,
-        modifier = modifier
-            .shimmeringModifier(isLoading)
-    )
+    MinimumTextSize(
+        text = Localization.string("Trust"),
+        font = satoshiBold(16),
+        alignment = Alignment.CenterEnd
+    ) {
+        Text(
+            text = "${trustScore ?: 0}/10",
+            style = satoshiBold(16),
+            color = trustScore?.trustColor ?: MaterialTheme.colors.onSurfaceDim,
+            modifier = modifier
+                .shimmeringModifier(isLoading)
+        )
+    }
 }

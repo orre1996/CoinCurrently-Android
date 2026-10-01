@@ -537,7 +537,7 @@ private fun TierHeader() {
         }
 
         MinimumTextSize(
-            text = Localization.string("PRO"),
+            text = Localization.string("FREE"),
             font = satoshiBold(16),
             extraSize = 16.dp
         ) {

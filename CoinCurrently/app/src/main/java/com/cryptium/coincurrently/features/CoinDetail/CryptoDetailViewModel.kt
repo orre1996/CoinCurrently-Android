@@ -69,7 +69,6 @@ import com.cryptium.coincurrently.features.Portfolio.Enums.DateOption
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
-import com.cryptium.coincurrently.core.networking.NewsCategory
 import com.cryptium.coincurrently.core.networking.ResponseModels.*
 import java.util.*
 import kotlin.math.min
@@ -200,10 +199,6 @@ class CryptoDetailViewModel(
             setTimestamps()
         }
 
-        newsRepository.cachedNews?.get(NewsCategory.Coin(cryptoInfo?.id ?: "").type)?.let {
-            newsData = it.data.data
-        }
-
         selectedSortOption = StorageManager.get<SortOption>(StorageKeys.CRYPTO_DETAIL_MARKETS_SORT_OPTION) ?: SortOption.VolumeDesc
     }
 
@@ -285,14 +280,10 @@ class CryptoDetailViewModel(
 
         showNewsError = false
 
-        val news = newsRepository.getNewNews(20, NewsCategory.Coin(id))
-        if (news?.data.isNullOrEmpty()) {
-            showNewsError = true
-        }
-
-        news?.let {
-            newsData = it.data.orEmpty()
-        } ?: run {
+        val news = newsRepository.getNews(id)
+        if (!news.isNullOrEmpty()) {
+            newsData = news
+        } else if (newsData.isNullOrEmpty()) {
             showNewsError = true
         }
     }

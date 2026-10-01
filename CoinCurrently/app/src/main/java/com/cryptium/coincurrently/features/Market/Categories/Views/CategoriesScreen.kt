@@ -203,7 +203,7 @@ fun CategoriesScreen(
         if (isSearchShowing.value) {
             SelectCoinSheet(
                 searchScreenCase = SearchScreenCase.Search(
-                    list = SearchCase.Coins
+                    list = SearchCase.Categories
                 ),
                 fromScreen = ScreenLabel.Sectors,
                 highlightId = null,

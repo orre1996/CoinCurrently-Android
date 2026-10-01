@@ -9,6 +9,7 @@ import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
+import com.cryptium.coincurrently.core.extensions.withoutParentheticalNotes
 import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.ApiService
 import com.cryptium.coincurrently.core.networking.ResponseModels.NewNewsItem
@@ -155,7 +156,7 @@ object ApiHelper {
                 news_url = item.url,
                 image_url = item.image,
                 title = item.title,
-                source_name = item.source_name ?: item.author,
+                source_name = (item.source_name ?: item.author)?.withoutParentheticalNotes(),
                 date = item.posted_at,
                 tickers = item.related_coin_ids?.mapNotNull { namesById[it] },
             )
@@ -163,43 +164,6 @@ object ApiHelper {
         return Result.success(NewNewsModel(data = mapped))
     }
 
-    suspend fun getNewNews(count: Int, type: NewsCategory): Result<NewNewsModel> {
-        return when(type) {
-            is NewsCategory.General -> {
-                apiService.getNewNews(serverBaseUrl, count)
-            }
-            is NewsCategory.Technical_Analysis -> {
-                apiService.getNewsTAnalysis(serverBaseUrl, 25)
-            }
-            is NewsCategory.Positive -> {
-                apiService.getNewNews(serverBaseUrl, 25)
-            }
-            is NewsCategory.Neutral -> {
-                apiService.getNewNews(serverBaseUrl, count)
-            }
-            is NewsCategory.Negative -> {
-                apiService.getNewNews(serverBaseUrl, count)
-            }
-            is NewsCategory.Podcasts -> {
-                apiService.getNewPodcastNews(serverBaseUrl, count)
-            }
-            is NewsCategory.Videos -> {
-                apiService.getNewVideoNews(serverBaseUrl, count)
-            }
-            is NewsCategory.Coin -> {
-                apiService.getNewsCoin(serverBaseUrl, type.id, 25)
-            }
-            is NewsCategory.Exchanges -> {
-                apiService.getNewsExchanges(serverBaseUrl, 25)
-            }
-            is NewsCategory.Exchange -> {
-                apiService.getNewsExchange(serverBaseUrl, type.id, 25)
-            }
-            is NewsCategory.NFT -> {
-                apiService.getNewsNFT(serverBaseUrl, 25)
-            }
-        }
-    }
     suspend fun getGasFees(includeHistory: Boolean) = apiService.getGasFees(serverBaseUrl, includeHistory)
     suspend fun getWalletAddress(address: String, blockChain: String) = apiService.getWalletAddress(serverBaseUrl, request = WalletImportRequest(
         address = address,

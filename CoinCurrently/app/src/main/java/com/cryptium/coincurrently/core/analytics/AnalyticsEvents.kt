@@ -576,18 +576,6 @@ data class NewsOpened(val fromScreen: ScreenLabel) : AnalyticsEvent {
     override fun toBundle(): Bundle = bundleParams("from_screen" to fromScreen.wire)
 }
 
-/** iOS sends this as `news_opened`; kept identical for parity. */
-data class NewsTabSelected(
-    val fromScreen: ScreenLabel,
-    val tab: String,
-) : AnalyticsEvent {
-    override val eventName: String get() = "news_opened"
-    override fun toBundle(): Bundle = bundleParams(
-        "from_screen" to fromScreen.wire,
-        "tab" to tab,
-    )
-}
-
 data class FavoriteAdded(
     val coinName: String,
     val fromScreen: ScreenLabel,

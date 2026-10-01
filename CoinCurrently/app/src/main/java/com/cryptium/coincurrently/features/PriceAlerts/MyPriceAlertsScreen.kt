@@ -476,7 +476,7 @@ fun LargeMoverView(
             .clearAndSetSemantics {
                 contentDescription = Localization.string("Big Move Alerts") + ". " + Localization.string("Get notified when BTC or ETH swing more than 5% in either direction.")
                 role = Role.Switch
-                stateDescription = if (enabled) "On" else "Off"
+                stateDescription = Localization.string(if (enabled) "On" else "Off")
                 onClick(label = Localization.string("Toggle Big Move Alerts")) {
                     toggle()
                     true
@@ -489,13 +489,13 @@ fun LargeMoverView(
             modifier = sectionModifier(),
         ) {
             Text(
-                text = "Big Move Alerts",
+                text = Localization.string("Big Move Alerts"),
                 style = satoshiBold(16),
                 color = MaterialTheme.colors.onSurfaceContainer
             )
 
             Text(
-                text = "Get notified when BTC or ETH swing more than 5% in either direction.",
+                text = Localization.string("Get notified when BTC or ETH swing more than 5% in either direction."),
                 style = satoshiBold(12),
                 color = MaterialTheme.colors.onSurfaceDimmer
             )
