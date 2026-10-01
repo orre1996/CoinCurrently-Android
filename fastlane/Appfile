@@ -1,0 +1,5 @@
+package_name("com.cryptium.coincurrently")
+
+# Google Play service-account key. Gitignored; create it in Google Cloud Console,
+# grant it access in Play Console → Users and permissions, then drop it here.
+json_key_file(ENV.fetch("SUPPLY_JSON_KEY", File.expand_path("play-service-account.json", __dir__)))

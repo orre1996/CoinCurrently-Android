@@ -1,0 +1,39 @@
+# Google Play store listing text only (title, short description, full description).
+# Requires fastlane/play-service-account.json (gitignored). No build is uploaded.
+
+default_platform(:android)
+
+platform :android do
+  desc "Download the live store listing into /tmp (does not touch fastlane/metadata)"
+  lane :pull_store_copy do
+    download_from_play_store(
+      metadata_path: "/tmp/coincurrently-play-metadata"
+    )
+    UI.success("Live listing saved to /tmp/coincurrently-play-metadata")
+  end
+
+  desc "Validate the local listing against Play limits without uploading"
+  lane :check_store_copy do
+    upload_to_play_store(
+      metadata_path: "./fastlane/metadata/android",
+      validate_only: true,
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: true
+    )
+  end
+
+  desc "Upload title, short description, and full description for every store locale"
+  lane :push_store_copy do
+    upload_to_play_store(
+      metadata_path: "./fastlane/metadata/android",
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: true
+    )
+  end
+end
