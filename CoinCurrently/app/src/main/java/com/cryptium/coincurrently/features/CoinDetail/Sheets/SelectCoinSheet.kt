@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.CoinDetail.Sheets
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.app.SearchScreenCase
 import com.cryptium.coincurrently.app.SearchCase
 import androidx.compose.foundation.layout.Arrangement
@@ -250,7 +251,10 @@ fun SelectCoinBaseView(
             searchInput = searchViewModel.searchInput.value,
             placeholder = screenCase.textfieldPlaceholder,
             accessibilityLabel = if (searchViewModel.searchInput.value.isEmpty()) {
-                "Search for ${screenCase.textfieldPlaceholder}"
+                Localization.format(
+                    "Search for %@",
+                    Localization.string(screenCase.textfieldPlaceholder),
+                )
             } else {
                 searchViewModel.searchInput.value
             },
@@ -375,7 +379,10 @@ fun SelectCoinBaseView(
                                 }
                             } else if (trendingViewModel.trendingList != null) {
                                 TrendingCoinsList(
-                                    trendingTitle = "Trending ${screenCase.list.rawValue} ↗",
+                                    trendingTitle = Localization.format(
+                                        "Trending %@ ↗",
+                                        Localization.string(screenCase.list.rawValue),
+                                    ),
                                     searchHistory = searchViewModel.searchHistory.get(screenCase.list.rawValue) ?: listOf(),
                                     trendingList = trendingViewModel.getTrendingItems(screenCase.list) ?: listOf(),
                                     itemType = screenCase.list.accessibilityItemType,
@@ -476,14 +483,14 @@ private fun SearchErrorView() {
             .semantics(mergeDescendants = true) {}
     ) {
         Text(
-            text = "Something went wrong.",
+            text = Localization.string("Something went wrong."),
             style = poppinsSemibold(16),
             color = MaterialTheme.colors.primaryTextColor,
             textAlign = TextAlign.Center
         )
 
         Text(
-            text = "Please try again later.",
+            text = Localization.string("Please try again later."),
             style = poppinsRegular(14),
             color = MaterialTheme.colors.primaryTextColor,
             textAlign = TextAlign.Center
@@ -501,14 +508,14 @@ private fun EmptySearchView() {
             .semantics(mergeDescendants = true) {}
     ) {
         Text(
-            text = "No results found.",
+            text = Localization.string("No results found"),
             style = poppinsSemibold(16),
             color = MaterialTheme.colors.primaryTextColor,
             textAlign = TextAlign.Center
         )
 
         Text(
-            text = "Please check your spelling or search for something else.",
+            text = Localization.string("Please check your spelling or search for something else."),
             style = poppinsRegular(14),
             color = MaterialTheme.colors.primaryTextColor,
             textAlign = TextAlign.Center
@@ -627,8 +634,8 @@ private fun LazyListScope.TrendingCoinsList(
     if (searchHistory.isEmpty() && trendingList.isEmpty()) {
         item {
             EmptyContent(
-                title = "No search history yet",
-                subTitle = "Your past searches will appear here.",
+                title = Localization.string("No search history yet"),
+                subTitle = Localization.string("Your past searches will appear here."),
                 modifier = Modifier
                     .padding(
                         top = 32.dp,
@@ -680,7 +687,7 @@ private fun SearchHeader(
     topPadding: Dp = 0.dp,
 ) {
     Text(
-        text = title,
+        text = Localization.string(title),
         style = satoshiBold(22),
         color = MaterialTheme.colors.onSurfaceDim,
         modifier = Modifier

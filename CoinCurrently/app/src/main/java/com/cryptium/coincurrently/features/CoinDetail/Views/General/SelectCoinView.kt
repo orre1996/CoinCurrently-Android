@@ -35,6 +35,7 @@ import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainer
 import com.cryptium.coincurrently.core.extensions.satoshiBold
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 
 @Composable
@@ -47,16 +48,16 @@ fun SelectCoinView(
     totalCount: Int? = null,
     onClick: () -> Unit
 ) {
-    val accessibilityLabel = buildString {
-        if (index != null && totalCount != null) {
-            append("$itemType ${index + 1} of $totalCount")
+    val name = toplist?.name ?: toplist?.symbol?.uppercase()
+    val accessibilityLabel = if (index != null && totalCount != null) {
+        val type = Localization.string(itemType)
+        if (name.isNullOrEmpty()) {
+            Localization.format("%1$@ %2$d of %3$d", type, index + 1, totalCount)
+        } else {
+            Localization.format("%1$@ %2$d of %3$d, %4$@", type, index + 1, totalCount, name)
         }
-
-        val name = toplist?.name ?: toplist?.symbol?.uppercase()
-        if (!name.isNullOrEmpty()) {
-            if (isNotEmpty()) append(", ")
-            append(name)
-        }
+    } else {
+        name.orEmpty()
     }
 
     Row(

@@ -1,4 +1,5 @@
 package com.cryptium.coincurrently.features.Search
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.app.NavigationScreens
 import com.cryptium.coincurrently.app.SearchScreenCase
 import androidx.activity.compose.BackHandler
@@ -33,7 +34,7 @@ fun SearchScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             CustomTopAppBar(
-                title = "Select Coin",
+                title = Localization.string(screenCase.title),
                 navigateBack = {
                     navigationViewModel.navigateBack()
                 }
