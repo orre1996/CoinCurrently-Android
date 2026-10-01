@@ -13,7 +13,11 @@ fun accessibilityAddressDescription(wallet: AddressImport): String {
     val formattedAddress = wallet.address.uppercase()
     val firstFour = formattedAddress.take(4)
     val lastFour = formattedAddress.takeLast(4)
-    return "first 4 in address $firstFour, last 4 in address $lastFour"
+    return Localization.format(
+        "first 4 in address %1\$@, last 4 in address %2\$@",
+        firstFour,
+        lastFour,
+    )
 }
 
 fun portfolioChangeAccessibilityLabel(
