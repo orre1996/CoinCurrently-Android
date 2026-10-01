@@ -154,7 +154,12 @@ private fun CoinAmountInputField(
         currency = selectedCurrency,
         accessible = true,
     )
-    val accessibilityValue = "$coinAmount $coinName equals $accessibleValueAmount"
+    val accessibilityValue = Localization.format(
+        "%1$@ %2$@ equals %3$@",
+        coinAmount.toString(),
+        coinName,
+        accessibleValueAmount,
+    )
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -230,7 +235,12 @@ private fun ValueAmountInputField(
         currency = selectedCurrency,
         accessible = true,
     )
-    val accessibilityValue = "$accessibleValueAmount equals $coinAmount $coinName"
+    val accessibilityValue = Localization.format(
+        "%1$@ equals %2$@ %3$@",
+        accessibleValueAmount,
+        coinAmount.toString(),
+        coinName,
+    )
 
     Row(
         verticalAlignment = Alignment.CenterVertically,

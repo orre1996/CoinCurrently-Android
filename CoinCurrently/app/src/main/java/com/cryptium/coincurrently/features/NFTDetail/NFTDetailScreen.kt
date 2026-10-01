@@ -284,6 +284,7 @@ fun NftDetailScreen(
                                         timeChart = viewModel.selectedTimeFrame,
                                         currency = viewModel.selectedCurrency,
                                         trailingPadding = biggestValue.value.width,
+                                        mainSeriesName = Localization.string("Floor Price"),
                                     )
                             ) {
                                 Box(modifier = Modifier.hideFromTalkBackWhenEnabled()) {
@@ -316,6 +317,7 @@ fun NftDetailScreen(
                                     timeChart = viewModel.selectedTimeFrame,
                                     currency = viewModel.selectedCurrency,
                                     trailingPadding = biggestValue.value.width,
+                                    mainSeriesName = Localization.string("Floor Price"),
                                 )
 
                                 MultiTouchView(

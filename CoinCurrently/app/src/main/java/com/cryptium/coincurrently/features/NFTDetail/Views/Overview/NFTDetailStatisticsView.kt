@@ -134,7 +134,7 @@ private fun RangeView(
     )
     val lowAccessible = accessibleRangePrice(prices?.minOrNull(), rangeCurrency)
     val highAccessible = accessibleRangePrice(prices?.maxOrNull(), rangeCurrency)
-    val rangeAccessibilityLabel = "${timeChart.rangeTitle}. ${Localization.format("From %@", lowAccessible)} ${Localization.format("to %@", highAccessible)}"
+    val rangeAccessibilityLabel = "${Localization.string(timeChart.rangeTitle)}. ${Localization.format("From %@", lowAccessible)} ${Localization.format("to %@", highAccessible)}"
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -143,7 +143,7 @@ private fun RangeView(
         },
     ) {
         Text(
-            text = timeChart.rangeTitle,
+            text = Localization.string(timeChart.rangeTitle),
             style = satoshiBold(12),
             color = MaterialTheme.colors.onSurfaceContainerDim,
             modifier = Modifier.semantics { invisibleToUser() },
@@ -269,9 +269,17 @@ private fun MarketCapView(
             },
             isLoading = nftDetailInfo == null,
             accessibilityLabel = if (nftDetailInfo?.market_cap_rank == null) {
-                "${Localization.string("Market Cap Rank")}. No rank"
+                Localization.format(
+                    "%@, %@",
+                    Localization.string("Market Cap Rank"),
+                    Localization.string("No rank"),
+                )
             } else {
-                "${Localization.string("Market Cap Rank")}. ${nftDetailInfo.market_cap_rank}"
+                Localization.format(
+                    "%@, %@",
+                    Localization.string("Market Cap Rank"),
+                    nftDetailInfo.market_cap_rank.toString(),
+                )
             },
             modifier = sectionModifier(),
         )
@@ -408,7 +416,7 @@ private fun SupplyView(
             value = nftDetailInfo?.total_supply
                 ?.takeIf { it.isFinite() }
                 ?.let { formatter.format(it) }
-                ?: "Unknown",
+                ?: Localization.string("Unknown"),
             isLoading = nftDetailInfo?.total_supply == null,
             modifier = sectionModifier(),
         )

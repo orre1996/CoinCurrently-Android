@@ -90,7 +90,11 @@ fun CryptoDetailSummaryView(
         ?.takeIf { it.isNotEmpty() }
         ?.let { ". Country: $it" }
         ?: ""
-    val accessibilityLabel = if (changeMetricLabel == "volume" || changeMetricLabel == "holdings") {
+    val accessibilityLabel = if (
+        changeMetricLabel == "volume" ||
+        changeMetricLabel == "holdings" ||
+        changeMetricLabel == "price"
+    ) {
         val valueText = currentPrice?.formatCurrency(
             threshold = accessibilityFormattingThreshold,
             currency = currency,

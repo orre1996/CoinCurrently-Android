@@ -4,7 +4,6 @@ import com.cryptium.coincurrently.core.localization.AppLanguageState
 import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
-import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalTime
@@ -39,8 +38,11 @@ val Date.daysAgo: String
         val now = Date()
         val diffMillis = now.time - this.time
         val diffDays = TimeUnit.MILLISECONDS.toDays(diffMillis).toInt().coerceAtLeast(0)
-        val formattedDiff = NumberFormat.getInstance(AppLocale.enUsPosix).format(diffDays)
-        return if (diffDays == 1) "$formattedDiff day" else "$formattedDiff days"
+        return if (diffDays == 1) {
+            Localization.format("%d day", diffDays)
+        } else {
+            Localization.format("%d days", diffDays)
+        }
     }
 
 fun Date.isAtMidnight(): Boolean {
