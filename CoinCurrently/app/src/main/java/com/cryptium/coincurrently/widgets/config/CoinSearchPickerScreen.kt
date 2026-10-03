@@ -20,6 +20,7 @@ import com.cryptium.coincurrently.app.SearchCase
 import com.cryptium.coincurrently.app.SearchScreenCase
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.core.extensions.poppinsRegular
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 import com.cryptium.coincurrently.features.CoinDetail.Sheets.SelectCoinBaseView
 import com.cryptium.coincurrently.sharedui.components.DragHandle
@@ -42,7 +43,8 @@ fun CoinSearchPickerScreen(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val maxBodyHeight = rememberModalSheetMaxBodyHeight(dragHandleTitle = title)
+    val localizedTitle = Localization.systemString(title)
+    val maxBodyHeight = rememberModalSheetMaxBodyHeight(dragHandleTitle = localizedTitle)
 
     val selectedCoins = remember(initialSelectedIds, coinCount) {
         mutableStateListOf<Toplist>().apply {
@@ -68,7 +70,8 @@ fun CoinSearchPickerScreen(
         contentWindowInsets = { androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0) },
         dragHandle = {
             DragHandle(
-                title = title,
+                title = localizedTitle,
+                localize = false,
                 closeAction = { dismiss() },
             )
         },
@@ -82,7 +85,7 @@ fun CoinSearchPickerScreen(
             when {
                 coinCount > 1 -> {
                     Text(
-                        text = "Select $coinCount coins (${selectedCoins.size}/$coinCount)",
+                        text = "${Localization.systemString("Select Coins")} (${selectedCoins.size}/$coinCount)",
                         style = poppinsRegular(14),
                         color = MaterialTheme.colors.onSurfaceDim,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),

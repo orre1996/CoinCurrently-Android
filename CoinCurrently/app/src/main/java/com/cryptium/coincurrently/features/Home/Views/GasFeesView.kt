@@ -1,5 +1,4 @@
 package com.cryptium.coincurrently.features.Home.Views
-import com.cryptium.coincurrently.core.localization.Localization
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -53,7 +52,7 @@ fun GasFeesView(gasFeesModel: GasFeesModel?, fromHome: Boolean) {
     ) {
         if (fromHome) {
             Text(
-                text = Localization.string("ETH Gas Fee"),
+                text = "Ethereum gas fees",
                 style = poppinsSemibold(24),
                 color = MaterialTheme.colors.primaryTextColor
             )
@@ -68,7 +67,7 @@ fun GasFeesView(gasFeesModel: GasFeesModel?, fromHome: Boolean) {
         ) {
             if (!fromHome) {
                 Text(
-                    text = Localization.string("ETH Gas Fee"),
+                    text = "Ethereum gas fees",
                     style = poppinsRegular(16),
                     color = MaterialTheme.colors.primaryTextColor
                 )

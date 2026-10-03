@@ -1,5 +1,7 @@
 package com.cryptium.coincurrently.features.News
+import com.cryptium.coincurrently.sharedui.modifiers.imageSize
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -11,13 +13,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.theme.*
 import com.cryptium.coincurrently.sharedui.modifiers.*
@@ -29,9 +34,13 @@ import com.cryptium.coincurrently.core.extensions.getEmptyStringLength
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.widgets.receivers.getDateTimeAgo
 import com.cryptium.coincurrently.core.networking.ResponseModels.NewNewsItem
+import com.cryptium.coincurrently.core.networking.ResponseModels.getSentimentColor
+import com.cryptium.coincurrently.core.networking.ResponseModels.getSentimentSign
 
 enum class NewsMediaType(val rawValue: String) {
     Article("article"),
+    Video("video"),
+    Podcast("podcast"),
 }
 
 @Composable
@@ -100,6 +109,7 @@ fun SmallNewsItem(
                     TickersView(
                         newsItem,
                         newsItem?.tickers,
+                        newsItem?.sentiment
                     )
 
                     AuthorView(
@@ -120,6 +130,7 @@ fun SmallNewsItem(
                     TickersView(
                         newsItem,
                         newsItem?.tickers,
+                        newsItem?.sentiment
                     )
 
                     AuthorView(
@@ -157,6 +168,8 @@ private fun newsAccessibilityLabel(
     val kind = Localization.string(
         when (newsType) {
             NewsMediaType.Article -> "Article"
+            NewsMediaType.Video -> "Video"
+            NewsMediaType.Podcast -> "Podcast"
         },
     )
     val position = Localization.format("%1\$@ %2\$d of %3\$d", kind, index, totalCount)
@@ -166,8 +179,23 @@ private fun newsAccessibilityLabel(
         "Published %@",
         newsItem?.date?.getDate()?.getDateTimeAgo() ?: "000000",
     )
+    val sentimentValue = newsItem?.sentiment.orEmpty()
+    val sentiment = if (sentimentValue.isEmpty()) {
+        null
+    } else {
+        Localization.format(
+            "Sentiment, %@",
+            when (sentimentValue) {
+                "Positive", "Negative", "Neutral" -> Localization.string(sentimentValue)
+                else -> sentimentValue
+            },
+        )
+    }
     val tickers = newsItem?.tickers?.take(3)?.filter { it.isNotEmpty() }.orEmpty()
-    val description = "$position. $title. $source. $published"
+    val description = listOfNotNull(
+        "$position. $title. $source. $published",
+        sentiment,
+    ).joinToString(". ")
     return if (tickers.isEmpty()) {
         description
     } else {
@@ -217,12 +245,9 @@ private fun AuthorView(
 private fun TickersView(
     news: NewNewsItem?,
     tickers: List<String>?,
+    sentiment: String?,
     modifier: Modifier = Modifier,
 ) {
-    if (news != null && tickers.isNullOrEmpty()) {
-        return
-    }
-
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         modifier = modifier
@@ -234,15 +259,37 @@ private fun TickersView(
                 shape = RoundedCornerShape(size = 8.dp)
             )
             .padding(
-                vertical = 4.dp,
-                horizontal = 8.dp,
+                top = 4.dp,
+                start = 4.dp,
+                end = if (news == null || tickers?.isEmpty() == false) 8.dp else 4.dp,
+                bottom = 4.dp
             )
     ) {
-        Text(
-            text = tickers?.take(3)?.joinToString(" · ") { it } ?: "000",
-            color = MaterialTheme.colors.onSurface,
-            style = satoshiBold(12),
-            maxLines = 1
-        )
+        MinimumTextSize(
+            text = "X",
+            font = satoshiBold(12)
+        ) {
+        if (news == null || sentiment != null) {
+            Image(
+                painter = painterResource(sentiment?.getSentimentSign() ?: R.drawable.trend_still),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                colorFilter = ColorFilter.tint(
+                    sentiment?.getSentimentColor() ?: MaterialTheme.colors.onSurfaceDim
+                ),
+                modifier = Modifier
+                    .imageSize(16.dp, 12.dp),
+            )
+        }
+        }
+
+        if (news == null || tickers?.isEmpty() == false) {
+            Text(
+                text = tickers?.take(3)?.joinToString(" · ") { it } ?: "000",
+                color = MaterialTheme.colors.onSurface,
+                style = satoshiBold(12),
+                maxLines = 1
+            )
+        }
     }
 }

@@ -87,6 +87,30 @@ object CacheUrls {
     fun nftPlatforms() =
         "$serverBaseUrl/crypto/api/v3/asset_platforms?filter=nft"
 
+    fun newsGeneral(count: Int) =
+        "$serverBaseUrl/news/api/v1/category?section=alltickers&page=1&items=$count"
+
+    fun newsVideos() =
+        "$serverBaseUrl/news/api/v1/category?section=alltickers&type=video&items=25"
+
+    fun newsPodcasts() =
+        "$serverBaseUrl/news/api/v1/category?section=alltickers&topic=podcast&items=25"
+
+    fun newsExchange(id: String) =
+        "$serverBaseUrl/news/api/v1/category?section=general&page=1&search=$id&items=25"
+
+    fun newsNft() =
+        "$serverBaseUrl/news/api/v1/category?section=general&topic=NFT&page=1&items=25"
+
+    fun newsTAnalysis() =
+        "$serverBaseUrl/news/api/v1/category?section=alltickers&page=1&topic=Tanalysis&items=25"
+
+    fun newsExchanges() =
+        "$serverBaseUrl/news/api/v1/category?section=general&search=exchanges&page=1&items=25"
+
+    fun newsCoin(id: String) =
+        "$serverBaseUrl/news/api/v1?page=1&tickers=$id&items=25"
+
     fun multipleCoins(ids: String, vsCurrencies: String) =
         "$baseUrl/api/v3/simple/price?ids=$ids&vs_currencies=$vsCurrencies"
 

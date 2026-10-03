@@ -53,6 +53,10 @@
 -keep class com.cryptium.coincurrently.features.GlobalMarket.CachedGlobalMarket { *; }
 -keep class com.cryptium.coincurrently.features.GlobalMarket.CachedCoinsList { *; }
 
+# Sealed news category persisted via Gson
+-keep class com.cryptium.coincurrently.core.networking.NewsCategory { *; }
+-keep class com.cryptium.coincurrently.core.networking.NewsCategory$* { *; }
+
 # Catch-all: every @Serializable type used with Gson / navigation / cache
 -if @kotlinx.serialization.Serializable class **
 -keep class <1> { *; }

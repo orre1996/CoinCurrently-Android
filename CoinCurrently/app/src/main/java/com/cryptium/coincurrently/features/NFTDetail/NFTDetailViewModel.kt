@@ -19,6 +19,7 @@ import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.sharedui.charts.ChartHoverController
 import com.cryptium.coincurrently.sharedui.components.CustomImageView
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
+import com.cryptium.coincurrently.features.News.NewsRepository
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketRepository
@@ -32,6 +33,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
+import com.cryptium.coincurrently.core.networking.NewsCategory
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.NFTDetail
@@ -39,6 +41,7 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.NftDataPoint
 import com.cryptium.coincurrently.core.networking.ResponseModels.NFTPriceVolumeModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.NFTTicker
 import com.cryptium.coincurrently.core.networking.ResponseModels.NFTToplist
+import com.cryptium.coincurrently.core.networking.ResponseModels.NewNewsItem
 import com.cryptium.coincurrently.core.networking.ResponseModels.PriceVolumeModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
 import com.cryptium.coincurrently.core.networking.ResponseModels.toNFTDetail
@@ -63,6 +66,7 @@ class NFTDetailViewModel(
 ) : ViewModel() {
 
     private val nftDetailRepository by lazy { NFTDetailRepository }
+    private val newsRepository by lazy { NewsRepository }
     private val currencyRepository by lazy { CurrencyRepository }
     private val globalRepository by lazy { GlobalMarketRepository }
     private val nftsRepository by lazy { NFTRepository }
@@ -95,6 +99,8 @@ class NFTDetailViewModel(
     var isChartFiat by mutableStateOf(false)
 
     var bitcoin: CryptoDetailInfoModel? by mutableStateOf(null)
+    var newsData: List<NewNewsItem>? by mutableStateOf(null)
+    var showNewsError: Boolean by mutableStateOf(false)
     var showMainPriceError: Boolean by mutableStateOf(false)
 
     var mainReloading: Boolean by mutableStateOf(false)
@@ -119,6 +125,11 @@ class NFTDetailViewModel(
         }
 
         bitcoin = currencyRepository.bitcoinData
+
+        val newsId = nftDetailInfo?.name?.split(" ")?.firstOrNull() ?: ""
+        newsRepository.cachedNews?.get(NewsCategory.NFT(newsId).type)?.let {
+            newsData = it.data.data
+        }
 
         setSelectedCurrency()
 
@@ -215,11 +226,25 @@ class NFTDetailViewModel(
         nftTickers = nftDetailRepository.getNFTTickers(id)
     }
 
+    suspend fun getNews() {
+        newsData = null
+
+        newsRepository.getNewNews(
+            25,
+            NewsCategory.Exchange(nftDetailInfo?.name?.split(" ")?.firstOrNull() ?: "")
+        )?.let {
+            newsData = it.data
+        } ?: run {
+            showNewsError = true
+        }
+    }
+
     suspend fun refresh(
         context: Context,
         newDays: String? = null,
         newTimeChart: TimeCharts? = null,
         forceId: String? = null,
+        fetchNews: Boolean = true,
     ) {
         val appContext = context.applicationContext
         coroutineScope {
@@ -233,6 +258,7 @@ class NFTDetailViewModel(
             val priceVolume = async { getMainCurrencyPrices(id, days) }
             val tickers = async { getTickers(id) }
             val btc = async { getBitcoin() }
+            val news = async { if (fetchNews) getNews() }
             val cryptoDetail = async {
                 cryptoInfo.await()
                 getCurrentCurrency()
@@ -242,6 +268,7 @@ class NFTDetailViewModel(
             priceVolume.await()
             tickers.await()
             btc.await()
+            news.await()
             cryptoDetail.await()
 
             currentDays = days

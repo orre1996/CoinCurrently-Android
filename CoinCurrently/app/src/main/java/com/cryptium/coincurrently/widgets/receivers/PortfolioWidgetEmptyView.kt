@@ -34,6 +34,6 @@ internal fun bindPortfolioWidgetEmptyRemoteViews(
     views.setTextColor(R.id.txt_add_transaction, widgetOnPrimary(context))
     views.setTextViewText(
         R.id.txt_add_transaction,
-        Localization.string("Add Transaction"),
+        Localization.systemString("Add Transaction"),
     )
 }

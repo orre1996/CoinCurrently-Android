@@ -121,7 +121,7 @@ fun LoadingScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                text = Localization.string("Privacy by Default"),
+                text = "Privacy by Default",
                 style = satoshiBold(18),
                 color = MaterialTheme.colors.onSurface,
                 modifier = Modifier.padding(bottom = 40.dp + systemNavigationBarBottomInset),

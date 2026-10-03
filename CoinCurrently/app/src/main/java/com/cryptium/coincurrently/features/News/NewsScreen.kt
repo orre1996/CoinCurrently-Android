@@ -8,31 +8,54 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.ui.Alignment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cryptium.coincurrently.sharedui.theme.*
+import com.cryptium.coincurrently.sharedui.modifiers.*
+import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.localization.AppLanguageState
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
+import com.cryptium.coincurrently.core.analytics.BuyProAction
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.sharedui.sheets.WebViewSheet
+import com.cryptium.coincurrently.features.News.NewsViewModel
+import com.cryptium.coincurrently.features.Home.Carousel.ToplistFilterCarouselView
+import com.cryptium.coincurrently.core.models.CarouselFilter
+import com.cryptium.coincurrently.features.CoinDetail.Views.General.CryptoDetailPageSelector
+import com.cryptium.coincurrently.features.CoinDetail.Sheets.SelectCoinSheet
+import com.cryptium.coincurrently.core.purchases.BillingManager
+import com.cryptium.coincurrently.core.analytics.BuyProOpened
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
+import com.cryptium.coincurrently.core.analytics.NewsFilterSelected
+import com.cryptium.coincurrently.core.analytics.NewsTabSelected
 import com.cryptium.coincurrently.core.analytics.WebViewOpened
+import com.cryptium.coincurrently.core.analytics.SheetLabel
+import com.cryptium.coincurrently.core.analytics.SheetOpened
 import com.cryptium.coincurrently.core.analytics.TabBarDoubleTapped
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.cryptium.coincurrently.core.networking.NewsCategory
 import com.cryptium.coincurrently.core.networking.ResponseModels.NewNewsItem
 import kotlin.time.Duration.Companion.seconds
+import com.cryptium.coincurrently.app.SearchCase
+import com.cryptium.coincurrently.app.SearchScreenCase
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun NewsScreen(
     navigationViewModel: NavigationViewModel,
@@ -43,15 +66,57 @@ fun NewsScreen(
 
     val coroutineScope = rememberCoroutineScope()
     var doubleBackToExitPressedOnce by remember { mutableStateOf(false) }
+    val tabs = listOf("Articles", "Videos", "Podcasts")
+    val pagerState = rememberPagerState()
 
     val newsScrollState = rememberLazyListState()
+    val videosScrollState = rememberLazyListState()
+    val podcastsScrollState = rememberLazyListState()
+    val filterListState = rememberLazyListState()
 
+    val isMenuShowing = remember { mutableStateOf(false) }
+    var isCoinsMenuShowing by remember { mutableStateOf(false) }
     var selectedUrl: String? by remember { mutableStateOf(null) }
 
-    val isRefreshing = remember { mutableStateOf(false) }
+    val isArticlesRefreshing = remember { mutableStateOf(false) }
+    val isVideosRefreshing = remember { mutableStateOf(false) }
+    val isPodcastsRefreshing = remember { mutableStateOf(false) }
+
+    val currentSubscription by BillingManager.currentSubscription.observeAsState()
+
+    LaunchedEffect(Unit) {
+        if (!viewModel.hasLoadedAllCoinsOnce) {
+            viewModel.getAllCoins()
+        }
+    }
+
+    OnLifecycleEvent { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_RESUME -> {
+                coroutineScope.launch {
+                    if (!viewModel.hasLoadedAllCoinsOnce) {
+                        viewModel.getAllCoins()
+                    }
+                }
+            }
+            else -> { }
+        }
+    }
 
     LaunchedEffect(AppLanguageState.preference) {
-        viewModel.getNews()
+        viewModel.getNews(viewModel.newsCategory)
+    }
+
+    LaunchedEffect(pagerState.currentPage) {
+        val page = pagerState.currentPage
+        if (page in tabs.indices) {
+            AnalyticsManager.log(
+                NewsTabSelected(
+                    fromScreen = ScreenLabel.News,
+                    tab = tabs[page],
+                ),
+            )
+        }
     }
 
     val onNewsUrlPressed: (String) -> Unit = { url ->
@@ -69,50 +134,204 @@ fun NewsScreen(
             modifier = modifier
                 .padding(top =  16.dp)
         ) {
-            BackHandler(onBack = {
-                val offset = newsScrollState.firstVisibleItemIndex + newsScrollState.firstVisibleItemScrollOffset
+            Column {
+                CryptoDetailPageSelector(
+                    tabs = tabs,
+                    pagerState = pagerState,
+                    modifier = Modifier
+                )
 
-                if (offset > 0) {
-                    AnalyticsManager.log(TabBarDoubleTapped(ScreenLabel.News))
-                    coroutineScope.launch {
-                        newsScrollState.animateScrollToItem(0)
+                Separator()
+
+                BackHandler(onBack = {
+                    val scrollState = when (pagerState.currentPage) {
+                        0 -> { newsScrollState }
+                        1 -> { videosScrollState }
+                        else -> { podcastsScrollState }
                     }
-                } else {
-                    if (!doubleBackToExitPressedOnce) {
-                        Toast.makeText(context, Localization.string("Press back again to exit the app"), Toast.LENGTH_SHORT).show()
-                        doubleBackToExitPressedOnce = true
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            doubleBackToExitPressedOnce = false
-                        }, 2500L)
+
+                    val offset = scrollState.firstVisibleItemIndex + scrollState.firstVisibleItemScrollOffset
+
+                    if (isMenuShowing.value) {
+                        isMenuShowing.value = false
+                    } else if (isCoinsMenuShowing) {
+                        isCoinsMenuShowing = false
+                    } else if (offset > 0) {
+                        AnalyticsManager.log(TabBarDoubleTapped(ScreenLabel.News))
+                        coroutineScope.launch {
+                            scrollState.animateScrollToItem(0)
+                        }
                     } else {
-                        context.getActivity()?.finishAffinity()
+                        if (!doubleBackToExitPressedOnce) {
+                            Toast.makeText(context, Localization.string("Press back again to exit the app"), Toast.LENGTH_SHORT).show()
+                            doubleBackToExitPressedOnce = true
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                doubleBackToExitPressedOnce = false
+                            }, 2500L)
+                        } else {
+                            context.getActivity()?.finishAffinity()
+                        }
                     }
-                }
-            })
+                })
 
-            NewsSection(
-                news = viewModel.news,
-                scrollState = newsScrollState,
-                isRefreshing = isRefreshing.value,
-                newsCardPressed = onNewsUrlPressed,
-                getNews = {
-                    coroutineScope.launch {
-                        viewModel.getNews()
-                    }
-                },
-                refresh = {
-                    coroutineScope.launch {
-                        isRefreshing.value = true
+                HorizontalPager(
+                    count = tabs.size,
+                    state = pagerState,
+                ) { tabIndex ->
+                    when (tabIndex) {
+                        0 -> {
+                            NewsSection(
+                                news = viewModel.news,
+                                scrollState = newsScrollState,
+                                filterListState = filterListState,
+                                selectedFilter = viewModel.newsCategory.toCarouselFilter,
+                                hasPro = currentSubscription != null,
+                                isRefreshing = isArticlesRefreshing.value,
+                                page = 0,
+                                currentPage = pagerState.currentPage,
+                                newsCardPressed = onNewsUrlPressed,
+                                getNews = {
+                                    coroutineScope.launch {
+                                        viewModel.getNews(viewModel.newsCategory)
+                                    }
+                                },
+                                refresh = {
+                                    coroutineScope.launch {
+                                        isArticlesRefreshing.value = true
 
-                        launch {
-                            viewModel.getNews()
-                            isRefreshing.value = false
+                                        launch {
+                                            viewModel.getNews(viewModel.newsCategory)
+                                            isArticlesRefreshing.value = false
+                                        }
+
+                                        delay(10.seconds)
+                                        isArticlesRefreshing.value = false
+                                    }
+                                },
+                                newFilterSelected = { filter ->
+                                    coroutineScope.launch {
+                                        when {
+                                            filter.requiresPro && currentSubscription == null -> {
+                                                navigationViewModel.openBuyPro(ScreenLabel.News, BuyProAction.NewsFilter)
+                                                AnalyticsManager.log(
+                                                    BuyProOpened(
+                                                        fromScreen = ScreenLabel.News,
+                                                        action = BuyProAction.NewsFilter,
+                                                    ),
+                                                )
+                                            }
+                                            filter is CarouselFilter.Coins -> {
+                                                AnalyticsManager.log(
+                                                    SheetOpened(
+                                                        fromScreen = ScreenLabel.News,
+                                                        sheet = SheetLabel.CoinSearch,
+                                                    ),
+                                                )
+                                                isCoinsMenuShowing = true
+                                            }
+                                            else -> {
+                                                AnalyticsManager.log(
+                                                    NewsFilterSelected(
+                                                        fromScreen = ScreenLabel.News,
+                                                        filter = filter,
+                                                    ),
+                                                )
+                                                viewModel.getNews(filter.toNewsCategory)
+                                            }
+                                        }
+                                    }
+                                }
+                            )
                         }
 
-                        delay(10.seconds)
-                        isRefreshing.value = false
+                        1 -> {
+                            NewsSection(
+                                news = viewModel.videoNews,
+                                scrollState = videosScrollState,
+                                filterListState = filterListState,
+                                selectedFilter = viewModel.newsCategory.toCarouselFilter,
+                                hasPro = currentSubscription != null,
+                                isRefreshing = isVideosRefreshing.value,
+                                page = 1,
+                                currentPage = pagerState.currentPage,
+                                newsCardPressed = onNewsUrlPressed,
+                                getNews = {
+                                    coroutineScope.launch {
+                                        viewModel.getVideoNews()
+                                    }
+                                },
+                                refresh = {
+                                    coroutineScope.launch {
+                                        isVideosRefreshing.value = true
+
+                                        launch {
+                                            viewModel.getVideoNews()
+                                            isVideosRefreshing.value = false
+                                        }
+
+                                        delay(10.seconds)
+                                        isVideosRefreshing.value = false
+                                    }
+                                },
+                                newFilterSelected = { _ -> }
+                            )
+                        }
+
+                        2 -> {
+                            NewsSection(
+                                news = viewModel.podcastNews,
+                                scrollState = podcastsScrollState,
+                                filterListState = filterListState,
+                                selectedFilter = viewModel.newsCategory.toCarouselFilter,
+                                hasPro = currentSubscription != null,
+                                isRefreshing = isPodcastsRefreshing.value,
+                                page = 2,
+                                currentPage = pagerState.currentPage,
+                                newsCardPressed = onNewsUrlPressed,
+                                getNews = {
+                                    coroutineScope.launch {
+                                        viewModel.getPodcastNews()
+                                    }
+                                },
+                                refresh = {
+                                    coroutineScope.launch {
+                                        isPodcastsRefreshing.value = true
+
+                                        launch {
+                                            viewModel.getPodcastNews()
+                                            isPodcastsRefreshing.value = false
+                                        }
+
+                                        delay(10.seconds)
+                                        isVideosRefreshing.value = false
+                                    }
+                                },
+                                newFilterSelected = { _ -> }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        if (isCoinsMenuShowing) {
+            SelectCoinSheet(
+                searchScreenCase = SearchScreenCase.Search(
+                    list = SearchCase.OnlyCoins
+                ),
+                fromScreen = ScreenLabel.News,
+                highlightId = viewModel.newsCategory.selectedId,
+                hideId = null,
+                selectedCoin = { coin ->
+                    val coinId = coin?.id?.takeIf { it.isNotEmpty() } ?: return@SelectCoinSheet
+
+                    coroutineScope.launch {
+                        viewModel.getNews(NewsCategory.Coin(coinId))
                     }
                 },
+                close = {
+                    isCoinsMenuShowing = false
+                }
             )
         }
 
@@ -128,22 +347,32 @@ fun NewsScreen(
 private fun NewsSection(
     news: List<NewNewsItem>?,
     scrollState: LazyListState,
+    filterListState: LazyListState,
+    selectedFilter: CarouselFilter,
+    hasPro: Boolean,
     isRefreshing: Boolean,
+    page: Int,
+    currentPage: Int,
     newsCardPressed: (String) -> Unit,
     getNews: () -> Unit,
     refresh: () -> Unit,
+    newFilterSelected: (CarouselFilter) -> Unit
 ) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
 
-    LaunchedEffect(Unit) {
-        getNews.invoke()
+    LaunchedEffect(currentPage) {
+        if (currentPage == page) {
+            getNews.invoke()
+        }
     }
 
     OnLifecycleEvent { _, event ->
         when (event) {
             Lifecycle.Event.ON_RESUME -> {
-                getNews.invoke()
+                if (currentPage == page) {
+                    getNews.invoke()
+                }
             }
             else -> { }
         }
@@ -158,7 +387,7 @@ private fun NewsSection(
         LazyColumn(
             state = scrollState,
             contentPadding = PaddingValues(
-                top =  16.dp,
+                top =  32.dp,
                 bottom = 32.dp
             ),
             horizontalAlignment = Alignment.Start,
@@ -166,7 +395,27 @@ private fun NewsSection(
             modifier = Modifier
                 .height(screenHeight)
         ) {
+            if (page == 0) {
+                item {
+                    ToplistFilterCarouselView(
+                        filters = CarouselFilter.newsFilters,
+                        selectedFilter = selectedFilter,
+                        scrollState = filterListState,
+                        paddingValues = PaddingValues(0.dp),
+                        hasPro = hasPro,
+                        onFilterSelected = {
+                            newFilterSelected.invoke(it)
+                        }
+                    )
+                }
+            }
+
             val totalCount = news?.size ?: 10
+            val newsType = when (page) {
+                0 -> NewsMediaType.Article
+                1 -> NewsMediaType.Video
+                else -> NewsMediaType.Podcast
+            }
 
             items(totalCount) { index ->
                 val newsItem = news?.get(index)
@@ -179,7 +428,7 @@ private fun NewsSection(
                         newsItem = newsItem,
                         index = index + 1,
                         totalCount = totalCount,
-                        newsType = NewsMediaType.Article,
+                        newsType = newsType,
                         callback = {
                             newsCardPressed(it)
                         }

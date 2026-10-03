@@ -91,11 +91,16 @@ fun DragHandle(
     icon: Int? = null,
     bottomPadding: Dp = 24.dp,
     focusHeaderOnAppear: Boolean = false,
+    localize: Boolean = true,
     closeAction: () -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
-    val localizedTitle = Localization.string(title)
-    val resolvedAccessibilityTitle = Localization.string(accessibilityTitle ?: title)
+    val localizedTitle = if (localize) Localization.string(title) else title
+    val resolvedAccessibilityTitle = if (localize) {
+        Localization.string(accessibilityTitle ?: title)
+    } else {
+        accessibilityTitle ?: title
+    }
     val accessibilityLabel = if (icon != null) {
         Localization.format("%@. info", resolvedAccessibilityTitle)
     } else {

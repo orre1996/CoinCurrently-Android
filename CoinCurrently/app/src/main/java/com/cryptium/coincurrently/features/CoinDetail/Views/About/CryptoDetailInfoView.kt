@@ -67,7 +67,7 @@ fun CryptoDetailAboutView(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     Text(
-                        text = Localization.string("Description"),
+                        text = "Description",
                         style = poppinsSemibold(24),
                         color = MaterialTheme.colors.onSurfaceDim,
                         modifier = tabPage.semantics { heading() },

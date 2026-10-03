@@ -233,6 +233,57 @@ interface ApiService{
         @Query("coin_id") coinId: String? = null,
     ): Result<ArrayList<CoinGeckoNewsItem>>
 
+    @GET("{url}/news/api/v1/category?section=alltickers&page=1")
+    suspend fun getNewNews(
+        @Path(value = "url", encoded = true) url: String,
+        @Query(value = "items")count: Int,
+    ): Result<NewNewsModel>
+
+    @GET("{url}/news/api/v1/category?section=alltickers&type=video")
+    suspend fun getNewVideoNews(
+        @Path(value = "url", encoded = true) url: String,
+        @Query(value = "items")count: Int,
+    ): Result<NewNewsModel>
+
+    @GET("{url}/news/api/v1/category?section=alltickers&topic=podcast")
+    suspend fun getNewPodcastNews(
+        @Path(value = "url", encoded = true) url: String,
+        @Query(value = "items")count: Int,
+    ): Result<NewNewsModel>
+
+    @GET("{url}/news/api/v1/category?section=general&search=exchanges&page=1")
+    suspend fun getNewsExchanges(
+        @Path(value = "url", encoded = true) url: String,
+        @Query(value = "items")count: Int,
+    ): Result<NewNewsModel>
+
+    @GET("{url}/news/api/v1/category?section=general&topic=NFT&page=1")
+    suspend fun getNewsNFT(
+        @Path(value = "url", encoded = true) url: String,
+        @Query(value = "items") count: Int,
+    ): Result<NewNewsModel>
+
+    @GET("{url}/news/api/v1/category?section=general&page=1")
+    suspend fun getNewsExchange(
+        @Path(value = "url", encoded = true) url: String,
+        @Query(value = "search")id: String,
+        @Query(value = "items")count: Int,
+    ): Result<NewNewsModel>
+
+
+    @GET("{url}/news/api/v1/category?section=alltickers&page=1&topic=Tanalysis")
+    suspend fun getNewsTAnalysis(
+        @Path(value = "url", encoded = true) url: String,
+        @Query(value = "items")count: Int,
+    ): Result<NewNewsModel>
+
+    @GET("{url}/news/api/v1?page=1")
+    suspend fun getNewsCoin(
+        @Path(value = "url", encoded = true) url: String,
+        @Query(value = "tickers")id: String,
+        @Query(value = "items")count: Int,
+    ): Result<NewNewsModel>
+
     @GET("{url}/gas")
     suspend fun getGasFees(
         @Path(value = "url", encoded = true) url: String,

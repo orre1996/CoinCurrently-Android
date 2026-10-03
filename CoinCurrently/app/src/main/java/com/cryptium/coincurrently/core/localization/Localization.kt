@@ -31,18 +31,26 @@ object Localization {
         catalog = parsed
     }
 
-    fun string(key: String): String {
-        val code = AppLanguageState.preference.resolve().catalogCode
+    fun string(key: String): String = lookup(key, AppLanguageState.preference.resolve())
+
+    /** Widget copy follows the device language, not the in-app picker. */
+    fun systemString(key: String): String = lookup(key, AppLanguage.matching())
+
+    fun format(key: String, vararg args: Any?): String = applyFormat(string(key), args)
+
+    fun systemFormat(key: String, vararg args: Any?): String = applyFormat(systemString(key), args)
+
+    private fun lookup(key: String, language: AppLanguage): String {
         val translations = catalog[key] ?: return key
-        return translations[code] ?: translations["en"] ?: key
+        return translations[language.catalogCode] ?: translations["en"] ?: key
     }
 
-    fun format(key: String, vararg args: Any?): String {
-        val pattern = toJavaFormat(string(key))
+    private fun applyFormat(pattern: String, args: Array<out Any?>): String {
+        val javaPattern = toJavaFormat(pattern)
         return try {
-            String.format(Locale.US, pattern, *args)
+            String.format(Locale.US, javaPattern, *args)
         } catch (_: Exception) {
-            key
+            pattern
         }
     }
 

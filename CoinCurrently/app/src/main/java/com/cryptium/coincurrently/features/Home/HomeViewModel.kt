@@ -237,6 +237,7 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
             CarouselFilter.TimeframeWinners -> periodWinners
             CarouselFilter.TimeframeLosers -> periodLosers
             CarouselFilter.NewlyListed -> newCoins
+            else -> null // News filters not used on Home
         }
     }
 
@@ -248,6 +249,7 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
             CarouselFilter.TimeframeWinners -> getWinners()
             CarouselFilter.TimeframeLosers -> getLosers()
             CarouselFilter.NewlyListed -> getNewCoins()
+            else -> { } // News filters not used on Home
         }
     }
 

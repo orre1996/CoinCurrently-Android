@@ -112,12 +112,6 @@ fun String.convertStringToDate(dateFormat: DateFormat, gmtTimeZone: Boolean = tr
     }
 }
 
-/** Drops parenthetical notes such as " (Sweden)" or " (svenska)" from a news source name. */
-fun String.withoutParentheticalNotes(): String {
-    val stripped = replace(Regex("""\s*\([^)]*\)"""), "").trim()
-    return stripped.ifEmpty { trim() }
-}
-
 fun String.getEmptyStringLength(length: Int): String {
     var array = ""
     for (i in 0 until length) {

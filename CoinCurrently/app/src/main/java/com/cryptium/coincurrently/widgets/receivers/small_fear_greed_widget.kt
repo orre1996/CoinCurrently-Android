@@ -18,6 +18,7 @@ import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.app.MainActivity
 import com.cryptium.coincurrently.core.networking.ResponseModels.FearGreedItem
 import com.cryptium.coincurrently.features.FearGreed.FearGreedRepository
+import com.cryptium.coincurrently.widgets.config.WidgetRuntimeInitializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -52,6 +53,7 @@ internal fun createSmallFearWidget(
     appWidgetManager: AppWidgetManager,
     appWidgetId: Int,
 ) {
+    WidgetRuntimeInitializer.ensureInitialized(context)
     val views = buildPlaceholderSmallFearGreedWidget(context, appWidgetManager, appWidgetId)
     setSmallFearGreedClickIntent(views, context)
     appWidgetManager.updateAppWidget(appWidgetId, views)
@@ -122,7 +124,7 @@ internal fun bindSmallFearGreedRemoteViews(
     views.setTextViewText(R.id.txt_index, indexValue?.toString() ?: "0")
     views.setTextViewText(
         R.id.txt_classification,
-        Localization.string(item?.value_classification ?: fearGreedClassification(indexValue ?: 0)),
+        Localization.systemString(item?.value_classification ?: fearGreedClassification(indexValue ?: 0)),
     )
 
     bindFearGreedMeter(

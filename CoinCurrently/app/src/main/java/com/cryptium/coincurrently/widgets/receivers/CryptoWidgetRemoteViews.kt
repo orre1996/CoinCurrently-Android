@@ -12,6 +12,7 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.app.MainActivity
+import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
@@ -139,6 +140,7 @@ private fun bindSmallCryptoWidgetViews(
     views.setTextViewText(R.id.txt_currency_name, data?.name ?: "CoinCurrently")
     views.setTextViewText(R.id.txt_currency_symbol, data?.symbol ?: "CNCR")
     views.setTextViewText(R.id.txt_currency_price, data?.price ?: "$0.00")
+    views.setTextViewText(R.id.txt_24h_title, Localization.systemString("24h"))
 
     val change24h = data?.change24h
     views.setTextViewText(R.id.txt_24h_percentage, change24h?.getChangeWithSymbol() ?: "0.00%")

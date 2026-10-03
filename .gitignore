@@ -79,6 +79,7 @@ fastlane/.env
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
+fastlane/metadata/android/*/images/phoneScreenshots/
 fastlane/test_output
 fastlane/readme.md
 

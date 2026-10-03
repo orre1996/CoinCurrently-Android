@@ -171,11 +171,7 @@ private fun ActionButtons(
 ) {
     val isHorizontal = AccessibilityLayout.isHorizontal
     val isEnabled = walletName.isNotEmpty() && initialName != walletName
-    val renameAccessibilityLabel = when {
-        isEnabled -> "Rename"
-        walletName.isEmpty() -> "Rename: Disabled because wallet name is empty"
-        else -> "Rename: Disabled because wallet name hasn't changed"
-    }
+    val saveTitle = Localization.string("Save")
 
     AdaptiveStack(
         isHorizontal = isHorizontal,
@@ -196,9 +192,9 @@ private fun ActionButtons(
         )
 
         PrimaryButton(
-            text = "Rename",
+            text = saveTitle,
             isEnabled = isEnabled,
-            accessibilityLabel = renameAccessibilityLabel,
+            accessibilityLabel = saveTitle,
             fullWidth = true,
             onClick = {
                 renameWallet.invoke()

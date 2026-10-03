@@ -48,12 +48,12 @@ internal fun createMediumNewsWidget(
 ) {
     WidgetRuntimeInitializer.ensureInitialized(context)
 
-    val views = buildPlaceholderMediumNewsWidget(context)
+    val views = buildPlaceholderMediumNewsWidget(context, appWidgetId)
     appWidgetManager.updateAppWidget(appWidgetId, views)
 
     GlobalScope.launch(Dispatchers.IO) {
         try {
-            val newsItems = loadWidgetNews(limit = 2)
+            val newsItems = loadWidgetNews(context, appWidgetId, limit = 2)
             applyMediumNewsTheme(views, context)
             bindMediumNewsCell(views, R.id.cell_1, newsItems.getOrNull(0), context)
             bindMediumNewsCell(views, R.id.cell_2, newsItems.getOrNull(1), context)
@@ -61,7 +61,7 @@ internal fun createMediumNewsWidget(
         } catch (_: Exception) {
             appWidgetManager.updateAppWidget(
                 appWidgetId,
-                buildPlaceholderMediumNewsWidget(context),
+                buildPlaceholderMediumNewsWidget(context, appWidgetId),
             )
         }
     }
@@ -69,11 +69,13 @@ internal fun createMediumNewsWidget(
 
 private fun buildPlaceholderMediumNewsWidget(
     context: Context,
+    appWidgetId: Int,
 ): RemoteViews {
     val views = RemoteViews(context.packageName, R.layout.medium_news_widget)
     applyMediumNewsTheme(views, context)
-    bindMediumNewsCell(views, R.id.cell_1, null, context)
-    bindMediumNewsCell(views, R.id.cell_2, null, context)
+    val cachedNews = getWidgetNewsItems(context, appWidgetId, limit = 2)
+    bindMediumNewsCell(views, R.id.cell_1, cachedNews.getOrNull(0), context)
+    bindMediumNewsCell(views, R.id.cell_2, cachedNews.getOrNull(1), context)
     return views
 }
 

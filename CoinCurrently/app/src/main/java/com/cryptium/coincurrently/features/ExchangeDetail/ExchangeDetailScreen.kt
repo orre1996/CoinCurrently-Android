@@ -30,6 +30,7 @@ import com.cryptium.coincurrently.sharedui.charts.ChartHoverStats
 import com.cryptium.coincurrently.sharedui.charts.rememberLineChartHoverUi
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.core.extensions.formatCurrency
+import com.cryptium.coincurrently.features.CoinDetail.Views.News.DetailNews
 import com.cryptium.coincurrently.core.extensions.dpToPx
 import com.cryptium.coincurrently.core.extensions.is24HourClock
 import com.cryptium.coincurrently.core.extensions.isTablet
@@ -104,7 +105,7 @@ fun ExchangeDetailScreen(
 
     val biggestValue = remember { mutableStateOf(DpSize.Zero) }
 
-    val tabs = listOf("Markets", "About")
+    val tabs = listOf("Markets", "About", "News")
     var currentPage by remember { mutableStateOf(0) }
 
     val uiCoroutineScope = rememberCoroutineScope()
@@ -149,7 +150,9 @@ fun ExchangeDetailScreen(
             uiCoroutineScope.launch {
                 viewModel.isRefreshing = true
                 try {
-                    viewModel.refresh()
+                    viewModel.refresh(
+                        getNews = currentPage == 1
+                    )
                 } finally {
                     viewModel.isRefreshing = false
                 }
@@ -379,12 +382,23 @@ fun ExchangeDetailScreen(
                                 }
                             )
                         }
+
+                        2 -> DetailNews(
+                            news = viewModel.newsData,
+                            title = "exchange",
+                            showError = viewModel.showNewsError,
+                            isTablet = isTablet,
+                            fromScreen = ScreenLabel.ExchangeDetail,
+                            openUrl = {
+                                selectedUrl = it
+                            }
+                        )
                     }
                 }
             }
 
             ScrollToTopButton(
-                visible = !talkBackEnabled && firstVisibleIndex >= 22 && currentPage == 0,
+                visible = !talkBackEnabled && firstVisibleIndex >= 22 && (currentPage == 0 || currentPage == 2),
                 respectNavigationBars = true,
                 onClick = {
                     AnalyticsManager.log(

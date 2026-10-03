@@ -205,8 +205,8 @@ private fun applySmallPortfolioTheme(
     views.setTextColor(R.id.txt_portfolio_title, widgetOnSurfaceDimmer(context))
     views.setTextColor(R.id.txt_total_value, widgetOnSurface(context))
     views.setTextColor(R.id.txt_pl_title, widgetOnSurfaceDimmer(context))
-    views.setTextViewText(R.id.txt_portfolio_title, Localization.string("Portfolio Value"))
-    views.setTextViewText(R.id.txt_pl_title, Localization.string("24h Change"))
+    views.setTextViewText(R.id.txt_portfolio_title, Localization.systemString("Portfolio Value"))
+    views.setTextViewText(R.id.txt_pl_title, Localization.systemString("24h Change"))
 }
 
 internal fun formatSignedChangePercent(percent: Double?): String {

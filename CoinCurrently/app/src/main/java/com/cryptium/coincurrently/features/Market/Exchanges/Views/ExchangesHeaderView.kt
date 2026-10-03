@@ -59,7 +59,7 @@ fun ExchangesHeaderView(
         }
 
         MinimumTextSize(
-            text = Localization.string("Trust"),
+            text = "10/10",
             font = satoshiBold(16),
             alignment = Alignment.CenterEnd
         ) {

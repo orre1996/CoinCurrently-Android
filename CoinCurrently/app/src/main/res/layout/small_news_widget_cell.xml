@@ -36,21 +36,23 @@
             android:background="@drawable/widget_ticker_badge_background_dark"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="8dp"
+            android:paddingStart="4dp"
             android:paddingTop="4dp"
             android:paddingEnd="8dp"
             android:paddingBottom="4dp">
 
             <ImageView
                 android:id="@+id/img_sentiment"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:visibility="gone" />
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/trend_still" />
 
             <TextView
                 android:id="@+id/txt_tickers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:ellipsize="end"
                 android:includeFontPadding="false"
                 android:maxLines="1"

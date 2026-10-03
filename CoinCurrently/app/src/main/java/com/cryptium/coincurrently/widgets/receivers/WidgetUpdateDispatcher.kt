@@ -10,12 +10,14 @@ import com.cryptium.coincurrently.widgets.glance.SmallCryptoWidgetReceiver
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.RetrofitBuilder
+import com.cryptium.coincurrently.widgets.config.WidgetRuntimeInitializer
 
 internal fun updateAppWidget(
     context: Context,
     appWidgetManager: AppWidgetManager,
     appWidgetId: Int
 ) {
+    WidgetRuntimeInitializer.ensureInitialized(context)
     NavigationViewModel.currentScreen = "General"
     RetrofitBuilder.createApiService(context, "Widget")
     BillingManager.setUpBillingClient(context)
