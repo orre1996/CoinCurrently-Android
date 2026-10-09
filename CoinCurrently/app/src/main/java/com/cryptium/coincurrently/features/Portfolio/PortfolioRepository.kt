@@ -14,7 +14,6 @@ import com.cryptium.coincurrently.core.extensions.defaultWalletName
 import com.cryptium.coincurrently.core.extensions.isMoreThanDefaultCache
 import com.cryptium.coincurrently.core.extensions.allTransactionsCount
 import com.cryptium.coincurrently.core.extensions.tenYearsAgo
-import com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.allCurrencies
 import com.cryptium.coincurrently.core.networking.MainRepository
 import com.cryptium.coincurrently.core.networking.ResponseModels.*
@@ -405,17 +404,14 @@ object PortfolioRepository {
     }
 
     private fun updatePriceCache(prices: MutableMap<String, Map<String, Double>>) {
-        val previousMaxGain = AchievementManager.currentMaxPortfolioGainPercent()
         portfolioAllCurrencies = prices
         StorageManager.set(StorageKeys.PORTFOLIO_PRICES, CachedData(prices, Date()))
-        AchievementManager.checkMoonShotUnlock(previousMaxGain)
     }
 
     private fun upsertPrice(
         id: String,
         currencies: Map<String, Double>
     ) {
-        val previousMaxGain = AchievementManager.currentMaxPortfolioGainPercent()
         val prices = portfolioAllCurrencies?.toMutableMap() ?: mutableMapOf()
 
         val existing = prices[id]?.toMutableMap() ?: mutableMapOf()
@@ -429,7 +425,6 @@ object PortfolioRepository {
         portfolioAllCurrencies = prices
         val date = StorageManager.get<CachedData<MutableMap<String, Map<String, Double>>>>(StorageKeys.PORTFOLIO_PRICES)?.date
         StorageManager.set(StorageKeys.PORTFOLIO_PRICES, CachedData(prices, date ?: Date().tenYearsAgo()))
-        AchievementManager.checkMoonShotUnlock(previousMaxGain)
     }
 
     private fun appendPie(pie: Pie) {

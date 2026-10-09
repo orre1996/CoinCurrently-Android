@@ -69,14 +69,7 @@ enum class StorageKeys(private val rawOverride: String? = null) {
     APP_ACTION_RATING_DATE,
 
     /** What's New sheet content version (e.g. "3.4"); last-seen copy lives in SharedPreferences. */
-    CURRENT_WHATS_NEW_VERSION("3.4"),
-
-    ACHIEVEMENT_LAST_OPEN_DATE,
-    ACHIEVEMENT_CURRENT_STREAK,
-    ACHIEVEMENT_LONGEST_STREAK,
-    ACHIEVEMENT_COUNTERS,
-    ACHIEVEMENT_UNLOCK_SNAPSHOT,
-    ACHIEVEMENT_UNLOCK_SNAPSHOT_INITIALIZED;
+    CURRENT_WHATS_NEW_VERSION("3.4");
 
     val rawValue: String get() = rawOverride ?: name
 }

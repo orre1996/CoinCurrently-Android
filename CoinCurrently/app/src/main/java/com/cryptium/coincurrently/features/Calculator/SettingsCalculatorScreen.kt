@@ -137,11 +137,6 @@ fun SettingsCalculatorScreen(
                         valueAmount = viewModel.input,
                         selectedCurrency = selectedCurrency,
                         valueAmountChanged = {
-                            if (it != 0.0 && viewModel.input == 0.0) {
-                                com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager.increment(
-                                    com.cryptium.coincurrently.features.Achievements.Models.AchievementCounterKey.converterUses
-                                )
-                            }
                             viewModel.input = it
                         },
                         selectNewCurrency = {

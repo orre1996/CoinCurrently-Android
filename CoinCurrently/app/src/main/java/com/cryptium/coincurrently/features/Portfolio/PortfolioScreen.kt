@@ -207,9 +207,6 @@ fun PortfolioScreen(
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             viewModel.recordPortfolioExport()
-            com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager.increment(
-                com.cryptium.coincurrently.features.Achievements.Models.AchievementCounterKey.portfolioExports,
-            )
         }
     }
 
@@ -317,9 +314,7 @@ fun PortfolioScreen(
 
     LaunchedEffect(pendingPortfolioTransactionId) {
         val idStr = pendingPortfolioTransactionId ?: return@LaunchedEffect
-        val previousTransactionCount = navigationViewModel.pendingPortfolioPreviousTransactionCount
         navigationViewModel.pendingPortfolioTransactionId = null
-        navigationViewModel.pendingPortfolioPreviousTransactionCount = -1
 
         var (event, coin) = viewModel.findTransaction(idStr)
         if (event == null) {
@@ -401,11 +396,6 @@ fun PortfolioScreen(
                     message = Localization.format("%@ transaction added to your portfolio!", symbol),
                 )
             }
-        }
-
-        if (previousTransactionCount >= 0) {
-            com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager
-                .checkPortfolioTransactionUnlock(previousTransactionCount)
         }
     }
 

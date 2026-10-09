@@ -414,9 +414,6 @@ class CryptoDetailViewModel(
     suspend fun toggleChart() {
         mainReloading = true
         candleChartEnabled = !candleChartEnabled
-        com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager.increment(
-            com.cryptium.coincurrently.features.Achievements.Models.AchievementCounterKey.candleChartToggles
-        )
         AnalyticsManager.log(
             ChartCandleModeChanged(
                 fromScreen = ScreenLabel.CryptoDetail,

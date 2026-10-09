@@ -7,8 +7,6 @@ import com.google.gson.reflect.TypeToken
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
-import com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager
-import com.cryptium.coincurrently.features.Achievements.Models.AchievementMetric
 import com.cryptium.coincurrently.core.networking.CacheUrls
 import com.cryptium.coincurrently.core.networking.MainRepository
 import com.cryptium.coincurrently.core.networking.ResponseModels.AlertCoin
@@ -175,18 +173,11 @@ object PriceAlertsRepository {
         val alert = MainRepository.createPriceAlert(alertCoin).unwrapOrNull()
             ?: return PriceAlertCreateResult.Failed
 
-        val previousCount = priceAlerts?.size?.toDouble() ?: 0.0
         val oldAlerts = priceAlerts?.toMutableList() ?: mutableListOf()
         oldAlerts.add(alert)
 
         priceAlerts = oldAlerts
         RetrofitBuilder.updateCache(CacheUrls.getAlerts(), CachedData(oldAlerts, Date()))
-
-        AchievementManager.checkMetricUnlock(
-            metric = AchievementMetric.priceAlertsCount,
-            previousValue = previousCount,
-            newValue = oldAlerts.size.toDouble(),
-        )
 
         return PriceAlertCreateResult.Success
     }

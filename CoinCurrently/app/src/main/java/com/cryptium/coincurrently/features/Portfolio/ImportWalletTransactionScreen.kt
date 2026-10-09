@@ -31,8 +31,6 @@ import com.cryptium.coincurrently.core.extensions.*
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
 import com.cryptium.coincurrently.sharedui.inputs.TextInputField
 import com.cryptium.coincurrently.app.NavigationViewModel
-import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
-import com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.features.CoinDetail.Sheets.SelectCoinSheet
 import com.cryptium.coincurrently.core.analytics.CurrencySelected
@@ -149,14 +147,9 @@ fun ImportWalletTransactionScreen(
                     },
                     import = {
                         scope.launch {
-                            val previousCount =
-                                PortfolioRepository.portfolio?.data?.data?.allTransactionsCount ?: 0
                             val importedId = viewModel.importWallet(context)
                             if (importedId != null) {
-                                navigationViewModel.pendingPortfolioPreviousTransactionCount = previousCount
                                 navigationViewModel.pendingPortfolioTransactionId = importedId.toString()
-
-                                AchievementManager.checkPortfolioTransactionUnlock(previousCount)
 
                                 dismiss(
                                     navigationViewModel = navigationViewModel,

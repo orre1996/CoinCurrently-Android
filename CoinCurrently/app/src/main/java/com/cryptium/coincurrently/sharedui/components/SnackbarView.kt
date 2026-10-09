@@ -39,7 +39,6 @@ import com.cryptium.coincurrently.sharedui.theme.trendDown
 import com.cryptium.coincurrently.sharedui.theme.trendUp
 import com.cryptium.coincurrently.core.extensions.satoshiMedium
 import kotlinx.coroutines.delay
-import kotlin.math.max
 enum class SnackBarType {
     SUCCESS, FAILURE
 }
@@ -63,8 +62,6 @@ fun SnackbarView(
     isTabbarHidden: Boolean,
     navBarHeight: Dp,
     systemNavbarHeight: Dp,
-    achievementSnackbarIsVisible: Boolean = false,
-    achievementSnackbarHeight: Dp = 0.dp,
     /** Increment when showing a new snackbar so a visible one re-slides from the bottom. */
     snackbarTrigger: Int = 0,
     onDismissRequest: () -> Unit = { },
@@ -74,17 +71,6 @@ fun SnackbarView(
 
     val icon = if (type == SnackBarType.SUCCESS) R.drawable.check_circle else R.drawable.x_circle
     val iconColor = if (type == SnackBarType.SUCCESS) MaterialTheme.colors.trendUp else MaterialTheme.colors.trendDown
-
-    val stackedOffset = if (achievementSnackbarIsVisible) {
-        max(achievementSnackbarHeight.value, 72f).dp + 12.dp
-    } else {
-        0.dp
-    }
-    val animatedStackedOffset by animateDpAsState(
-        targetValue = stackedOffset,
-        animationSpec = tween(durationMillis = SnackbarConstants.ANIMATION_DURATION_MS),
-        label = "snackbarStackedOffset",
-    )
 
     val targetBottomInsetY = if (isTabbarHidden) {
         systemNavbarHeight
@@ -130,7 +116,7 @@ fun SnackbarView(
                 start = 16.dp,
                 end = 16.dp,
                 top = 16.dp,
-                bottom = 16.dp + bottomInsetY + animatedStackedOffset,
+                bottom = 16.dp + bottomInsetY,
             )
             .offset(y = offsetY.value.dp)
             .clip(RoundedCornerShape(100))

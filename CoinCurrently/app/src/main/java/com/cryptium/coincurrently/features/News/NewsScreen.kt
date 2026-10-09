@@ -120,9 +120,6 @@ fun NewsScreen(
     }
 
     val onNewsUrlPressed: (String) -> Unit = { url ->
-        com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager.increment(
-            com.cryptium.coincurrently.features.Achievements.Models.AchievementCounterKey.newsArticlesOpened
-        )
         AnalyticsManager.log(
             WebViewOpened(fromScreen = ScreenLabel.News, url = url),
         )

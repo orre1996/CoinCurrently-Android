@@ -152,9 +152,6 @@ fun NftDetailScreen(
     }
 
     LaunchedEffect(Unit) {
-        com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager.increment(
-            com.cryptium.coincurrently.features.Achievements.Models.AchievementCounterKey.nftDetailsViewed
-        )
         viewModel.refresh(context)
     }
 

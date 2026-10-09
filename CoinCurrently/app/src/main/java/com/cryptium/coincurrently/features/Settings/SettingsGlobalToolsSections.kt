@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.cryptium.coincurrently.BuildConfig
 import com.cryptium.coincurrently.core.localization.AppLanguagePreference
 import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.models.AppColorScheme
@@ -120,7 +119,6 @@ internal fun GlobalSection(
 internal fun ToolsSection(
     navigateToCalculator: () -> Unit,
     navigateToPriceAlerts: () -> Unit,
-    navigateToAchievements: () -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.Start,
@@ -148,17 +146,6 @@ internal fun ToolsSection(
                 accessibilityText = Localization.string("Navigate to Price Alerts"),
             ) {
                 navigateToPriceAlerts.invoke()
-            }
-
-            if (BuildConfig.DEBUG) {
-                Separator()
-
-                SettingsSimpleCell(
-                    title = "Achievements",
-                    accessibilityText = Localization.string("Navigate to Achievements"),
-                ) {
-                    navigateToAchievements.invoke()
-                }
             }
         }
     }

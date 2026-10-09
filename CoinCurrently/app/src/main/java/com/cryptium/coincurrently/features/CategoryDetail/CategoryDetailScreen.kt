@@ -34,12 +34,6 @@ fun CategoryDetailScreen(
     val toplistScrollState = rememberLazyListState()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager.increment(
-            com.cryptium.coincurrently.features.Achievements.Models.AchievementCounterKey.sectorDetailsViewed
-        )
-    }
-
     BackHandler(onBack = {
         val scrollState = toplistScrollState
 

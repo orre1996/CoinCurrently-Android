@@ -39,8 +39,6 @@ import com.cryptium.coincurrently.sharedui.buttons.PrimaryButton
 import com.cryptium.coincurrently.sharedui.buttons.SecondaryButton
 import com.cryptium.coincurrently.sharedui.inputs.CustomFreeInputField
 import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
-import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
-import com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager
 import com.cryptium.coincurrently.core.extensions.*
 import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
@@ -244,19 +242,8 @@ fun AddSwapTransactionScreen(
                         )
                     }, submit = {
                         scope.launch {
-                            val previousCount = if (transaction == null) {
-                                PortfolioRepository.portfolio?.data?.data?.allTransactionsCount ?: 0
-                            } else {
-                                -1
-                            }
                             val swap = viewModel.addTransaction(context)
                             if (swap != null) {
-                                navigationViewModel.pendingPortfolioPreviousTransactionCount = previousCount
-
-                                if (previousCount >= 0) {
-                                    AchievementManager.checkPortfolioTransactionUnlock(previousCount)
-                                }
-
                                 val symbol = viewModel.currencyDetail?.symbol?.uppercase() ?: "Coin"
                                 navigationViewModel.showSnackbar(
                                     context = context,

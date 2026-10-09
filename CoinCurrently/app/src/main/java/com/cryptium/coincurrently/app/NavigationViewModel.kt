@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -93,15 +92,8 @@ class NavigationViewModel(context: Context): ViewModel() {
     var snackbarTrigger by mutableIntStateOf(0)
     var snackbarCallback: () -> Unit = { }
 
-    var achievementSnackbarTrigger by mutableIntStateOf(0)
-    var achievementTitle by mutableStateOf("")
-    var achievementLevelName by mutableStateOf("")
-    var achievementSnackbarIsVisible by mutableStateOf(false)
-    var achievementSnackbarHeight by mutableFloatStateOf(0f)
-
     /** Portfolio event id (UUID string); consumed in PortfolioScreen after lookup (manual tx, swap, or wallet import). */
     var pendingPortfolioTransactionId by mutableStateOf<String?>(null)
-    var pendingPortfolioPreviousTransactionCount by mutableIntStateOf(-1)
     /** Opens transaction details on Portfolio after "View Details" on a snackbar shown from a transaction screen. */
     var pendingPortfolioOpenTransactionId by mutableStateOf<String?>(null)
 
@@ -168,15 +160,6 @@ class NavigationViewModel(context: Context): ViewModel() {
                 showSnackbar.value = false
             }, 5000L)
         }, 500L)
-    }
-
-    fun showAchievementSnackbar(
-        achievementTitle: String,
-        levelName: String,
-    ) {
-        this.achievementTitle = achievementTitle
-        this.achievementLevelName = levelName
-        achievementSnackbarTrigger += 1
     }
 
     @JvmOverloads

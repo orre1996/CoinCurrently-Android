@@ -36,7 +36,6 @@ fun screenLabelFromRoute(routeSuffix: String?): ScreenLabel =
         "Widgets" -> ScreenLabel.Widgets
         "Calculator" -> ScreenLabel.Converter
         "PriceAlerts" -> ScreenLabel.PriceAlerts
-        "Achievements" -> ScreenLabel.Achievements
         "Referral" -> ScreenLabel.Referral
         "SelectCoin" -> ScreenLabel.Search
         else -> ScreenLabel.MainFlow

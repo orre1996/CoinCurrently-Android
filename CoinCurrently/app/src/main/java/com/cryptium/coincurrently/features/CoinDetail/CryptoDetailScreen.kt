@@ -235,9 +235,6 @@ fun CryptoDetailScreen(
     }
 
     LaunchedEffect(Unit) {
-        com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager.increment(
-            com.cryptium.coincurrently.features.Achievements.Models.AchievementCounterKey.cryptoDetailsViewed
-        )
         coroutineScope {
             launch { viewModel.getPriceAlerts() }
             launch { viewModel.getGlobalMarketData() }
@@ -313,9 +310,7 @@ fun CryptoDetailScreen(
     val pendingPortfolioTransactionId = navigationViewModel.pendingPortfolioTransactionId
     LaunchedEffect(pendingPortfolioTransactionId) {
         val idStr = pendingPortfolioTransactionId ?: return@LaunchedEffect
-        val previousTransactionCount = navigationViewModel.pendingPortfolioPreviousTransactionCount
         navigationViewModel.pendingPortfolioTransactionId = null
-        navigationViewModel.pendingPortfolioPreviousTransactionCount = -1
 
         launch {
             viewModel.getPortfolio()
@@ -388,12 +383,6 @@ fun CryptoDetailScreen(
             }
 
             else -> { }
-        }
-
-        if (previousTransactionCount >= 0) {
-            kotlinx.coroutines.delay(150)
-            com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager
-                .checkPortfolioTransactionUnlock(previousTransactionCount)
         }
     }
 

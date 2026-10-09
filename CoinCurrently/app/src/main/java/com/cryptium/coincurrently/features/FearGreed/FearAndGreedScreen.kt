@@ -106,9 +106,6 @@ fun FearAndGreedScreen(
     val swipeScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager.increment(
-            com.cryptium.coincurrently.features.Achievements.Models.AchievementCounterKey.fearGreedVisits
-        )
         viewModel.getFearGreed()
     }
 

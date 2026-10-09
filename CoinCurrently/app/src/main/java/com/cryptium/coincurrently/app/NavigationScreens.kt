@@ -204,9 +204,6 @@ sealed class NavigationScreens() {
     object PriceAlerts: NavigationScreens()
 
     @Serializable
-    object Achievements: NavigationScreens()
-
-    @Serializable
     data class Referral(val referralCode: String = ""): NavigationScreens()
 }
 
@@ -237,7 +234,6 @@ fun NavigationScreens.getRouteString(): String {
         is NavigationScreens.CurrencySelector -> "CurrencySelector"
         is NavigationScreens.Calculator -> "Calculator"
         is NavigationScreens.PriceAlerts -> "PriceAlerts"
-        is NavigationScreens.Achievements -> "Achievements"
         is NavigationScreens.Referral -> "Referral"
         is NavigationScreens.Search -> "SelectCoin"
     }

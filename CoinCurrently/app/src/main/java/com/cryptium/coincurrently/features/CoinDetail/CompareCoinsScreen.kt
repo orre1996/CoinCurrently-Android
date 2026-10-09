@@ -149,9 +149,6 @@ fun CompareCoinsScreen(
     })
 
     LaunchedEffect(Unit) {
-        com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager.increment(
-            com.cryptium.coincurrently.features.Achievements.Models.AchievementCounterKey.compareSessions
-        )
         viewModel.setStartData()
         coroutineScope {
             launch { viewModel.refresh(showRefreshIndicator = false) }

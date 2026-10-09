@@ -121,9 +121,6 @@ fun ExchangeDetailScreen(
     }
 
     LaunchedEffect(Unit) {
-        com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager.increment(
-            com.cryptium.coincurrently.features.Achievements.Models.AchievementCounterKey.exchangeDetailsViewed
-        )
         launch { viewModel.getToplist() }
         launch { viewModel.refresh() }
     }

@@ -148,9 +148,6 @@ fun GasFeesScreen(
     var showCostInfoSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager.increment(
-            com.cryptium.coincurrently.features.Achievements.Models.AchievementCounterKey.gasFeesVisits
-        )
         coroutineScope {
             launch { viewModel.getGasFees() }
             launch { viewModel.getGasFeePrices() }

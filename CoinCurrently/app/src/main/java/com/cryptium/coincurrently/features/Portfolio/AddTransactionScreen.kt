@@ -52,8 +52,6 @@ import com.cryptium.coincurrently.core.analytics.SheetLabel
 import com.cryptium.coincurrently.core.analytics.SheetOpened
 import com.cryptium.coincurrently.features.Settings.CurrencySelector.CurrencyOptionsSheet
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
-import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
-import com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager
 import com.cryptium.coincurrently.features.Portfolio.Enums.PortfolioTransactionType
 import com.cryptium.coincurrently.features.Portfolio.Sheets.DateRangePickerSheet
 import com.cryptium.coincurrently.features.Portfolio.Sheets.TimeRangePickerSheet
@@ -220,19 +218,8 @@ fun AddTransactionScreen(
                         )
                     },                     submit = {
                         scope.launch {
-                            val previousCount = if (transaction == null) {
-                                PortfolioRepository.portfolio?.data?.data?.allTransactionsCount ?: 0
-                            } else {
-                                -1
-                            }
                             val newTransaction = viewModel.addTransaction(context)
                             if (newTransaction != null) {
-                                navigationViewModel.pendingPortfolioPreviousTransactionCount = previousCount
-
-                                if (previousCount >= 0) {
-                                    AchievementManager.checkPortfolioTransactionUnlock(previousCount)
-                                }
-
                                 val symbol = viewModel.currencyDetail?.symbol?.uppercase() ?: "Coin"
                                 navigationViewModel.showSnackbar(
                                     context = context,

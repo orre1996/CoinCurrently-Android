@@ -21,7 +21,6 @@ enum class ScreenLabel(val wire: String) {
     Widgets("Widgets"),
     Converter("Converter"),
     PriceAlerts("PriceAlerts"),
-    Achievements("Achievements"),
     Referral("Referral"),
     Settings("Settings"),
     Home("Home"),

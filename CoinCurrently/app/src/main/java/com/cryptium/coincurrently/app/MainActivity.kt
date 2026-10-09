@@ -49,7 +49,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.core.config.AppLocale
-import com.cryptium.coincurrently.BuildConfig
 import com.cryptium.coincurrently.sharedui.navigation.BackgroundGradient
 import com.cryptium.coincurrently.sharedui.navigation.BottomNavigationBar
 import com.cryptium.coincurrently.app.NavigationEntries
@@ -71,10 +70,8 @@ import com.cryptium.coincurrently.sharedui.sheets.WebViewSheet
 import com.cryptium.coincurrently.core.models.SelectedStartTab
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.persistence.StorageKeys
-import com.cryptium.coincurrently.features.Achievements.Managers.AchievementNavigationManager
 import com.cryptium.coincurrently.features.Settings.ViewModels.AuthenticationStatus
 import com.cryptium.coincurrently.features.Settings.ViewModels.BiometricViewModel
-import com.cryptium.coincurrently.features.Achievements.Views.AchievementSnackbarView
 import com.cryptium.coincurrently.sharedui.sheets.ForceUpdateScreen
 import com.cryptium.coincurrently.sharedui.loading.LoadingScreen
 import com.cryptium.coincurrently.sharedui.components.SnackBarType
@@ -97,7 +94,6 @@ import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import kotlin.math.max
 import kotlin.time.Duration.Companion.seconds
 
 class MainActivity: FragmentActivity() {
@@ -185,12 +181,6 @@ class MainActivity: FragmentActivity() {
                 var isLocked by remember { mutableStateOf(false) }
                 var needsToUpdate by remember { mutableStateOf(false) }
                 var showWhatsNew by remember { mutableStateOf(false) }
-
-                LaunchedEffect(Unit) {
-                    if (BuildConfig.DEBUG) {
-                        AchievementNavigationManager.register(navigationViewModel)
-                    }
-                }
 
                 LaunchedEffect(Unit) {
                     launch {
@@ -365,15 +355,6 @@ class MainActivity: FragmentActivity() {
                                 systemNavigationBarStartInset = displayCutoutStartInset,
                                 systemNavigationBarEndInset = displayCutoutEndInset,
                             )
-
-                            if (BuildConfig.DEBUG) {
-                                AchievementSnackBarView(
-                                    navigationViewModel = navigationViewModel,
-                                    isNavBarVisible = isNavBarVisible,
-                                    navBarHeight = realNavbarHeight.value,
-                                    systemNavbarHeight = navBarHeight,
-                                )
-                            }
 
                             SnackBarView(
                                 navigationViewModel,
@@ -770,43 +751,12 @@ class MainActivity: FragmentActivity() {
 }
 
 @Composable
-private fun AchievementSnackBarView(
-    navigationViewModel: NavigationViewModel,
-    isNavBarVisible: Boolean,
-    navBarHeight: Dp,
-    systemNavbarHeight: Dp,
-) {
-    AchievementSnackbarView(
-        snackbarTrigger = navigationViewModel.achievementSnackbarTrigger,
-        achievementTitle = navigationViewModel.achievementTitle,
-        levelName = navigationViewModel.achievementLevelName,
-        isTabbarHidden = !isNavBarVisible,
-        navBarHeight = navBarHeight,
-        systemNavbarHeight = systemNavbarHeight,
-        onVisibilityChanged = { navigationViewModel.achievementSnackbarIsVisible = it },
-        onHeightChanged = { navigationViewModel.achievementSnackbarHeight = it },
-        onDismissComplete = {
-            navigationViewModel.achievementTitle = ""
-            navigationViewModel.achievementLevelName = ""
-            navigationViewModel.achievementSnackbarIsVisible = false
-            navigationViewModel.achievementSnackbarHeight = 0f
-        },
-    )
-}
-
-@Composable
 private fun SnackBarView(
     navigationViewModel: NavigationViewModel,
     isNavBarVisible: Boolean,
     navBarHeight: Dp,
     systemNavbarHeight: Dp
 ) {
-    val achievementSnackbarHeight = if (navigationViewModel.achievementSnackbarIsVisible) {
-        max(navigationViewModel.achievementSnackbarHeight, 72f).dp
-    } else {
-        0.dp
-    }
-
     SnackbarView(
         showSnackBar = navigationViewModel.showSnackbar.value,
         message = navigationViewModel.snackbarText,
@@ -815,8 +765,6 @@ private fun SnackBarView(
         isTabbarHidden = !isNavBarVisible,
         navBarHeight = navBarHeight,
         systemNavbarHeight = systemNavbarHeight,
-        achievementSnackbarIsVisible = navigationViewModel.achievementSnackbarIsVisible,
-        achievementSnackbarHeight = achievementSnackbarHeight,
         snackbarTrigger = navigationViewModel.snackbarTrigger,
         onDismissRequest = { navigationViewModel.showSnackbar.value = false },
         buttonAction = {

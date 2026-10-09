@@ -88,8 +88,6 @@ import com.cryptium.coincurrently.app.refreshCachedSectionsAfterCurrencyChange
 import com.cryptium.coincurrently.sharedui.components.appShareMessage
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.StorageKeys
-import com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager
-import com.cryptium.coincurrently.features.Achievements.Models.AchievementMetric
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.core.analytics.AppShareActivityCompleted
 import com.cryptium.coincurrently.core.analytics.BuyProAction
@@ -168,10 +166,6 @@ fun SettingsScreen(
 
     LaunchedEffect(currentSubscription) {
         webSocketEnabled = UserPreferences.isWebSocketEnabled(hasPro = currentSubscription != null)
-    }
-
-    LaunchedEffect(Unit) {
-        AchievementManager.preloadProgress()
     }
 
     var isSelectingCurrency by remember { mutableStateOf(false) }
@@ -351,17 +345,6 @@ fun SettingsScreen(
                             NavigationScreens.PriceAlerts
                         )
                     },
-                    navigateToAchievements = {
-                        AnalyticsManager.log(
-                            Navigate(
-                                fromScreen = ScreenLabel.Settings,
-                                toScreen = ScreenLabel.Achievements,
-                            ),
-                        )
-                        navigationViewModel.navigate(
-                            NavigationScreens.Achievements
-                        )
-                    },
                 )
 
                 SecuritySection(
@@ -371,18 +354,10 @@ fun SettingsScreen(
                             context.getActivity()?.let {
                                 biometricViewModel.setPrompt(context, it) {
                                     if (it == AuthenticationStatus.SUCCESS) {
-                                        val wasEnabled = isBiometricEnabled
                                         isBiometricEnabled = !isBiometricEnabled
                                         UserPreferences.setIsBiometricAuthenticationEnabled(
                                             isBiometricEnabled
                                         )
-                                        if (!wasEnabled && isBiometricEnabled) {
-                                            AchievementManager.checkMetricUnlock(
-                                                metric = AchievementMetric.authenticationEnabled,
-                                                previousValue = 0.0,
-                                                newValue = 1.0,
-                                            )
-                                        }
                                         if (isBiometricEnabled) {
                                             AnalyticsManager.log(
                                                 EnabledFaceId(ScreenLabel.Settings),

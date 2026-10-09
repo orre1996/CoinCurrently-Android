@@ -8,8 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.features.Referral.ReferralRepository
-import com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager
-import com.cryptium.coincurrently.features.Achievements.Models.AchievementCounterKey
 import kotlinx.coroutines.launch
 import com.cryptium.coincurrently.core.networking.ResponseModels.RedeemCodeResult
 import com.cryptium.coincurrently.core.networking.ResponseModels.ReferralCodeResult
@@ -85,10 +83,6 @@ class ReferralViewModel(
             redeemSucceeded = result == RedeemCodeResult.Success
             redeemErrorMessage = result.errorMessage
             isRedeemingCode = false
-
-            if (result == RedeemCodeResult.SelfRedeem) {
-                AchievementManager.increment(AchievementCounterKey.selfRedeems)
-            }
 
             if (redeemSucceeded) {
                 redeemCodeInput = ""

@@ -10,8 +10,6 @@ import com.cryptium.coincurrently.features.Home.Trending.TrendingRepository
 import com.cryptium.coincurrently.features.Home.WinnersLosers.WinnersLosersRepository
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
-import com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager
-import com.cryptium.coincurrently.features.Achievements.Models.AchievementMetric
 import com.cryptium.coincurrently.sharedui.models.CachedData
 import com.cryptium.coincurrently.core.networking.CacheUrls
 import com.cryptium.coincurrently.core.networking.MainRepository
@@ -131,9 +129,6 @@ object ToplistRepository {
             favorites = arrayListOf()
         }
 
-        val previousCount = favorites?.size?.toDouble() ?: 0.0
-        val isAdding = favorites?.none { it.id == item.id } != false
-
         favorites?.firstOrNull { it.id == item.id }?.let {
             favorites?.removeAll { it.id == item.id }
         } ?: run {
@@ -143,14 +138,6 @@ object ToplistRepository {
         favorites?.let {
             StorageManager.set(StorageKeys.FAVORITE, CachedData(it, Date()))
             UserPreferences.setFavorites(favorites?.mapNotNull { it.id } ?: listOf())
-        }
-
-        if (isAdding) {
-            AchievementManager.checkMetricUnlock(
-                metric = AchievementMetric.favoritesCount,
-                previousValue = previousCount,
-                newValue = previousCount + 1,
-            )
         }
 
         return favorites

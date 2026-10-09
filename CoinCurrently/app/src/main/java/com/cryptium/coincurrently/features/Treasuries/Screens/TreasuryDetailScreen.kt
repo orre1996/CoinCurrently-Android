@@ -119,9 +119,6 @@ fun TreasuryDetailScreen(
     }
 
     LaunchedEffect(Unit) {
-        com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager.increment(
-            com.cryptium.coincurrently.features.Achievements.Models.AchievementCounterKey.treasuryVisits
-        )
         viewModel.setStartData()
         viewModel.refresh(showReload = false)
     }

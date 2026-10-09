@@ -2,8 +2,6 @@ package com.cryptium.coincurrently.features.Referral
 import android.util.Log
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.sharedui.models.CachedData
-import com.cryptium.coincurrently.features.Achievements.Managers.AchievementManager
-import com.cryptium.coincurrently.features.Achievements.Models.AchievementMetric
 import com.google.gson.reflect.TypeToken
 import com.cryptium.coincurrently.core.networking.CacheUrls
 import com.cryptium.coincurrently.core.networking.MainRepository
@@ -64,8 +62,6 @@ object ReferralRepository {
     }
 
     suspend fun getUser(ignoreCache: Boolean = false): UserResponse? {
-        val previousCount = user?.referralCount?.toDouble() ?: 0.0
-
         if (ignoreCache) {
             RetrofitBuilder.removeCached(CacheUrls.getUser())
         }
@@ -81,15 +77,6 @@ object ReferralRepository {
 
         val response = MainRepository.getUser()
         user = response
-
-        if (response != null) {
-            AchievementManager.checkMetricUnlock(
-                metric = AchievementMetric.referralsCompleted,
-                previousValue = previousCount,
-                newValue = response.referralCount.toDouble(),
-            )
-        }
-
         return response
     }
 }

@@ -394,13 +394,6 @@ fun NavigationEntries(
             )
         }
 
-        composable<NavigationScreens.Achievements> {
-            com.cryptium.coincurrently.features.Achievements.AchievementsScreen(
-                navigationViewModel = navigationViewModel,
-                modifier = childScreenBottomOffsetModifier,
-            )
-        }
-
         composable<NavigationScreens.Feedback> {
             FeedbackScreen(
                 navigationViewModel,
