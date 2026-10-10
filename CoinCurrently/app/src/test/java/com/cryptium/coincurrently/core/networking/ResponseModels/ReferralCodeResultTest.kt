@@ -1,10 +1,15 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
+import com.cryptium.coincurrently.testsupport.MainDispatcherRule
 import okhttp3.Headers.Companion.toHeaders
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Rule
 import org.junit.Test
 
 class ReferralCodeResultTest {
+
+    @get:Rule
+    val mainDispatcher = MainDispatcherRule()
 
     @Test
     fun decode_readsReferralCodeHeaders() {
