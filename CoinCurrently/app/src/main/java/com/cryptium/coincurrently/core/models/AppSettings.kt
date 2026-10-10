@@ -1,22 +1,15 @@
 package com.cryptium.coincurrently.core.models
 
-enum class PreferredTimeframe(value: Int) {
-    DAILY(0),
-    WEEKLY(1),
-    MONTHLY(2);
+enum class PreferredTimeframe {
+    DAILY,
+    WEEKLY,
+    MONTHLY;
 
     val title: String
         get() = when (this) {
             DAILY -> "Daily"
             WEEKLY -> "Weekly"
             MONTHLY -> "Monthly"
-        }
-
-    val changeTitle: String
-        get() = when (this) {
-            DAILY -> "24h:"
-            WEEKLY -> "7d:"
-            MONTHLY -> "30d:"
         }
 
     val changeLabel: String
@@ -26,18 +19,6 @@ enum class PreferredTimeframe(value: Int) {
             MONTHLY -> "30d"
         }
 
-    val daysRaw: String
-        get() = when (this) {
-            DAILY -> "1"
-            WEEKLY -> "7"
-            MONTHLY -> "30"
-        }
-
-    fun chartIndex(fromCryptoDetail: Boolean = false): Int = when (this) {
-        DAILY -> if (fromCryptoDetail) 4 else 0
-        WEEKLY -> if (fromCryptoDetail) 5 else 1
-        MONTHLY -> if (fromCryptoDetail) 6 else 2
-    }
 }
 
 enum class AppColorScheme(val displayName: String) {

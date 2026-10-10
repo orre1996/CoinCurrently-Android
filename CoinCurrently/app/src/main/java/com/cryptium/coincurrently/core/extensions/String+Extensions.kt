@@ -44,10 +44,6 @@ enum class DateFormat(val pattern: String) {
     hhmma("hh:mm a")
 }
 
-fun String.isNumeric(): Boolean {
-    return this.toDoubleOrNull() != null
-}
-
 val String.withoutSymbol: String
     get() {
     return this

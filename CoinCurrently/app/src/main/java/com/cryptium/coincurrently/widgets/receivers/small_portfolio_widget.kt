@@ -124,21 +124,6 @@ internal fun createSmallPortfolioRemoteViews(
     return views
 }
 
-internal fun bindMediumPortfolioCell(
-    parent: RemoteViews,
-    containerId: Int,
-    widgetData: PortfolioWidgetData,
-    context: Context,
-) {
-    val cellViews = createSmallPortfolioRemoteViews(
-        context = context,
-        widgetData = widgetData,
-        embeddedInMedium = true,
-    )
-    parent.removeAllViews(containerId)
-    parent.addView(containerId, cellViews)
-}
-
 internal fun buildPortfolioList(): List<Pie> {
     val cachedPortfolio = PortfolioRepository.portfolio ?: return emptyList()
     val piesData = cachedPortfolio.data

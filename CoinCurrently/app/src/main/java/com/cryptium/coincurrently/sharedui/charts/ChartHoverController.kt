@@ -65,20 +65,11 @@ class ChartHoverController {
     fun clearHover() {
         isDragging = false
     }
-
-    fun resetHoverValues() {
-        hoverHelper.resetValues()
-    }
 }
 
 fun ChartHoverController.currentHoverXPosition(chartWidth: Dp): Dp {
     if (chartWidth.value <= 0f) return 0.dp
     return hoverHelper.currentHoverXPosition(chartWidth, dragPosition.value)
-}
-
-fun ChartHoverController.hoverDragIndex(chartWidth: Dp, pointCount: Int): Int {
-    if (pointCount <= 1 || chartWidth.value <= 0f) return 0
-    return lineChartIndexFromPlotX(currentHoverXPosition(chartWidth), chartWidth, pointCount)
 }
 
 fun ChartHoverController.dragPositions(

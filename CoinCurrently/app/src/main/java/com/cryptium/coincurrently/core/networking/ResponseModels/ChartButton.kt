@@ -23,20 +23,6 @@ enum class TimeCharts(val label: String) {
     sixMonths("6M"),
     twoYears("2Y");
 
-    fun timeframeFormatted(): String {
-        return when (this) {
-            anHour-> "1h:"
-            aDay -> "1d:"
-            aWeek -> "7d:"
-            aMonth -> "30d:"
-            threeMonths -> "3m"
-            aYear -> "1y"
-            max -> "All"
-            sixMonths -> "6m:"
-            twoYears -> "2y:"
-        }
-    }
-
     val timeAgoText: String
         get() {
             return when (this) {

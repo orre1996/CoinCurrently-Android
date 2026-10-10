@@ -20,14 +20,6 @@ data class PortfolioResponse(
     var importTransactions: ArrayList<Transaction>? = arrayListOf()
 )
 
-fun PortfolioResponse.getCurrentAmount(withTransfers: Boolean = true): Double {
-    val buyAmount = buyTransactions.orEmpty().sumOf { it.amount }
-    val inTransactions = if(withTransfers) inTransferTransactions.orEmpty().sumOf { it.amount } else 0.0
-    val sellAmount = sellTransactions.orEmpty().sumOf { it.amount }
-    val outTransactions = if(withTransfers) outTransferTransactions.orEmpty().sumOf { it.amount } else 0.0
-    return (amount ?: 0.0) + buyAmount + inTransactions - sellAmount - outTransactions
-}
-
 fun PortfolioResponse.migrateToNewPortfolioModel(): PortfolioModel {
     val transactions = mutableListOf<PortfolioTransaction>()
     val defaultCurrency = currency ?: UserPreferences.getSelectedCurrency().code

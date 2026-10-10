@@ -90,11 +90,6 @@ class FirebaseManager {
             return FirebaseRemoteConfig.getInstance().getBoolean(key.key)
         }
 
-        suspend fun getConfigString(key: RemoteConfigKeys): String? {
-            ensureRemoteConfigFetched()
-            return FirebaseRemoteConfig.getInstance().getString(key.key).takeIf { it.isNotBlank() }
-        }
-
         /**
          * FirebaseNetworkException often happens even when the device "has connection" because of:
          * - Captive portals (WiFi that requires login), slow or flaky networks, timeouts

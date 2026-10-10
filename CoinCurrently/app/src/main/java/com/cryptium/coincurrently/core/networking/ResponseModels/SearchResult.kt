@@ -54,28 +54,6 @@ data class SearchResult(
             market_cap_rank = market_cap_rank
         )
     
-    val toNft: NFTToplist
-        get() = NFTToplist(
-            id = id,
-            name = name,
-            image = Logo(
-                thumb = thumb,
-                small = thumb,
-                large = large
-            ),
-            contract_address = null,
-            asset_platform_id = null,
-            description = null,
-            native_currency = null,
-            floor_price = null,
-            market_cap = null,
-            volume_24h = null,
-            floor_price_in_usd_24h_percentage_change = null,
-            number_of_unique_addresses = null,
-            number_of_unique_addresses_24h_percentage_change = null,
-            total_supply = null
-        )
-    
     val toExchange: ExchangeList
         get() = ExchangeList(
             id = id,

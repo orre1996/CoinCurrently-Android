@@ -12,7 +12,6 @@ import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransac
 import com.cryptium.coincurrently.features.Portfolio.Models.TransactionType
 import com.cryptium.coincurrently.features.Portfolio.Models.TransferType
 import com.cryptium.coincurrently.core.extensions.getAmount
-import com.cryptium.coincurrently.core.extensions.getTransferType
 import com.cryptium.coincurrently.core.extensions.sumAmounts
 import com.cryptium.coincurrently.core.models.PreferredTimeframe
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction

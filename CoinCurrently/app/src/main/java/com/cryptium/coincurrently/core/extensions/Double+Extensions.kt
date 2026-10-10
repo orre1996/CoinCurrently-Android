@@ -598,57 +598,6 @@ fun roundUp(number: BigDecimal, near: BigDecimal): BigDecimal {
     return ((number.toDouble() / near.toDouble()).roundToLong() * near.toLong()).toDouble().toBigDecimal()
 }
 
-fun Double.formatCurrencyFromThousand(withSymbol: Boolean = true, context: Context? = null, currencySelectionModel: CurrencySelectionModel? = null): String {
-    val shortings = arrayListOf("K", "M", "B", "T", "Q")
-    val currency = currencySelectionModel ?: UserPreferences.getSelectedCurrency(context)
-    val currencySuffix = if (currency?.suffix == true && withSymbol) " ${currency.symbol}" else ""
-
-    val long = kotlin.math.abs(this.toLong())
-    val priceString = long.toString()
-    val splitPrice = priceString.split(".").joinToString { it }
-
-    val priceLength = (splitPrice.length - 1) / 3
-    val suffix = if (kotlin.math.abs(this) > 999) shortings[min(priceLength - 1, 4)] else ""
-    val division = 10.toDouble().pow(priceLength.toDouble() * 3)
-    return "${(this / division).getFormattedCurrencyString(!(currency?.suffix ?: false) && withSymbol, context, currency)}$suffix$currencySuffix"
-}
-
-fun Double.formatCurrencyFromHundred(withSymbol: Boolean = true, context: Context? = null, fromPortfolio: Boolean = false, currencySelectionModel: CurrencySelectionModel? = null, fromPriceChange: Boolean = false): String {
-    val shortings = arrayListOf("K", "M", "B", "T", "Q")
-    val currency = currencySelectionModel ?: UserPreferences.getSelectedCurrency(context)
-    val currencySuffix = if (currency?.suffix == true && withSymbol) " ${currency.symbol}" else ""
-    val prefix = if (fromPortfolio && this > 0) "" else ""
-
-    val long = kotlin.math.abs(this.toLong())
-    val priceString = long.toString()
-    val splitPrice = priceString.split(".").joinToString { it }
-
-    var maxDigits = 7
-
-    if (fromPriceChange) {
-
-        if (kotlin.math.abs(this) < 1) {
-            maxDigits = 4
-        }
-
-        if ((kotlin.math.abs(this) < 0.0000001)) {
-            return (0.0).getFormattedCurrencyString(!(currency?.suffix ?: false), context, currency, maxDigits)+currencySuffix
-        } else if ((kotlin.math.abs(this) < 0.0001)) {
-            return (this * 1000).getFormattedCurrencyString(!(currency?.suffix ?: false), context, currency, maxDigits)?.trim() + "m" + currencySuffix
-        }
-
-    }
-
-    if (kotlin.math.abs(this) < 100000) {
-        return "$prefix${(this).getFormattedCurrencyString(!(currency?.suffix ?: false) && withSymbol, context, maximumDigits = maxDigits)}$currencySuffix"
-    }
-
-    val priceLength = (splitPrice.replace("-","").length - 1) / 3
-    val suffix = if (kotlin.math.abs(this) > 999) shortings[min(priceLength - 1, 4)] else ""
-    val division = 10.toDouble().pow(priceLength.toDouble() * 3)
-    return "$prefix${(this / division).getFormattedCurrencyString(!(currency?.suffix ?: false) && withSymbol, context, maximumDigits = maxDigits)}$suffix$currencySuffix"
-}
-
 fun Currency.getSelectedCurrency(context: Context? = null, currency: String? = null): Double? {
     when (currency ?: (UserPreferences.getSelectedCurrency(context).code)) {
         "AED" -> { return this.aed }

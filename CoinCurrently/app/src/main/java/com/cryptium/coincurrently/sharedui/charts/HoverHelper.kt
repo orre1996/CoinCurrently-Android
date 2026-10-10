@@ -33,13 +33,6 @@ class HoverHelper {
     private var tempHoverTimes = emptyList<String>()
     private var latestPositions = emptyList<Int>()
 
-    fun resetValues() {
-        offset = emptyList()
-        hoverPrices = emptyList()
-        hoverTimes = emptyList()
-        currentCandle = null
-    }
-
     fun getHoverPrice(
         chartWidth: Dp,
         touchXs: List<Dp>,

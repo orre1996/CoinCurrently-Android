@@ -24,7 +24,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.cryptium.coincurrently.sharedui.theme.cardBackground
 import com.cryptium.coincurrently.sharedui.theme.cardBorder
 import com.cryptium.coincurrently.sharedui.theme.mainGray
 import com.cryptium.coincurrently.sharedui.theme.mainRed

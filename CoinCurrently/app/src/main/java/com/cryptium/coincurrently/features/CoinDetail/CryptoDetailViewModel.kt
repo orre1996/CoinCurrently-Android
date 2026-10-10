@@ -35,7 +35,6 @@ import com.cryptium.coincurrently.sharedui.components.CustomImageView
 import com.cryptium.coincurrently.core.extensions.DateFormat
 import com.cryptium.coincurrently.core.extensions.convertStringToDate
 import com.cryptium.coincurrently.core.extensions.formatCurrency
-import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.getDifferenceInPercent
 import com.cryptium.coincurrently.core.extensions.groupedTransactions
 import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
@@ -47,9 +46,6 @@ import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
 import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.extensions.pieContaining
 import com.cryptium.coincurrently.sharedui.charts.HoverHelper
-import com.cryptium.coincurrently.sharedui.components.renderComposableToBitmap
-import com.cryptium.coincurrently.sharedui.components.saveBitmapToCache
-import com.cryptium.coincurrently.sharedui.components.shareBitmap
 import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketData
 import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketModel
 import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketRepository
@@ -61,7 +57,6 @@ import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.sharedui.models.CachedData
-import com.cryptium.coincurrently.features.CoinDetail.Views.About.CryptoDetailAboutShareChart
 import com.cryptium.coincurrently.core.models.ChartTypes
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioModel
@@ -805,23 +800,6 @@ class CryptoDetailViewModel(
     }
 
     // Private portfolio functions
-
-    fun testShare(context: Context) {
-        val activity = context.getActivity() ?: return
-
-        renderComposableToBitmap(
-            activity = activity,
-            composable = {
-                CryptoDetailAboutShareChart(this)
-            },
-            onBitmapReady = { bitmap ->
-                saveBitmapToCache(context, bitmap, cryptoInfo?.name ?: "coin")
-                val sym = cryptoInfo?.symbol?.trim()?.uppercase()
-                val label = if (!sym.isNullOrEmpty()) "\$$sym" else "\$COIN"
-                shareBitmap(context, bitmap, cryptoInfo?.name ?: "coin", trackedShareLabel = label)
-            }
-        )
-    }
 
     fun setNewSortOption(newSortOption: SortOption) {
         selectedSortOption = newSortOption

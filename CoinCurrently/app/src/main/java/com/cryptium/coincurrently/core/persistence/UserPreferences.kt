@@ -6,7 +6,6 @@ import com.cryptium.coincurrently.core.models.PreferredTimeframe
 import com.cryptium.coincurrently.core.models.SelectedStartTab
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.PortfolioResponse
-import com.cryptium.coincurrently.core.networking.ResponseModels.TimeCharts
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
@@ -159,10 +158,6 @@ object UserPreferences {
         return prefs()?.getInt("latestTab", 0) ?: 0
     }
 
-    fun getShowChangesInPercent(): Boolean {
-        return prefs()?.getBoolean("showChangesInPercent", true) ?: true
-    }
-
     fun setShowChangesInPercent(inPercent: Boolean) {
         prefs()?.edit()?.putBoolean("showChangesInPercent", inPercent)?.apply()
     }
@@ -257,29 +252,8 @@ object UserPreferences {
         prefs()?.edit()?.putString("moreHintDate", dateStringAddingDays(inDays))?.apply()
     }
 
-    fun getIsWidgetDarkModeEnabled(): Boolean {
-        return prefs()?.getBoolean("isWidgetDarkModeEnabled", true) ?: true
-    }
-
     fun setIsWidgetDarkModeEnabled(enabled: Boolean) {
         prefs()?.edit()?.putBoolean("isWidgetDarkModeEnabled", enabled)?.apply()
-    }
-
-    fun getPreferredTimeframeTitle(): String = getPreferredTimeframe().title
-
-    fun getPreferredTimeframeChangeTitle(): String = getPreferredTimeframe().changeTitle
-
-    fun getPreferredTimeframeIndex(fromCryptoDetail: Boolean = false): Int =
-        getPreferredTimeframe().chartIndex(fromCryptoDetail)
-
-    fun getPreferredTimeframeIndexRaw(): String = getPreferredTimeframe().daysRaw
-
-    fun getPreferredTimeframeValue(): TimeCharts {
-        return when (getPreferredTimeframe()) {
-            PreferredTimeframe.DAILY -> TimeCharts.aDay
-            PreferredTimeframe.WEEKLY -> TimeCharts.aWeek
-            PreferredTimeframe.MONTHLY -> TimeCharts.aMonth
-        }
     }
 
     fun preferredTimeFrameTextChange(): String = getPreferredTimeframe().changeLabel

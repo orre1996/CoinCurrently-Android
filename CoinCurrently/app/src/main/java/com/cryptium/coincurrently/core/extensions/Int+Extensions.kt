@@ -10,7 +10,6 @@ import com.cryptium.coincurrently.sharedui.theme.fear
 import com.cryptium.coincurrently.sharedui.theme.greed
 import com.cryptium.coincurrently.sharedui.theme.neutral
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
-import com.cryptium.coincurrently.features.Portfolio.Models.TransferType
 import com.cryptium.coincurrently.app.NavigationScreens
 
 val Int.trustColor: Color @Composable
@@ -31,15 +30,6 @@ val Int.selectedTabbarItem
             2 -> NavigationScreens.Market
             3 -> NavigationScreens.News
             else -> NavigationScreens.Settings
-        }
-    }
-
-val Int.getTransferType: TransferType
-    get() {
-        return when (this) {
-            0 -> { TransferType.OUTTYPE }
-            else ->{ TransferType.INTYPE }
-
         }
     }
 

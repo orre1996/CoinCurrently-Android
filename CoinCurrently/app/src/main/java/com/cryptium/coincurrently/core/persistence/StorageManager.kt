@@ -149,29 +149,6 @@ class StorageManager {
         }
 
         /**
-         * True when R8 stripped generic signatures and Gson filled nested values with
-         * [com.google.gson.internal.LinkedTreeMap] (or another raw [Map]) instead of a model.
-         */
-        fun isGsonTypeErasureArtifact(value: Any?): Boolean =
-            value is Map<*, *>
-
-        /**
-         * Clears [key] when the first list element is a raw Map (corrupt Gson parse).
-         * Returns true if the cache was cleared.
-         */
-        fun clearIfCorruptList(
-            key: StorageKeys,
-            list: List<*>?,
-            tag: String = "StorageManager"
-        ): Boolean {
-            val first = list?.firstOrNull() ?: return false
-            if (!isGsonTypeErasureArtifact(first)) return false
-            android.util.Log.e(tag, "Corrupt cache for $key element=${first.javaClass.name}; clearing")
-            removeKey(key)
-            return true
-        }
-
-        /**
          * Clears [key] when the first element is not [T] (e.g. LinkedTreeMap after R8 signature strip).
          * Returns true if the cache was cleared.
          */

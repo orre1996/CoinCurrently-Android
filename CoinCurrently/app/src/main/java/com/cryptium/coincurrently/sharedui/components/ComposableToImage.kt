@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Picture
-import android.media.MediaScannerConnection
 import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,6 @@ import com.cryptium.coincurrently.core.localization.Localization
 import coil.compose.LocalImageLoader
 import androidx.core.content.FileProvider
 import androidx.core.view.drawToBitmap
-import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 
 private const val APP_SHARE_IOS_URL = "https://tinyurl.com/ygznuo76"
@@ -203,33 +201,5 @@ fun shareBitmap(
         chooserLauncher.launch(chooser)
     } else {
         context.startActivity(chooser)
-    }
-}
-
-private suspend fun Bitmap.saveToDisk(context: Context): Uri {
-    val file = File(
-       // Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-        "screenshot-${System.currentTimeMillis()}.png"
-    )
-
-    // file.writeBitmap(this, Bitmap.CompressFormat.PNG, 100)
-
-    return scanFilePath(context, file.path) ?: throw Exception("File could not be saved")
-}
-
-
-private suspend fun scanFilePath(context: Context, filePath: String): Uri? {
-    return suspendCancellableCoroutine { continuation ->
-        MediaScannerConnection.scanFile(
-            context,
-            arrayOf(filePath),
-            arrayOf("image/png")
-        ) { _, scannedUri ->
-            if (scannedUri == null) {
-                continuation.cancel(Exception("File $filePath could not be scanned"))
-            } else {
-                //continuation.resume(scannedUri)
-            }
-        }
     }
 }

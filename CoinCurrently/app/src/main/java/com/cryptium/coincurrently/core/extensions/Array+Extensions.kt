@@ -84,14 +84,6 @@ fun List<PortfolioTransaction>.getAmount(
         this.sumAmounts(PortfolioTransactionType.TransferOut, withTransfers, after, before)
 }
 
-fun List<PortfolioTransaction>.afterDate(date: Date): List<PortfolioTransaction> {
-    return this.filtered(after = date)
-}
-
-fun List<PortfolioTransaction>.beforeDate(date: Date): List<PortfolioTransaction> {
-    return this.filtered(before = date)
-}
-
 val List<PortfolioModel>.defaultWalletName: String
     get() {
         @Suppress("UNCHECKED_CAST")
@@ -356,20 +348,6 @@ private fun priceMultiplier(
 
 private fun safeValue(value: Double): Double? {
     return if (value.isNaN() || value.isInfinite()) null else value
-}
-
-fun List<PortfolioTransaction>.getTotalFees(
-    prices: Map<String, Double>?,
-    showCurrency: String = UserPreferences.getSelectedCurrency().code
-): Double? {
-    val fees = mapNotNull { tx ->
-        tx.pricePerCoin?.let {
-            val multiplier = priceMultiplier(prices, showCurrency, tx.currency)
-            tx.fee * multiplier
-        }
-    }.sum()
-
-    return safeValue(fees) ?: 0.0
 }
 
 fun List<PortfolioTransaction>.getTotalCost(

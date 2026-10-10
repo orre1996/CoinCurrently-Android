@@ -36,22 +36,12 @@ enum class Chain(val id: String) {
         }
 
     companion object {
-        fun fromId(id: String?): Chain? =
-            values().firstOrNull { it.coinId.equals(id, ignoreCase = true) }
-
         fun fromString(value: String?): Chain? =
             values().firstOrNull { it.name.equals(value, ignoreCase = true) }
     }
 }
 
 @Serializable
-data class AddressImportResponse(
-    val address: String,
-    val balance: String,
-    val tokenInfos: List<TokenInfo>? = null
-)
-
-@Serializable()
 data class AddressImport(
     @Serializable(with = UUIDSerializer::class)
     override val id: UUID = UUID.randomUUID(),

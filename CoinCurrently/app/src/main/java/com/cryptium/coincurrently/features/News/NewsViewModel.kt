@@ -27,8 +27,6 @@ class NewsViewModel: ViewModel() {
 
     var newsCategory: NewsCategory by mutableStateOf(NewsCategory.General())
 
-    var selectedVideo: NewNewsItem? by mutableStateOf(null)
-
     init {
         newsCategory = newsRepository.newsCategory
 

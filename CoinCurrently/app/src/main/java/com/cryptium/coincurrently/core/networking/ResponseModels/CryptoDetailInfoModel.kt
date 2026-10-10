@@ -1,13 +1,6 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
 import com.cryptium.coincurrently.core.persistence.UserPreferences
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import com.cryptium.coincurrently.R
-import com.cryptium.coincurrently.sharedui.theme.neutral
-import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
-import com.cryptium.coincurrently.sharedui.theme.trendDown
-import com.cryptium.coincurrently.sharedui.theme.trendUp
 import com.cryptium.coincurrently.core.models.PreferredTimeframe
 import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.networking.ResponseModels.Currency
@@ -85,16 +78,6 @@ data class Ticker(
     var converted_volume: Currency? = null,
     var converted_last: Currency? = null
 )
-
-val Ticker.getTrustColor: Color @Composable
-    get() {
-        return when (trust_score) {
-            "green" -> MaterialTheme.colors.trendUp
-            "yellow" -> MaterialTheme.colors.neutral
-            "red" -> MaterialTheme.colors.trendDown
-            else -> MaterialTheme.colors.onSurfaceDim
-        }
-    }
 
 @Serializable
 data class Market(

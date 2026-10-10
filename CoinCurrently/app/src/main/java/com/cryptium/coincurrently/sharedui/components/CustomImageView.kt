@@ -7,9 +7,7 @@ import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.BaseRequestOptions
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.widgets.receivers.getDominantColor
@@ -20,33 +18,6 @@ class CustomImageView: androidx.appcompat.widget.AppCompatImageView {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-
-    fun setImage(url: String?, context: Context, options: BaseRequestOptions<*>? = null, fromNews: Boolean = false) {
-        if (options != null) {
-            try {
-                Glide.with(context)
-                    .load(url)
-                    .apply(options)
-                    .placeholder(if (fromNews) R.drawable.news_card_background else R.drawable.skeleton_background)
-                    .error(if (fromNews) R.drawable.news_card_background else R.drawable.skeleton_background)
-                    .fallback(if (fromNews) R.drawable.news_card_background else R.drawable.skeleton_background)
-                    .into(this)
-            } catch (e: Exception) {
-                return
-            }
-
-        } else {
-
-            try {
-                Glide.with(context)
-                    .load(url)
-                    .apply(RequestOptions().override(48, 48))
-                    .into(this)
-            } catch (e: Exception) {
-                return
-            }
-        }
-    }
 
     fun setImageWithCompletion(
         url: String?,

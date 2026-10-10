@@ -14,8 +14,4 @@ enum class FormattingThreshold(val rawValue: Double, val symbol: String) {
             "K" -> "thousand"
             else -> ""
         }
-
-    companion object {
-        val valuesDescending = values().sortedByDescending { it.rawValue }
-    }
 }

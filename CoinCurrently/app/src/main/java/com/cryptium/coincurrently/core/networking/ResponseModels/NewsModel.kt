@@ -1,37 +1,12 @@
 package com.cryptium.coincurrently.core.networking.ResponseModels
-import android.graphics.Bitmap
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.cryptium.coincurrently.R
-import com.cryptium.coincurrently.sharedui.theme.mainGray
-import com.cryptium.coincurrently.sharedui.theme.mainGreen
-import com.cryptium.coincurrently.sharedui.theme.mainRed
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.trendDown
 import com.cryptium.coincurrently.sharedui.theme.trendUp
 import com.google.gson.annotations.SerializedName
-import java.util.*
-
-data class RSS (
-    var channel: Channel? = Channel()
-)
-
-data class Channel (
-    var item: List<Item>? = listOf()
-)
-
-data class Item(
-    var title: String? = null,
-    var pubDate: String? = null,
-    var link: String? = null,
-    var summary: String? = null,
-    var description: String? = null,
-    var imageUrl: String? = null,
-    var author: String? = null,
-    var formattedDate: Date? = null,
-    var realImageBitmap: Bitmap? = null
-)
 
 data class NewNewsModel(
     @SerializedName("data")

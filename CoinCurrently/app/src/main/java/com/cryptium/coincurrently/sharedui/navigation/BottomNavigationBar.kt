@@ -48,7 +48,6 @@ import androidx.compose.ui.unit.Dp
 import com.cryptium.coincurrently.sharedui.components.Separator
 import com.cryptium.coincurrently.sharedui.modifiers.CappedFontScale
 import com.cryptium.coincurrently.sharedui.modifiers.DynamicTypeSizeCap
-import com.cryptium.coincurrently.sharedui.theme.cardBackground
 import com.cryptium.coincurrently.sharedui.theme.cardBorder
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceContainerDim
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceContainerDimmer

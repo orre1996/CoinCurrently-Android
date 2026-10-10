@@ -29,9 +29,6 @@ data class Sparkline(
     var price: List<Double>? = null
 )
 
-/** Bundle-safe key for LazyColumn / reorderable; never use [Toplist] as the key object. */
-fun Toplist.stableListKey(): String = id ?: symbol ?: name ?: ""
-
 /**
  * Current holding price for portfolio totals, pie slices, and asset rows.
  * Live vs-currency map first, then [current_price], then the last 7d sparkline point.

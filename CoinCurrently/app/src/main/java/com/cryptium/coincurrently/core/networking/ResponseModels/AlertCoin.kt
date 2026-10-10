@@ -8,12 +8,6 @@ enum class AlertDirection(val value: String) {
 
     @SerializedName("below")
     Below("below");
-
-    companion object {
-        fun fromValue(value: String): AlertDirection? {
-            return values().firstOrNull { it.value == value }
-        }
-    }
 }
 
 @Serializable

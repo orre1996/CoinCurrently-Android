@@ -4,16 +4,11 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="gray">#929292</color>
     <color name="white">#FFFFFF</color>
-    <color name="mainGray">#7b849d</color>
     <color name="primaryTextColor">#222A4F</color>
-    <color name="volumeUp">#99009600</color>
-    <color name="volumeDown">#99960000</color>
     <color name="skeletonBackground">#403A3A43</color>
     <color name="appStartupColor">#FF111111</color>
     <color name="cardBackground">#CED2EC</color>
-    <color name="fearGreedText">#363737</color>
     <color name="cardBorder">#5D7FE7</color>
-    <color name="cardBorderInvincible">#005D7FE7</color>
     <color name="headerColor">#D6D8D8</color>
     <!-- Matches MaterialTheme.colors.surfaceContainerLow in CustomColors.kt -->
     <color name="surface_container_low">#DEDAD9</color>

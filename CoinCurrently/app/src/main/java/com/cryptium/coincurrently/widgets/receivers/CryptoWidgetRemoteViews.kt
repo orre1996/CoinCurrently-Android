@@ -13,9 +13,7 @@ import coil.request.SuccessResult
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.app.MainActivity
 import com.cryptium.coincurrently.core.localization.Localization
-import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
-import com.cryptium.coincurrently.core.extensions.getSelectedCurrency
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import com.cryptium.coincurrently.core.persistence.UserPreferences
 import com.cryptium.coincurrently.widgets.config.WidgetConfigResolver
@@ -36,17 +34,6 @@ private data class SmallCryptoDisplayData(
     val price: String?,
     val change24h: Double?,
 )
-
-private fun CryptoDetailInfoModel.toSmallCryptoDisplayData(context: Context): SmallCryptoDisplayData {
-    return SmallCryptoDisplayData(
-        id = id,
-        name = name,
-        symbol = symbol?.uppercase(),
-        price = market_data?.current_price?.getSelectedCurrency(context)
-            ?.getFormattedCurrencyString(true, context),
-        change24h = market_data?.price_change_percentage_24h,
-    )
-}
 
 private fun Toplist.toSmallCryptoDisplayData(context: Context): SmallCryptoDisplayData {
     return SmallCryptoDisplayData(
@@ -82,18 +69,6 @@ internal suspend fun loadWidgetToplist(context: Context, coinIds: List<String>):
     if (coinIds.isEmpty()) return emptyList()
     val currencyCode = UserPreferences.getSelectedCurrency(context).code
     return CurrencyRepository.getMultipleCurrencies(coinIds.joinToString(","), currencyCode).orEmpty()
-}
-
-fun createSmallCryptoWidget(
-    data: CryptoDetailInfoModel?,
-    context: Context,
-    bitmap: Bitmap? = null,
-): RemoteViews {
-    return bindSmallCryptoWidgetViews(
-        data = data?.toSmallCryptoDisplayData(context),
-        context = context,
-        bitmap = bitmap,
-    )
 }
 
 fun createSmallCryptoWidgetWithToplist(

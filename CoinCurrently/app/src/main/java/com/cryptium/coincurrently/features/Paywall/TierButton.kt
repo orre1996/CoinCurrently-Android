@@ -22,8 +22,4 @@ data class TierButton(
             "TierButton requires either a Play ProductDetails or a RevenueCat StoreProduct"
         }
     }
-
-    fun copyWithTimeLeft(timeLeft: String): TierButton {
-        return this.copy(timeLeft = timeLeft)
-    }
 }

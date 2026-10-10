@@ -45,7 +45,6 @@ import com.cryptium.coincurrently.sharedui.buttons.CloseButton
 import com.cryptium.coincurrently.sharedui.components.DragHandler
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.core.extensions.poppinsSemibold
-import com.cryptium.coincurrently.sharedui.theme.primaryTextColorInverse
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerHigh
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
 import com.cryptium.coincurrently.sharedui.theme.tabbarAccent

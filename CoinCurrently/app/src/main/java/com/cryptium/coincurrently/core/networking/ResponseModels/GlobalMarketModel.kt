@@ -28,10 +28,6 @@ data class GlobalMarketData(
     var percentages: List<Percentages>? = listOf()
 )
 
-data class MarketCapPercentage(
-    var btc: Double? = null
-)
-
 @Serializable
 data class Percentages (
     val symbol: String?,

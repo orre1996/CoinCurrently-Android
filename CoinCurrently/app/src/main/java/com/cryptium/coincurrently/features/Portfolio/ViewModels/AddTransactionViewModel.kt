@@ -14,7 +14,6 @@ import com.cryptium.coincurrently.core.extensions.ofType
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
-import com.cryptium.coincurrently.features.Portfolio.WalletImportRepository
 import kotlinx.coroutines.launch
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
@@ -55,7 +54,6 @@ class AddTransactionViewModel(
     transaction: PortfolioTransaction?,
 ): ViewModel() {
     private val portfolioRepository by lazy { PortfolioRepository }
-    private val walletImportRepository by lazy { WalletImportRepository }
     private val currencyRepository by lazy { CurrencyRepository }
 
     var currencyDetail: CryptoDetailInfoModel? by mutableStateOf(currencyDetail)

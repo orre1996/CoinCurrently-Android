@@ -178,10 +178,6 @@ val Colors.primaryTextColor: Color
     get() = if (isLight) Color(0xFF222A4F) else Color(0xFFEAF3FF)
 
 @get:Composable
-val Colors.primaryTextColorInverse: Color
-    get() = if (isLight) Color(0xFFFFFFFF) else Color(0xFF36427A)
-
-@get:Composable
 val Colors.subtitle: Color
     get() = if (isLight) Color(0xB2222A4F) else Color(0xB2EAF3FF)
 
@@ -226,14 +222,6 @@ val Colors.mainGray: Color
 @get:Composable
 val Colors.overlay: Color
     get() = if (isLight) Color(0x66000000) else Color(0x99000000)
-
-@get:Composable
-val Colors.buttonTextColor: Color
-    get() = if (isLight) Color(0xFFFFFFFF) else Color(0xFF171B3D)
-
-@get:Composable
-val Colors.buttonBackgroundColor: Color
-    get() = if (isLight) Color(0xFF437DC8) else Color(0xFFA2BFF6)
 
 @get:Composable
 val Colors.transparent: Color
