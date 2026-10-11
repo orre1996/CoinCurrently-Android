@@ -1,11 +1,25 @@
-# CoinCurrently
+<p align="center">
+  <img alt="CoinCurrently. Privacy by default." src="docs/banner.jpg" width="900">
+</p>
 
-Android and widget app for following crypto markets, news, and a personal portfolio.
+<p align="center">
+  A private crypto tracker for markets, news, and your portfolio.<br>
+  No account, no ads, and your data stays on the device.
+</p>
 
-- [Website](https://coincurrently.app)
-- [Google Play](https://play.google.com/store/apps/details?id=com.cryptium.coincurrently)
-- [Privacy Policy](https://coincurrently.app/privacy)
-- [iOS](https://github.com/orre1996/CryptoCurrently)
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.cryptium.coincurrently"><strong>Android</strong></a>
+  ·
+  <a href="https://apps.apple.com/us/app/coincurrently-crypto-tracker/id1543974454"><strong>iOS</strong></a>
+  ·
+  <a href="https://github.com/orre1996/CryptoCurrently"><strong>iOS repo</strong></a>
+  ·
+  <a href="https://coincurrently.app"><strong>Website</strong></a>
+</p>
+
+<p align="center">
+  <img alt="Start every day fully informed, read the market like a pro, and always know where you stand" src="docs/preview.jpg" width="900">
+</p>
 
 The Android app lives in `CoinCurrently/app`. Widgets reuse the same domain types and repositories where they need shared data.
 
