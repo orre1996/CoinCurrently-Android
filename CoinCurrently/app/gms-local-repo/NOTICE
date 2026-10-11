@@ -1,0 +1,14 @@
+play-services-basement 18.11.0-safe
+
+This directory redistributes a modified build of Google's
+com.google.android.gms:play-services-basement:18.11.0.
+
+Upstream license: Apache License 2.0.
+The AAR includes Google's third_party_licenses.txt.
+
+Change from upstream: the helpers that call
+StrictMode.VmPolicy.Builder.permitUnsafeIntentLaunch() now invoke that method
+by reflection and keep the original builder if the method is missing. Stock
+18.11.0 crashes with NoSuchMethodError on incomplete ROMs that report API 31
+but do not implement the method. The replacement sources are in
+CoinCurrently/app/gms-patches/src.

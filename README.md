@@ -167,10 +167,12 @@ Packages match folders under `com.cryptium.coincurrently`. Widgets compile in `:
 - Android 12 (API 31)
 - Android Studio with Android Gradle Plugin 8.11 or later
 
+`CoinCurrently/app/gms-local-repo` redistributes a modified Apache-2.0 build of `play-services-basement`. The change and the upstream license are described in `CoinCurrently/app/gms-local-repo/NOTICE`.
+
 ## Local setup
 
 1. Open the `CoinCurrently/` Gradle project in Android Studio and sync.
-2. Copy `Config/secrets.example.properties` to `Config/secrets.properties` and fill in local values. That file is gitignored. Keys are `API_BASE_URL`, `BACKEND_API_KEY`, `REVENUECAT_PRODUCTION_API_KEY`, `REVENUECAT_TEST_API_KEY`, and `APTABASE_APP_KEY`.
+2. Copy `Config/secrets.example.properties` to `Config/secrets.properties` and fill in local values. That file is gitignored. Keys are `API_BASE_URL`, `BACKEND_API_KEY`, `REVENUECAT_PRODUCTION_API_KEY`, `REVENUECAT_TEST_API_KEY`, `APTABASE_APP_KEY`, and `SCHEDULER_PRICE_ALERT_SECRET`.
 3. Copy `Config/google-services.json.example` to `CoinCurrently/app/google-services.json` with your Firebase app config. That file is gitignored.
 4. Do not commit real keys, signing material, or a live `google-services.json`.
 
