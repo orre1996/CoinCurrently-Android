@@ -14,7 +14,7 @@
   <br>
   <a href="https://github.com/orre1996/CryptoCurrently">iOS repo</a>
   &nbsp;·&nbsp;
-  <a href="https://coincurrently.app">coincurrently.app</a>
+  <a href="https://coincurrently.app">Website</a>
   <br><br>
   <a href="https://github.com/orre1996/CoinCurrently-Android/actions/workflows/tests.yml"><img alt="tests status" src="https://github.com/orre1996/CoinCurrently-Android/actions/workflows/tests.yml/badge.svg"></a>
 </p>
