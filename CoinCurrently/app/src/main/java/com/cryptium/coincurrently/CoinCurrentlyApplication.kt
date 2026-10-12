@@ -38,7 +38,9 @@ class CoinCurrentlyApplication : Application() {
         UserPreferences.init(this)
         Localization.load(this)
         AppLanguageState.loadStored()
-        FirebaseApp.initializeApp(this)
+        if (BuildConfig.FIREBASE_ENABLED) {
+            FirebaseApp.initializeApp(this)
+        }
         AnalyticsManager.init(this)
 
         Purchases.logLevel = if (BuildConfig.DEBUG) LogLevel.DEBUG else LogLevel.INFO

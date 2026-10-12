@@ -65,6 +65,10 @@ class FirebaseManager {
 
         /** Fetches and activates remote config if it has not been loaded yet (mirrors iOS getConfig). */
         suspend fun ensureRemoteConfigFetched() {
+            if (!BuildConfig.FIREBASE_ENABLED) {
+                isRemoteConfigReady = true
+                return
+            }
             if (isRemoteConfigReady) return
             remoteConfigMutex.withLock {
                 if (isRemoteConfigReady) return
@@ -86,6 +90,7 @@ class FirebaseManager {
         }
 
         suspend fun getConfigBool(key: RemoteConfigKeys): Boolean? {
+            if (!BuildConfig.FIREBASE_ENABLED) return null
             ensureRemoteConfigFetched()
             return FirebaseRemoteConfig.getInstance().getBoolean(key.key)
         }
@@ -262,6 +267,10 @@ class FirebaseManager {
             context: Context,
             callback: (forceUpdate: Boolean) -> Unit
         ) {
+            if (!BuildConfig.FIREBASE_ENABLED) {
+                callback(false)
+                return
+            }
             try {
                 auth = FirebaseAuth.getInstance()
                 FirebaseApp.initializeApp(context)
@@ -278,6 +287,7 @@ class FirebaseManager {
         }
 
         fun getFirebaseToken(): String {
+            if (!BuildConfig.FIREBASE_ENABLED) return ""
             return try {
                 auth = FirebaseAuth.getInstance()
                 val signInTask = auth.signInAnonymously()
@@ -298,6 +308,7 @@ class FirebaseManager {
         }
 
         fun fetchFcmTokenIfNeeded(): Boolean {
+            if (!BuildConfig.FIREBASE_ENABLED) return false
             if (fcmToken.isNotEmpty()) {
                 return true
             }
@@ -356,6 +367,11 @@ class FirebaseManager {
             UserPreferences.setShowChangesInPercent(true)
             UserPreferences.setPreferredTimeframe(PreferredTimeframe.WEEKLY)
             StorageManager.clearCache()
+
+            if (!BuildConfig.FIREBASE_ENABLED) {
+                callback()
+                return
+            }
 
             FirebaseAuth.getInstance().currentUser?.delete()?.addOnCompleteListener {
                 callback.invoke()

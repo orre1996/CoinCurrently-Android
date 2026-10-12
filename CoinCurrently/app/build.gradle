@@ -4,12 +4,7 @@ plugins {
 }
 
 def googleServicesJson = file("google-services.json")
-if (!googleServicesJson.exists()) {
-    throw new GradleException(
-            "Missing google-services.json. Copy Config/google-services.json.example to " +
-                    "CoinCurrently/app/google-services.json and fill in your Firebase config."
-    )
-}
+def hasGoogleServices = googleServicesJson.exists()
 
 def repoRoot = rootProject.projectDir.parentFile
 def secretsFile = new File(repoRoot, "Config/secrets.properties")
@@ -35,8 +30,10 @@ def buildConfigString = { String key ->
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
+if (hasGoogleServices) {
+    apply plugin: 'com.google.gms.google-services'
+    apply plugin: 'com.google.firebase.crashlytics'
+}
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
@@ -78,6 +75,7 @@ android {
         buildConfigField 'String', 'BACKEND_API_KEY', buildConfigString('BACKEND_API_KEY')
         buildConfigField 'String', 'APTABASE_APP_KEY', buildConfigString('APTABASE_APP_KEY')
         buildConfigField 'String', 'SCHEDULER_PRICE_ALERT_SECRET', buildConfigString('SCHEDULER_PRICE_ALERT_SECRET')
+        buildConfigField 'boolean', 'FIREBASE_ENABLED', hasGoogleServices.toString()
     }
 
     buildFeatures {

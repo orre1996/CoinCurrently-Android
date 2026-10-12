@@ -15,6 +15,8 @@
   <a href="https://github.com/orre1996/CryptoCurrently">iOS repo</a>
   &nbsp;·&nbsp;
   <a href="https://coincurrently.app">coincurrently.app</a>
+  <br><br>
+  <a href="https://github.com/orre1996/CoinCurrentlyAndroid/actions/workflows/tests.yml"><img alt="tests status" src="https://github.com/orre1996/CoinCurrentlyAndroid/actions/workflows/tests.yml/badge.svg"></a>
 </p>
 
 <p align="center">
@@ -43,7 +45,7 @@ The app uses a few third-party SDKs. None of them require a name, email, or phon
 
 - **[Aptabase](https://aptabase.com)** is a privacy-focused analytics service. The app sends named product events (for example which screen opened). It is not an advertising SDK and does not build a marketing profile.
 - **[RevenueCat](https://www.revenuecat.com)** manages Google Play subscriptions. Pro status comes from the store receipt through RevenueCat, not from Firebase.
-- **[Firebase](https://firebase.google.com)** signs in anonymously — a random ID on the device, not an email. Price alerts need that so Firebase Cloud Messaging can issue an FCM token. The backend uses the token to send a push when a price hits; without it, the phone cannot receive alert notifications.
+- **[Firebase](https://firebase.google.com)** starts only when `google-services.json` is included. It signs in anonymously — a random ID on the device, not an email. Price alerts need that so Firebase Cloud Messaging can issue an FCM token. The backend uses the token to send a push when a price hits; without it, the phone cannot receive alert notifications.
 
 See the [Privacy Policy](https://coincurrently.app/privacy).
 
@@ -198,12 +200,14 @@ Packages match folders under `com.cryptium.coincurrently`. Widgets compile in `:
    - `REVENUECAT_PRODUCTION_API_KEY` and `REVENUECAT_TEST_API_KEY` — placeholders are enough unless you are testing purchases. Debug builds use the test key.
    - `APTABASE_APP_KEY` — a placeholder is enough unless you want analytics.
    - `SCHEDULER_PRICE_ALERT_SECRET` — optional. Leave it empty if unused.
-3. Copy `Config/google-services.json.example` to `CoinCurrently/app/google-services.json`. The app calls `FirebaseApp.initializeApp` at startup, and the Gradle build fails if this file is missing, so the app will not start without it. The example placeholders are enough to launch. Replace them with a real Firebase project only for anonymous sign-in and price-alert push. That file is gitignored.
+3. `CoinCurrently/app/google-services.json` is optional and gitignored. Without it, Firebase does not start. Copy `Config/google-services.json.example` there and replace the placeholders only for anonymous sign-in and price-alert push. The example placeholders are not a working Firebase config.
 4. Do not commit real keys, signing material, or a live `google-services.json`.
 
 ## Tests
 
 JVM unit tests live in `CoinCurrently/app/src/test`. Run `:app:testDebugUnitTest` from the `CoinCurrently/` Gradle project, or the unit-test target in Android Studio.
+
+GitHub runs that same task on every push to `main` and on every pull request. The badge at the top of this page is the latest result on `main`: green is passing, red is failing. It stays blank until the workflow has run once on `main`.
 
 ## Contributing
 
