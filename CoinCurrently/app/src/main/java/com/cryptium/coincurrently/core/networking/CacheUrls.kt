@@ -120,8 +120,9 @@ object CacheUrls {
     fun getMultipleCoins(ids: String, currencyCode: String) =
         "$baseUrl/api/v3/coins/markets?order=market_cap_desc&per_page=100&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d%2C30d&ids=$ids&vs_currency=$currencyCode"
 
-    private fun cryptoBaseUrl(freeUrl: Boolean): String =
-        if (freeUrl && BillingManager.currentSubscription.value != null) {
+    /** Matches [com.cryptium.coincurrently.core.networking.ApiHelper] free-host selection. */
+    private fun cryptoBaseUrl(freeUrl: Boolean, days: String? = null): String =
+        if (freeUrl && days != "max" && BillingManager.currentSubscription.value == null) {
             "https://api.coingecko.com"
         } else {
             "${serverBaseUrl}/crypto"
@@ -131,12 +132,12 @@ object CacheUrls {
         "${cryptoBaseUrl(freeUrl)}/api/v3/coins/$id?date=&sparkline=true"
 
     fun priceVolume(id: String, currencyCode: String, days: String, interval: String?, freeUrl: Boolean): String {
-        val base = "${cryptoBaseUrl(freeUrl)}/api/v3/coins/$id/market_chart?vs_currency=$currencyCode&days=$days"
+        val base = "${cryptoBaseUrl(freeUrl, days)}/api/v3/coins/$id/market_chart?vs_currency=$currencyCode&days=$days"
         return if (interval != null) "$base&interval=$interval" else base
     }
 
     fun candles(id: String, currencyCode: String, days: String, freeUrl: Boolean) =
-        "${cryptoBaseUrl(freeUrl)}/api/v3/coins/$id/ohlc?vs_currency=$currencyCode&days=$days"
+        "${cryptoBaseUrl(freeUrl, days)}/api/v3/coins/$id/ohlc?vs_currency=$currencyCode&days=$days"
 
     fun exchangeDetail(id: String) =
         "$baseUrl/api/v3/exchanges/$id"

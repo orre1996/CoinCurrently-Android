@@ -12,9 +12,9 @@ import retrofit2.http.Query
 import com.cryptium.coincurrently.BuildConfig
 import okhttp3.ResponseBody
 
-// Crypto endpoints follow the CoinGecko API shape. Set API_BASE_URL in
-// Config/secrets.properties to your backend, or CoinGecko's base URL;
-// e.g. https://api.coingecko.com
+// Market routes are "{API_BASE_URL}/crypto/api/v3/...". API_BASE_URL is your backend.
+// Coin detail, OHLC, and market charts for users without Pro call
+// https://api.coingecko.com/api/v3 directly.
 val serverBaseUrl: String
     get() = BuildConfig.API_BASE_URL.trimEnd('/')
 

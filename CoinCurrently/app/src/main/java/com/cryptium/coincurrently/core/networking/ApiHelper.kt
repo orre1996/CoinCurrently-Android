@@ -32,8 +32,13 @@ object ApiHelper {
     private val baseUrl: String
         get() = "${serverBaseUrl}/crypto"
 
-    private fun freeUrl(isFree: Boolean): String {
-        return if (isFree && BillingManager.currentSubscription.value != null) {
+    /**
+     * Users without Pro call CoinGecko's public API for coin detail, OHLC, and
+     * market charts. `days == "max"` stays on the backend. Pro uses the backend.
+     */
+    private fun freeUrl(isFree: Boolean, days: String? = null): String {
+        val usePublicApi = isFree && days != "max" && BillingManager.currentSubscription.value == null
+        return if (usePublicApi) {
             "https://api.coingecko.com"
         } else {
             "${serverBaseUrl}/crypto"
@@ -50,8 +55,8 @@ object ApiHelper {
             apiService.getToplist(baseUrl, currencyCode, order.toplistApiValue, itemsPerPage)
         }
     suspend fun getExchangesToplist() = apiService.getExchangesToplist(baseUrl)
-    suspend fun getPriceVolume(id: String, currencyCode: String, days: String, interval: String?, freeUrl: Boolean) = apiService.getPriceAndVolume(freeUrl(freeUrl), id, currencyCode, days, interval)
-    suspend fun getCandlChart(id: String, currencyCode: String, days: String, freeUrl: Boolean) = apiService.getCandleStickChart(freeUrl(freeUrl), id, currencyCode, days)
+    suspend fun getPriceVolume(id: String, currencyCode: String, days: String, interval: String?, freeUrl: Boolean) = apiService.getPriceAndVolume(freeUrl(freeUrl, days), id, currencyCode, days, interval)
+    suspend fun getCandlChart(id: String, currencyCode: String, days: String, freeUrl: Boolean) = apiService.getCandleStickChart(freeUrl(freeUrl, days), id, currencyCode, days)
     suspend fun getCryptoDetailInfo(id: String, freeUrl: Boolean) = apiService.getCryptoDetailInfo(freeUrl(freeUrl), id)
     suspend fun getExchangeDetailInfo(id: String) = apiService.getExchangeDetailInfo(baseUrl, id)
     suspend fun getExchangeVolume(id: String, days: String) = apiService.getExchangeVolume(baseUrl, id, days)
