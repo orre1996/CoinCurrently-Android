@@ -1,4 +1,4 @@
-name: CoinCurrently-Android
+name: tests
 
 on:
   push:

@@ -16,7 +16,7 @@
   &nbsp;·&nbsp;
   <a href="https://coincurrently.app">coincurrently.app</a>
   <br><br>
-  <a href="https://github.com/orre1996/CoinCurrentlyAndroid/actions/workflows/tests.yml"><img alt="CoinCurrently-Android status" src="https://github.com/orre1996/CoinCurrentlyAndroid/actions/workflows/tests.yml/badge.svg"></a>
+  <a href="https://github.com/orre1996/CoinCurrently-Android/actions/workflows/tests.yml"><img alt="tests status" src="https://github.com/orre1996/CoinCurrently-Android/actions/workflows/tests.yml/badge.svg"></a>
 </p>
 
 <p align="center">
@@ -207,7 +207,7 @@ Packages match folders under `com.cryptium.coincurrently`. Widgets compile in `:
 
 JVM unit tests live in `CoinCurrently/app/src/test`. Run `:app:testDebugUnitTest` from the `CoinCurrently/` Gradle project, or the unit-test target in Android Studio.
 
-GitHub runs that same task on every push to `main` and on every pull request. The CoinCurrently-Android badge at the top of this page is the latest result on `main`: green is passing, red is failing. It stays blank until the workflow has run once on `main`.
+GitHub runs that same task on every push to `main` and on every pull request. The badge at the top of this page is the latest result on `main`: green is passing, red is failing. It stays blank until the workflow has run once on `main`.
 
 ## Contributing
 
