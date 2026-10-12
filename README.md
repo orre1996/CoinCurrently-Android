@@ -3,18 +3,18 @@
 </p>
 
 <p align="center">
-  A private crypto tracker for markets, news, and your portfolio.<br>
-  No account, no ads, and your data stays on the device.
+  A private crypto tracker for iOS, Apple Watch, and Android.<br>
+  Follow markets, news, and a personal portfolio without an account, ads, or sign-up.
 </p>
 
 <p align="center">
-  <a href="https://play.google.com/store/apps/details?id=com.cryptium.coincurrently"><strong>Android</strong></a>
-  ·
-  <a href="https://apps.apple.com/us/app/coincurrently-crypto-tracker/id1543974454"><strong>iOS</strong></a>
-  ·
-  <a href="https://github.com/orre1996/CryptoCurrently"><strong>iOS repo</strong></a>
-  ·
-  <a href="https://coincurrently.app"><strong>Website</strong></a>
+  <a href="https://apps.apple.com/app/coincurrently/id1543974454"><img src="docs/app-store-badge.svg" alt="Download on the App Store" height="40"></a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://play.google.com/store/apps/details?id=com.cryptium.coincurrently"><img src="docs/google-play-badge.png" alt="Get it on Google Play" height="40"></a>
+  <br>
+  <a href="https://github.com/orre1996/CryptoCurrently">iOS repo</a>
+  &nbsp;·&nbsp;
+  <a href="https://coincurrently.app">coincurrently.app</a>
 </p>
 
 <p align="center">
@@ -141,7 +141,9 @@ Market data, news, and the fear and greed index each come from a different API. 
 
 ### CoinGecko
 
-Crypto market data is based on [CoinGecko's API](https://www.coingecko.com/en/api). Most endpoints work on the free or Basic plans. These require the [Analyst plan](https://www.coingecko.com/en/api/pricing) (or higher):
+Crypto market data is based on [CoinGecko's API](https://www.coingecko.com/en/api). Free endpoints can use `https://api.coingecko.com`. Coin detail, price history, and candlesticks (`/coins/{id}`, `/coins/{id}/market_chart`, `/coins/{id}/ohlc`) call that host for Pro subscribers, and fall back to the backend if the request fails. The other market routes go through `{API_BASE_URL}/crypto`.
+
+Most endpoints work on the free or Basic plans. These require the [Analyst plan](https://www.coingecko.com/en/api/pricing) (or higher):
 
 - `/coins/list/new` — recently listed coins
 - `/coins/top_gainers_losers` — top gainers and losers
