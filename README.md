@@ -193,7 +193,7 @@ Packages match folders under `com.cryptium.coincurrently`. Widgets compile in `:
 
 1. Open the `CoinCurrently/` Gradle project in Android Studio and sync.
 2. Copy `Config/secrets.example.properties` to `Config/secrets.properties`. That file is gitignored. If it is missing, the build uses the example placeholders, which are enough to launch. The build fails only if both files are missing. Keys:
-   - `API_BASE_URL` — your backend. Markets, news, and the first-party routes above need it. A placeholder lets the app launch; those screens fail until it points at a backend.
+   - `API_BASE_URL` — your backend, with no trailing slash. Markets, news, and the first-party routes above need it. A placeholder lets the app launch. Coin detail, OHLC, market charts, and the fear and greed index can still load. Toplists, news, search, and alerts stay empty until it points at a backend.
    - `BACKEND_API_KEY` — sent as `x-coin-currently-key`. A placeholder is enough for the public CoinGecko and fear-and-greed calls.
    - `REVENUECAT_PRODUCTION_API_KEY` and `REVENUECAT_TEST_API_KEY` — placeholders are enough unless you are testing purchases. Debug builds use the test key.
    - `APTABASE_APP_KEY` — a placeholder is enough unless you want analytics.
