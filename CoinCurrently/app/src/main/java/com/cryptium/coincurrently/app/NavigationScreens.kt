@@ -95,9 +95,6 @@ sealed class NavigationScreens() {
     object Market: NavigationScreens()
 
     @Serializable
-    object News: NavigationScreens()
-
-    @Serializable
     object Settings: NavigationScreens()
 
     @Serializable
@@ -202,9 +199,6 @@ sealed class NavigationScreens() {
 
     @Serializable
     object PriceAlerts: NavigationScreens()
-
-    @Serializable
-    data class Referral(val referralCode: String = ""): NavigationScreens()
 }
 
 fun NavigationScreens.getRouteString(): String {
@@ -213,7 +207,6 @@ fun NavigationScreens.getRouteString(): String {
         is NavigationScreens.Home -> "Home"
         is NavigationScreens.Portfolio -> "Portfolio"
         is NavigationScreens.Market -> "Market"
-        is NavigationScreens.News -> "News"
         is NavigationScreens.Settings -> "Settings"
         is NavigationScreens.CryptoDetail -> "CryptoDetail"
         is NavigationScreens.CompareCoins -> "CompareCoins"
@@ -234,7 +227,6 @@ fun NavigationScreens.getRouteString(): String {
         is NavigationScreens.CurrencySelector -> "CurrencySelector"
         is NavigationScreens.Calculator -> "Calculator"
         is NavigationScreens.PriceAlerts -> "PriceAlerts"
-        is NavigationScreens.Referral -> "Referral"
         is NavigationScreens.Search -> "SelectCoin"
     }
 }
@@ -243,6 +235,5 @@ fun navigationScreenForLatestTab(index: Int): NavigationScreens = when (index) {
     0 -> NavigationScreens.Home
     1 -> NavigationScreens.Portfolio
     2 -> NavigationScreens.Market
-    3 -> NavigationScreens.News
     else -> NavigationScreens.Settings
 }

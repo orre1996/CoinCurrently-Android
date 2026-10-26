@@ -12,8 +12,6 @@ enum class StorageKeys(private val rawOverride: String? = null) {
 
     SEARCH_HISTORY,
 
-    NEWS_CATEGORY,
-
     GLOBAL_MARKET_DATA_1,
 
     PORTFOLIO,
@@ -68,8 +66,8 @@ enum class StorageKeys(private val rawOverride: String? = null) {
     APP_RATING_POPUP_DATE,
     APP_ACTION_RATING_DATE,
 
-    /** What's New sheet content version (e.g. "3.4"); last-seen copy lives in SharedPreferences. */
-    CURRENT_WHATS_NEW_VERSION("3.4");
+    /** What's New sheet content version (e.g. "3.5"); last-seen copy lives in SharedPreferences. */
+    CURRENT_WHATS_NEW_VERSION("3.5");
 
     val rawValue: String get() = rawOverride ?: name
 }

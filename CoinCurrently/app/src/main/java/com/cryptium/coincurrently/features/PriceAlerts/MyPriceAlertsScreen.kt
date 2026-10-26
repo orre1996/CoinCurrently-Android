@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
@@ -59,7 +58,6 @@ import com.cryptium.coincurrently.sharedui.navigation.CustomTopAppBar
 import com.cryptium.coincurrently.sharedui.loading.ActivityIndicator
 import com.cryptium.coincurrently.sharedui.models.ChangeDirection
 import com.cryptium.coincurrently.app.NavigationViewModel
-import com.cryptium.coincurrently.core.analytics.BuyProAction
 import com.cryptium.coincurrently.core.analytics.CurrencySelected
 import com.cryptium.coincurrently.core.analytics.DisabledBigMoveAlerts
 import com.cryptium.coincurrently.core.analytics.EnabledBigMoveAlerts
@@ -77,7 +75,6 @@ import com.cryptium.coincurrently.features.CoinDetail.Sheets.SelectCoinSheet
 import com.cryptium.coincurrently.features.PriceAlerts.CreatePriceAlertSheet
 import com.cryptium.coincurrently.sharedui.components.SnackBarType
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertCreateResult
-import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.features.Settings.CurrencySelector.CurrencyOptionsSheet
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -126,7 +123,6 @@ fun MyPriceAlertsScreen(
     val selectedDirection = remember { mutableStateOf(ChangeDirection.Up) }
     var showError: Boolean by remember { mutableStateOf(false) }
 
-    val currentSubscription by BillingManager.currentSubscription.observeAsState()
 
     LaunchedEffect(Unit) {
         viewModel.notificationsEnabled = NotificationManagerCompat.from(context).areNotificationsEnabled()
@@ -182,19 +178,15 @@ fun MyPriceAlertsScreen(
                     } else if (viewModel.notificationsEnabled) {
                         InfoButton(
                             addNewAlert = {
-                                if ((viewModel.alerts?.count() ?: 0) >= 2 && currentSubscription == null) {
-                                    navigationViewModel.openBuyPro(ScreenLabel.PriceAlerts, BuyProAction.PriceAlert)
-                                } else {
-                                    AnalyticsManager.log(
-                                        SheetOpened(ScreenLabel.PriceAlerts, SheetLabel.CoinSearch),
-                                    )
-                                    isAlertByPriceSelected.value = true
-                                    priceInput.doubleValue = 0.0
-                                    percentInput.doubleValue = 10.0
-                                    isRecurringAlertOn.value = false
-                                    selectedDirection.value = ChangeDirection.Up
-                                    isSelectingCoin = true
-                                }
+                                AnalyticsManager.log(
+                                    SheetOpened(ScreenLabel.PriceAlerts, SheetLabel.CoinSearch),
+                                )
+                                isAlertByPriceSelected.value = true
+                                priceInput.doubleValue = 0.0
+                                percentInput.doubleValue = 10.0
+                                isRecurringAlertOn.value = false
+                                selectedDirection.value = ChangeDirection.Up
+                                isSelectingCoin = true
                             }
                         )
                     }

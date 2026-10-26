@@ -10,12 +10,11 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import kotlin.math.min
 
 /**
  * Durable user settings. Backed by SharedPreferences so [StorageManager.clearCache]
- * (DiskLruCache) does not wipe currency, Pro, or UI preferences.
+ * (DiskLruCache) does not wipe currency or UI preferences.
  *
  * Keys and the `push_notification_preferences_file` name must stay stable.
  */
@@ -44,37 +43,6 @@ object UserPreferences {
         prefs()?.edit()?.putString("stored_whats_new_version", version)?.apply()
     }
 
-    fun getIsEligableForTrial(): Boolean {
-        return prefs()?.getBoolean("ssEligableForTrial", true) ?: true
-    }
-
-    fun setIsEligableForTrial(isEligable: Boolean) {
-        prefs()?.edit()?.putBoolean("ssEligableForTrial", isEligable)?.apply()
-    }
-
-    fun getHasBoughtPro(): String? {
-        return prefs()?.getString("hasBoughtPro-1", null)
-    }
-
-    fun setHasBoughtPro(enable: String?) {
-        prefs()?.edit()?.putString("hasBoughtPro-1", enable)?.apply()
-    }
-
-    fun getProExpirationDate(): Date? {
-        val millis = prefs()?.getLong("proExpirationDate", -1L) ?: -1L
-        return if (millis > 0L) Date(millis) else null
-    }
-
-    fun setProExpirationDate(date: Date?) {
-        val editor = prefs()?.edit() ?: return
-        if (date != null) {
-            editor.putLong("proExpirationDate", date.time)
-        } else {
-            editor.remove("proExpirationDate")
-        }
-        editor.apply()
-    }
-
     fun getIsBiometricAuthenticationEnabled(): Boolean {
         return prefs()?.getBoolean("biometricAuthenticationEnabled", false) ?: false
     }
@@ -98,7 +66,12 @@ object UserPreferences {
 
     fun getStartTab(): SelectedStartTab {
         val value = prefs()?.getInt("startTab", 1) ?: 1
-        return SelectedStartTab.entries[value]
+        // Before News was removed: 0 LastUsed, 1 Home, 2 Portfolio, 3 Market, 4 News, 5 More.
+        val index = when (value) {
+            4, 5 -> SelectedStartTab.More.ordinal
+            else -> value
+        }
+        return SelectedStartTab.entries.getOrElse(index) { SelectedStartTab.Home }
     }
 
     fun setColorBlind(enabled: Boolean) {
@@ -122,8 +95,8 @@ object UserPreferences {
         }
     }
 
-    fun isWebSocketEnabled(hasPro: Boolean): Boolean {
-        return getWebSocketEnabledSetting() ?: hasPro
+    fun isWebSocketEnabled(): Boolean {
+        return getWebSocketEnabledSetting() ?: true
     }
 
     fun setHidePortfolioData(hide: Boolean) {
@@ -140,14 +113,6 @@ object UserPreferences {
 
     fun getPortfolioPieChartShowing(): Boolean {
         return prefs()?.getBoolean("isPortfolioPieChartShowing", false) ?: false
-    }
-
-    fun getPortfolioExportCount(): Int {
-        return prefs()?.getInt("portfolioExportCount", 0) ?: 0
-    }
-
-    fun incrementPortfolioExportCount() {
-        prefs()?.edit()?.putInt("portfolioExportCount", getPortfolioExportCount() + 1)?.apply()
     }
 
     fun setLatestTabIndex(page: Int) {

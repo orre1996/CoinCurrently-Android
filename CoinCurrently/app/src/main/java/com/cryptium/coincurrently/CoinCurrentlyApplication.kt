@@ -4,9 +4,6 @@ import coil.Coil
 import com.cryptium.coincurrently.sharedui.components.ComposePlatformCompat
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.google.firebase.FirebaseApp
-import com.revenuecat.purchases.LogLevel
-import com.revenuecat.purchases.Purchases
-import com.revenuecat.purchases.PurchasesConfiguration
 import coil.ImageLoader
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -42,11 +39,6 @@ class CoinCurrentlyApplication : Application() {
             FirebaseApp.initializeApp(this)
         }
         AnalyticsManager.init(this)
-
-        Purchases.logLevel = if (BuildConfig.DEBUG) LogLevel.DEBUG else LogLevel.INFO
-        Purchases.configure(
-            PurchasesConfiguration.Builder(this, BuildConfig.REVENUECAT_API_KEY).build(),
-        )
 
         Coil.setImageLoader(newImageLoader())
     }

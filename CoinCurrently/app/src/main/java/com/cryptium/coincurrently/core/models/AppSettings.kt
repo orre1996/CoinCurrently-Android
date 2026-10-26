@@ -46,7 +46,6 @@ enum class SelectedStartTab {
     Home,
     Portfolio,
     Market,
-    News,
     More;
 
     fun getName(): String {
@@ -55,7 +54,6 @@ enum class SelectedStartTab {
             Home -> "Home"
             Portfolio -> "Portfolio"
             Market -> "Market"
-            News -> "News"
             else -> "Settings"
         }
     }

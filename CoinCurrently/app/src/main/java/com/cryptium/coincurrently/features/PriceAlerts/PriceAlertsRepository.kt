@@ -12,8 +12,8 @@ import com.cryptium.coincurrently.core.networking.MainRepository
 import com.cryptium.coincurrently.core.networking.ResponseModels.AlertCoin
 import com.cryptium.coincurrently.core.networking.ResponseModels.PostAlertCoin
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
+import com.cryptium.coincurrently.core.networking.ResponseModels.UserResponse
 import com.cryptium.coincurrently.core.networking.RetrofitBuilder
-import com.cryptium.coincurrently.features.Referral.ReferralRepository
 import com.cryptium.coincurrently.sharedui.models.CachedData
 import java.util.Date
 
@@ -25,6 +25,7 @@ enum class PriceAlertCreateResult {
 
 object PriceAlertsRepository {
     private val alertPricesType = object : TypeToken<MutableMap<String, Map<String, Double>>>() {}.type
+    private val userResponseType = object : TypeToken<UserResponse>() {}.type
 
     var priceAlerts: List<AlertCoin>? = null
 
@@ -68,7 +69,7 @@ object PriceAlertsRepository {
         }
 
         val currency = UserPreferences.getSelectedCurrency()
-        val claims = ReferralRepository.getUser()?.user?.customClaims
+        val claims = currentUser()?.user?.customClaims
         val fcmMatches = claims?.fcmToken == fcmToken
         val currencyMatches = claims?.preferredCurrency?.equals(currency.code, ignoreCase = true) == true
 
@@ -79,7 +80,7 @@ object PriceAlertsRepository {
         val result = MainRepository.updateUser(fcmToken)
         result.onSuccess {
             StorageManager.set(StorageKeys.LAST_PUSH_NOTIFICATION_TOKEN, fcmToken)
-            ReferralRepository.getUser(ignoreCache = true)
+            currentUser(ignoreCache = true)
 
             if (StorageManager.get<Boolean>(StorageKeys.SUBSCIBRES_TO_BIG_MOVERS) == null) {
                 subBigMovers()
@@ -216,5 +217,18 @@ object PriceAlertsRepository {
 
     suspend fun sendFeedback(rating: Int, feedback: String?): Boolean {
         return MainRepository.sendFeedback(rating, feedback).isSuccess
-    } 
+    }
+
+    private suspend fun currentUser(ignoreCache: Boolean = false): UserResponse? {
+        if (ignoreCache) {
+            RetrofitBuilder.removeCached(CacheUrls.getUser())
+        } else {
+            @Suppress("UNCHECKED_CAST")
+            (RetrofitBuilder.getCached(CacheUrls.getUser(), userResponseType)?.data as? UserResponse)?.let { cached ->
+                return cached
+            }
+        }
+
+        return MainRepository.getUser()
+    }
 }

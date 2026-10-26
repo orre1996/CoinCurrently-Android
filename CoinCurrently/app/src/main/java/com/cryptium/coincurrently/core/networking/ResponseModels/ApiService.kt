@@ -13,8 +13,6 @@ import com.cryptium.coincurrently.BuildConfig
 import okhttp3.ResponseBody
 
 // Market routes are "{API_BASE_URL}/crypto/api/v3/...". API_BASE_URL is your backend.
-// Coin detail, OHLC, and market charts for users without Pro call
-// https://api.coingecko.com/api/v3 directly.
 val serverBaseUrl: String
     get() = BuildConfig.API_BASE_URL.trimEnd('/')
 
@@ -224,66 +222,6 @@ interface ApiService{
         @Query(value = "query") query: String = ""
     ): Result<SearchModel>
 
-    @GET("{url}/api/v3/news")
-    suspend fun getCoinGeckoNews(
-        @Path(value = "url", encoded = true) url: String,
-        @Query("language") language: String,
-        @Query("type") type: String = "all",
-        @Query("per_page") perPage: Int = 20,
-        @Query("coin_id") coinId: String? = null,
-    ): Result<ArrayList<CoinGeckoNewsItem>>
-
-    @GET("{url}/news/api/v1/category?section=alltickers&page=1")
-    suspend fun getNewNews(
-        @Path(value = "url", encoded = true) url: String,
-        @Query(value = "items")count: Int,
-    ): Result<NewNewsModel>
-
-    @GET("{url}/news/api/v1/category?section=alltickers&type=video")
-    suspend fun getNewVideoNews(
-        @Path(value = "url", encoded = true) url: String,
-        @Query(value = "items")count: Int,
-    ): Result<NewNewsModel>
-
-    @GET("{url}/news/api/v1/category?section=alltickers&topic=podcast")
-    suspend fun getNewPodcastNews(
-        @Path(value = "url", encoded = true) url: String,
-        @Query(value = "items")count: Int,
-    ): Result<NewNewsModel>
-
-    @GET("{url}/news/api/v1/category?section=general&search=exchanges&page=1")
-    suspend fun getNewsExchanges(
-        @Path(value = "url", encoded = true) url: String,
-        @Query(value = "items")count: Int,
-    ): Result<NewNewsModel>
-
-    @GET("{url}/news/api/v1/category?section=general&topic=NFT&page=1")
-    suspend fun getNewsNFT(
-        @Path(value = "url", encoded = true) url: String,
-        @Query(value = "items") count: Int,
-    ): Result<NewNewsModel>
-
-    @GET("{url}/news/api/v1/category?section=general&page=1")
-    suspend fun getNewsExchange(
-        @Path(value = "url", encoded = true) url: String,
-        @Query(value = "search")id: String,
-        @Query(value = "items")count: Int,
-    ): Result<NewNewsModel>
-
-
-    @GET("{url}/news/api/v1/category?section=alltickers&page=1&topic=Tanalysis")
-    suspend fun getNewsTAnalysis(
-        @Path(value = "url", encoded = true) url: String,
-        @Query(value = "items")count: Int,
-    ): Result<NewNewsModel>
-
-    @GET("{url}/news/api/v1?page=1")
-    suspend fun getNewsCoin(
-        @Path(value = "url", encoded = true) url: String,
-        @Query(value = "tickers")id: String,
-        @Query(value = "items")count: Int,
-    ): Result<NewNewsModel>
-
     @GET("{url}/gas")
     suspend fun getGasFees(
         @Path(value = "url", encoded = true) url: String,
@@ -358,12 +296,6 @@ interface ApiService{
     suspend fun getUser(
         @Path(value = "url", encoded = true) url: String,
     ): Result<UserResponse>
-
-    @POST("{url}/redeem-code")
-    suspend fun redeemCode(
-        @Path(value = "url", encoded = true) url: String,
-        @Body body: RedeemCodeRequest,
-    ): Result<Unit>
 
     @POST("{url}/premium/sub-coin")
     suspend fun subCoin(

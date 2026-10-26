@@ -9,21 +9,12 @@ import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.core.extensions.unwrapOrNull
-import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.ApiService
-import com.cryptium.coincurrently.core.networking.ResponseModels.NewNewsItem
-import com.cryptium.coincurrently.core.networking.ResponseModels.NewNewsModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.PostAlertCoin
-import com.cryptium.coincurrently.core.networking.ResponseModels.RedeemCodeRequest
-import com.cryptium.coincurrently.core.networking.ResponseModels.ReferralCodeResult
 import com.cryptium.coincurrently.core.networking.ResponseModels.SendFeedbackRequest
 import com.cryptium.coincurrently.core.networking.ResponseModels.SubCoinRequest
 import com.cryptium.coincurrently.core.networking.ResponseModels.UserResponse
-import com.cryptium.coincurrently.core.localization.CoinGeckoNewsLanguage
-import com.cryptium.coincurrently.core.networking.ResponseModels.CoinGeckoNewsItem
 import com.cryptium.coincurrently.core.networking.ResponseModels.serverBaseUrl
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 object ApiHelper {
     private val apiService: ApiService
@@ -32,18 +23,9 @@ object ApiHelper {
     private val baseUrl: String
         get() = "${serverBaseUrl}/crypto"
 
-    /**
-     * Users without Pro call CoinGecko's public API for coin detail, OHLC, and
-     * market charts. `days == "max"` stays on the backend. Pro uses the backend.
-     */
-    private fun freeUrl(isFree: Boolean, days: String? = null): String {
-        val usePublicApi = isFree && days != "max" && BillingManager.currentSubscription.value == null
-        return if (usePublicApi) {
-            "https://api.coingecko.com"
-        } else {
-            "${serverBaseUrl}/crypto"
-        }
-    }
+    /** Coin detail, OHLC, and market charts always go through the backend. */
+    @Suppress("UNUSED_PARAMETER")
+    private fun freeUrl(isFree: Boolean, days: String? = null): String = baseUrl
 
     suspend fun getGlobalMarket() = apiService.getGlobalMarket(baseUrl)
     suspend fun getGlobalChart(days: String) = apiService.getGlobalChart(baseUrl, days)
@@ -113,23 +95,7 @@ object ApiHelper {
         )
     )
 
-    suspend fun getReferralCode(): ReferralCodeResult? = withContext(Dispatchers.IO) {
-        val response = RetrofitBuilder.getRaw("$serverBaseUrl/referral-code") ?: return@withContext null
-
-        response.use { httpResponse ->
-            if (!httpResponse.isSuccessful) return@withContext null
-
-            val data = httpResponse.body?.bytes() ?: return@withContext null
-            ReferralCodeResult.decode(data, httpResponse.headers)
-        }
-    }
-
     suspend fun getUser(): UserResponse? = apiService.getUser(serverBaseUrl).unwrapOrNull()
-
-    suspend fun redeemCode(refCode: String) = apiService.redeemCode(
-        serverBaseUrl,
-        RedeemCodeRequest(refCode = refCode),
-    )
 
     suspend fun subCoin(coinIds: List<String>, currencies: List<String>) = apiService.subCoin(
         serverBaseUrl,
@@ -141,70 +107,6 @@ object ApiHelper {
 
     suspend fun getNftDetail(id: String) = apiService.getNFTDetail(baseUrl, id)
     suspend fun getNFTTickers(id: String) = apiService.getNFTTickers(baseUrl, id)
-    suspend fun getCoinGeckoNews(coinId: String?): Result<NewNewsModel> {
-        val items = apiService.getCoinGeckoNews(
-            url = baseUrl,
-            language = CoinGeckoNewsLanguage.code,
-            coinId = coinId?.takeIf { it.isNotEmpty() },
-        ).unwrapOrNull() ?: return Result.failure(IllegalStateException("News request failed"))
-        val namesById = apiService.getCoinsList(baseUrl).unwrapOrNull()
-            .orEmpty()
-            .mapNotNull { coin ->
-                val id = coin.id?.takeIf { it.isNotEmpty() } ?: return@mapNotNull null
-                val name = coin.name?.takeIf { it.isNotEmpty() } ?: return@mapNotNull null
-                id to name
-            }
-            .toMap()
-        val mapped = items.map { item ->
-            NewNewsItem(
-                news_url = item.url,
-                image_url = item.image,
-                title = item.title,
-                source_name = item.source_name ?: item.author,
-                date = item.posted_at,
-                tickers = item.related_coin_ids?.mapNotNull { namesById[it] },
-            )
-        }
-        return Result.success(NewNewsModel(data = mapped))
-    }
-
-    suspend fun getNewNews(count: Int, type: NewsCategory): Result<NewNewsModel> {
-        return when(type) {
-            is NewsCategory.General -> {
-                apiService.getNewNews(serverBaseUrl, count)
-            }
-            is NewsCategory.Technical_Analysis -> {
-                apiService.getNewsTAnalysis(serverBaseUrl, 25)
-            }
-            is NewsCategory.Positive -> {
-                apiService.getNewNews(serverBaseUrl, 25)
-            }
-            is NewsCategory.Neutral -> {
-                apiService.getNewNews(serverBaseUrl, count)
-            }
-            is NewsCategory.Negative -> {
-                apiService.getNewNews(serverBaseUrl, count)
-            }
-            is NewsCategory.Podcasts -> {
-                apiService.getNewPodcastNews(serverBaseUrl, count)
-            }
-            is NewsCategory.Videos -> {
-                apiService.getNewVideoNews(serverBaseUrl, count)
-            }
-            is NewsCategory.Coin -> {
-                apiService.getNewsCoin(serverBaseUrl, type.id, 25)
-            }
-            is NewsCategory.Exchanges -> {
-                apiService.getNewsExchanges(serverBaseUrl, 25)
-            }
-            is NewsCategory.Exchange -> {
-                apiService.getNewsExchange(serverBaseUrl, type.id, 25)
-            }
-            is NewsCategory.NFT -> {
-                apiService.getNewsNFT(serverBaseUrl, 25)
-            }
-        }
-    }
     suspend fun getGasFees(includeHistory: Boolean) = apiService.getGasFees(serverBaseUrl, includeHistory)
     suspend fun getWalletAddress(address: String, blockChain: String) = apiService.getWalletAddress(serverBaseUrl, request = WalletImportRequest(
         address = address,

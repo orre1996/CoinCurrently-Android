@@ -189,6 +189,22 @@ data class WebViewOpened(
     )
 }
 
+enum class SourcePlatform(val wire: String) {
+    Ios("ios"),
+    Android("android"),
+}
+
+data class SourceLinkOpened(
+    val fromScreen: ScreenLabel,
+    val platform: SourcePlatform,
+) : AnalyticsEvent {
+    override val eventName: String get() = "source_link_opened"
+    override fun toBundle(): Bundle = bundleParams(
+        "from_screen" to fromScreen.wire,
+        "platform" to platform.wire,
+    )
+}
+
 data class ScrollToTopPressed(
     val fromScreen: ScreenLabel,
     val selectedTabName: String? = null,
@@ -315,17 +331,6 @@ data class WalletRenamed(val fromScreen: ScreenLabel) : AnalyticsEvent {
 data class ResetApp(val fromScreen: ScreenLabel) : AnalyticsEvent {
     override val eventName: String get() = "reset_app"
     override fun toBundle(): Bundle = bundleParams("from_screen" to fromScreen.wire)
-}
-
-data class BuyProOpened(
-    val fromScreen: ScreenLabel,
-    val action: BuyProAction,
-) : AnalyticsEvent {
-    override val eventName: String get() = "buy_pro_opened"
-    override fun toBundle(): Bundle = bundleParams(
-        "from_screen" to fromScreen.wire,
-        "action" to action.wire,
-    )
 }
 
 data class ViewAll(
@@ -468,17 +473,6 @@ data class PriceChangeOptionSelected(
     )
 }
 
-data class NewsFilterSelected(
-    val fromScreen: ScreenLabel,
-    val filter: CarouselFilter,
-) : AnalyticsEvent {
-    override val eventName: String get() = "news_filter_selected"
-    override fun toBundle(): Bundle = bundleParams(
-        "from_screen" to fromScreen.wire,
-        "filter" to filter.firebaseAnalyticsFilterLabel(),
-    )
-}
-
 data class ThemeSelected(
     val fromScreen: ScreenLabel,
     val theme: AppColorScheme,
@@ -520,71 +514,6 @@ data class LanguageSelected(
     override fun toBundle(): Bundle = bundleParams(
         "from_screen" to fromScreen.wire,
         "language" to language,
-    )
-}
-
-data class SubscriptionOptionSelected(
-    val fromScreen: ScreenLabel,
-    val subscription: String,
-) : AnalyticsEvent {
-    override val eventName: String get() = "subscription_option_selected"
-    override fun toBundle(): Bundle = bundleParams(
-        "from_screen" to fromScreen.wire,
-        "subscription" to subscription,
-    )
-}
-
-data class BuyProPressed(
-    val fromScreen: ScreenLabel,
-    val subscription: String,
-) : AnalyticsEvent {
-    override val eventName: String get() = "buy_pro_pressed"
-    override fun toBundle(): Bundle = bundleParams(
-        "from_screen" to fromScreen.wire,
-        "subscription" to subscription,
-    )
-}
-
-/** iOS parity: logs after Play Billing resolves a purchase intent (StoreKit [`SubscriptionPurchaseCompleted`]). */
-data class SubscriptionPurchaseCompleted(
-    val fromScreen: ScreenLabel,
-    val productId: String,
-    val outcome: SubscriptionPurchaseOutcome,
-) : AnalyticsEvent {
-    override val eventName: String get() = "subscription_purchase_completed"
-    override fun toBundle(): Bundle = bundleParams(
-        "from_screen" to fromScreen.wire,
-        "product_id" to productId,
-        "outcome" to outcome.wire,
-    )
-}
-
-/** iOS parity: logs after restore finishes (StoreKit [`SubscriptionRestoreCompleted`]). */
-data class SubscriptionRestoreCompleted(
-    val fromScreen: ScreenLabel,
-    val outcome: SubscriptionRestoreOutcome,
-) : AnalyticsEvent {
-    override val eventName: String get() = "subscription_restore_completed"
-    override fun toBundle(): Bundle = bundleParams(
-        "from_screen" to fromScreen.wire,
-        "outcome" to outcome.wire,
-    )
-}
-
-data class NewsOpened(val fromScreen: ScreenLabel) : AnalyticsEvent {
-    override val eventName: String get() = "news_opened"
-    override fun toBundle(): Bundle = bundleParams("from_screen" to fromScreen.wire)
-}
-
-/** iOS sends this as `news_opened`; kept identical for parity. */
-data class NewsTabSelected(
-    val fromScreen: ScreenLabel,
-    val tab: String,
-) : AnalyticsEvent {
-    override val eventName: String get() = "news_opened"
-    override fun toBundle(): Bundle = bundleParams(
-        "from_screen" to fromScreen.wire,
-        "tab" to tab,
     )
 }
 

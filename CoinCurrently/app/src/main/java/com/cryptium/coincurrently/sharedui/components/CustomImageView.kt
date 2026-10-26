@@ -22,7 +22,6 @@ class CustomImageView: androidx.appcompat.widget.AppCompatImageView {
     fun setImageWithCompletion(
         url: String?,
         context: Context,
-        fromNews: Boolean = false,
         callback: (Int?, Bitmap?) -> Unit,
     ) {
         try {
@@ -30,8 +29,8 @@ class CustomImageView: androidx.appcompat.widget.AppCompatImageView {
             Glide.with(context)
                 .asBitmap()
                 .load(url)
-                .placeholder(if (fromNews) R.drawable.news_card_background else R.drawable.skeleton_background)
-                .error(if (fromNews) R.drawable.news_card_background else R.drawable.skeleton_background)
+                .placeholder(R.drawable.skeleton_background)
+                .error(R.drawable.skeleton_background)
                 .listener(object : RequestListener<Bitmap> {
                     override fun onLoadFailed(
                         e: GlideException?,

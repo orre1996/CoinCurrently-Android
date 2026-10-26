@@ -6,18 +6,10 @@ import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.android.billingclient.api.ProductDetails
 import com.cryptium.coincurrently.app.MainActivity
-import com.cryptium.coincurrently.core.extensions.currencyAccessible
-import com.cryptium.coincurrently.core.extensions.formatCurrency
-import com.cryptium.coincurrently.core.extensions.getAccessiblePrice
-import com.cryptium.coincurrently.core.extensions.getFormattedPrice
-import com.cryptium.coincurrently.core.extensions.inTime
-import com.cryptium.coincurrently.core.extensions.isMoreThanOneMonthOld
 import com.cryptium.coincurrently.core.extensions.isTablet
 import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.sharedui.models.SortOption
@@ -30,27 +22,15 @@ import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketRepository
 import com.cryptium.coincurrently.features.Home.NewCoins.NewCoinsRepository
 import com.cryptium.coincurrently.features.Home.Trending.TrendingRepository
 import com.cryptium.coincurrently.features.Home.WinnersLosers.WinnersLosersRepository
-import com.cryptium.coincurrently.core.analytics.FirebaseManager
-import com.cryptium.coincurrently.core.localization.Localization
-import com.cryptium.coincurrently.core.config.RemoteConfigKeys
-import com.cryptium.coincurrently.core.persistence.allCurrencies
 import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
-import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.analytics.FavoriteAdded
 import com.cryptium.coincurrently.core.analytics.FavoriteRemoved
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
-import com.cryptium.coincurrently.sharedui.models.CachedData
 import kotlinx.coroutines.launch
 import com.cryptium.coincurrently.core.networking.ResponseModels.*
-import com.revenuecat.purchases.models.GooglePurchasingData
-import com.revenuecat.purchases.models.GoogleStoreProduct
-import com.revenuecat.purchases.models.StoreProduct
-import java.util.*
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
-import com.cryptium.coincurrently.core.purchases.promotionalName
-import com.cryptium.coincurrently.core.purchases.welcomeName
 
 class HomeViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -71,23 +51,12 @@ interface HomeViewModel {
     var newCoins: List<Toplist>?
     var gasFees: GasFeesModel?
 
-    var promotionTitle: String?
-    var promotionMessage: String?
-    var promotionMessageAccessible: String?
-    var offerTimeLeft: String?
-    var showFreeTrial: Boolean
-    var welcomeOfferTimeLeft: Date?
-
-    fun initObservers(lifecycleOwner: LifecycleOwner)
-    fun loadPremiumOfferProducts(context: Context)
-    fun refreshLocalizedCopy()
     fun getList(filter: CarouselFilter?): List<Toplist>?
     suspend fun downloadData()
     fun seeAllPressed()
-    fun premiumViewClosed(title: String)
     suspend fun getFearGreed()
     suspend fun getGlobalMarket()
-    fun favouriteButtonPressed(item: Toplist, context: Context, showBuyPro: () -> Unit)
+    fun favouriteButtonPressed(item: Toplist, context: Context)
     suspend fun getNewCoins()
     suspend fun getGasFees()
     suspend fun refreshAllHomeData()
@@ -119,19 +88,6 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
     override var newCoins: List<Toplist>? by mutableStateOf(null)
     override var gasFees: GasFeesModel? by mutableStateOf(null)
 
-    // Promotions and Information
-
-    override var promotionTitle: String? by mutableStateOf(null)
-    override var promotionMessage: String? by mutableStateOf(null)
-    override var promotionMessageAccessible: String? by mutableStateOf(null)
-    override var showFreeTrial = false
-    override var offerTimeLeft: String? by mutableStateOf(null)
-    override var welcomeOfferTimeLeft: Date? by mutableStateOf(Date())
-
-    private var didClosePromotions: Boolean  by mutableStateOf(StorageManager.get(StorageKeys.DID_CLOSE_PROMOTION) ?: false)
-    private var didCloseWelcome: Boolean by mutableStateOf(StorageManager.get(StorageKeys.DID_CLOSE_WELCOME) ?: false)
-    private var timer: Timer? = null
-
     init {
         setStartData()
         fearGreedModel = fearGreedRepository.fearGreed
@@ -139,66 +95,6 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
 
         globalMarketRepository.globalMarket?.let {
             globalMarket = it
-        }
-
-        val hasClosed = StorageManager.get<Boolean>(StorageKeys.HAS_CLOSED_APP)
-        if (hasClosed == true) {
-            setShowWelcomeMessage()
-        }
-
-        setShowFreeTrial()
-    }
-
-    private var storeKitObserversInitialized: Boolean = false
-    private var cachedPlayProducts: List<ProductDetails>? = null
-    private var cachedStoreProducts: List<StoreProduct>? = null
-
-    override fun refreshLocalizedCopy() {
-        refreshPremiumOffer()
-    }
-
-    override fun loadPremiumOfferProducts(context: Context) {
-        BillingManager.setUpBillingClient(context) { products, revenueCatProducts ->
-            cachedPlayProducts = products
-            cachedStoreProducts = revenueCatProducts
-            refreshPremiumOffer()
-        }
-    }
-
-    override fun initObservers(lifecycleOwner: LifecycleOwner) {
-        if (storeKitObserversInitialized) {
-            return
-        }
-        storeKitObserversInitialized = true
-        BillingManager.storeProducts.observe(lifecycleOwner) { products ->
-            if (!products.isNullOrEmpty()) {
-                cachedPlayProducts = products
-            }
-            refreshPremiumOffer()
-        }
-        BillingManager.isEligableForTrial.observe(lifecycleOwner) { refreshPremiumOffer() }
-        BillingManager.currentSubscription.observe(lifecycleOwner) { refreshPremiumOffer() }
-    }
-
-    private fun refreshPremiumOffer() {
-        viewModelScope.launch {
-            refreshPremiumOfferInternal()
-        }
-    }
-
-    private suspend fun refreshPremiumOfferInternal() {
-        FirebaseManager.ensureRemoteConfigFetched()
-        val playProducts = cachedPlayProducts?.takeIf { it.isNotEmpty() }
-            ?: BillingManager.storeProducts.value?.takeIf { it.isNotEmpty() }
-        val storeProducts = cachedStoreProducts?.takeIf { it.isNotEmpty() }
-        val isEligibleForTrial = BillingManager.isEligableForTrial.value
-        val hasActiveSubscription = BillingManager.currentSubscription.value != null
-
-        when {
-            !playProducts.isNullOrEmpty() ->
-                setPremiumOffer(playProducts, isEligibleForTrial, hasActiveSubscription)
-            !storeProducts.isNullOrEmpty() ->
-                setPremiumOfferFromStoreProducts(storeProducts, isEligibleForTrial, hasActiveSubscription)
         }
     }
 
@@ -237,7 +133,6 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
             CarouselFilter.TimeframeWinners -> periodWinners
             CarouselFilter.TimeframeLosers -> periodLosers
             CarouselFilter.NewlyListed -> newCoins
-            else -> null // News filters not used on Home
         }
     }
 
@@ -249,7 +144,6 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
             CarouselFilter.TimeframeWinners -> getWinners()
             CarouselFilter.TimeframeLosers -> getLosers()
             CarouselFilter.NewlyListed -> getNewCoins()
-            else -> { } // News filters not used on Home
         }
     }
 
@@ -269,29 +163,6 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
             }
             else -> return
         }
-    }
-
-    override fun premiumViewClosed(title: String) {
-        if (title == "Free trial") {
-            StorageManager.set(StorageKeys.HOME_SHOW_FREE_TRIAL, false)
-            StorageManager.set(StorageKeys.HOME_NEXT_FREE_TRIAL_DATE, Date())
-            showFreeTrial = false
-        } else if (title == "Limited Time Offer!") {
-            StorageManager.set(StorageKeys.DID_CLOSE_PROMOTION, true)
-            didClosePromotions = true
-        } else {
-            StorageManager.set(StorageKeys.DID_CLOSE_WELCOME, true)
-            didCloseWelcome = true
-        }
-
-        promotionTitle = null
-        promotionMessage = null
-        promotionMessageAccessible = null
-        offerTimeLeft = null
-
-        timer?.cancel()
-        timer?.purge()
-        timer = null
     }
 
     override suspend fun getFearGreed() {
@@ -355,14 +226,7 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
     override fun favouriteButtonPressed(
         item: Toplist,
         context: Context,
-        showBuyPro: () -> Unit
     ) {
-        val isFavorite = favorites?.any { it.id == item.id } ?: false
-        if (BillingManager.currentSubscription.value == null && !isFavorite && UserPreferences.getFavorites().orEmpty().size >= 2) {
-            showBuyPro.invoke()
-            return
-        }
-
         viewModelScope.launch {
             val wasFavorite = favorites?.any { it.id == item.id } ?: false
             if (wasFavorite) {
@@ -407,188 +271,4 @@ class HomeViewModelImp(private val application: Application) : ViewModel(), Home
         }
         setStartData()
     }
-
-    private fun setShowFreeTrial() {
-        val date: Date? = StorageManager.get(StorageKeys.HOME_NEXT_FREE_TRIAL_DATE)
-
-        if (date != null && date.isMoreThanOneMonthOld()) {
-            StorageManager.set(StorageKeys.HOME_SHOW_FREE_TRIAL, true)
-        } else if (date == null) {
-            StorageManager.set(StorageKeys.HOME_NEXT_FREE_TRIAL_DATE, Date().inTime(days = 3))
-            StorageManager.set(StorageKeys.HOME_SHOW_FREE_TRIAL, false)
-        }
-
-        showFreeTrial = StorageManager.get(StorageKeys.HOME_SHOW_FREE_TRIAL) ?: false
-    }
-
-    private fun setShowWelcomeMessage() {
-        var date: Date? = StorageManager.get(StorageKeys.HOME_WELCOME_OFFER_DATE)
-
-        if (date == null) {
-            date = Date().inTime(days = 3)
-            StorageManager.set(StorageKeys.HOME_WELCOME_OFFER_DATE, date)
-        }
-
-        welcomeOfferTimeLeft = date
-
-        if (date < Date()) {
-            return
-        }
-
-        setWelcomeTimerDate()
-
-        val timerTask = object : TimerTask() {
-            override fun run() {
-                setWelcomeTimerDate()
-            }
-        }
-
-        timer = Timer()
-        timer?.schedule(timerTask, 0L, 1000L)
-    }
-
-    private fun setWelcomeTimerDate() {
-        val timeLeft: Date? = StorageManager.get(StorageKeys.HOME_WELCOME_OFFER_DATE)
-        val now = Date()
-
-        if (timeLeft == null || timeLeft.before(now)) {
-            timer?.run {
-                cancel()
-                purge()
-            }
-            timer = null
-            offerTimeLeft = null
-            didCloseWelcome = true
-            StorageManager.set(StorageKeys.DID_CLOSE_WELCOME, true)
-
-            if (promotionTitle == "Welcome Offer!") {
-                promotionTitle = null
-                promotionMessage = null
-                promotionMessageAccessible = null
-            }
-            return
-        }
-
-        val timeDiffMillis = timeLeft.time - now.time
-
-        val totalSeconds = timeDiffMillis / 1000
-        val days = totalSeconds / (60 * 60 * 24)
-        val hours = (totalSeconds / (60 * 60)) % 24
-        val minutes = (totalSeconds / 60) % 60
-        val seconds = totalSeconds % 60
-
-        offerTimeLeft = Localization.format(
-            "Expires in %@d %@h %@m %@s",
-            days.toString(),
-            hours.toString(),
-            minutes.toString(),
-            seconds.toString(),
-        )
-    }
-
-    private suspend fun setPremiumOffer(
-        products: List<ProductDetails>?,
-        isEligibleForTrial: Boolean?,
-        hasActiveSubscription: Boolean
-    ) {
-        if (hasActiveSubscription || isEligibleForTrial != true || products.isNullOrEmpty()) return
-
-        val showPromotionalOffer = FirebaseManager.getConfigBool(RemoteConfigKeys.ShowPromotionalOffer) == true
-        val offerProduct = products.firstOrNull { it.productId == promotionalName }
-        val welcomeProduct = products.firstOrNull { it.productId == welcomeName }
-        val welcomeOfferExpiry: Date? = StorageManager.get(StorageKeys.HOME_WELCOME_OFFER_DATE)
-        val currentDate = Date()
-
-        when {
-            !didClosePromotions && showPromotionalOffer && offerProduct != null -> {
-                val price = offerProduct.getFormattedPrice()
-                val priceAccessible = offerProduct.getAccessiblePrice()
-                promotionTitle = "Limited Time Offer!"
-                promotionMessage = proOfferMessage(price)
-                promotionMessageAccessible = proOfferMessage(priceAccessible)
-            }
-
-            !didCloseWelcome && welcomeProduct != null && welcomeOfferExpiry != null && welcomeOfferExpiry.after(currentDate) -> {
-                val price = welcomeProduct.getFormattedPrice()
-                val priceAccessible = welcomeProduct.getAccessiblePrice()
-                promotionTitle = "Welcome Offer!"
-                promotionMessage = proOfferMessage(price)
-                promotionMessageAccessible = proOfferMessage(priceAccessible)
-            }
-
-            showFreeTrial -> {
-                promotionTitle = "Free trial"
-                promotionMessage = Localization.string("Try CoinCurrently Pro for free")
-                promotionMessageAccessible = Localization.string("Try CoinCurrently Pro for free")
-            }
-        }
-    }
-
-    private suspend fun setPremiumOfferFromStoreProducts(
-        products: List<StoreProduct>,
-        isEligibleForTrial: Boolean?,
-        hasActiveSubscription: Boolean,
-    ) {
-        if (hasActiveSubscription || isEligibleForTrial != true) return
-
-        val showPromotionalOffer = FirebaseManager.getConfigBool(RemoteConfigKeys.ShowPromotionalOffer) == true
-        val offerProduct = products.firstOrNull { it.playProductId() == promotionalName }
-        val welcomeProduct = products.firstOrNull { it.playProductId() == welcomeName }
-        val welcomeOfferExpiry: Date? = StorageManager.get(StorageKeys.HOME_WELCOME_OFFER_DATE)
-        val currentDate = Date()
-
-        when {
-            !didClosePromotions && showPromotionalOffer && offerProduct != null -> {
-                val (price, priceAccessible) = offerProduct.getPromoPrices()
-                promotionTitle = "Limited Time Offer!"
-                promotionMessage = proOfferMessage(price)
-                promotionMessageAccessible = proOfferMessage(priceAccessible)
-            }
-
-            !didCloseWelcome && welcomeProduct != null && welcomeOfferExpiry != null && welcomeOfferExpiry.after(currentDate) -> {
-                val (price, priceAccessible) = welcomeProduct.getPromoPrices()
-                promotionTitle = "Welcome Offer!"
-                promotionMessage = proOfferMessage(price)
-                promotionMessageAccessible = proOfferMessage(priceAccessible)
-            }
-
-            showFreeTrial -> {
-                promotionTitle = "Free trial"
-                promotionMessage = Localization.string("Try CoinCurrently Pro for free")
-                promotionMessageAccessible = Localization.string("Try CoinCurrently Pro for free")
-            }
-        }
-    }
-
-    private fun proOfferMessage(price: String): String {
-        return Localization.format(
-            "Get %@ %@ of CoinCurrently Pro for only %@!",
-            "1",
-            Localization.string("year"),
-            price,
-        )
-    }
-
-    private fun StoreProduct.playProductId(): String? {
-        (this as? GoogleStoreProduct)?.productId?.let { return it }
-        when (val data = purchasingData) {
-            is GooglePurchasingData -> return data.productId
-        }
-        val idPrefix = id.substringBefore(":")
-        if (idPrefix in setOf(promotionalName, welcomeName)) return idPrefix
-        if (id in setOf(promotionalName, welcomeName)) return id
-        return null
-    }
-
-    private fun StoreProduct.getPromoPrices(): Pair<String, String> {
-        val phases = defaultOption?.pricingPhases ?: return "" to ""
-        val cheapestPhase = phases.minByOrNull { it.price.amountMicros } ?: return "" to ""
-        val currencyModel = allCurrencies.firstOrNull {
-            it.code.equals(cheapestPhase.price.currencyCode, ignoreCase = true)
-        } ?: CurrencySelectionModel()
-        val amount = cheapestPhase.price.amountMicros.toDouble() / 1_000_000
-        return amount.formatCurrency(currencySelectionModel = currencyModel) to
-            amount.currencyAccessible(currency = currencyModel)
-    }
-
 }

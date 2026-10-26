@@ -40,10 +40,8 @@ import com.cryptium.coincurrently.core.extensions.groupedTransactions
 import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
-import com.cryptium.coincurrently.features.News.NewsRepository
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
-import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.extensions.pieContaining
 import com.cryptium.coincurrently.sharedui.charts.HoverHelper
 import com.cryptium.coincurrently.core.networking.ResponseModels.GlobalMarketData
@@ -64,12 +62,10 @@ import com.cryptium.coincurrently.features.Portfolio.Enums.DateOption
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
-import com.cryptium.coincurrently.core.networking.NewsCategory
 import com.cryptium.coincurrently.core.networking.ResponseModels.*
 import java.util.*
 import kotlin.math.min
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
-import com.cryptium.coincurrently.features.Paywall.getCurrency
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertCreateResult
 
 class CryptoDetailViewModelFactory(
@@ -90,7 +86,6 @@ class CryptoDetailViewModel(
 ): ViewModel() {
     private val toplistRepository by lazy { ToplistRepository }
     private val currencyRepository by lazy { CurrencyRepository }
-    private val newsRepository by lazy { NewsRepository }
     private val portfolioRepository by lazy { PortfolioRepository }
     private val priceAlertsRepository by lazy { PriceAlertsRepository }
     private val globalMarketRepository by lazy { GlobalMarketRepository }
@@ -126,10 +121,6 @@ class CryptoDetailViewModel(
     // Price alerts
     var alerts: List<AlertCoin>? by mutableStateOf(null)
 
-    // News
-    var newsData: List<NewNewsItem>? by mutableStateOf(null)
-    var showNewsError: Boolean by mutableStateOf(false)
-
     // Portfolio
     var pie: Pie? by mutableStateOf(null)
     var portfolio: List<Pie>? by mutableStateOf(null)
@@ -152,10 +143,8 @@ class CryptoDetailViewModel(
 
     var selectedSortOption by mutableStateOf(SortOption.VolumeDesc)
 
-    private var hasProSubscription = BillingManager.currentSubscription.value != null
-
     val isWebSocketEnabled: Boolean
-        get() = UserPreferences.isWebSocketEnabled(hasPro = hasProSubscription)
+        get() = UserPreferences.isWebSocketEnabled()
 
     init {
         this.currencyId = cryptoDetail?.id ?: ""
@@ -193,10 +182,6 @@ class CryptoDetailViewModel(
             setOnlyPrices()
             setVolumes()
             setTimestamps()
-        }
-
-        newsRepository.cachedNews?.get(NewsCategory.Coin(cryptoInfo?.id ?: "").type)?.let {
-            newsData = it.data.data
         }
 
         selectedSortOption = StorageManager.get<SortOption>(StorageKeys.CRYPTO_DETAIL_MARKETS_SORT_OPTION) ?: SortOption.VolumeDesc
@@ -273,25 +258,6 @@ class CryptoDetailViewModel(
         return prices
     }
 
-    suspend fun getCryptoNews() {
-        val id = cryptoInfo?.id?.takeIf { it.isNotEmpty() }
-            ?: currencyId.takeIf { it.isNotEmpty() }
-            ?: return
-
-        showNewsError = false
-
-        val news = newsRepository.getNewNews(20, NewsCategory.Coin(id), useCategoryApi = true)
-        if (news?.data.isNullOrEmpty()) {
-            showNewsError = true
-        }
-
-        news?.let {
-            newsData = it.data.orEmpty()
-        } ?: run {
-            showNewsError = true
-        }
-    }
-
     suspend fun refresh(
         context: Context,
         showReload: Boolean = true,
@@ -299,7 +265,6 @@ class CryptoDetailViewModel(
         newDays: String? = null,
         newTimeChart: TimeCharts? = null,
         forceId: String? = null,
-        getNews: Boolean = true,
         forceSymbol: String? = null
     ) {
         val appContext = context.applicationContext
@@ -307,14 +272,11 @@ class CryptoDetailViewModel(
             isRefreshing = showRefreshIndicator
             mainReloading = showReload
 
-            hasProSubscription = BillingManager.currentSubscription.value != null
-
             val days = newDays ?: currentDays
             val chart = newTimeChart ?: selectedTimeFrame
             val mainId = forceId ?: currencyId
 
             val cryptoInfo = async { getCryptoInfo(appContext, mainId) }
-            val news = async { if (getNews) getCryptoNews() }
             val candleChart = async {
                 if (isCandleChartEnabled) {
                     getCandleChart(mainId, days)
@@ -327,7 +289,6 @@ class CryptoDetailViewModel(
             }
 
             cryptoInfo.await()
-            news.await()
             candleChart.await()
             priceVolumeModel.await()
 
@@ -499,16 +460,8 @@ class CryptoDetailViewModel(
         }
     }
 
-    fun favoriteButtonPressed(
-        context: Context,
-        callback: () -> Unit
-    ) {
+    fun favoriteButtonPressed(context: Context) {
         val toplistItem = cryptoInfo?.toToplist() ?: return
-
-        if (BillingManager.currentSubscription.value == null && !inFavoritesList && UserPreferences.getFavorites().orEmpty().size >= 2) {
-            callback.invoke()
-            return
-        }
 
         val wasFavorite = inFavoritesList
         if (wasFavorite) {

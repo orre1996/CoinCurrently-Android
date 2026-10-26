@@ -21,13 +21,10 @@ enum class ScreenLabel(val wire: String) {
     Widgets("Widgets"),
     Converter("Converter"),
     PriceAlerts("PriceAlerts"),
-    Referral("Referral"),
     Settings("Settings"),
     Home("Home"),
     Portfolio("Portfolio"),
     Market("Market"),
-    News("News"),
-    BuyPro("BuyPro"),
     Toplist("Toplist"),
     Nfts("NFTs"),
     Treasuries("Treasuries"),
@@ -80,17 +77,6 @@ enum class DateFilterCustomField(val wire: String) {
     End("end"),
 }
 
-enum class BuyProAction(val wire: String) {
-    Favorite("Favorite"),
-    NewsFilter("NewsFilter"),
-    Settings("Settings"),
-    PriceAlert("PriceAlert"),
-    ImportWallet("ImportWallet"),
-    AddTransaction("AddTransaction"),
-    ExportPortfolio("ExportPortfolio"),
-    HomePromotion("HomePromotion"),
-}
-
 enum class PriceAlertInputType(val wire: String) {
     Price("price"),
     Percent("percent"),
@@ -101,21 +87,4 @@ enum class PortfolioTransactionDeletedKind(val wire: String) {
     Swap("swap"),
 }
 
-/** Mirrors iOS `SubscriptionPurchaseOutcome` sent with `subscription_purchase_completed`. */
-enum class SubscriptionPurchaseOutcome(val wire: String) {
-    Failed("failed"),
-    Cancelled("cancelled"),
-    Pending("pending"),
-    Unknown("unknown"),
-    Renewal("renewal"),
-    Success("success"),
-}
-
-/** Mirrors iOS `SubscriptionRestoreOutcome` sent with `subscription_restore_completed`. */
-enum class SubscriptionRestoreOutcome(val wire: String) {
-    Restored("restored"),
-    NothingToRestore("nothingToRestore"),
-    Cancelled("cancelled"),
-    Failed("failed"),
-}
 

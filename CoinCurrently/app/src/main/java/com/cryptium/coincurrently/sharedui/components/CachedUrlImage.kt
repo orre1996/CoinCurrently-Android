@@ -24,7 +24,7 @@ import com.cryptium.coincurrently.sharedui.modifiers.shimmeringModifier
  *
  * @param respectMissingContentShimmer When false, overlay shimmer for null/blank content is only
  *   driven by [isDownloading] — use when the row’s loading flag differs from “image URL missing”.
- * @param scaleWithFontSize When false, [size] is used as-is (e.g. fixed news thumbnails).
+ * @param scaleWithFontSize When false, [size] is used as-is.
  */
 @Composable
 fun CachedUrlImage(

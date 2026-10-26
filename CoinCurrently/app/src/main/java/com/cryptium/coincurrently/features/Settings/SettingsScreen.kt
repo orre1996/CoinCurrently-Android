@@ -8,7 +8,6 @@ import com.cryptium.coincurrently.sharedui.modifiers.imageSize
 
 import com.cryptium.coincurrently.app.NavigationScreens
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.Context
 import android.content.res.Configuration
@@ -27,7 +26,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -37,7 +35,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -52,10 +49,7 @@ import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -90,7 +84,6 @@ import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.core.analytics.AppShareActivityCompleted
-import com.cryptium.coincurrently.core.analytics.BuyProAction
 import com.cryptium.coincurrently.core.analytics.CurrencySelected
 import com.cryptium.coincurrently.core.analytics.LanguageSelected
 import com.cryptium.coincurrently.core.analytics.DisabledColorBlindnessFilter
@@ -117,8 +110,6 @@ import com.cryptium.coincurrently.features.Home.NewCoins.NewCoinsRepository
 import com.cryptium.coincurrently.features.Home.WinnersLosers.WinnersLosersRepository
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
-import com.cryptium.coincurrently.core.purchases.BillingManager
-import java.util.Date
 import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import com.cryptium.coincurrently.core.localization.AppLanguagePreference
 import com.cryptium.coincurrently.core.localization.AppLanguageState
@@ -141,16 +132,12 @@ fun SettingsScreen(
     modifier: Modifier,
     tabBarHeight: Dp = 0.dp,
 ) {
-    val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
     val biometricViewModel: BiometricViewModel = viewModel()
 
     var doubleBackToExitPressedOnce by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-
-    val currentSubscription by BillingManager.currentSubscription.observeAsState()
-    val subscriptionExpirationDate by BillingManager.subscriptionExpirationDate.observeAsState()
 
     val showResetApp = remember { mutableStateOf(false) }
 
@@ -162,11 +149,7 @@ fun SettingsScreen(
     var selectedTheme by remember { mutableStateOf(navigationViewModel.appColorScheme) }
     var selectedStartTab by remember { mutableStateOf(UserPreferences.getStartTab()) }
     var isColorBlindEnabled by remember { mutableStateOf(UserPreferences.getColorBlind()) }
-    var webSocketEnabled by remember { mutableStateOf(false) }
-
-    LaunchedEffect(currentSubscription) {
-        webSocketEnabled = UserPreferences.isWebSocketEnabled(hasPro = currentSubscription != null)
-    }
+    var webSocketEnabled by remember { mutableStateOf(UserPreferences.isWebSocketEnabled()) }
 
     var isSelectingCurrency by remember { mutableStateOf(false) }
     var isSelectingLanguage by remember { mutableStateOf(false) }
@@ -214,52 +197,6 @@ fun SettingsScreen(
                         }
                     ),
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier
-                        .primaryBackgroundNoRipple()
-                ) {
-                    PremiumView(
-                        currentSubscription = currentSubscription,
-                        expirationDate = subscriptionExpirationDate,
-                    ) {
-                        navigationViewModel.openBuyPro(ScreenLabel.Settings, BuyProAction.Settings)
-                    }
-
-                    if (currentSubscription != null) {
-                        Separator()
-
-                        SettingsSimpleCell(
-                            title = "Manage Subscription",
-                            subTitle = "Managed in Google Play",
-                            withExternal = true
-                        ) {
-                            try {
-                                uriHandler.openUri("https://play.google.com/store/account/subscriptions")
-                            } catch (_: ActivityNotFoundException) {
-                                return@SettingsSimpleCell
-                            }
-                        }
-                    }
-
-                    Separator()
-
-                    SettingsSimpleCell(
-                        title = "Referral Program",
-                        accessibilityText = "Navigate to Referral Program",
-                    ) {
-                        AnalyticsManager.log(
-                            Navigate(
-                                fromScreen = ScreenLabel.Settings,
-                                toScreen = ScreenLabel.Referral,
-                            ),
-                        )
-                        navigationViewModel.navigate(
-                            NavigationScreens.Referral(),
-                        )
-                    }
-                }
-
                 GlobalSection(
                     selectedCurrency = selectedCurrency,
                     selectedLanguage = selectedLanguage,
@@ -267,7 +204,6 @@ fun SettingsScreen(
                     selectedTheme = selectedTheme,
                     isColorBlindEnabled = isColorBlindEnabled,
                     webSocketEnabled = webSocketEnabled,
-                    currentSubscription = currentSubscription,
                     selectNewCurrency = {
                         AnalyticsManager.log(
                             SheetOpened(ScreenLabel.Settings, SheetLabel.CurrencySelector),
@@ -307,11 +243,6 @@ fun SettingsScreen(
                         }
                     },
                     toggleWebSocket = {
-                        if (!webSocketEnabled && currentSubscription == null) {
-                            navigationViewModel.openBuyPro(ScreenLabel.Settings, BuyProAction.Settings)
-                            return@GlobalSection
-                        }
-
                         webSocketEnabled = !webSocketEnabled
                         UserPreferences.setWebSocketEnabled(webSocketEnabled)
                         if (webSocketEnabled) {
@@ -401,6 +332,8 @@ fun SettingsScreen(
                         )
                     }
                 )
+
+                SourceCodeSection()
 
                 LegalSection()
 
@@ -554,101 +487,6 @@ fun SectionHeader(text: String) {
         color = MaterialTheme.colors.onSurfaceDim,
         modifier = Modifier.semantics { heading() },
     )
-}
-
-@Composable
-private fun PremiumView(
-    currentSubscription: String?,
-    expirationDate: Date? = null,
-    action: () -> Unit
-) {
-    val formattedExpiration = expirationDate?.let { date ->
-        java.text.DateFormat.getDateInstance(
-            java.text.DateFormat.MEDIUM,
-            AppLanguageState.preference.resolve().locale,
-        ).format(date)
-    }
-    val subscriptionStatus = when {
-        currentSubscription == null -> Localization.string("Inactive")
-        formattedExpiration != null -> Localization.format("Active · Expires %@", formattedExpiration)
-        else -> Localization.string("Active")
-    }
-    val subscriptionStatusText = buildAnnotatedString {
-        if (currentSubscription == null) {
-            withStyle(SpanStyle(color = MaterialTheme.colors.onSurfaceDimmer)) {
-                append(Localization.string("Inactive"))
-            }
-        } else {
-            withStyle(SpanStyle(color = MaterialTheme.colors.primary)) {
-                append(Localization.string("Active"))
-            }
-            if (formattedExpiration != null) {
-                withStyle(SpanStyle(color = MaterialTheme.colors.onSurfaceDimmer)) {
-                    append(Localization.format(" · Expires %@", formattedExpiration))
-                }
-            }
-        }
-    }
-
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalAlignment = CenterVertically,
-        modifier = Modifier
-            .padding(end = 8.dp)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) {
-                action()
-            }
-            .clearAndSetSemantics {
-                contentDescription = "${Localization.string("CoinCurrently Pro")}. $subscriptionStatus"
-                role = Role.Button
-                onClick {
-                    action()
-                    true
-                }
-            }
-    ) {
-        Image(
-            painter = painterResource(
-                id = if (MaterialTheme.colors.isLight) R.drawable.premium_logo_light
-                else R.drawable.premium_logo_dark
-            ),
-            contentDescription = null,
-            modifier = Modifier
-                .imageSize(48.dp)
-        )
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalAlignment = Alignment.Start,
-            modifier = Modifier
-                .weight(1f)
-        ) {
-            Text(
-                text = Localization.string("CoinCurrently Pro"),
-                textAlign = TextAlign.Start,
-                style = satoshiBold(16),
-                color = MaterialTheme.colors.onSurface,
-            )
-
-            Text(
-                text = subscriptionStatusText,
-                textAlign = TextAlign.Start,
-                style = satoshiBold(12),
-            )
-        }
-
-        Image(
-            painter = painterResource(id = R.drawable.arrow_forward),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurfaceDimmer),
-            modifier = Modifier
-                .imageSize(24.dp, 24.dp)
-        )
-    }
 }
 
 @Composable

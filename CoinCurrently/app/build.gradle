@@ -89,11 +89,9 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField 'boolean', 'IN_DEBUG', 'false'
-            buildConfigField 'String', 'REVENUECAT_API_KEY', buildConfigString('REVENUECAT_PRODUCTION_API_KEY')
         }
         debug {
             buildConfigField 'boolean', 'IN_DEBUG', 'true'
-            buildConfigField 'String', 'REVENUECAT_API_KEY', buildConfigString('REVENUECAT_TEST_API_KEY')
         }
     }
     lint {
@@ -115,8 +113,7 @@ repositories {
 
 configurations.configureEach {
     resolutionStrategy.force(
-            "com.android.billingclient:billing:8.3.0",
-            // Align GMS artifacts pulled in by Billing, Firebase, RevenueCat, and ML Kit.
+            // Align GMS artifacts pulled in by Firebase and ML Kit.
             // Stock basement 18.4+ calls StrictMode.VmPolicy.Builder.permitUnsafeIntentLaunch()
             // (API 31) from a helper (zzd). With minSdk 31, R8 folds isAtLeastS() → true, and
             // incomplete ROMs that report API 31 but lack the method crash with NoSuchMethodError.
@@ -188,10 +185,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-messaging'
 
-    // Billing & reviews
-    implementation 'com.android.billingclient:billing:8.3.0'
+    // Reviews
     implementation 'com.google.android.play:review:2.0.1'
-    implementation 'com.revenuecat.purchases:purchases:10.5.0'
 
     // Third-party UI
     implementation 'com.google.accompanist:accompanist-pager:0.21.2-beta'

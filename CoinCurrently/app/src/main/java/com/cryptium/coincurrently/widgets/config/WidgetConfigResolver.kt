@@ -1,7 +1,6 @@
 package com.cryptium.coincurrently.widgets.config
 
 import android.content.Context
-import com.cryptium.coincurrently.core.networking.NewsCategory
 import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 
 object WidgetConfigResolver {
@@ -19,8 +18,6 @@ object WidgetConfigResolver {
 
         return ids.take(limit)
     }
-
-    fun resolveNewsCategory(config: NewsWidgetConfig): NewsCategory = config.toNewsCategory()
 
     private suspend fun toplistCoinIds(limit: Int): List<String> {
         ToplistRepository.smallToplist

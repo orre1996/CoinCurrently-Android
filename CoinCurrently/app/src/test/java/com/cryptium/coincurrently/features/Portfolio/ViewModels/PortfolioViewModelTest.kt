@@ -40,12 +40,4 @@ class PortfolioViewModelTest {
         viewModel.toggleHideData()
         assertTrue(viewModel.hideData)
     }
-
-    @Test
-    fun canExportPortfolio_allowsTheFreeAllowance() {
-        val viewModel = PortfolioViewModel()
-
-        assertFalse(viewModel.hasBoughtPro())
-        assertTrue(viewModel.canExportPortfolio())
-    }
 }

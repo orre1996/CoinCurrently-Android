@@ -1,6 +1,5 @@
 package com.cryptium.coincurrently.core.networking
 
-import android.graphics.Bitmap
 import com.cryptium.coincurrently.core.networking.ResponseModels.AlertCoin
 import com.cryptium.coincurrently.core.networking.ResponseModels.AlertDirection
 import com.cryptium.coincurrently.core.networking.ResponseModels.CoinsList
@@ -13,11 +12,9 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.NFTDetail
 import com.cryptium.coincurrently.core.networking.ResponseModels.NFTPlatform
 import com.cryptium.coincurrently.core.networking.ResponseModels.NFTTickerResponse
 import com.cryptium.coincurrently.core.networking.ResponseModels.NFTToplist
-import com.cryptium.coincurrently.core.networking.ResponseModels.NewNewsModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.PostAlertCoin
 import com.cryptium.coincurrently.core.networking.ResponseModels.PriceVolumeModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.PublicTreasuryModel
-import com.cryptium.coincurrently.core.networking.ResponseModels.ReferralCodeResult
 import com.cryptium.coincurrently.core.networking.ResponseModels.SearchModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 import com.cryptium.coincurrently.core.networking.ResponseModels.TreasuryDetailEntity
@@ -163,18 +160,13 @@ class MainRepositoryTest {
     }
 
     @Test
-    fun newsAndAccountCalls_delegateArguments() = runTest {
-        val gecko = Result.success(NewNewsModel())
-        val news = Result.success(NewNewsModel())
+    fun accountCalls_delegateArguments() = runTest {
         val gas = Result.success(com.cryptium.coincurrently.core.networking.ResponseModels.GasFeesModel(null))
         val winners = Result.success(WinnersLosers(emptyList(), emptyList()))
-        val code = ReferralCodeResult(qrImage = mockk<Bitmap>(relaxed = true), code = "ABC")
         val user = mockk<UserResponse>()
         val alert = Result.success(mockk<AlertCoin>())
         val alerts = Result.success(arrayListOf<AlertCoin>())
         val post = PostAlertCoin("bitcoin", 1.0, AlertDirection.Above, null, "USD")
-        coEvery { ApiHelper.getCoinGeckoNews("bitcoin") } returns gecko
-        coEvery { ApiHelper.getNewNews(25, any()) } returns news
         coEvery { ApiHelper.getGasFees(true) } returns gas
         coEvery { ApiHelper.getWalletAddress("0xabc", "eth") } returns Result.success(mockk(relaxed = true))
         coEvery { ApiHelper.getWinnersLosers("usd", "24h") } returns winners
@@ -187,13 +179,9 @@ class MainRepositoryTest {
         coEvery { ApiHelper.ubsubBigMovers() } returns Result.success(Unit)
         coEvery { ApiHelper.bigMoverTrigger() } returns Result.success(Unit)
         coEvery { ApiHelper.sendFeedback(5, "nice") } returns Result.success(Unit)
-        coEvery { ApiHelper.getReferralCode() } returns code
         coEvery { ApiHelper.getUser() } returns user
-        coEvery { ApiHelper.redeemCode("FRIEND") } returns Result.success(Unit)
         coEvery { ApiHelper.subCoin(listOf("bitcoin"), listOf("usd")) } returns Result.success(Unit)
 
-        assertEquals(gecko, MainRepository.getCoinGeckoNews("bitcoin"))
-        assertEquals(news, MainRepository.getNewNews(25, NewsCategory.Videos()))
         assertEquals(gas, MainRepository.getGasFees(true))
         MainRepository.getWalletAddress("0xabc", "eth")
         assertEquals(winners, MainRepository.getWinnersLosers("usd", "24h"))
@@ -206,11 +194,8 @@ class MainRepositoryTest {
         assertEquals(Result.success(Unit), MainRepository.ubsubBigMover())
         assertEquals(Result.success(Unit), MainRepository.bigMoverTrigger())
         assertEquals(Result.success(Unit), MainRepository.sendFeedback(5, "nice"))
-        assertEquals(code, MainRepository.getReferralCode())
         assertEquals(user, MainRepository.getUser())
-        assertEquals(Result.success(Unit), MainRepository.redeemCode("FRIEND"))
         assertEquals(Result.success(Unit), MainRepository.subCoin(listOf("bitcoin"), listOf("usd")))
         coVerify { ApiHelper.getWalletAddress("0xabc", "eth") }
-        coVerify { ApiHelper.getNewNews(25, NewsCategory.Videos()) }
     }
 }

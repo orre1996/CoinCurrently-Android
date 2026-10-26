@@ -25,12 +25,6 @@ sealed class NavigationItem(
         "Market"
     )
 
-    object News: NavigationItem(
-        NavigationScreens.News,
-        R.drawable.news,
-        "News"
-    )
-
     object More: NavigationItem(
         NavigationScreens.Settings,
         R.drawable.settings,

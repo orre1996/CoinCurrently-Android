@@ -15,7 +15,6 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.AddressImport
 import com.cryptium.coincurrently.app.NavigationScreens
 import com.cryptium.coincurrently.app.SearchScreenCase
 import com.cryptium.coincurrently.app.SearchCase
-import android.app.Activity
 import android.annotation.SuppressLint
 import android.os.Handler
 import android.os.Looper
@@ -61,7 +60,6 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.min
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.semantics.contentDescription
@@ -96,7 +94,6 @@ import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.sharedui.components.ObserveCurrencyChanges
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
-import com.cryptium.coincurrently.core.analytics.BuyProAction
 import com.cryptium.coincurrently.core.analytics.ClearFilters
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.Navigate
@@ -136,7 +133,6 @@ import com.cryptium.coincurrently.features.Portfolio.Sheets.SwapTransactionDetai
 import com.cryptium.coincurrently.features.Portfolio.Sheets.TransactionDetailSheet
 import com.cryptium.coincurrently.features.Portfolio.ViewModels.PortfolioViewModel
 import com.cryptium.coincurrently.sharedui.components.SnackBarType
-import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -181,7 +177,6 @@ fun PortfolioScreen(
         },
     )
 
-    val currentSubscription by BillingManager.currentSubscription.observeAsState()
     var doubleBackToExitPressedOnce by remember { mutableStateOf(false) }
     var isRefreshing by remember { mutableStateOf(false) }
     val useStickyHeaders = AccessibilityLayout.useStickyHeaders
@@ -199,16 +194,11 @@ fun PortfolioScreen(
     var isTransactionTypeSheetShowing by remember { mutableStateOf(false) }
     var isExportFormatSheetShowing by remember { mutableStateOf(false) }
     var isBenchmarkCoinSelectorShowing by remember { mutableStateOf(false) }
-    var exportSheetFreeExportsRemaining by remember { mutableStateOf<Int?>(null) }
     var pendingExportFormat by remember { mutableStateOf<PortfolioExportFormat?>(null) }
 
     val shareLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult(),
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            viewModel.recordPortfolioExport()
-        }
-    }
+    ) { }
 
     var selectedTransaction: PortfolioEvent? by remember { mutableStateOf(null) }
 
@@ -966,46 +956,29 @@ fun PortfolioScreen(
             hasTransactions = (viewModel.portfolio?.allTransactionsCount ?: 0) > 0,
             benchmarkCoin = viewModel.benchmarkCoin,
             addTransaction = {
-                if ((viewModel.portfolio?.allTransactionsCount ?: 0) >= 3 && currentSubscription == null) {
-                    navigationViewModel.openBuyPro(ScreenLabel.Portfolio, BuyProAction.AddTransaction)
-                } else {
-                    AnalyticsManager.log(
-                        SheetOpened(ScreenLabel.Portfolio, SheetLabel.PortfolioAddTransactionType),
-                    )
-                    isTransactionTypeSheetShowing = true
-                }
+                AnalyticsManager.log(
+                    SheetOpened(ScreenLabel.Portfolio, SheetLabel.PortfolioAddTransactionType),
+                )
+                isTransactionTypeSheetShowing = true
             },
             importWallet = {
-                if (currentSubscription == null) {
-                    navigationViewModel.openBuyPro(ScreenLabel.Portfolio, BuyProAction.ImportWallet)
-                } else {
-                    val dest = NavigationScreens.ImportWalletTransaction(
-                        popToRoot = true
-                    )
-                    AnalyticsManager.log(
-                        Navigate(
-                            fromScreen = ScreenLabel.Portfolio,
-                            toScreen = ScreenLabel.ImportWalletTransaction,
-                        ),
-                    )
-                    navigationViewModel.navigate(dest)
-                }
+                val dest = NavigationScreens.ImportWalletTransaction(
+                    popToRoot = true
+                )
+                AnalyticsManager.log(
+                    Navigate(
+                        fromScreen = ScreenLabel.Portfolio,
+                        toScreen = ScreenLabel.ImportWalletTransaction,
+                    ),
+                )
+                navigationViewModel.navigate(dest)
             },
             exportPortfolio = {
                 if ((viewModel.portfolio?.allTransactionsCount ?: 0) > 0) {
-                    if (viewModel.canExportPortfolio()) {
-                        exportSheetFreeExportsRemaining = if (currentSubscription != null) {
-                            null
-                        } else {
-                            viewModel.remainingFreePortfolioExports
-                        }
-                        AnalyticsManager.log(
-                            SheetOpened(ScreenLabel.Portfolio, SheetLabel.PortfolioExportFormat),
-                        )
-                        isExportFormatSheetShowing = true
-                    } else {
-                        navigationViewModel.openBuyPro(ScreenLabel.Portfolio, BuyProAction.ExportPortfolio)
-                    }
+                    AnalyticsManager.log(
+                        SheetOpened(ScreenLabel.Portfolio, SheetLabel.PortfolioExportFormat),
+                    )
+                    isExportFormatSheetShowing = true
                 }
             },
             selectBenchmark = {
@@ -1039,7 +1012,6 @@ fun PortfolioScreen(
 
         if (isExportFormatSheetShowing) {
             SelectExportFormatSheet(
-                freeExportsRemaining = exportSheetFreeExportsRemaining,
                 formatSelected = { format ->
                     isExportFormatSheetShowing = false
                     pendingExportFormat = format

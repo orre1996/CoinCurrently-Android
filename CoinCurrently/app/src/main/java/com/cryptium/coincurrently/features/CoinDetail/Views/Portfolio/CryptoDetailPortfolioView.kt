@@ -63,7 +63,6 @@ import com.cryptium.coincurrently.sharedui.components.PriceChangeValueView
 import com.cryptium.coincurrently.sharedui.models.FormattingThreshold
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
 import com.cryptium.coincurrently.app.NavigationViewModel
-import com.cryptium.coincurrently.core.analytics.BuyProAction
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.PortfolioDataHide
 import com.cryptium.coincurrently.core.analytics.PortfolioDataShow
@@ -77,7 +76,6 @@ import com.cryptium.coincurrently.features.Portfolio.Views.PortfolioSwapView
 import com.cryptium.coincurrently.features.Portfolio.Views.PortfolioTransactionView
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioEvent
-import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.CurrencySelectionModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.Pie
@@ -87,20 +85,15 @@ import kotlin.Boolean
 fun LazyListScope.CryptoDetailPortfolioView(
     viewModel: CryptoDetailViewModel,
     navigationViewModel: NavigationViewModel,
-    hasPro: Boolean,
     showAddTransactionSheet: MutableState<Boolean>,
     isTablet: Boolean,
     showTransactionDetails: (PortfolioEvent) -> Unit
 ) {
     val onAddTransaction: () -> Unit = {
-        if ((viewModel.portfolio?.allTransactionsCount ?: 0) >= 3 && !hasPro) {
-            navigationViewModel.openBuyPro(ScreenLabel.CryptoDetail, BuyProAction.AddTransaction)
-        } else {
-            AnalyticsManager.log(
-                SheetOpened(ScreenLabel.CryptoDetail, SheetLabel.PortfolioAddTransactionType)
-            )
-            showAddTransactionSheet.value = true
-        }
+        AnalyticsManager.log(
+            SheetOpened(ScreenLabel.CryptoDetail, SheetLabel.PortfolioAddTransactionType)
+        )
+        showAddTransactionSheet.value = true
     }
 
     val onTogglePortfolioHide: () -> Unit = {

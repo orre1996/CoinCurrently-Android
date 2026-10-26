@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" tools:ignore="ProtectedPermissions" />
 
     <application
@@ -50,29 +49,6 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/small_fear_greed_widget_info" />
-        </receiver>
-
-        <receiver
-            android:name=".widgets.receivers.SmallNewsWidgetReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/small_news_widget_info" />
-        </receiver>
-        <receiver
-            android:name=".widgets.receivers.MediumNewsWidgetReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/medium_news_widget_info" />
         </receiver>
 
         <meta-data
@@ -213,17 +189,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".widgets.config.NewsCategoryConfigActivity"
-            android:exported="true"
-            android:theme="@style/WidgetConfigTheme"
-            android:taskAffinity=""
-            android:excludeFromRecents="true"
-            android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".app.MainActivity"
             android:configChanges="uiMode|orientation|screenSize|screenLayout|smallestScreenSize"
             android:exported="true"
@@ -235,15 +200,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="coincurrently.app"
-                    android:pathPrefix="/invite" />
             </intent-filter>
         </activity>
     </application>

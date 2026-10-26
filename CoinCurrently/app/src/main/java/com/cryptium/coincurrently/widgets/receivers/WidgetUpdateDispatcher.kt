@@ -8,7 +8,6 @@ import com.cryptium.coincurrently.widgets.glance.LargeQuadCryptoWidgetReceiver
 import com.cryptium.coincurrently.widgets.glance.MediumDuoCryptoWidgetReceiver
 import com.cryptium.coincurrently.widgets.glance.SmallCryptoWidgetReceiver
 import com.cryptium.coincurrently.core.persistence.StorageManager
-import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.RetrofitBuilder
 import com.cryptium.coincurrently.widgets.config.WidgetRuntimeInitializer
 
@@ -20,7 +19,6 @@ internal fun updateAppWidget(
     WidgetRuntimeInitializer.ensureInitialized(context)
     NavigationViewModel.currentScreen = "General"
     RetrofitBuilder.createApiService(context, "Widget")
-    BillingManager.setUpBillingClient(context)
     StorageManager.setCache(context)
 
     appWidgetManager.getAppWidgetInfo(appWidgetId)?.provider?.let { provider ->
@@ -50,12 +48,6 @@ internal fun updateAppWidget(
             provider.className.contains("large_portfolio_widget") -> {
                 createLargePortfolioWidget(context, appWidgetManager, appWidgetId)
             }
-            provider.className.contains("SmallNewsWidgetReceiver") -> {
-                createSmallNewsWidget(context, appWidgetManager, appWidgetId)
-            }
-            provider.className.contains("MediumNewsWidgetReceiver") -> {
-                createMediumNewsWidget(context, appWidgetManager, appWidgetId)
-            }
             else -> { }
         }
     }
@@ -66,8 +58,6 @@ internal fun reloadAllWidgets(context: Context) {
     val manager = AppWidgetManager.getInstance(appContext)
     val providers = listOf(
         small_fear_greed_widget::class.java,
-        SmallNewsWidgetReceiver::class.java,
-        MediumNewsWidgetReceiver::class.java,
         small_portfolio_widget::class.java,
         medium_portfolio_widget::class.java,
         large_portfolio_widget::class.java,

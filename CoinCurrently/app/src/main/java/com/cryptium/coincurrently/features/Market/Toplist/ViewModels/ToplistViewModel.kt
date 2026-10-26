@@ -11,7 +11,6 @@ import com.cryptium.coincurrently.sharedui.models.PriceChange
 import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.features.CoinDetail.CryptoDetailViewModel
-import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.sharedui.models.CachedData
 import com.cryptium.coincurrently.core.analytics.FavoriteAdded
 import com.cryptium.coincurrently.core.analytics.FavoriteRemoved
@@ -99,13 +98,7 @@ class ToplistViewModel(
     fun favouriteButtonPressed(
         toplistItem: Toplist,
         context: Context,
-        showBuyPro: () -> Unit
     ) {
-        if (BillingManager.currentSubscription.value == null && !favoritesList.any { it.id == toplistItem.id } && favoritesList.size >= 2) {
-            showBuyPro.invoke()
-            return
-        }
-
         val wasFavorite = favoritesList.any { it.id == toplistItem.id }
         val favoriteFromScreen =
             if (category?.id.isNullOrBlank()) ScreenLabel.Toplist else ScreenLabel.CategoryDetail

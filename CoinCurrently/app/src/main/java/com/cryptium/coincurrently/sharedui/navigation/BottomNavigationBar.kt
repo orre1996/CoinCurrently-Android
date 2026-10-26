@@ -72,7 +72,6 @@ private fun screenLabelForBottomTabIndex(index: Int): ScreenLabel =
         0 -> ScreenLabel.Home
         1 -> ScreenLabel.Portfolio
         2 -> ScreenLabel.Market
-        3 -> ScreenLabel.News
         else -> ScreenLabel.Settings
     }
 
@@ -92,7 +91,6 @@ fun BottomNavigationBar(
         NavigationItem.Home,
         NavigationItem.Portfolio,
         NavigationItem.Market,
-        NavigationItem.News,
         NavigationItem.More
     )
 
@@ -150,7 +148,7 @@ fun BottomNavigationBar(
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = null,
                                 ) {
-                                    if (!showMoreTip.value || index == 4) {
+                                    if (!showMoreTip.value || index == items.lastIndex) {
                                         showMoreTip.value = false
 
                                         val tabRouteId = item.route.getRouteString()

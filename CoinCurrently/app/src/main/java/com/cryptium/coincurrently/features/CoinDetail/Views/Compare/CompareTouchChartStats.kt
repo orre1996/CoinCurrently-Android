@@ -39,8 +39,6 @@ import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.sharedui.charts.hideFromTalkBackWhenEnabled
 import com.cryptium.coincurrently.sharedui.components.PriceChangePercentView
 import com.cryptium.coincurrently.sharedui.loading.ChangeSize
-import com.cryptium.coincurrently.core.networking.ResponseModels.getSentimentColor
-import com.cryptium.coincurrently.core.networking.ResponseModels.getSentimentSign
 
 @Composable
 fun CompareTouchChartStats(

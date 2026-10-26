@@ -28,7 +28,6 @@ val Int.selectedTabbarItem
             0 -> NavigationScreens.Home
             1 -> NavigationScreens.Portfolio
             2 -> NavigationScreens.Market
-            3 -> NavigationScreens.News
             else -> NavigationScreens.Settings
         }
     }

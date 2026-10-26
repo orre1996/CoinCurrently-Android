@@ -25,7 +25,6 @@ import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.customActions
-import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.setProgress
@@ -47,7 +46,6 @@ fun ToplistFilterCarouselView(
     selectedFilter: CarouselFilter,
     scrollState: LazyListState,
     paddingValues: PaddingValues = PaddingValues(top = 24.dp, bottom = 16.dp),
-    hasPro: Boolean = true,
     animateSelectionChanges: Boolean = true,
     onFilterSelected: (CarouselFilter) -> Unit
 ) {
@@ -84,7 +82,6 @@ fun ToplistFilterCarouselView(
 
         val filter = filters.getOrNull(voiceOverFilterIndex) ?: return@LaunchedEffect
         if (filter.matchesForSelection(selectedFilter)) return@LaunchedEffect
-        if (requiresVoiceOverActivation(filter, hasPro)) return@LaunchedEffect
 
         onFilterSelected(filter)
     }
@@ -93,7 +90,6 @@ fun ToplistFilterCarouselView(
         filters = filters,
         voiceOverFilterIndex = voiceOverFilterIndex,
         selectedFilter = selectedFilter,
-        hasPro = hasPro,
     )
 
     Box(
@@ -130,17 +126,6 @@ fun ToplistFilterCarouselView(
                                 true
                             },
                         )
-                        if (!hasPro) {
-                            onClick(label = Localization.string("Double tap to select this Pro feature."), action = {
-                                activateVoiceOverFilter(
-                                    filters = filters,
-                                    voiceOverFilterIndex = voiceOverFilterIndex,
-                                    hasPro = hasPro,
-                                    onFilterSelected = onFilterSelected,
-                                )
-                                true
-                            })
-                        }
                     }
                 } else {
                     Modifier
@@ -198,7 +183,7 @@ fun ToplistFilterCarouselView(
                                         "Category %@ of %@, %@.",
                                         (index + 1).toString(),
                                         filters.size.toString(),
-                                        accessibilityTitle(sourceTitle),
+                                        Localization.string(sourceTitle),
                                     )
                                     if (isSelected) {
                                         selected = true
@@ -212,14 +197,10 @@ fun ToplistFilterCarouselView(
     }
 }
 
-private fun requiresVoiceOverActivation(filter: CarouselFilter, hasPro: Boolean): Boolean =
-    filter.requiresPro && !hasPro
-
 private fun selectedAccessibilityValue(
     filters: List<CarouselFilter>,
     voiceOverFilterIndex: Int,
     selectedFilter: CarouselFilter,
-    hasPro: Boolean,
 ): String {
     val filter = filters.getOrNull(voiceOverFilterIndex) ?: selectedFilter
     val title = if (filter.matchesForSelection(selectedFilter)) {
@@ -227,36 +208,10 @@ private fun selectedAccessibilityValue(
     } else {
         filter.rawValue
     }
-    val category = Localization.format(
+    return Localization.format(
         "Category %@ of %@, %@.",
         (voiceOverFilterIndex + 1).toString(),
         filters.size.toString(),
-        accessibilityTitle(title),
+        Localization.string(title),
     )
-
-    return if (requiresVoiceOverActivation(filter, hasPro)) {
-        "$category ${Localization.string("Double tap to select this Pro feature.")}"
-    } else {
-        category
-    }
-}
-
-private fun activateVoiceOverFilter(
-    filters: List<CarouselFilter>,
-    voiceOverFilterIndex: Int,
-    hasPro: Boolean,
-    onFilterSelected: (CarouselFilter) -> Unit,
-) {
-    val filter = filters.getOrNull(voiceOverFilterIndex) ?: return
-    if (!requiresVoiceOverActivation(filter, hasPro)) return
-    onFilterSelected(filter)
-}
-
-private fun accessibilityTitle(title: String): String {
-    return if (title.contains("(Pro)")) {
-        val base = title.replace(" (Pro)", "")
-        Localization.format("%@, Pro feature", Localization.string(base))
-    } else {
-        Localization.string(title)
-    }
 }
