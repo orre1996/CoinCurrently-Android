@@ -48,9 +48,7 @@ import com.cryptium.coincurrently.features.Market.MarketScreen
 import com.cryptium.coincurrently.features.Settings.CurrencySelector.CurrencySelectorScreen
 import com.cryptium.coincurrently.features.Settings.SettingsScreen
 import com.cryptium.coincurrently.features.PriceAlerts.MyPriceAlertsScreen
-import com.cryptium.coincurrently.features.Referral.ReferralScreen
 import com.cryptium.coincurrently.features.Calculator.SettingsCalculatorScreen
-import com.cryptium.coincurrently.features.News.NewsScreen
 import com.cryptium.coincurrently.features.Portfolio.PortfolioScreen
 import com.cryptium.coincurrently.features.Portfolio.DataClasses.PortfolioTransaction
 import com.cryptium.coincurrently.features.Portfolio.ImportWalletTransactionScreen
@@ -354,15 +352,6 @@ fun NavigationEntries(
             )
         }
 
-        // News
-
-        composable<NavigationScreens.News> {
-            NewsScreen(
-                navigationViewModel,
-                mainScreenBottomOffsetModifier
-            )
-        }
-
         // More
 
         composable<NavigationScreens.Settings> {
@@ -398,15 +387,6 @@ fun NavigationEntries(
             FeedbackScreen(
                 navigationViewModel,
                 childScreenBottomOffsetModifier
-            )
-        }
-
-        composable<NavigationScreens.Referral> {
-            val args = it.toRoute<NavigationScreens.Referral>()
-            ReferralScreen(
-                navigationViewModel = navigationViewModel,
-                referralCode = args.referralCode,
-                modifier = childScreenBottomOffsetModifier,
             )
         }
     }

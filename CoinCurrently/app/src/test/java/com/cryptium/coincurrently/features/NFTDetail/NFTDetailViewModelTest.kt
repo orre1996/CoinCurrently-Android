@@ -1,14 +1,10 @@
 package com.cryptium.coincurrently.features.NFTDetail
 
 import com.cryptium.coincurrently.core.networking.ResponseModels.NFTToplist
-import com.cryptium.coincurrently.features.News.NewsRepository
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.testsupport.MainDispatcherRule
-import io.mockk.every
-import io.mockk.mockkObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -16,12 +12,6 @@ class NFTDetailViewModelTest {
 
     @get:Rule
     val mainDispatcher = MainDispatcherRule()
-
-    @Before
-    fun setUp() {
-        mockkObject(NewsRepository)
-        every { NewsRepository.cachedNews } returns mutableMapOf()
-    }
 
     @Test
     fun startsFromTheToplistCoin() {

@@ -18,7 +18,6 @@ import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.models.ChartTypes
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
-import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -100,10 +99,8 @@ class CompareCoinsViewModel(
     var chartSize = mutableStateOf(DpSize.Zero)
     val hoverPriceTextWidth = mutableStateOf(0.dp)
 
-    private var hasProSubscription = BillingManager.currentSubscription.value != null
-
     val isWebSocketEnabled: Boolean
-        get() = UserPreferences.isWebSocketEnabled(hasPro = hasProSubscription)
+        get() = UserPreferences.isWebSocketEnabled()
 
     init {
         val coins: ArrayList<Toplist> = run {
@@ -138,10 +135,6 @@ class CompareCoinsViewModel(
         }
 
         addExtraElementsToTimeline()
-    }
-
-    suspend fun setStartData() {
-        hasProSubscription = BillingManager.currentSubscription.value != null
     }
 
     suspend fun getToplist() {
@@ -227,8 +220,6 @@ class CompareCoinsViewModel(
             isRefreshing = showRefreshIndicator
             mainReloading = showReload
             compareReloading = showReload
-
-            hasProSubscription = BillingManager.currentSubscription.value != null
 
             val days = newDays ?: currentDays
             val chart = newTimeChart ?: selectedTimeFrame

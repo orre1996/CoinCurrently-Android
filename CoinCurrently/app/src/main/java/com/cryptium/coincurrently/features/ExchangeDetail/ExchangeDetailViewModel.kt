@@ -17,11 +17,9 @@ import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import com.cryptium.coincurrently.features.ExchangeDetail.ExchangeDetailRepository
-import com.cryptium.coincurrently.features.News.NewsRepository
 import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import com.cryptium.coincurrently.core.networking.NewsCategory
 import com.cryptium.coincurrently.core.networking.ResponseModels.*
 
 class ExchangeDetailViewModelFactory(
@@ -43,7 +41,6 @@ class ExchangeDetailViewModel(
 ) : ViewModel() {
 
     private val exchangeDetailRepository by lazy { ExchangeDetailRepository }
-    private val newsRepository by lazy { NewsRepository }
     private val currencyRepository by lazy { CurrencyRepository }
     private val toplistRepository by lazy { ToplistRepository }
 
@@ -69,8 +66,6 @@ class ExchangeDetailViewModel(
     var exchangeVolume: List<ExchangePriceModel>? by mutableStateOf(null)
 
     var bitcoin: CryptoDetailInfoModel? by mutableStateOf(null)
-    var newsData: List<NewNewsItem>? by mutableStateOf(null)
-    var showNewsError: Boolean by mutableStateOf(false)
     var showMainPriceError: Boolean by mutableStateOf(false)
 
     var mainReloading: Boolean by mutableStateOf(false)
@@ -94,11 +89,6 @@ class ExchangeDetailViewModel(
         }
 
         bitcoin = currencyRepository.bitcoinData
-
-        val newsId = exchangeInfo?.name?.split(" ")?.first() ?: ""
-        newsRepository.cachedNews?.get(NewsCategory.Exchange(newsId).type)?.let {
-            newsData = it.data.data
-        }
 
         toplistRepository.toplist?.get("${SortOption.MktCapDesc.getOptionKey(PriceChange.SevenDays)}-null")?.data?.let { cachedToplist ->
             if (cachedToplist.isNotEmpty()) {
@@ -170,19 +160,6 @@ class ExchangeDetailViewModel(
         }
     }
 
-    suspend fun getNews() {
-        newsData = null
-
-        newsRepository.getNewNews(
-            25,
-            NewsCategory.Exchange(exchangeInfo?.name?.split(" ")?.first() ?: "")
-        )?.let {
-            newsData = it.data
-        } ?: run {
-            showNewsError = true
-        }
-    }
-
     suspend fun getToplist() {
         toplistRepository.getToplist(
             sortOption = SortOption.MktCapDesc,
@@ -199,7 +176,6 @@ class ExchangeDetailViewModel(
         newDays: String? = null,
         newTimeChart: TimeCharts? = null,
         forceId: String? = null,
-        getNews: Boolean = true
     ) {
         coroutineScope {
             mainReloading = true
@@ -211,12 +187,10 @@ class ExchangeDetailViewModel(
             val cryptoInfo = async { getExchangeInfo(id) }
             val priceVolumeModel = async { getExchangePrices(id, days) }
             val bitcoin = async { getBitcoin() }
-            val news = async { if (getNews) getNews() }
 
             cryptoInfo.await()
             priceVolumeModel.await()
             bitcoin.await()
-            news.await()
 
             currentDays = days
             selectedTimeFrame = chart

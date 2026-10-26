@@ -10,7 +10,6 @@ object WidgetConfigStore {
     private const val KEY_DUO = "duo_coin_configs"
     private const val KEY_QUAD = "quad_coin_configs"
     private const val KEY_MULTI = "multi_coin_configs"
-    private const val KEY_NEWS = "news_configs"
 
     private val gson = Gson()
 
@@ -83,27 +82,6 @@ object WidgetConfigStore {
         val map = loadMap<MultiCoinWidgetConfig>(context, KEY_MULTI).toMutableMap()
         map.remove(appWidgetId.toString())
         saveMap(context, KEY_MULTI, map)
-    }
-
-    fun getNewsConfig(context: Context, appWidgetId: Int): NewsWidgetConfig {
-        return getNewsConfigOrNull(context, appWidgetId) ?: NewsWidgetConfig()
-    }
-
-    fun getNewsConfigOrNull(context: Context, appWidgetId: Int): NewsWidgetConfig? {
-        val map = loadMap<NewsWidgetConfig>(context, KEY_NEWS)
-        return map[appWidgetId.toString()]
-    }
-
-    fun setNewsConfig(context: Context, appWidgetId: Int, config: NewsWidgetConfig) {
-        val map = loadMap<NewsWidgetConfig>(context, KEY_NEWS).toMutableMap()
-        map[appWidgetId.toString()] = config
-        saveMap(context, KEY_NEWS, map)
-    }
-
-    fun deleteNewsConfig(context: Context, appWidgetId: Int) {
-        val map = loadMap<NewsWidgetConfig>(context, KEY_NEWS).toMutableMap()
-        map.remove(appWidgetId.toString())
-        saveMap(context, KEY_NEWS, map)
     }
 
     private inline fun <reified T> loadMap(context: Context, key: String): Map<String, T> {

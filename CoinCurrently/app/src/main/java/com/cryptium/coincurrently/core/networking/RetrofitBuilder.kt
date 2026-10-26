@@ -8,20 +8,16 @@ import com.cryptium.coincurrently.sharedui.models.CachedData
 import com.cryptium.coincurrently.sharedui.components.SnackBarType
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.persistence.StorageManager
-import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.BuildConfig
 import com.cryptium.coincurrently.core.networking.ResponseModels.ApiService
 import com.cryptium.coincurrently.core.networking.ResponseModels.PublicTreasuryModel
 import com.cryptium.coincurrently.core.networking.ResponseModels.serverBaseUrl
 import com.google.gson.Gson
 import okhttp3.Cache
-import okhttp3.CacheControl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.Timeout
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -87,13 +83,12 @@ object RetrofitBuilder {
     private val responseCache = ConcurrentHashMap<String, CachedData<*>>()
     private lateinit var okHttpClient: OkHttpClient
 
-    /** Max age in minutes for specific endpoints. Null = use default (3/15 min). 0 = never serve cached. */
+    /** Max age in minutes for specific endpoints. Null = use default (3 min). 0 = never serve cached. */
     private fun getCacheMaxAgeMinutes(url: String): Int? = when {
         url.contains("coins/list") && !url.contains("list/new") -> 60 * 24 * 1   // 1 day - allCoins
         url.contains("/api/v3/exchanges?") -> 60 * 24 * 1   // 1 day - allExchanges
         url.contains("asset_platforms") && url.contains("filter=nft") -> 60 * 24 * 1   // 1 day - nftPlatforms
         url.contains("entities/list") -> 60 * 24 * 1   // 1 day - entitiesList
-        url.contains("/referral-code") -> 60 * 24 * 1   // 1 day - referralCode
         url.contains("search/trending") -> 60   // 1 hour - trending
         url.contains("/api/v3/search?") -> 60   // 1 hour - search
         url.contains("/get-alerts") -> 0   // no cache - getAlerts
@@ -226,9 +221,6 @@ object RetrofitBuilder {
         if (data is com.cryptium.coincurrently.core.networking.ResponseModels.FearGreed && data.data == null) {
             return false
         }
-        if (data is com.cryptium.coincurrently.core.networking.ResponseModels.NewNewsModel && data.data.isNullOrEmpty()) {
-            return false
-        }
         return true
     }
 
@@ -294,25 +286,6 @@ object RetrofitBuilder {
     fun ensureApiService(context: Context, platform: String) {
         if (!this::apiService.isInitialized) {
             createApiService(context, platform)
-        }
-    }
-
-    /** Raw GET that preserves response headers (used for referral QR PNG + header metadata). */
-    suspend fun getRaw(url: String): okhttp3.Response? {
-        if (!::okHttpClient.isInitialized) return null
-
-        return withContext(Dispatchers.IO) {
-            try {
-                val request = Request.Builder()
-                    .url(url)
-                    .cacheControl(CacheControl.FORCE_NETWORK)
-                    .get()
-                    .build()
-
-                okHttpClient.newCall(request).execute()
-            } catch (_: Exception) {
-                null
-            }
         }
     }
 
@@ -422,7 +395,7 @@ class ResultCall<T>(private val delegate: Call<T>, val context: Context, private
             object : Callback<T> {
                 override fun onResponse(call: Call<T>, response: Response<T>) {
                     if (response.isSuccessful) {
-                        if (isGetRequest && !url.contains("/referral-code")) {
+                        if (isGetRequest) {
                             response.body()?.let { body ->
                                 val data = (body as? Result<*>)?.getOrNull() ?: body
                                 if (RetrofitBuilder.shouldCacheSuccessBody(data)) {
@@ -575,14 +548,13 @@ class ResultCall<T>(private val delegate: Call<T>, val context: Context, private
 }
 
 private val REWRITE_RESPONSE_INTERCEPTOR = Interceptor { chain ->
-    val hasPro = BillingManager.currentSubscription.value != null
     val originalResponse = chain.proceed(chain.request())
     val cacheControl = originalResponse.header("Cache-Control")
 
     if (cacheControl == null || cacheControl.contains("no-store") || cacheControl.contains("no-cache") || cacheControl.contains("must-revalidate") || cacheControl.contains("max-age=0")) {
         originalResponse.newBuilder()
             .removeHeader("Pragma")
-            .header("Cache-Control", "public, max-age=${60 * if(hasPro) 3 else 15}")  // 3/15 minutes cache
+            .header("Cache-Control", "public, max-age=${60 * 3}")
             .build()
     } else {
         originalResponse

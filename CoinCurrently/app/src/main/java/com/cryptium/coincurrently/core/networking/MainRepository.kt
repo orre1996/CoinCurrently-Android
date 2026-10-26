@@ -48,8 +48,6 @@ object MainRepository {
     suspend fun getNftPriceVolume(id: String, days: String) = ApiHelper.getNftPriceVolume(id, days)
     suspend fun getNftDetail(id: String) = ApiHelper.getNftDetail(id)
     suspend fun getNFTTickers(id: String) = ApiHelper.getNFTTickers(id)
-    suspend fun getCoinGeckoNews(coinId: String?) = ApiHelper.getCoinGeckoNews(coinId)
-    suspend fun getNewNews(count: Int, category: NewsCategory) = ApiHelper.getNewNews(count, category)
     suspend fun getGasFees(includeHistory: Boolean) = ApiHelper.getGasFees(includeHistory)
     suspend fun getWalletAddress(address: String, blockChain: String) = ApiHelper.getWalletAddress(address, blockChain)
     suspend fun getWinnersLosers(currencyCode: String, duration: String) = ApiHelper.getWinnersLosers(currencyCode, duration)
@@ -62,8 +60,6 @@ object MainRepository {
     suspend fun ubsubBigMover() = ApiHelper.ubsubBigMovers()
     suspend fun bigMoverTrigger() = ApiHelper.bigMoverTrigger()
     suspend fun sendFeedback(rating: Int, feedback: String?) = ApiHelper.sendFeedback(rating, feedback)
-    suspend fun getReferralCode() = ApiHelper.getReferralCode()
     suspend fun getUser() = ApiHelper.getUser()
-    suspend fun redeemCode(refCode: String) = ApiHelper.redeemCode(refCode)
     suspend fun subCoin(coinIds: List<String>, currencies: List<String>) = ApiHelper.subCoin(coinIds, currencies)
 }

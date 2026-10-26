@@ -22,13 +22,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
-import com.cryptium.coincurrently.core.purchases.BillingManager
-import com.revenuecat.purchases.CacheFetchPolicy
-import com.revenuecat.purchases.CustomerInfo
-import com.revenuecat.purchases.Purchases
-import com.revenuecat.purchases.PurchasesError
-import com.revenuecat.purchases.interfaces.LogInCallback
-import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -139,8 +132,6 @@ class FirebaseManager {
                         return@addOnCompleteListener
                     }
 
-                    syncPurchases()
-
                     val handler = Handler(Looper.getMainLooper())
                     var idTokenTimedOut = false
                     val idTokenTimeoutRunnable = Runnable {
@@ -205,61 +196,6 @@ class FirebaseManager {
                         }
                     }
                 }
-        }
-
-        fun syncPurchases(onComplete: (() -> Unit)? = null) {
-            val appUserId = uid ?: FirebaseAuth.getInstance().currentUser?.uid
-
-            fun finish() {
-                onComplete?.invoke()
-            }
-
-            fun fetchAndApplyCurrentCustomerInfo() {
-                Purchases.sharedInstance.getCustomerInfo(
-                    CacheFetchPolicy.FETCH_CURRENT,
-                    object : ReceiveCustomerInfoCallback {
-                        override fun onReceived(customerInfo: CustomerInfo) {
-                            Handler(Looper.getMainLooper()).post {
-                                BillingManager.applyCustomerInfo(customerInfo)
-                                finish()
-                            }
-                        }
-
-                        override fun onError(error: PurchasesError) {
-                            finish()
-                        }
-                    },
-                )
-            }
-
-            if (appUserId.isNullOrEmpty()) {
-                fetchAndApplyCurrentCustomerInfo()
-                return
-            }
-
-            Purchases.sharedInstance.logIn(
-                appUserId,
-                object : LogInCallback {
-                    override fun onReceived(customerInfo: CustomerInfo, created: Boolean) {
-                        fetchAndApplyCurrentCustomerInfo()
-                    }
-
-                    override fun onError(error: PurchasesError) {
-                        fetchAndApplyCurrentCustomerInfo()
-                    }
-                },
-            )
-        }
-
-        suspend fun awaitSyncPurchases() = suspendCancellableCoroutine { continuation ->
-            var resumed = false
-            fun resumeOnce() {
-                if (!resumed && continuation.isActive) {
-                    resumed = true
-                    continuation.resume(Unit)
-                }
-            }
-            syncPurchases { resumeOnce() }
         }
 
         fun setupFirebase(

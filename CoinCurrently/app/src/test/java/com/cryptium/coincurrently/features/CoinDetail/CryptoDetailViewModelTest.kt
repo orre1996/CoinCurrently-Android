@@ -4,7 +4,6 @@ import com.cryptium.coincurrently.core.models.ChartTypes
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
 import com.cryptium.coincurrently.core.persistence.CurrencyRepository
 import com.cryptium.coincurrently.features.GlobalMarket.GlobalMarketRepository
-import com.cryptium.coincurrently.features.News.NewsRepository
 import com.cryptium.coincurrently.features.Portfolio.PortfolioRepository
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
 import com.cryptium.coincurrently.testsupport.MainDispatcherRule
@@ -24,12 +23,11 @@ class CryptoDetailViewModelTest {
 
     @Before
     fun setUp() {
-        mockkObject(CurrencyRepository, NewsRepository, PortfolioRepository, PriceAlertsRepository, GlobalMarketRepository)
+        mockkObject(CurrencyRepository, PortfolioRepository, PriceAlertsRepository, GlobalMarketRepository)
         every { CurrencyRepository.loadCachedDataForCoin(any(), any()) } returns Unit
         every { CurrencyRepository.cryptoDetail } returns null
         every { CurrencyRepository.cryptoPrices } returns null
         every { CurrencyRepository.cryptoCandles } returns null
-        every { NewsRepository.cachedNews } returns mutableMapOf()
         every { PortfolioRepository.portfolio } returns null
         every { PriceAlertsRepository.priceAlerts } returns null
         every { GlobalMarketRepository.globalMarket } returns null

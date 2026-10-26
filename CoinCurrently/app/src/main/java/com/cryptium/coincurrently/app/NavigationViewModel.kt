@@ -20,10 +20,6 @@ import com.cryptium.coincurrently.core.persistence.StorageKeys
 import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.selectedTabbarItem
 import com.cryptium.coincurrently.sharedui.components.SnackBarType
-import com.cryptium.coincurrently.core.analytics.BuyProAction
-import com.cryptium.coincurrently.core.analytics.BuyProOpened
-import com.cryptium.coincurrently.core.analytics.AnalyticsManager
-import com.cryptium.coincurrently.core.analytics.ScreenLabel
 import com.cryptium.coincurrently.core.analytics.navRouteSuffixForAnalytics
 import com.google.android.play.core.review.ReviewManagerFactory
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,13 +37,6 @@ class NavigationViewModel(context: Context): ViewModel() {
     val marketSubTabRequestId = mutableIntStateOf(0)
     val marketSelectedPage = mutableIntStateOf(0)
     val animationDuration: MutableState<Int> = mutableIntStateOf(300)
-
-    var showBuyPro: MutableState<Boolean> = mutableStateOf(false)
-
-    fun openBuyPro(fromScreen: ScreenLabel, action: BuyProAction) {
-        AnalyticsManager.log(BuyProOpened(fromScreen, action))
-        showBuyPro.value = true
-    }
 
 /** Route suffix for the current navigation destination; use with `screenLabelFromRoute` when logging [com.cryptium.coincurrently.core.analytics.Navigate]. */
     fun analyticsRouteSuffixForNavigate(): String? =

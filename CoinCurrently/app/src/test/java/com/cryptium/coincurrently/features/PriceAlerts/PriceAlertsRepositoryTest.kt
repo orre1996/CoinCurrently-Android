@@ -7,7 +7,6 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.AlertDirection
 import com.cryptium.coincurrently.core.networking.ResponseModels.PostAlertCoin
 import com.cryptium.coincurrently.core.networking.ResponseModels.Toplist
 import com.cryptium.coincurrently.core.networking.RetrofitBuilder
-import com.cryptium.coincurrently.features.Referral.ReferralRepository
 import com.cryptium.coincurrently.testsupport.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.every
@@ -28,13 +27,13 @@ class PriceAlertsRepositoryTest {
 
     @Before
     fun setUp() {
-        mockkObject(MainRepository, FirebaseManager, ReferralRepository)
+        mockkObject(MainRepository, FirebaseManager)
         RetrofitBuilder.clearResponseCache()
         PriceAlertsRepository.priceAlerts = null
         PriceAlertsRepository.alertPricesAllCurrencies = null
         every { FirebaseManager.fetchFcmTokenIfNeeded() } returns true
         every { FirebaseManager.fcmToken } returns "token"
-        coEvery { ReferralRepository.getUser(any()) } returns null
+        coEvery { MainRepository.getUser() } returns null
         coEvery { MainRepository.updateUser(any()) } returns Result.success(Unit)
         coEvery { MainRepository.subBigMover() } returns Result.success(Unit)
     }

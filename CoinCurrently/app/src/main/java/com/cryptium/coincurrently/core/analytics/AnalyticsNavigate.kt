@@ -14,7 +14,6 @@ fun screenLabelFromRoute(routeSuffix: String?): ScreenLabel =
         "Home" -> ScreenLabel.Home
         "Portfolio" -> ScreenLabel.Portfolio
         "Market" -> ScreenLabel.Market
-        "News" -> ScreenLabel.News
         "Settings" -> ScreenLabel.Settings
         "CryptoDetail" -> ScreenLabel.CryptoDetail
         "CompareCoins" -> ScreenLabel.CompareCoins
@@ -36,7 +35,6 @@ fun screenLabelFromRoute(routeSuffix: String?): ScreenLabel =
         "Widgets" -> ScreenLabel.Widgets
         "Calculator" -> ScreenLabel.Converter
         "PriceAlerts" -> ScreenLabel.PriceAlerts
-        "Referral" -> ScreenLabel.Referral
         "SelectCoin" -> ScreenLabel.Search
         else -> ScreenLabel.MainFlow
     }

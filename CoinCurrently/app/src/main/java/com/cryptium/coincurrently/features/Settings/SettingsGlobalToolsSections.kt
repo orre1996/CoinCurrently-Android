@@ -22,7 +22,6 @@ internal fun GlobalSection(
     selectedTheme: AppColorScheme,
     isColorBlindEnabled: Boolean,
     webSocketEnabled: Boolean,
-    currentSubscription: String?,
     selectNewCurrency: () -> Unit,
     selectNewLanguage: () -> Unit,
     selectNewStartTab: () -> Unit,

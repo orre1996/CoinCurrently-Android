@@ -77,7 +77,6 @@ import com.cryptium.coincurrently.features.CoinDetail.Views.About.toDetailAboutD
 import com.cryptium.coincurrently.features.NFTDetail.Views.Overview.NFTDetailOverviewView
 import com.cryptium.coincurrently.features.CoinDetail.Views.Markets.CryptoDetailMarketsView
 import com.cryptium.coincurrently.features.CoinDetail.Views.Markets.toDetailMarketsData
-import com.cryptium.coincurrently.features.CoinDetail.Views.News.DetailNews
 import com.cryptium.coincurrently.features.Market.Toplist.Sheets.ToplistSortBySheet
 import com.cryptium.coincurrently.features.NFTDetail.NFTDetailViewModel
 import com.cryptium.coincurrently.features.NFTDetail.NFTDetailViewModelFactory
@@ -121,7 +120,7 @@ fun NftDetailScreen(
 
     val biggestValue = remember { mutableStateOf(DpSize.Zero) }
 
-    val tabs = listOf("Overview", "About", "Markets", "News")
+    val tabs = listOf("Overview", "About", "Markets")
     var currentPage by remember { mutableStateOf(0) }
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -176,10 +175,7 @@ fun NftDetailScreen(
             coroutineScope.launch {
                 viewModel.isRefreshing = true
                 try {
-                    viewModel.refresh(
-                        context,
-                        fetchNews = currentPage == 3  // News tab index
-                    )
+                    viewModel.refresh(context)
                 } finally {
                     viewModel.isRefreshing = false
                 }
@@ -447,23 +443,12 @@ fun NftDetailScreen(
                                 isTablet = isTablet
                             )
                         }
-
-                        3 -> DetailNews(
-                            news = viewModel.newsData,
-                            title = "NFT collection",
-                            showError = viewModel.showNewsError,
-                            isTablet = isTablet,
-                            fromScreen = ScreenLabel.NftDetail,
-                            openUrl = {
-                                selectedUrl = it
-                            }
-                        )
                     }
                 }
             }
 
             ScrollToTopButton(
-                visible = !talkBackEnabled && firstVisibleIndex >= 22 && currentPage == 3,
+                visible = !talkBackEnabled && firstVisibleIndex >= 22 && currentPage == 2,
                 respectNavigationBars = true,
                 onClick = {
                     AnalyticsManager.log(

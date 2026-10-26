@@ -68,7 +68,6 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1085" />
         <entry key="app/src/main/res/drawable/ic_market_tab.xml" value="0.1085" />
         <entry key="app/src/main/res/drawable/ic_more_tab.xml" value="0.1085" />
-        <entry key="app/src/main/res/drawable/ic_news_tab.xml" value="0.1085" />
         <entry key="app/src/main/res/drawable/ic_portfolio_tab.xml" value="0.1085" />
         <entry key="app/src/main/res/drawable/ic_search_icon.xml" value="0.1085" />
         <entry key="app/src/main/res/drawable/ic_star_filled.xml" value="0.1" />
@@ -77,18 +76,9 @@
         <entry key="app/src/main/res/drawable/ic_star_outline_detail.xml" value="0.103" />
         <entry key="app/src/main/res/drawable/ic_star_outline_toplist.xml" value="0.103" />
         <entry key="app/src/main/res/drawable/invalid_state_button.xml" value="0.148" />
-        <entry key="app/src/main/res/drawable/large_news_card_fade.xml" value="0.1085" />
-        <entry key="app/src/main/res/drawable/large_news_card_fade_widget.xml" value="0.1085" />
-        <entry key="app/src/main/res/drawable/large_news_card_fade_widget_large.xml" value="0.1085" />
         <entry key="app/src/main/res/drawable/linegraph1.xml" value="0.103" />
         <entry key="app/src/main/res/drawable/market.xml" value="0.1085" />
         <entry key="app/src/main/res/drawable/navigationbar_background.xml" value="0.112" />
-        <entry key="app/src/main/res/drawable/news.xml" value="0.1" />
-        <entry key="app/src/main/res/drawable/news_background.xml" value="0.148" />
-        <entry key="app/src/main/res/drawable/news_card_background.xml" value="0.1495" />
-        <entry key="app/src/main/res/drawable/news_card_background_rounded.xml" value="0.1275" />
-        <entry key="app/src/main/res/drawable/news_card_background_rounded_light.xml" value="0.1275" />
-        <entry key="app/src/main/res/drawable/news_card_background_rounded_text.xml" value="0.107" />
         <entry key="app/src/main/res/drawable/page_selector_background.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/page_selector_selected.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/piechart.xml" value="0.1275" />
@@ -206,28 +196,22 @@
         <entry key="app/src/main/res/layout/fragment_global_market.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.22493224932249323" />
         <entry key="app/src/main/res/layout/fragment_more.xml" value="0.16507936507936508" />
-        <entry key="app/src/main/res/layout/fragment_news.xml" value="0.1" />
         <entry key="app/src/main/res/layout/global_market_cell.xml" value="0.1927710843373494" />
         <entry key="app/src/main/res/layout/global_market_coin.xml" value="0.625" />
         <entry key="app/src/main/res/layout/global_market_coin_placeholder.xml" value="0.2977624784853701" />
         <entry key="app/src/main/res/layout/home_category_layout.xml" value="0.3185595567867036" />
-        <entry key="app/src/main/res/layout/home_category_news_title.xml" value="0.19206416209371044" />
         <entry key="app/src/main/res/layout/home_fear_greed.xml" value="0.335" />
         <entry key="app/src/main/res/layout/home_global_market.xml" value="0.336231884057971" />
         <entry key="app/src/main/res/layout/home_list_item.xml" value="0.35978835978835977" />
         <entry key="app/src/main/res/layout/home_list_item_placeholder.xml" value="0.35507102141068403" />
         <entry key="app/src/main/res/layout/home_list_portfolio_item.xml" value="0.2894399315946986" />
         <entry key="app/src/main/res/layout/home_list_portfolio_pie.xml" value="0.2894399315946986" />
-        <entry key="app/src/main/res/layout/home_news_cell.xml" value="0.1927710843373494" />
-        <entry key="app/src/main/res/layout/home_news_title.xml" value="0.1761436511329628" />
         <entry key="app/src/main/res/layout/home_welcome_message.xml" value="0.1927710843373494" />
         <entry key="app/src/main/res/layout/info_text_website.xml" value="0.335" />
         <entry key="app/src/main/res/layout/large_crypto_multi_widget.xml" value="0.45" />
         <entry key="app/src/main/res/layout/large_crypto_widget.xml" value="0.45869565217391306" />
         <entry key="app/src/main/res/layout/large_duo_crypto_widget.xml" value="1.5" />
         <entry key="app/src/main/res/layout/large_fear_greed_widget.xml" value="0.2894399315946986" />
-        <entry key="app/src/main/res/layout/large_news_card.xml" value="0.388790226784073" />
-        <entry key="app/src/main/res/layout/large_news_widget.xml" value="0.375" />
         <entry key="app/src/main/res/layout/large_portfolio_disabled_widget.xml" value="0.178978471929084" />
         <entry key="app/src/main/res/layout/large_portfolio_widget.xml" value="0.12044817927170869" />
         <entry key="app/src/main/res/layout/large_portfolio_widget_item.xml" value="0.1396103896103896" />
@@ -241,9 +225,6 @@
         <entry key="app/src/main/res/layout/medium_crypto_widget_duo.xml" value="0.2857745884339384" />
         <entry key="app/src/main/res/layout/medium_duo_crypto_widget.xml" value="0.75" />
         <entry key="app/src/main/res/layout/medium_fear_greed_widget.xml" value="0.2894399315946986" />
-        <entry key="app/src/main/res/layout/medium_news_widget.xml" value="0.367595818815331" />
-        <entry key="app/src/main/res/layout/medium_news_widget_card.xml" value="0.20405138339920947" />
-        <entry key="app/src/main/res/layout/medium_news_widget_card_with_reload.xml" value="0.2894399315946986" />
         <entry key="app/src/main/res/layout/medium_portfolio_disabled_widget.xml" value="0.178978471929084" />
         <entry key="app/src/main/res/layout/medium_portfolio_widget.xml" value="0.1246376811594203" />
         <entry key="app/src/main/res/layout/medium_portfolio_widget_item.xml" value="0.2857745884339384" />
@@ -256,10 +237,6 @@
         <entry key="app/src/main/res/layout/my_widgets_popup.xml" value="0.43557772236076475" />
         <entry key="app/src/main/res/layout/navigation_bar_item.xml" value="0.1927710843373494" />
         <entry key="app/src/main/res/layout/network_error_fragment.xml" value="0.2381835032437442" />
-        <entry key="app/src/main/res/layout/news_card.xml" value="0.17147922998986828" />
-        <entry key="app/src/main/res/layout/news_item.xml" value="0.2814879428048023" />
-        <entry key="app/src/main/res/layout/news_item_placeholder.xml" value="0.4096200991304933" />
-        <entry key="app/src/main/res/layout/news_item_placeholder_recycler_view.xml" value="0.40326340326340326" />
         <entry key="app/src/main/res/layout/portfolio_add_fragment.xml" value="0.3457733154296875" />
         <entry key="app/src/main/res/layout/portfolio_add_in_portfolio_fragment.xml" value="0.2077922077922078" />
         <entry key="app/src/main/res/layout/portfolio_coins_list_fragment.xml" value="0.16126042632066728" />
@@ -287,7 +264,6 @@
         <entry key="app/src/main/res/layout/small_crypto_widget.xml" value="0.375" />
         <entry key="app/src/main/res/layout/small_crypto_widget_duo.xml" value="0.45" />
         <entry key="app/src/main/res/layout/small_fear_greed_widget.xml" value="0.12595419847328243" />
-        <entry key="app/src/main/res/layout/small_news_widget.xml" value="0.6661758422851562" />
         <entry key="app/src/main/res/layout/small_portfolio_disabled_widget.xml" value="0.178978471929084" />
         <entry key="app/src/main/res/layout/small_portfolio_widget.xml" value="0.2654320987654321" />
         <entry key="app/src/main/res/layout/snackbar_view.xml" value="0.25" />

@@ -39,7 +39,6 @@ import com.cryptium.coincurrently.features.Portfolio.Utilities.PortfolioExportHe
 import com.cryptium.coincurrently.features.Portfolio.Utilities.PortfolioTaxExportBuilder
 import com.cryptium.coincurrently.core.extensions.toPortfolioExportDateTimeUTC
 import com.cryptium.coincurrently.sharedui.models.CachedData
-import com.cryptium.coincurrently.core.purchases.BillingManager
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import com.cryptium.coincurrently.features.Portfolio.PortfolioPiesData
@@ -61,7 +60,6 @@ import kotlin.math.abs
 
 class PortfolioViewModel : ViewModel() {
 
-    private val freePortfolioExportLimit = 3
     private val exportJson = Json {
         prettyPrint = true
         encodeDefaults = true
@@ -793,22 +791,6 @@ class PortfolioViewModel : ViewModel() {
 
             isDownloading = false
         }
-    }
-
-    fun hasBoughtPro(): Boolean = BillingManager.currentSubscription.value != null
-
-    val portfolioExportCount: Int
-        get() = UserPreferences.getPortfolioExportCount()
-
-    val remainingFreePortfolioExports: Int
-        get() = maxOf(0, freePortfolioExportLimit - portfolioExportCount)
-
-    fun canExportPortfolio(): Boolean =
-        hasBoughtPro() || portfolioExportCount < freePortfolioExportLimit
-
-    fun recordPortfolioExport() {
-        if (hasBoughtPro()) return
-        UserPreferences.incrementPortfolioExportCount()
     }
 
     fun exportPortfolio(

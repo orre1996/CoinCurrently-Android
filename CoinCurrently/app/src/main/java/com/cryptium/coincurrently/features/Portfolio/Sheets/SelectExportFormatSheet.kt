@@ -15,15 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.sharedui.sheets.ModalBottomSheetSystemNavigationBar
 import com.cryptium.coincurrently.sharedui.sheets.ModalSheetBody
 import com.cryptium.coincurrently.sharedui.components.Separator
-import com.cryptium.coincurrently.sharedui.theme.onSurfaceDim
 import com.cryptium.coincurrently.sharedui.theme.onSurfaceDimmer
 import com.cryptium.coincurrently.sharedui.sheets.rememberModalSheetMaxBodyHeight
 import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
@@ -36,7 +33,6 @@ import kotlinx.coroutines.launch
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun SelectExportFormatSheet(
-    freeExportsRemaining: Int?,
     formatSelected: (PortfolioExportFormat?) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -83,19 +79,6 @@ fun SelectExportFormatSheet(
                         .verticalScroll(rememberScrollState())
                         .padding(vertical = 24.dp),
                 ) {
-                    freeExportsRemaining?.let { count ->
-                        Text(
-                            text = freeExportMessage(count),
-                            style = satoshiBold(14),
-                            color = MaterialTheme.colors.onSurfaceDim,
-                            modifier = Modifier
-                                .padding(bottom = 16.dp)
-                                .semantics {
-                                    contentDescription = freeExportAccessibilityLabel(count)
-                                },
-                        )
-                    }
-
                     SectionHeader(Localization.string("General"))
 
                     ExportOption(
@@ -202,13 +185,3 @@ private fun ExportOption(
         },
     )
 }
-
-private fun freeExportMessage(count: Int): String {
-    return if (count == 1) {
-        Localization.string("You can export it 1 more time for free.")
-    } else {
-        Localization.format("You can export it %d more times for free.", count)
-    }
-}
-
-private fun freeExportAccessibilityLabel(count: Int): String = freeExportMessage(count)

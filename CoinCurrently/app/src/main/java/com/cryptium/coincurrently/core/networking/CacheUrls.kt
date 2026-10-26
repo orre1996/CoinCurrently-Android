@@ -1,7 +1,6 @@
 package com.cryptium.coincurrently.core.networking
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
-import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.serverBaseUrl
 
 /**
@@ -87,30 +86,6 @@ object CacheUrls {
     fun nftPlatforms() =
         "$serverBaseUrl/crypto/api/v3/asset_platforms?filter=nft"
 
-    fun newsGeneral(count: Int) =
-        "$serverBaseUrl/news/api/v1/category?section=alltickers&page=1&items=$count"
-
-    fun newsVideos() =
-        "$serverBaseUrl/news/api/v1/category?section=alltickers&type=video&items=25"
-
-    fun newsPodcasts() =
-        "$serverBaseUrl/news/api/v1/category?section=alltickers&topic=podcast&items=25"
-
-    fun newsExchange(id: String) =
-        "$serverBaseUrl/news/api/v1/category?section=general&page=1&search=$id&items=25"
-
-    fun newsNft() =
-        "$serverBaseUrl/news/api/v1/category?section=general&topic=NFT&page=1&items=25"
-
-    fun newsTAnalysis() =
-        "$serverBaseUrl/news/api/v1/category?section=alltickers&page=1&topic=Tanalysis&items=25"
-
-    fun newsExchanges() =
-        "$serverBaseUrl/news/api/v1/category?section=general&search=exchanges&page=1&items=25"
-
-    fun newsCoin(id: String) =
-        "$serverBaseUrl/news/api/v1?page=1&tickers=$id&items=25"
-
     fun multipleCoins(ids: String, vsCurrencies: String) =
         "$baseUrl/api/v3/simple/price?ids=$ids&vs_currencies=$vsCurrencies"
 
@@ -120,13 +95,10 @@ object CacheUrls {
     fun getMultipleCoins(ids: String, currencyCode: String) =
         "$baseUrl/api/v3/coins/markets?order=market_cap_desc&per_page=100&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d%2C30d&ids=$ids&vs_currency=$currencyCode"
 
-    /** Matches [com.cryptium.coincurrently.core.networking.ApiHelper] free-host selection. */
+    /** Coin detail, OHLC, and market charts always go through the backend. */
+    @Suppress("UNUSED_PARAMETER")
     private fun cryptoBaseUrl(freeUrl: Boolean, days: String? = null): String =
-        if (freeUrl && days != "max" && BillingManager.currentSubscription.value == null) {
-            "https://api.coingecko.com"
-        } else {
-            "${serverBaseUrl}/crypto"
-        }
+        "${serverBaseUrl}/crypto"
 
     fun cryptoDetail(id: String, freeUrl: Boolean) =
         "${cryptoBaseUrl(freeUrl)}/api/v3/coins/$id?date=&sparkline=true"
@@ -171,7 +143,4 @@ object CacheUrls {
 
     fun getUser() =
         "$serverBaseUrl/user"
-
-    fun referralCode() =
-        "$serverBaseUrl/referral-code"
 }

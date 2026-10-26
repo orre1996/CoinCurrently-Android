@@ -149,7 +149,6 @@ fun CompareCoinsScreen(
     })
 
     LaunchedEffect(Unit) {
-        viewModel.setStartData()
         coroutineScope {
             launch { viewModel.refresh(showRefreshIndicator = false) }
             launch { viewModel.getToplist() }

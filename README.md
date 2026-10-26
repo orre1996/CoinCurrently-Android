@@ -4,7 +4,7 @@
 
 <p align="center">
   A private crypto tracker for iOS, Apple Watch, and Android.<br>
-  Follow markets, news, and a personal portfolio without an account, ads, or sign-up.
+  Follow markets and a personal portfolio without an account, ads, or sign-up.
 </p>
 
 <p align="center">
@@ -30,7 +30,6 @@ The Android app lives in `CoinCurrently/app`. Widgets reuse the same domain type
 - Markets — coins, NFTs, exchanges, derivatives, and categories
 - Personal portfolio
 - Price alerts
-- News (articles, videos, and podcasts)
 - Home screen widgets
 
 ## Why this is open source
@@ -53,7 +52,7 @@ See the [Privacy Policy](https://coincurrently.app/privacy).
 
 The app uses **MVVM + repositories**.
 
-- A **repository** is the source of truth for a slice of data (news, toplist, portfolio, and so on). It fetches from the network, caches, and persists. Screens do not talk to the API directly.
+- A **repository** is the source of truth for a slice of data (toplist, portfolio, and so on). It fetches from the network, caches, and persists. Screens do not talk to the API directly.
 - A **view model** reads from one or more repositories, then shapes that data for a specific screen: filtering, sorting, loading flags, and user actions.
 - A **view** (Compose screen) renders the view model and sends user events back. It should not own cache or networking.
 
@@ -65,13 +64,13 @@ View  →  ViewModel  →  Repository  →  MainRepository / StorageManager / Sh
 
 ### Repositories
 
-Repositories are Kotlin types, usually with a `companion object` that holds the shared cache (`NewsRepository`). Production code uses that shared instance. `MainRepository` is the Retrofit wrapper; feature repositories add caching and shared state on top.
+Repositories are Kotlin types, usually with a `companion object` that holds the shared cache (`ToplistRepository`). Production code uses that shared instance. `MainRepository` is the Retrofit wrapper; feature repositories add caching and shared state on top.
 
 A repository is responsible for:
 
-- Loading and refreshing a domain (for example `getNewNews(count, category)`)
+- Loading and refreshing a domain (for example `getToplist(...)`)
 - Holding the cached copy of that data
-- Writing user or session state that belongs to that domain (selected news category, saved coins)
+- Writing user or session state that belongs to that domain (saved coins)
 - Talking to `MainRepository`, `StorageManager`, and disk cache — not to Compose
 
 Several screens can share the same repository. Home, Market, and Coin Detail all read coin prices from the same source instead of each keeping their own list.
@@ -82,20 +81,20 @@ View models are AndroidX `ViewModel`s and typically expose Compose `mutableState
 
 - Ask repositories for data
 - Keep screen-only state (selected tab, empty/loading)
-- Map repository models into what the view needs (a short home carousel vs a full market list, filtered news, formatted P&L)
+- Map repository models into what the view needs (a short home carousel vs a full market list, formatted P&L)
 - Handle user actions, then write back through the repository when the change should be shared
 
-They do not persist the app-wide cache. If Home and News both show news, the repository cache is what they share; each view model only keeps the slice its screen displays.
+They do not persist the app-wide cache. Home and Market both read coin prices from the same repository; each view model only keeps the slice its screen displays.
 
 ### Views
 
 Compose screens take a view model (`viewModel()`, or a factory when the screen needs `Application`), observe it, and call `suspend` methods from `LaunchedEffect` / coroutines. Shared chrome (charts, list rows, sheets) lives in `sharedui` so features stay focused on their own flow.
 
-### Example: News
+### Example: Home
 
-1. `NewsRepository` fetches and caches `NewNewsModel` per `NewsCategory`.
-2. `NewsViewModel` loads that cache, then filters it for Articles / Videos / Podcasts and the selected category.
-3. `NewsScreen` binds to those lists and asks the view model to refresh when the user changes tab or filter.
+1. `ToplistRepository` fetches and caches the coin toplist.
+2. `HomeViewModel` keeps a short slice of that list for the selected carousel filter.
+3. The Home screen binds to that slice and asks the view model to refresh when the user changes filter.
 
 ## File structure
 
@@ -117,7 +116,6 @@ CoinCurrently/app/src/main/java/com/cryptium/coincurrently/
     Market/            Toplist, NFTs, Exchanges, Derivatives, Categories
     CoinDetail/
     Portfolio/
-    News/
     …
   widgets/             Home screen widgets (Glance and AppWidgetProvider)
 
@@ -128,18 +126,17 @@ Config/                        secrets.example.properties, google-services.json.
 A typical feature looks like:
 
 ```
-features/News/
-  NewsScreen.kt
-  NewsViewModel.kt
-  NewsRepository.kt
-  Views/
+features/Portfolio/
+  PortfolioScreen.kt
+  PortfolioViewModel.kt
+  PortfolioRepository.kt
 ```
 
 Smaller features may keep a few files at the feature root. Shared types used by many features belong in `core` or `sharedui`, not in the first feature that happened to need them.
 
 ## Networking
 
-Market data, news, and the fear and greed index each come from a different API. `MainRepository` and `ApiService` in `core/networking` own the requests; screens never call these APIs directly.
+Market data and the fear and greed index each come from a different API. `MainRepository` and `ApiService` in `core/networking` own the requests; screens never call these APIs directly.
 
 ### CoinGecko
 
@@ -157,23 +154,19 @@ Most of the proxied endpoints work on the free or Basic plans. These require the
 - `/nfts/{id}/tickers` — NFT floor price and volume per marketplace
 - CGSimplePrice WebSocket — live coin prices
 
-### News
-
-News (articles, videos, and podcasts) is based on [cryptonews-api.com](https://cryptonews-api.com). The app requests it as `{API_BASE_URL}/news`. The news key stays on the backend.
-
 ### Fear and Greed
 
 The fear and greed index is requested directly from [alternative.me](https://alternative.me/crypto/fear-and-greed-index/). It does not use `API_BASE_URL`.
 
 ### CoinCurrently backend
 
-The backend is not in this repo. It proxies CoinGecko and news so third-party keys stay off the client, and it hosts first-party routes for price alerts, big-mover notifications, wallet import, gas fees, referrals, redeem codes, user, and feedback. Those first-party routes send a bearer token.
+The backend is not in this repo. It proxies CoinGecko so third-party keys stay off the client, and it hosts first-party routes for price alerts, big-mover notifications, wallet import, gas fees, referrals, redeem codes, user, and feedback. Those first-party routes send a bearer token.
 
-Without that backend, the app can still show coin detail, OHLC, market charts (for users without Pro), and the fear and greed index. Toplists, search, trending, exchanges, categories, derivatives, news, NFTs, gainers and losers, gas fees, and alerts need `API_BASE_URL`.
+Without that backend, the app can still show coin detail, OHLC, market charts (for users without Pro), and the fear and greed index. Toplists, search, trending, exchanges, categories, derivatives, NFTs, gainers and losers, gas fees, and alerts need `API_BASE_URL`.
 
 ## Pro
 
-Subscriptions go through RevenueCat and Google Play Billing. Free users get markets, news, a small portfolio, and widgets. Pro unlocks live prices (WebSocket), extra price alerts, more portfolio transactions, wallet import, portfolio export, and some news filters (coin, exchange, NFT, technical analysis).
+Subscriptions go through RevenueCat and Google Play Billing. Free users get markets, a small portfolio, and widgets. Pro unlocks live prices (WebSocket), extra price alerts, more portfolio transactions, wallet import, and portfolio export.
 
 ## Targets
 
@@ -195,7 +188,7 @@ Packages match folders under `com.cryptium.coincurrently`. Widgets compile in `:
 
 1. Open the `CoinCurrently/` Gradle project in Android Studio and sync.
 2. Copy `Config/secrets.example.properties` to `Config/secrets.properties`. That file is gitignored. If it is missing, the build uses the example placeholders, which are enough to launch. The build fails only if both files are missing. Keys:
-   - `API_BASE_URL` — your backend, with no trailing slash. Markets, news, and the first-party routes above need it. A placeholder lets the app launch. Coin detail, OHLC, market charts, and the fear and greed index can still load. Toplists, news, search, and alerts stay empty until it points at a backend.
+   - `API_BASE_URL` — your backend, with no trailing slash. Markets and the first-party routes above need it. A placeholder lets the app launch. Coin detail, OHLC, market charts, and the fear and greed index can still load. Toplists, search, and alerts stay empty until it points at a backend.
    - `BACKEND_API_KEY` — sent as `x-coin-currently-key`. A placeholder is enough for the public CoinGecko and fear-and-greed calls.
    - `REVENUECAT_PRODUCTION_API_KEY` and `REVENUECAT_TEST_API_KEY` — placeholders are enough unless you are testing purchases. Debug builds use the test key.
    - `APTABASE_APP_KEY` — a placeholder is enough unless you want analytics.

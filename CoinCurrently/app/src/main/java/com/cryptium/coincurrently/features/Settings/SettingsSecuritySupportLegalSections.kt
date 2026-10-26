@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -33,6 +34,8 @@ import com.cryptium.coincurrently.R
 import com.cryptium.coincurrently.core.analytics.AppShareActivityCompleted
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
+import com.cryptium.coincurrently.core.analytics.SourceLinkOpened
+import com.cryptium.coincurrently.core.analytics.SourcePlatform
 import com.cryptium.coincurrently.core.analytics.WebViewOpened
 import com.cryptium.coincurrently.core.extensions.satoshiBold
 import com.cryptium.coincurrently.core.localization.Localization
@@ -210,6 +213,60 @@ internal fun SupportSection(
             }
         }
     }
+}
+
+@Composable
+internal fun SourceCodeSection() {
+    val uriHandler = LocalUriHandler.current
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.Start,
+    ) {
+        SectionHeader("Source code")
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .primaryBackgroundNoRipple()
+        ) {
+            SettingsImageCell(
+                image = R.drawable.repository,
+                title = "CoinCurrently iOS",
+                withExternalIcon = true
+            ) {
+                openSourceLink(
+                    uriHandler,
+                    "https://github.com/orre1996/CoinCurrently-iOS",
+                    SourcePlatform.Ios,
+                )
+            }
+
+            Separator()
+
+            SettingsImageCell(
+                image = R.drawable.repository,
+                title = "CoinCurrently Android",
+                withExternalIcon = true
+            ) {
+                openSourceLink(
+                    uriHandler,
+                    "https://github.com/orre1996/CoinCurrently-Android",
+                    SourcePlatform.Android,
+                )
+            }
+        }
+    }
+}
+
+private fun openSourceLink(
+    uriHandler: UriHandler,
+    url: String,
+    platform: SourcePlatform,
+) {
+    AnalyticsManager.log(SourceLinkOpened(ScreenLabel.Settings, platform))
+    uriHandler.openUri(url)
 }
 
 @Composable

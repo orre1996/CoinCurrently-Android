@@ -59,14 +59,12 @@ import com.cryptium.coincurrently.sharedui.theme.surfaceContainerLow
 import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.isTablet
 import com.cryptium.coincurrently.core.extensions.pxToDp
-import com.cryptium.coincurrently.features.Paywall.BuyProScreen
 import com.cryptium.coincurrently.core.models.AppColorScheme
 import com.cryptium.coincurrently.sharedui.components.ComposePlatformCompat
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.core.persistence.StorageManager
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.features.Settings.Sheets.WhatsNewSheet
-import com.cryptium.coincurrently.sharedui.sheets.WebViewSheet
 import com.cryptium.coincurrently.core.models.SelectedStartTab
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
 import com.cryptium.coincurrently.core.persistence.StorageKeys
@@ -78,7 +76,6 @@ import com.cryptium.coincurrently.sharedui.components.SnackBarType
 import com.cryptium.coincurrently.sharedui.components.SnackbarView
 import com.cryptium.coincurrently.features.Market.Toplist.Repositories.ToplistRepository
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
-import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.Navigate
 import com.cryptium.coincurrently.core.analytics.ScreenLabel
@@ -120,7 +117,6 @@ class MainActivity: FragmentActivity() {
         RetrofitBuilder.createApiService(baseContext, "App")
         navigationViewModel = NavigationViewModel(baseContext)
         setStatusBarColor(resolvedDarkMode())
-        BillingManager.setUpBillingClient(baseContext)
 
         if (!ComposePlatformCompat.isComposeSupported(this)) {
             showUnsupportedDeviceScreen()
@@ -141,7 +137,6 @@ class MainActivity: FragmentActivity() {
                     NavigationScreens.Home,
                     NavigationScreens.Portfolio,
                     NavigationScreens.Market,
-                    NavigationScreens.News,
                     NavigationScreens.Settings,
                 ).map {
                     it.getRouteString()
@@ -174,7 +169,6 @@ class MainActivity: FragmentActivity() {
                 val realNavbarHeight: MutableState<Dp> = remember { mutableStateOf(0.dp) }
 
                 val showMoreTip: MutableState<Boolean> = remember { mutableStateOf(false) }
-                val selectedUrl: MutableState<String?> = remember { mutableStateOf(null) }
 
                 var hasEnteredMainFlow by remember { mutableStateOf(false) }
                 var isLoggedIn by remember { mutableStateOf(false) }
@@ -223,10 +217,10 @@ class MainActivity: FragmentActivity() {
                     if (UserPreferences.getIsBiometricAuthenticationEnabled()) {
                         isLocked = true
                         authenticate(biometricViewModel) {
-                            navigateToMainFlow(selectedUrl)
+                            navigateToMainFlow()
                         }
                     } else {
-                        navigateToMainFlow(selectedUrl)
+                        navigateToMainFlow()
                     }
                 }
 
@@ -261,8 +255,7 @@ class MainActivity: FragmentActivity() {
                         NavigationScreens.Home.getRouteString() -> UserPreferences.setLatestTabIndex(0)
                         NavigationScreens.Portfolio.getRouteString() -> UserPreferences.setLatestTabIndex(1)
                         NavigationScreens.Market.getRouteString() -> UserPreferences.setLatestTabIndex(2)
-                        NavigationScreens.News.getRouteString() -> UserPreferences.setLatestTabIndex(3)
-                        NavigationScreens.Settings.getRouteString() -> UserPreferences.setLatestTabIndex(4)
+                        NavigationScreens.Settings.getRouteString() -> UserPreferences.setLatestTabIndex(3)
                     }
                 }
 
@@ -272,7 +265,7 @@ class MainActivity: FragmentActivity() {
 
                 LaunchedEffect(context.getActivity()?.intent, currentRoute) {
                     if (currentRoute != "Loading") {
-                        deepLink(selectedUrl)
+                        deepLink()
                     }
                 }
 
@@ -289,16 +282,15 @@ class MainActivity: FragmentActivity() {
                                 GlobalScope.launch {
                                     PriceAlertsRepository.updateUser()
                                 }
-                                FirebaseManager.syncPurchases()
                             }
 
                             if (UserPreferences.getIsBiometricAuthenticationEnabled() && biometricViewModel.isAppLocked) {
                                 authenticate(biometricViewModel) {
-                                    deepLink(selectedUrl)
+                                    deepLink()
                                 }
                             } else {
                                 Handler(Looper.getMainLooper()).postDelayed({
-                                    deepLink(selectedUrl)
+                                    deepLink()
                                 }, 1000L)
                             }
                         }
@@ -333,7 +325,7 @@ class MainActivity: FragmentActivity() {
                             needsToUpdate = needsToUpdate,
                             onLoadingAuthenticate = {
                                 authenticate(biometricViewModel) {
-                                    navigateToMainFlow(selectedUrl)
+                                    navigateToMainFlow()
                                 }
                             }
                         )
@@ -371,22 +363,10 @@ class MainActivity: FragmentActivity() {
                                     isLocked = true,
                                     authenticate = {
                                         authenticate(biometricViewModel) {
-                                            deepLink(selectedUrl)
+                                            deepLink()
                                         }
                                     }
                                 )
-                            }
-                        }
-
-                        selectedUrl.value?.let {
-                            WebViewSheet(it) {
-                                selectedUrl.value = null
-                            }
-                        }
-
-                        if (navigationViewModel.showBuyPro.value) {
-                            BuyProScreen {
-                                navigationViewModel.showBuyPro.value = false
                             }
                         }
 
@@ -506,13 +486,12 @@ class MainActivity: FragmentActivity() {
         }
     }
 
-    private fun navigateToMainFlow(selectedUrl: MutableState<String?>) {
+    private fun navigateToMainFlow() {
         val screen = when (UserPreferences.getStartTab()) {
             SelectedStartTab.LastUsed -> navigationScreenForLatestTab(UserPreferences.getLatestTabIndex())
             SelectedStartTab.Home -> NavigationScreens.Home
             SelectedStartTab.Portfolio -> NavigationScreens.Portfolio
             SelectedStartTab.Market -> NavigationScreens.Market
-            SelectedStartTab.News -> NavigationScreens.News
             else -> NavigationScreens.Settings
         }
 
@@ -520,13 +499,12 @@ class MainActivity: FragmentActivity() {
             NavigationScreens.Home -> 0
             NavigationScreens.Portfolio -> 1
             NavigationScreens.Market -> 2
-            NavigationScreens.News -> 3
-            NavigationScreens.Settings -> 4
+            NavigationScreens.Settings -> 3
             else -> 0
         }
 
         navigationViewModel.navigateToMainTab(screen)
-        deepLink(selectedUrl)
+        deepLink()
     }
 
     private fun setStartData() {
@@ -597,27 +575,7 @@ class MainActivity: FragmentActivity() {
         biometricViewModel.authenticate(baseContext)
     }
 
-    private fun deepLink(selectedUrl: MutableState<String?>) {
-        intent?.data?.let { uri ->
-            val referralCode = referralCodeFromUri(uri)
-            if (referralCode != null) {
-                AnalyticsManager.log(
-                    Navigate(
-                        fromScreen = screenLabelFromRoute(navigationViewModel.analyticsRouteSuffixForNavigate()),
-                        toScreen = ScreenLabel.Referral,
-                    ),
-                )
-                navigationViewModel.goToTab(4)
-                Handler(Looper.getMainLooper()).postDelayed({
-                    navigationViewModel.navigate(
-                        NavigationScreens.Referral(referralCode = referralCode),
-                    )
-                }, 400L)
-                intent = Intent()
-                return
-            }
-        }
-
+    private fun deepLink() {
         intent?.getStringExtra("fearID")?.let {
             if (it.isNotEmpty()) {
 
@@ -628,12 +586,6 @@ class MainActivity: FragmentActivity() {
                     ),
                 )
                 navigationViewModel.deepLink(NavigationScreens.FearGreed)
-            }
-        }
-
-        intent?.getStringExtra("newsID")?.let {
-            if (it.isNotEmpty()) {
-                selectedUrl.value = it
             }
         }
 
@@ -680,21 +632,6 @@ class MainActivity: FragmentActivity() {
         }
 
         intent = Intent()
-    }
-
-    private fun referralCodeFromUri(uri: Uri): String? {
-        val host = uri.host?.lowercase() ?: return null
-        if (host != "coincurrently.app" && !host.endsWith(".coincurrently.app")) {
-            return null
-        }
-
-        val pathSegments = uri.pathSegments
-        if (pathSegments.size < 2 || pathSegments[0].lowercase() != "invite") {
-            return null
-        }
-
-        val code = pathSegments[1].trim()
-        return code.takeIf { it.isNotEmpty() }
     }
 
     private fun shouldShowMoreTip(showMoreTip: MutableState<Boolean>) {

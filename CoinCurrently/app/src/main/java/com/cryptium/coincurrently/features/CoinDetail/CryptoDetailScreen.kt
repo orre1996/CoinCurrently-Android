@@ -24,7 +24,6 @@ import androidx.compose.material.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -63,7 +62,6 @@ import com.cryptium.coincurrently.features.CoinDetail.Sheets.SentimentInfoSheet
 import com.cryptium.coincurrently.features.Portfolio.Models.PortfolioSwapTransaction
 import com.cryptium.coincurrently.sharedui.charts.CandleChart
 import com.cryptium.coincurrently.sharedui.charts.CandleChartHover
-import com.cryptium.coincurrently.features.CoinDetail.Views.News.DetailNews
 import com.cryptium.coincurrently.core.extensions.getActivity
 import com.cryptium.coincurrently.core.extensions.dpToPx
 import com.cryptium.coincurrently.core.extensions.is24HourClock
@@ -97,7 +95,6 @@ import com.cryptium.coincurrently.sharedui.charts.LineChart
 import com.cryptium.coincurrently.sharedui.components.Point
 import com.cryptium.coincurrently.sharedui.sheets.WebViewSheet
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertCreateResult
-import com.cryptium.coincurrently.core.purchases.BillingManager
 import com.cryptium.coincurrently.core.networking.ResponseModels.CryptoDetailInfoModel
 import com.cryptium.coincurrently.features.CoinDetail.Views.General.ChartTypeButtonsView
 import com.cryptium.coincurrently.core.models.ChartTypes
@@ -113,7 +110,6 @@ import com.cryptium.coincurrently.features.CoinDetail.Views.Portfolio.CryptoDeta
 import com.cryptium.coincurrently.features.CoinDetail.Sheets.SelectCoinSheet
 import com.cryptium.coincurrently.features.Market.Toplist.Sheets.ToplistSortBySheet
 import com.cryptium.coincurrently.sharedui.components.SnackBarType
-import com.cryptium.coincurrently.core.analytics.BuyProAction
 import com.cryptium.coincurrently.core.analytics.ChangeCompareCoin
 import com.cryptium.coincurrently.core.analytics.CompareCoinChangeSelection
 import com.cryptium.coincurrently.core.analytics.CurrencySelected
@@ -194,7 +190,7 @@ fun CryptoDetailScreen(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val talkBackEnabled = AccessibilityLayout.isTalkBackEnabled
 
-    val tabs = listOf("Overview", "About", "Portfolio", "Markets", "News")
+    val tabs = listOf("Overview", "About", "Portfolio", "Markets")
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val useStickyHeaders = AccessibilityLayout.useStickyHeaders
@@ -211,7 +207,6 @@ fun CryptoDetailScreen(
 
     val isDropDownExpanded = remember { mutableStateOf(false) }
 
-    val currentSubscription by BillingManager.currentSubscription.observeAsState()
 
     val isMarketsSortShowing = remember { mutableStateOf(false) }
     val showSentimentInfo = remember { mutableStateOf(false) }
@@ -243,7 +238,6 @@ fun CryptoDetailScreen(
                     context,
                     showReload = viewModel.mainReloading,
                     showRefreshIndicator = false,
-                    getNews = false
                 )
             }
         }
@@ -269,7 +263,6 @@ fun CryptoDetailScreen(
                                 context,
                                 showReload = viewModel.mainReloading,
                                 showRefreshIndicator = false,
-                                getNews = false
                             )
                         }
                     }
@@ -287,8 +280,6 @@ fun CryptoDetailScreen(
     LaunchedEffect(viewModel.currentPage, AppLanguageState.preference) {
         if (viewModel.currentPage == 2) {
             viewModel.getPortfolio()
-        } else if (viewModel.currentPage == 4) {
-            viewModel.getCryptoNews()
         }
     }
 
@@ -298,8 +289,6 @@ fun CryptoDetailScreen(
                 coroutineScope.launch {
                     if (viewModel.currentPage == 2) {
                         viewModel.getPortfolio()
-                    } else if (viewModel.currentPage == 4) {
-                        viewModel.getCryptoNews()
                     }
                 }
             }
@@ -397,7 +386,6 @@ fun CryptoDetailScreen(
                 viewModel.refresh(
                     context,
                     showReload = false,
-                    getNews = viewModel.currentPage == 4
                 )
             }
             if (viewModel.currentPage == 2) {
@@ -422,11 +410,7 @@ fun CryptoDetailScreen(
                             isFavorited = viewModel.inFavoritesList,
                             coinName = viewModel.cryptoInfo?.name ?: "coin",
                             toggleFavorite = {
-                                coroutineScope.launch {
-                                    viewModel.favoriteButtonPressed(context) {
-                                        navigationViewModel.openBuyPro(ScreenLabel.CryptoDetail, BuyProAction.Favorite)
-                                    }
-                                }
+                                viewModel.favoriteButtonPressed(context)
                             }
                         )
 
@@ -451,8 +435,6 @@ fun CryptoDetailScreen(
                                         ),
                                     )
                                     navigationViewModel.deepLink(to = dest)
-                                } else if (viewModel.allPriceAlertsCount >= 2 && currentSubscription == null) {
-                                    navigationViewModel.openBuyPro(ScreenLabel.CryptoDetail, BuyProAction.PriceAlert)
                                 } else {
                                     AnalyticsManager.log(
                                         SheetOpened(ScreenLabel.CryptoDetail, SheetLabel.NewPriceAlert),
@@ -736,8 +718,6 @@ fun CryptoDetailScreen(
                                             ),
                                         )
                                         navigationViewModel.deepLink(to = dest)
-                                    } else if (viewModel.allPriceAlertsCount >= 2 && currentSubscription == null) {
-                                        navigationViewModel.openBuyPro(ScreenLabel.CryptoDetail, BuyProAction.PriceAlert)
                                     } else {
                                         AnalyticsManager.log(
                                             SheetOpened(ScreenLabel.CryptoDetail, SheetLabel.NewPriceAlert),
@@ -781,7 +761,6 @@ fun CryptoDetailScreen(
                                 viewModel = viewModel,
                                 navigationViewModel = navigationViewModel,
                                 showAddTransactionSheet = showAddTransactionSheet,
-                                hasPro = currentSubscription != null,
                                 isTablet = isTablet,
                                 showTransactionDetails = {
                                     when (it) {
@@ -826,22 +805,12 @@ fun CryptoDetailScreen(
                                 isTablet = isTablet
                             )
                         }
-                        4 -> DetailNews(
-                            news = viewModel.newsData,
-                            title = "coin",
-                            showError = viewModel.showNewsError,
-                            isTablet = isTablet,
-                            fromScreen = ScreenLabel.CryptoDetail,
-                            openUrl = {
-                                selectedUrl = it
-                            }
-                        )
                     }
                 }
             }
 
             ScrollToTopButton(
-                visible = !talkBackEnabled && firstVisibleIndex >= 22 && (viewModel.currentPage == 3 || viewModel.currentPage == 4),
+                visible = !talkBackEnabled && firstVisibleIndex >= 22 && viewModel.currentPage == 3,
                 respectNavigationBars = true,
                 onClick = {
                     val tabIndex = viewModel.currentPage.coerceIn(0, tabs.lastIndex)

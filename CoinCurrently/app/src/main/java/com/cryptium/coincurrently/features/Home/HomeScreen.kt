@@ -1,19 +1,13 @@
 package com.cryptium.coincurrently.features.Home
 import com.cryptium.coincurrently.core.localization.Localization
-import com.cryptium.coincurrently.core.localization.AppLanguageState
 import android.util.Log
 import android.app.Application
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
@@ -26,8 +20,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Alignment.Companion.Top
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -35,7 +27,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.activity.compose.BackHandler
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cryptium.coincurrently.app.NavigationScreens
 import com.cryptium.coincurrently.sharedui.components.AccessibilityLayout
@@ -50,7 +41,6 @@ import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.app.title
 import com.cryptium.coincurrently.sharedui.models.PriceChange
-import com.cryptium.coincurrently.features.Home.Views.PremiumView
 import com.cryptium.coincurrently.features.Home.Carousel.ToplistCategoryView
 import com.cryptium.coincurrently.core.models.CarouselFilter
 import com.cryptium.coincurrently.features.Home.Views.MarketStatsView
@@ -60,7 +50,6 @@ import com.cryptium.coincurrently.features.Home.HomeViewModel
 import com.cryptium.coincurrently.features.Home.HomeViewModelFactory
 import com.cryptium.coincurrently.features.Home.HomeViewModelImp
 import com.cryptium.coincurrently.features.PriceAlerts.PriceAlertsRepository
-import com.cryptium.coincurrently.core.analytics.BuyProAction
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.analytics.HomeFilterSelected
 import com.cryptium.coincurrently.core.analytics.Navigate
@@ -85,7 +74,6 @@ fun HomeScreen(
     modifier: Modifier
 ) {
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
     val viewModel = viewModel<HomeViewModelImp>(
         factory = HomeViewModelFactory(context.applicationContext as Application)
     )
@@ -118,15 +106,7 @@ fun HomeScreen(
         Log.i("GlobalMarket", "HomeScreen composed (SideEffect)")
     }
 
-    val appLanguage = AppLanguageState.preference
-    LaunchedEffect(appLanguage) {
-        viewModel.refreshLocalizedCopy()
-    }
-
     LaunchedEffect(Unit) {
-        viewModel.initObservers(lifecycleOwner)
-        viewModel.loadPremiumOfferProducts(context)
-
         launch {
             Log.i("GlobalMarket", "HomeScreen LaunchedEffect requesting getGlobalMarket")
             viewModel.getGlobalMarket()
@@ -218,42 +198,11 @@ fun HomeScreen(
         viewModel.downloadData()
     }
 
-    val promotionTitle = viewModel.promotionTitle
-    val promotionMessage = viewModel.promotionMessage
-    val promotionMessageAccessible = viewModel.promotionMessageAccessible
-    val offerTimeLeft = viewModel.offerTimeLeft
-    val showPromotion = !promotionTitle.isNullOrEmpty() && !promotionMessage.isNullOrEmpty()
-
-    // Observe promotion fields explicitly — mutableStateOf on the ViewModel may not
-    // trigger recomposition when updated from async billing/remote-config callbacks.
-    var promotionVisible by remember { mutableStateOf(showPromotion) }
-    var displayedPromotionTitle by remember { mutableStateOf(promotionTitle) }
-    var displayedPromotionMessage by remember { mutableStateOf(promotionMessage) }
-    var displayedPromotionMessageAccessible by remember { mutableStateOf(promotionMessageAccessible) }
-    var displayedOfferTimeLeft by remember { mutableStateOf(offerTimeLeft) }
-
-    LaunchedEffect(viewModel) {
-        snapshotFlow {
-            PromotionSnapshot(
-                title = viewModel.promotionTitle,
-                message = viewModel.promotionMessage,
-                accessibleMessage = viewModel.promotionMessageAccessible,
-                timeLeft = viewModel.offerTimeLeft,
-            )
-        }.collect { snapshot ->
-            displayedPromotionTitle = snapshot.title
-            displayedPromotionMessage = snapshot.message
-            displayedPromotionMessageAccessible = snapshot.accessibleMessage
-            displayedOfferTimeLeft = snapshot.timeLeft
-            promotionVisible = !snapshot.title.isNullOrEmpty() && !snapshot.message.isNullOrEmpty()
-        }
-    }
-
     BackHandler(onBack = {
         val offset =
             homeLazyListState.firstVisibleItemIndex + homeLazyListState.firstVisibleItemScrollOffset
 
-        if (offset > if (promotionVisible) 0 else 1) {
+        if (offset > 1) {
             AnalyticsManager.log(TabBarDoubleTapped(ScreenLabel.Home))
             coroutineScope.launch {
                 homeLazyListState.animateScrollToItem(0)
@@ -304,33 +253,6 @@ fun HomeScreen(
                 modifier = modifier
             ) {
                 Column(modifier = Modifier.fillMaxSize()) {
-                    AnimatedVisibility(
-                        visible = promotionVisible,
-                        modifier = Modifier.wrapContentHeight(),
-                        enter = slideInVertically(initialOffsetY = { it }) + expandVertically(
-                            expandFrom = Bottom,
-                        ),
-                        exit = slideOutVertically(targetOffsetY = { it }) + shrinkVertically(
-                            shrinkTowards = Bottom,
-                        ),
-                    ) {
-                        PremiumView(
-                            title = displayedPromotionTitle ?: "",
-                            message = displayedPromotionMessage ?: "",
-                            accessibleMessage = displayedPromotionMessageAccessible,
-                            timeLeft = displayedOfferTimeLeft ?: "",
-                            viewPressed = {
-                                navigationViewModel.openBuyPro(
-                                    ScreenLabel.Home,
-                                    BuyProAction.HomePromotion,
-                                )
-                            },
-                            closeAction = {
-                                viewModel.premiumViewClosed(it)
-                            },
-                        )
-                    }
-
                     LazyColumn(
                         modifier = Modifier.weight(1f),
                         state = homeLazyListState,
@@ -491,13 +413,8 @@ private fun HomeToplistCategory(
         toggleFavorite = {
             viewModel.favouriteButtonPressed(
                 item = it,
-                context = context
-            ) {
-                navigationViewModel.openBuyPro(
-                    ScreenLabel.Home,
-                    BuyProAction.Favorite
-                )
-            }
+                context = context,
+            )
         },
         navigateToCryptoDetail = { coin ->
             val dest = NavigationScreens.CryptoDetail(
@@ -524,10 +441,3 @@ private fun HomeToplistCategory(
         }
     )
 }
-
-private data class PromotionSnapshot(
-    val title: String?,
-    val message: String?,
-    val accessibleMessage: String?,
-    val timeLeft: String?,
-)

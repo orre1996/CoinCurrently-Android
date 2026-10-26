@@ -63,7 +63,6 @@ import com.cryptium.coincurrently.app.NavigationViewModel
 import com.cryptium.coincurrently.sharedui.components.ObserveCurrencyChanges
 import com.cryptium.coincurrently.sharedui.components.OnLifecycleEvent
 import com.cryptium.coincurrently.features.GlobalMarket.Views.GlobalmarketSummaryView
-import com.cryptium.coincurrently.core.analytics.BuyProAction
 import com.cryptium.coincurrently.core.analytics.AnalyticsManager
 import com.cryptium.coincurrently.core.localization.Localization
 import com.cryptium.coincurrently.core.analytics.Navigate
@@ -235,10 +234,8 @@ fun ToplistScreen(
                         toggleFavorite = {
                             viewModel.favouriteButtonPressed(
                                 toplistItem = it,
-                                context = context
-                            ) {
-                                navigationViewModel.openBuyPro(ScreenLabel.Toplist, BuyProAction.Favorite)
-                            }
+                                context = context,
+                            )
                         },
                         currencyPressed = { coin ->
                             val fromScreen = if (category?.id.isNullOrBlank()) {
