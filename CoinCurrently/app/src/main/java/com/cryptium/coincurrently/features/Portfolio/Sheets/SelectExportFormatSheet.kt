@@ -108,7 +108,7 @@ fun SelectExportFormatSheet(
                         formatSelected = formatSelected,
                     )
 
-                    SectionHeader(Localization.string("Tax Software (Pro)"), modifier = Modifier.padding(top = 12.dp))
+                    SectionHeader(Localization.string("Tax Software"), modifier = Modifier.padding(top = 12.dp))
 
                     ExportOption(
                         title = "Koinly",

@@ -121,8 +121,7 @@ internal fun ActionButtons(
                 )
 
                 PrimaryButton(
-                    text = Localization.string("Import Wallet (Pro)"),
-                    accessibilityLabel = Localization.string("Import wallet, pro feature"),
+                    text = Localization.string("Import Wallet"),
                     onClick = {
                         importWallet.invoke()
                         isActionMenuExpanded.value = false
