@@ -14,6 +14,7 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.PostAlertCoin
 import com.cryptium.coincurrently.core.networking.ResponseModels.SendFeedbackRequest
 import com.cryptium.coincurrently.core.networking.ResponseModels.SubCoinRequest
 import com.cryptium.coincurrently.core.networking.ResponseModels.UserResponse
+import com.cryptium.coincurrently.core.networking.ResponseModels.cryptoApiHost
 import com.cryptium.coincurrently.core.networking.ResponseModels.serverBaseUrl
 
 object ApiHelper {
@@ -21,9 +22,9 @@ object ApiHelper {
         get() = RetrofitBuilder.apiService
 
     private val baseUrl: String
-        get() = "${serverBaseUrl}/crypto"
+        get() = cryptoApiHost
 
-    /** Coin detail, OHLC, and market charts always go through the backend. */
+    /** Coin detail, OHLC, and market charts use the same market host as every other CoinGecko route. */
     @Suppress("UNUSED_PARAMETER")
     private fun freeUrl(isFree: Boolean, days: String? = null): String = baseUrl
 
@@ -71,17 +72,17 @@ object ApiHelper {
     suspend fun getDerivativeDetail(id: String) = apiService.getDerivativeDetail(baseUrl, id)
     suspend fun getFearGreedModel() = apiService.getFearGreedModel()
     suspend fun getSearchResult(query: String) = apiService.getSearchResult(baseUrl, query)
-    suspend fun getNewCoins() = apiService.getNewCoinsIds("${serverBaseUrl}/crypto")
+    suspend fun getNewCoins() = apiService.getNewCoinsIds(baseUrl)
     suspend fun getNftToplist(order: SortOption, platformId: String? = null) = 
         if (platformId != null && platformId != "all") {
-            apiService.getNFTToplistWithPlatform("${serverBaseUrl}/crypto", order.nftApiValue, platformId)
+            apiService.getNFTToplistWithPlatform(baseUrl, order.nftApiValue, platformId)
         } else {
-            apiService.getNFTToplist("${serverBaseUrl}/crypto", order.nftApiValue)
+            apiService.getNFTToplist(baseUrl, order.nftApiValue)
         }
 
-    suspend fun getNftPlatforms() = apiService.getNFTPlatforms("${serverBaseUrl}/crypto")
+    suspend fun getNftPlatforms() = apiService.getNFTPlatforms(baseUrl)
 
-    suspend fun getNftPriceVolume(id: String, days: String) = apiService.getNFTPriceVolume("${serverBaseUrl}/crypto", id, days)
+    suspend fun getNftPriceVolume(id: String, days: String) = apiService.getNFTPriceVolume(baseUrl, id, days)
 
     suspend fun triggerPriceAlert() = apiService.triggerPriceAlert(serverBaseUrl)
     suspend fun subBigMover() = apiService.subBigMover(serverBaseUrl, mapOf("preferredCurrency" to UserPreferences.getSelectedCurrency().code))
@@ -112,7 +113,7 @@ object ApiHelper {
         address = address,
         blockChain = blockChain
     ))
-    suspend fun getWinnersLosers(currencyCode: String, duration: String) = apiService.getWinnersLosers(serverBaseUrl, currencyCode, duration, "500")
+    suspend fun getWinnersLosers(currencyCode: String, duration: String) = apiService.getWinnersLosers(baseUrl, currencyCode, duration, "500")
     suspend fun getAlerts() = apiService.getAlerts(serverBaseUrl)
     suspend fun createAlert(alertCoin: PostAlertCoin) = apiService.createAlert(serverBaseUrl, alertCoin)
     suspend fun deleteAlert(alertId: String) = apiService.deleteAlert(serverBaseUrl, mapOf("alertId" to alertId))

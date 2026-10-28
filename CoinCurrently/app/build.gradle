@@ -14,7 +14,8 @@ if (secretsFile.exists()) {
     secretsFile.withInputStream { secrets.load(it) }
 } else if (secretsExampleFile.exists()) {
     logger.warn("Config/secrets.properties not found; using example placeholders. " +
-            "Copy Config/secrets.example.properties to Config/secrets.properties and fill in your values.")
+            "Market data uses CoinGecko's public API until API_BASE_URL points at a backend. " +
+            "Copy Config/secrets.example.properties to Config/secrets.properties to set one.")
     secretsExampleFile.withInputStream { secrets.load(it) }
 } else {
     throw new GradleException(
@@ -63,8 +64,8 @@ android {
         applicationId "com.cryptium.coincurrently"
         minSdkVersion 31
         targetSdkVersion 36
-        versionCode 226
-        versionName "3.5.0"
+        versionCode 227
+        versionName "3.6.0"
         compileSdk 36
         buildToolsVersion = "36.0.0"
 

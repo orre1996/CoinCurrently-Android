@@ -140,11 +140,13 @@ Market data and the fear and greed index each come from a different API. `MainRe
 
 ### CoinGecko
 
-Crypto market data is based on [CoinGecko's API](https://www.coingecko.com/en/api). Without Pro, coin detail, OHLC, and market charts call the public API directly at `https://api.coingecko.com/api/v3` (`/coins/{id}`, `/coins/{id}/ohlc`, and `/coins/{id}/market_chart`). Those three calls do not use `API_BASE_URL`.
+Crypto market data is based on [CoinGecko's API](https://www.coingecko.com/en/api). Market routes are `{host}/api/v3/...`.
 
-Every other market route is `{API_BASE_URL}/crypto/api/v3/...`. `API_BASE_URL` is your own backend. CoinGecko's public host does not serve the `/crypto` prefix, so `https://api.coingecko.com` cannot be used as `API_BASE_URL`.
+When `API_BASE_URL` is missing, empty, or still the example placeholder (`https://api.example.com`), `host` is CoinGecko's [keyless public API](https://docs.coingecko.com/docs/keyless-public-api) at `https://api.coingecko.com`. No API key is required. Toplists, search, trending, coin detail, OHLC, market charts, exchanges, and categories can load as soon as you build. That API is shared and rate limited (about 5 calls per minute), so a cold start can hit `429` until the app's cache fills. Setting `API_BASE_URL` to `https://api.coingecko.com` selects the same host; the public API does not serve the `/crypto` prefix.
 
-Most of the proxied endpoints work on the free or Basic plans. These require the [Analyst plan](https://www.coingecko.com/en/api/pricing) (or higher):
+When `API_BASE_URL` is your backend, `host` is `{API_BASE_URL}/crypto`.
+
+Most of these endpoints work on the free or Basic plans. These require the [Analyst plan](https://www.coingecko.com/en/api/pricing) (or higher), so they fail on the keyless API and need the backend proxy:
 
 - `/coins/list/new` — recently listed coins
 - `/coins/top_gainers_losers` — top gainers and losers
@@ -162,7 +164,7 @@ The fear and greed index is requested directly from [alternative.me](https://alt
 
 The backend is not in this repo. It proxies CoinGecko so third-party keys stay off the client, and it hosts first-party routes for price alerts, big-mover notifications, wallet import, gas fees, referrals, redeem codes, user, and feedback. Those first-party routes send a bearer token.
 
-Without that backend, the app can still show coin detail, OHLC, market charts (for users without Pro), and the fear and greed index. Toplists, search, trending, exchanges, categories, derivatives, NFTs, gainers and losers, gas fees, and alerts need `API_BASE_URL`.
+Without that backend, market data that CoinGecko serves on the keyless API still loads, and the fear and greed index still loads from alternative.me. Analyst-plan market data, price alerts, big-mover notifications, wallet import, gas fees, and live prices need `API_BASE_URL`.
 
 ## Pro
 
@@ -188,8 +190,8 @@ Packages match folders under `com.cryptium.coincurrently`. Widgets compile in `:
 
 1. Open the `CoinCurrently/` Gradle project in Android Studio and sync.
 2. Copy `Config/secrets.example.properties` to `Config/secrets.properties`. That file is gitignored. If it is missing, the build uses the example placeholders, which are enough to launch. The build fails only if both files are missing. Keys:
-   - `API_BASE_URL` — your backend, with no trailing slash. Markets and the first-party routes above need it. A placeholder lets the app launch. Coin detail, OHLC, market charts, and the fear and greed index can still load. Toplists, search, and alerts stay empty until it points at a backend.
-   - `BACKEND_API_KEY` — sent as `x-coin-currently-key`. A placeholder is enough for the public CoinGecko and fear-and-greed calls.
+   - `API_BASE_URL` — optional. Leave the placeholder, leave it empty, or skip creating `secrets.properties`, and market data uses CoinGecko's keyless API. Pasting `https://api.coingecko.com` does the same. Set this to your backend, with no trailing slash, to proxy CoinGecko and to use the first-party routes above.
+   - `BACKEND_API_KEY` — sent as `x-coin-currently-key` on backend requests. A placeholder is enough for the public CoinGecko and fear-and-greed calls.
    - `REVENUECAT_PRODUCTION_API_KEY` and `REVENUECAT_TEST_API_KEY` — placeholders are enough unless you are testing purchases. Debug builds use the test key.
    - `APTABASE_APP_KEY` — a placeholder is enough unless you want analytics.
    - `SCHEDULER_PRICE_ALERT_SECRET` — optional. Leave it empty if unused.
