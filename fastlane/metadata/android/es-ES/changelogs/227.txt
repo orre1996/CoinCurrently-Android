@@ -1,0 +1,3 @@
+• Se ha eliminado el muro de pago. Todas las funciones están incluidas y no hay nada que comprar, renovar ni restaurar.
+• El proyecto ahora es de código abierto, para que puedas leer el código y ver qué hace la app con tus datos.
+• Los repositorios de iOS y Android están enlazados en Source code, dentro de Ajustes.

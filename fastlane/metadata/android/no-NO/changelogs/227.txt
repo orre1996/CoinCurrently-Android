@@ -1,0 +1,3 @@
+• Betalingsmuren er fjernet. Alle funksjoner er inkludert, og det er ingenting å kjøpe, fornye eller gjenopprette.
+• Prosjektet er nå åpen kildekode, så du kan lese koden og se hva appen gjør med dataene dine.
+• iOS- og Android-repositoriene er lenket under Source code i Innstillinger.

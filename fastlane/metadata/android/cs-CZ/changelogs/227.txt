@@ -1,0 +1,3 @@
+• Paywall byl odstraněn. Všechny funkce jsou zahrnuty a není co kupovat, prodlužovat ani obnovovat.
+• Projekt je teď open source, takže si můžete přečíst kód a vidět, co aplikace dělá s vašimi daty.
+• Repozitáře pro iOS a Android jsou odkazované pod Source code v Nastavení.

@@ -1,0 +1,3 @@
+• Betalväggen har tagits bort. Alla funktioner ingår, och det finns inget att köpa, förnya eller återställa.
+• Projektet är nu öppen källkod, så du kan läsa koden och se vad appen gör med dina data.
+• iOS- och Android-arkiven är länkade under Source code i Inställningar.

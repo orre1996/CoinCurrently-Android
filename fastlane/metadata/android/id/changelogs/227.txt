@@ -1,0 +1,3 @@
+• Dinding pembayaran telah dihapus. Semua fitur disertakan, dan tidak ada yang perlu dibeli, diperpanjang, atau dipulihkan.
+• Proyek ini sekarang open source, jadi Anda dapat membaca kodenya dan melihat apa yang dilakukan aplikasi dengan data Anda.
+• Repositori iOS dan Android ditautkan di Source code dalam Pengaturan.

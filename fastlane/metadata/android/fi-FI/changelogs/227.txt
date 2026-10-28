@@ -1,0 +1,3 @@
+• Maksuseinä on poistettu. Kaikki ominaisuudet sisältyvät, eikä mitään tarvitse ostaa, uusia tai palauttaa.
+• Projekti on nyt avointa lähdekoodia, joten voit lukea koodin ja nähdä, mitä sovellus tekee tiedoillasi.
+• iOS- ja Android-repositoriot on linkitetty kohtaan Source code asetuksissa.

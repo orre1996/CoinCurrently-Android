@@ -1,0 +1,3 @@
+• Mokama siena pašalinta. Visos funkcijos įtrauktos ir nėra ką pirkti, atnaujinti ar atkurti.
+• Projektas dabar atvirojo kodo, todėl galite skaityti kodą ir matyti, ką programa daro su jūsų duomenimis.
+• „iOS“ ir „Android“ saugyklos susietos skiltyje Source code nustatymuose.

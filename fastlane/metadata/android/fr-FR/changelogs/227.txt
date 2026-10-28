@@ -1,0 +1,3 @@
+• Le paywall a été supprimé. Toutes les fonctionnalités sont incluses, et il n’y a rien à acheter, renouveler ou restaurer.
+• Le projet est désormais open source, pour que vous puissiez lire le code et voir ce que l’app fait de vos données.
+• Les dépôts iOS et Android sont liés sous Source code dans Réglages.

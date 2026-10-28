@@ -1,0 +1,3 @@
+• Plačilni zid je odstranjen. Vse funkcije so vključene in ničesar ni treba kupiti, podaljšati ali obnoviti.
+• Projekt je zdaj odprtokoden, zato lahko prebereš kodo in vidiš, kaj aplikacija počne s tvojimi podatki.
+• Repozitoriji za iOS in Android so povezani pod Source code v Nastavitvah.
