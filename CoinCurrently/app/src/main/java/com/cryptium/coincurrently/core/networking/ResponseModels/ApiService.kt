@@ -12,9 +12,39 @@ import retrofit2.http.Query
 import com.cryptium.coincurrently.BuildConfig
 import okhttp3.ResponseBody
 
-// Market routes are "{API_BASE_URL}/crypto/api/v3/...". API_BASE_URL is your backend.
+/** Keyless CoinGecko host. Market routes append `/api/v3/...`. No trailing slash. */
+const val PUBLIC_COINGECKO_HOST = "https://api.coingecko.com"
+
+private const val PLACEHOLDER_API_BASE_URL = "https://api.example.com"
+
+// First-party routes are "{API_BASE_URL}/...". API_BASE_URL is your backend.
 val serverBaseUrl: String
-    get() = BuildConfig.API_BASE_URL.trimEnd('/')
+    get() = BuildConfig.API_BASE_URL.trim().trimEnd('/')
+
+/**
+ * Prefix for market routes (`{host}/api/v3/...`).
+ * A configured backend is `{API_BASE_URL}/crypto`. An empty value, the example
+ * placeholder, or `https://api.coingecko.com` itself uses the keyless public API
+ * so the app can run without secrets.
+ */
+val cryptoApiHost: String
+    get() = cryptoApiHostFor(BuildConfig.API_BASE_URL)
+
+internal fun cryptoApiHostFor(apiBaseUrl: String): String {
+    val trimmed = apiBaseUrl.trim().trimEnd('/')
+    if (trimmed.isEmpty() ||
+        trimmed.equals(PLACEHOLDER_API_BASE_URL, ignoreCase = true) ||
+        isPublicCoinGeckoHost(trimmed)
+    ) {
+        return PUBLIC_COINGECKO_HOST
+    }
+    return "$trimmed/crypto"
+}
+
+private fun isPublicCoinGeckoHost(url: String): Boolean {
+    val host = url.substringAfter("://", url).substringBefore("/").lowercase()
+    return host == "api.coingecko.com"
+}
 
 interface ApiService{
     @GET("{url}/api/v3/coins/markets?sparkline=true&price_change_percentage=1h%2C24h%2C7d%2C30d")
@@ -234,7 +264,7 @@ interface ApiService{
         @Body request: WalletImportRequest
     ): Result<AddressImport>
 
-    @GET("{url}/crypto/api/v3/coins/top_gainers_losers")
+    @GET("{url}/api/v3/coins/top_gainers_losers")
     suspend fun getWinnersLosers(
         @Path(value = "url", encoded = true) url: String,
         @Query("vs_currency") currencyCode: String,

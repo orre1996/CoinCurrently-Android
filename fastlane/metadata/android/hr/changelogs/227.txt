@@ -1,0 +1,3 @@
+• Paywall je uklonjen. Sve su značajke uključene i nema ništa za kupiti, obnoviti ili vratiti.
+• Projekt je sada otvorenog koda, pa možeš pročitati kod i vidjeti što aplikacija radi s tvojim podacima.
+• Repozitoriji za iOS i Android povezani su pod Source code u Postavkama.

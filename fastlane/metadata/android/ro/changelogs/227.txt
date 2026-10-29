@@ -1,0 +1,3 @@
+• Paywall-ul a fost eliminat. Toate funcțiile sunt incluse și nu există nimic de cumpărat, reînnoit sau restaurat.
+• Proiectul este acum open source, ca să poți citi codul și vedea ce face aplicația cu datele tale.
+• Depozitele iOS și Android sunt legate sub Source code în Setări.

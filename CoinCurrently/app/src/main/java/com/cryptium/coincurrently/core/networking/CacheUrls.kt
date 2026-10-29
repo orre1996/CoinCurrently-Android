@@ -1,6 +1,7 @@
 package com.cryptium.coincurrently.core.networking
 import com.cryptium.coincurrently.sharedui.models.SortOption
 import com.cryptium.coincurrently.core.analytics.FirebaseManager
+import com.cryptium.coincurrently.core.networking.ResponseModels.cryptoApiHost
 import com.cryptium.coincurrently.core.networking.ResponseModels.serverBaseUrl
 
 /**
@@ -9,7 +10,7 @@ import com.cryptium.coincurrently.core.networking.ResponseModels.serverBaseUrl
  */
 object CacheUrls {
     private val baseUrl: String
-        get() = "${serverBaseUrl}/crypto"
+        get() = cryptoApiHost
 
     fun gasFees(includeHistory: Boolean) =
         "$serverBaseUrl/gas?includeHistory=$includeHistory"
@@ -25,7 +26,7 @@ object CacheUrls {
         }
 
     fun winnersLosers(currencyCode: String, duration: String) =
-        "$serverBaseUrl/crypto/api/v3/coins/top_gainers_losers?vs_currency=$currencyCode&duration=$duration&top_coins=500"
+        "$baseUrl/api/v3/coins/top_gainers_losers?vs_currency=$currencyCode&duration=$duration&top_coins=500"
 
     fun exchanges(page: Int = 1) =
         "$baseUrl/api/v3/exchanges?per_page=100&page=$page"
@@ -69,7 +70,7 @@ object CacheUrls {
         "$baseUrl/api/v3/search/trending"
 
     fun newCoins() =
-        "$serverBaseUrl/crypto/api/v3/coins/list/new"
+        "$baseUrl/api/v3/coins/list/new"
 
     fun search(query: String) =
         "$baseUrl/api/v3/search?query=$query"
@@ -77,14 +78,14 @@ object CacheUrls {
     /** Must match actual Retrofit request URL (ResultCall uses request.url.toString() as cache key). */
     fun nftToplist(order: SortOption, platformId: String?) =
         if (platformId != null && platformId != "all") {
-            "$serverBaseUrl/crypto/api/v3/nfts/markets?per_page=250&order=${order.nftApiValue}&asset_platform_id=$platformId"
+            "$baseUrl/api/v3/nfts/markets?per_page=250&order=${order.nftApiValue}&asset_platform_id=$platformId"
         } else {
-            "$serverBaseUrl/crypto/api/v3/nfts/markets?per_page=250&order=${order.nftApiValue}"
+            "$baseUrl/api/v3/nfts/markets?per_page=250&order=${order.nftApiValue}"
         }
 
     /** Must match actual Retrofit request URL (ResultCall uses request.url.toString() as cache key). */
     fun nftPlatforms() =
-        "$serverBaseUrl/crypto/api/v3/asset_platforms?filter=nft"
+        "$baseUrl/api/v3/asset_platforms?filter=nft"
 
     fun multipleCoins(ids: String, vsCurrencies: String) =
         "$baseUrl/api/v3/simple/price?ids=$ids&vs_currencies=$vsCurrencies"
@@ -95,10 +96,10 @@ object CacheUrls {
     fun getMultipleCoins(ids: String, currencyCode: String) =
         "$baseUrl/api/v3/coins/markets?order=market_cap_desc&per_page=100&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d%2C30d&ids=$ids&vs_currency=$currencyCode"
 
-    /** Coin detail, OHLC, and market charts always go through the backend. */
+    /** Coin detail, OHLC, and market charts use the same market host as every other CoinGecko route. */
     @Suppress("UNUSED_PARAMETER")
     private fun cryptoBaseUrl(freeUrl: Boolean, days: String? = null): String =
-        "${serverBaseUrl}/crypto"
+        cryptoApiHost
 
     fun cryptoDetail(id: String, freeUrl: Boolean) =
         "${cryptoBaseUrl(freeUrl)}/api/v3/coins/$id?date=&sparkline=true"
@@ -124,7 +125,7 @@ object CacheUrls {
         "$baseUrl/api/v3/nfts/$id"
 
     fun nftPriceVolume(id: String, days: String) =
-        "$serverBaseUrl/crypto/api/v3/nfts/$id/market_chart?days=$days"
+        "$baseUrl/api/v3/nfts/$id/market_chart?days=$days"
 
     fun nftTickers(id: String) =
         "$baseUrl/api/v3/nfts/$id/tickers"

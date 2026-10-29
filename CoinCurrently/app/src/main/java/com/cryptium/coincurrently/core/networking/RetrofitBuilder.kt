@@ -34,7 +34,11 @@ import java.util.concurrent.TimeUnit
  class MyOkHttpInterceptor(val platform: String, val context: Context): Interceptor {
      override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
         val originalRequest = chain.request()
-        if (!originalRequest.url.toString().contains(serverBaseUrl) ) {
+        val requestUrl = originalRequest.url.toString()
+        val targetsBackend = serverBaseUrl.isNotEmpty() &&
+            requestUrl.contains(serverBaseUrl) &&
+            !originalRequest.url.host.equals("api.coingecko.com", ignoreCase = true)
+        if (!targetsBackend) {
             return chain.proceed(originalRequest)
         }
 

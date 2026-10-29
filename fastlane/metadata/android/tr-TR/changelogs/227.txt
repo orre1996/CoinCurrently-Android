@@ -1,0 +1,3 @@
+• Ödeme duvarı kaldırıldı. Tüm özellikler dahil ve satın alınacak, yenilenecek veya geri yüklenecek bir şey yok.
+• Proje artık açık kaynak, böylece kodu okuyabilir ve uygulamanın verilerinle ne yaptığını görebilirsin.
+• iOS ve Android depoları, Ayarlar’daki Source code altında bağlantılı.

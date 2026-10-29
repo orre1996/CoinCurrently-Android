@@ -1,0 +1,3 @@
+• A fizetős fal eltűnt. Minden funkció benne van, és nincs mit megvenni, megújítani vagy visszaállítani.
+• A projekt mostantól nyílt forráskódú, így elolvashatod a kódot, és láthatod, mit csinál az alkalmazás az adataiddal.
+• Az iOS- és Android-tárolók a Beállításokban, a Source code alatt vannak linkelve.

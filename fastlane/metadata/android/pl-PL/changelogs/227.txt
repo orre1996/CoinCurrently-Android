@@ -1,0 +1,3 @@
+• Ściana płatności została usunięta. Wszystkie funkcje są dostępne i nie ma nic do kupienia, odnowienia ani przywrócenia.
+• Projekt jest teraz open source, więc możesz przeczytać kod i zobaczyć, co aplikacja robi z Twoimi danymi.
+• Repozytoria iOS i Androida są podlinkowane w Source code w Ustawieniach.

@@ -1,0 +1,3 @@
+• Tường thanh toán đã được gỡ bỏ. Mọi tính năng đều được bao gồm và không có gì để mua, gia hạn hay khôi phục.
+• Dự án hiện là mã nguồn mở, để bạn đọc mã và xem ứng dụng làm gì với dữ liệu của bạn.
+• Kho iOS và Android được liên kết trong Source code ở Cài đặt.
