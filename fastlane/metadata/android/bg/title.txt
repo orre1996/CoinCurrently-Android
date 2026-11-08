@@ -1,1 +1,1 @@
-CoinCurrently: Частно крипто
+CoinCurrently: Крипто тракер
